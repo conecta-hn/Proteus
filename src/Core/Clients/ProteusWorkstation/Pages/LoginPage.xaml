@@ -1,0 +1,42 @@
+﻿<base:ProteusPage
+    x:Class="TheXDS.Proteus.Pages.SimpleLoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:base="clr-namespace:TheXDS.Proteus.Pages.Base"
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:res="clr-namespace:TheXDS.Proteus.Resources"
+    mc:Ignorable="d"
+    Header="Iniciar sesión"
+    Background="Transparent"
+    d:DataContext="{d:DesignInstance vm:LoginViewModel}">
+    <StackPanel
+        Background="Transparent"
+        fw:PointerTracker.Enabled="True" 
+        Style="{StaticResource BotoneraBase}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+        <Viewbox Width="240" Child="{x:Static res:Images.Logo}" />
+        <TextBlock Text="{Binding ErrorMessage, Mode=OneWay}" Foreground="Salmon"/>
+        <TextBox
+            Text="{Binding User}" 
+            widgets:ProteusProp.Icon="👤"
+            widgets:ProteusProp.Watermark="Usuario"/>
+        <PasswordBox
+            PasswordChanged="PasswordBox_PasswordChanged"
+            widgets:ProteusProp.Watermark="Contraseña"/>
+        <mcart:StretchyWrapPanel StretchProportionally="False">
+            <Button
+                IsDefault="True"
+                Command="{Binding LoginCommand, Mode=OneWay}"
+                Content="Iniciar sesión"/>
+            <Button
+                Command="{Binding CloseCommand, Mode=OneWay}"
+                Content="Cancelar"/>
+        </mcart:StretchyWrapPanel>
+    </StackPanel>
+</base:ProteusPage>

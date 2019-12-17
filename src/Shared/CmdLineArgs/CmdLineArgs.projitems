@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>7df0886c-11cd-4abc-9135-31ef4b7ff44c</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CmdLineArgs</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ChDirArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FullCheckArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InitArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocalDbArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogFileArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LowPriorityArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UniThreadArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UseCustomArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UseDomainArgument.cs" />
+  </ItemGroup>
+</Project>

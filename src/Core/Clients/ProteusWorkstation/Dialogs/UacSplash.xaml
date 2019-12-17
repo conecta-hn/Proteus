@@ -1,0 +1,43 @@
+﻿<fw:AcrylicWindow
+    x:Class="TheXDS.Proteus.Dialogs.UacSplash"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:res="clr-namespace:TheXDS.Proteus.Resources"
+    AcrylicWindowStyle="None"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <mcart:BusyContainer IsBusy="{Binding IsBusy, Mode=OneWay}">
+        <StackPanel
+            Background="Transparent"
+            fw:PointerTracker.Enabled="True" 
+            Style="{StaticResource BotoneraBase}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <TextBlock Style="{StaticResource Title}">
+                Esta operación requiere permisos adicionales.
+            </TextBlock>
+            <Separator Margin="20"/>
+            <TextBlock Text="{Binding ErrorMessage, Mode=OneWay}" Foreground="Salmon"/>
+            <TextBox
+                Text="{Binding User}" 
+                widgets:ProteusProp.Icon="👤"
+                widgets:ProteusProp.Watermark="Usuario"/>
+            <PasswordBox
+                PasswordChanged="PasswordBox_PasswordChanged"/>
+            <mcart:StretchyWrapPanel StretchProportionally="False">
+                <Button
+                IsDefault="True"
+                Command="{Binding LoginCommand, Mode=OneWay}"
+                Content="Iniciar sesión"/>
+                <Button
+                Command="{Binding CloseCommand, Mode=OneWay}"
+                Content="Cancelar"/>
+            </mcart:StretchyWrapPanel>
+        </StackPanel>
+    </mcart:BusyContainer>
+</fw:AcrylicWindow>

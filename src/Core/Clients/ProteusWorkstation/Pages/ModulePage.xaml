@@ -1,0 +1,103 @@
+﻿<base:ProteusPage
+    x:Class="TheXDS.Proteus.Pages.ModulePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:TheXDS.Proteus.Pages.Base"
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF">
+    <Grid fw:PointerTracker.Enabled="True">
+        <Grid 
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToInvVisibilityConverter}}"
+            IsEnabled="{Binding IsBusy, Converter={StaticResource BooleanInverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Expander ExpandDirection="Right" IsExpanded="{Binding IsFullMenuVisible}">
+                <Expander.Header>
+                    <TextBlock>
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90"/>
+                        </TextBlock.LayoutTransform>
+                        Menú
+                    </TextBlock>
+                </Expander.Header>
+                <ScrollViewer>
+                    <ListView                    
+                        ItemsSource="{Binding FullMenu}"
+                        Style="{StaticResource MenuListView}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="5"
+                                    Background="{DynamicResource SystemAltMediumLowColorBrush}">
+                                    <Expander Margin="5">
+                                        <Expander.Header>
+                                            <TextBlock Text="{Binding Key,Mode=OneWay}" Opacity="0.5" FontWeight="Light"/>
+                                        </Expander.Header>
+                                        <ListView
+                                            ItemsSource="{Binding Value}"
+                                            Style="{StaticResource MenuListView}">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate DataType="widgets:Launcher">
+                                                    <Button                                                                                
+                                                        MinWidth="28"
+                                                        MinHeight="28"
+                                                        Background="Transparent"
+                                                        Style="{StaticResource ButtonRevealStyle}"                                                
+                                                        Margin="0,2"
+                                                        Content="{Binding Name, Mode=OneWay}"
+                                                        ToolTip="{Binding Description, Mode=OneWay}"
+                                                        Command="{Binding Command, Mode=OneWay}"/>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </Expander>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
+            </Expander>
+            <Grid Grid.Column="1">                
+                <TabControl  
+                    Visibility="{Binding NoPageVisibility, Converter={StaticResource VisibilityInverter}}"
+                    x:Name="TabHost"
+                    ItemsSource="{Binding Pages}"/>
+                <Grid Visibility="{Binding NoPageVisibility}">                    
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="50,0"
+                        Visibility="{Binding DashboardVisibility, Converter={StaticResource VisibilityInverter}}"
+                        Style="{StaticResource Title}">Abra una herramienta desde el menú a la izquierda para continuar...</TextBlock>
+                    <ContentControl
+                        Visibility="{Binding DashboardVisibility}"
+                        Content="{Binding ModuleDashboard}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        <DockPanel 
+            Margin="50"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Background="{fw:AcrylicBrush grid}"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <mcart:ProgressRing MaxWidth="150" Value="{Binding Progress}"/>
+            <ScrollViewer Margin="20,0,0,0" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
+                <TextBlock Style="{StaticResource Title}" Text="{Binding Status}"/>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</base:ProteusPage>

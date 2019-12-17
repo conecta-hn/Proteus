@@ -1,0 +1,445 @@
+﻿<base:ProteusPage
+    x:Class="TheXDS.Proteus.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:proteus="clr-namespace:TheXDS.Proteus;assembly=Proteus"
+    xmlns:base="clr-namespace:TheXDS.Proteus.Pages.Base"
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:plugins="clr-namespace:TheXDS.Proteus.Plugins"
+    xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels"
+    xmlns:models="clr-namespace:TheXDS.Proteus.Models;assembly=Proteus"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Grid x:Name="GrdRoth" fw:PointerTracker.Enabled="True" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="70"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Panel de Dashboard -->
+        <DockPanel>
+            <TextBlock Text="{Binding UserGreeting}" Style="{StaticResource Title}" DockPanel.Dock="Top"/>
+            <Separator DockPanel.Dock="Top"/>
+
+            <!-- Botonera de abajo -->
+            <StackPanel
+                Margin="10"
+                DockPanel.Dock="Bottom"
+                Style="{StaticResource Botonera}"
+                Background="{DynamicResource SystemAltMediumLowColorBrush}">
+                <StackPanel.Resources>
+                    <Style 
+                        TargetType="mcart:StretchyWrapPanel"
+                        BasedOn="{StaticResource {x:Type mcart:StretchyWrapPanel}}">
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="ListView">
+                        <Setter Property="ItemContainerStyle">
+                            <Setter.Value>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+                <Expander ExpandDirection="Up" IsEnabled="{Binding AnyTools}">
+                    <Expander.Header>
+                        <TextBlock>Más herramientas</TextBlock>
+                    </Expander.Header>
+                    <ListView
+                        HorizontalAlignment="Center"
+                        ItemsSource="{Binding ToolLaunchers}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        Background="{x:Null}"
+                        BorderThickness="0"
+                        BorderBrush="{x:Null}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="widgets:Launcher">
+                                <Button
+                                    Margin="5"                                    
+                                    MinWidth="28"
+                                    MinHeight="28"
+                                    Background="Transparent"
+                                    Style="{StaticResource ButtonRevealStyle}"                                    
+                                    Content="{Binding Name, Mode=OneWay}"
+                                    ToolTip="{Binding Description, Mode=OneWay}"
+                                    Command="{Binding Command, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Expander>
+                <Separator Margin="15,10,15,5"/>
+                <mcart:StretchyWrapPanel>
+                    <Button 
+                        MinWidth="28"
+                        MinHeight="28"
+                        Background="Transparent"
+                        Visibility="{Binding Interactive, Mode=OneWay}"
+                        Style="{StaticResource ButtonRevealStyle}"
+                        Content="📅"
+                        Click="BtnCalendar_OnClick"
+                        ToolTip="Calendario" />
+                    <Button
+                        MinWidth="28"
+                        MinHeight="28"
+                        Background="Transparent"
+                        Style="{StaticResource ButtonRevealStyle}"
+                        Content="⚙"
+                        Click="BtnConfig_OnClick"
+                        ToolTip="Configuración"/>
+                    <Button
+                        MinWidth="28"
+                        MinHeight="28"
+                        Background="Transparent"
+                        Style="{StaticResource ButtonRevealStyle}"
+                        Visibility="{Binding Interactive, Mode=OneWay}"
+                        Content="🚪"
+                        Command="{Binding LogoutCommand}"
+                        ToolTip="Cerrar sesión"/>
+                </mcart:StretchyWrapPanel>
+            </StackPanel>
+
+            <!-- Paneles -->
+            <ScrollViewer>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Expander}">
+                            <Setter Property="Margin" Value="10,10,10,0" />
+                            <Setter Property="Background" Value="{DynamicResource SystemAltMediumLowColorBrush}"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <!-- Avisos -->
+                    <Expander>
+                        <Expander.Header>
+                            <WrapPanel>
+                                <TextBlock Text="Avisos" FontSize="16" />
+                                <TextBlock
+                                    Text="{Binding Items.Count, ElementName=LstAvisos}" 
+                                    Foreground="Gray"
+                                    Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, ElementName=LstAvisos, Mode=OneWay}"/>
+                            </WrapPanel>
+                        </Expander.Header>
+                        <Grid>
+                            <ListView
+                                x:Name="LstAvisos"
+                                Margin="0,5"
+                                ItemsSource="{Binding Avisos}"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                                <ListView.Resources>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="ToolTip" Value="{Binding Body}"/>
+                                        <EventSetter Event="MouseDoubleClick" Handler="OpenListItemInSplash"/>
+                                    </Style>
+                                    <DataTemplate DataType="{x:Type models:Aviso}">
+                                        <TextBlock Text="{Binding Header}" IsHitTestVisible="True"/>
+                                    </DataTemplate>
+                                </ListView.Resources>
+                            </ListView>
+                            <TextBlock
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Text="No hay avisos."
+                                Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LstAvisos, Mode=OneWay}" />
+                        </Grid>
+                    </Expander>
+
+                    <!-- Alertas -->
+                    <Expander>
+                        <Expander.Header>
+                            <WrapPanel>
+                                <TextBlock Text="Alertas" FontSize="16" />
+                                <TextBlock
+                                    Text="{Binding Items.Count, ElementName=LstAlertas}" 
+                                    Foreground="Gray"
+                                    Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, ElementName=LstAlertas, Mode=OneWay}"/>
+                            </WrapPanel>
+                        </Expander.Header>
+                        <Grid>
+                            <ListView
+                                ItemsSource="{Binding Alertas}"
+                                x:Name="LstAlertas"
+                                Margin="0,5"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                                <ListView.Resources>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="ToolTip" Value="{Binding Body}"/>
+                                        <EventSetter Event="MouseDoubleClick" Handler="OpenListItemInSplash"/>
+                                    </Style>
+                                    <DataTemplate DataType="{x:Type models:Alerta}">
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Header}" IsHitTestVisible="False"/>
+                                            <Button
+                                                Tag="{Binding}"
+                                                Content="👆"
+                                                Visibility="{Binding HasInteraction, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+                                                Margin="5,0,0,0"
+                                                ToolTip="Ejecutar acción"
+                                                Click="Alerta_OnAction"
+                                                Style="{StaticResource EmbossBtn}"/>
+                                            <Button
+                                                Tag="{Binding}"
+                                                Content="x"
+                                                Margin="5,0,0,0"
+                                                ToolTip="Descartar"
+                                                Click="Alerta_OnDismiss"
+                                                Style="{StaticResource EmbossBtn}"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ListView.Resources>
+                            </ListView>
+                            <TextBlock
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Text="No hay alertas."
+                                Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LstAlertas, Mode=OneWay}" />
+                        </Grid>
+                    </Expander>
+
+                    <!-- Pendientes -->
+                    <Expander Visibility="{Binding Interactive, Mode=OneWay}">
+                        <Expander.Header>
+                            <WrapPanel>
+                                <TextBlock Text="Pendientes" FontSize="16" />
+                                <TextBlock
+                                        Text="{Binding Items.Count, ElementName=LstPendientes}" 
+                                        Foreground="Gray"
+                                        Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, ElementName=LstPendientes, Mode=OneWay}"/>
+                            </WrapPanel>
+                        </Expander.Header>
+                        <Grid>
+                            <ListView
+                                    Margin="0,5"
+                                    x:Name="LstPendientes"
+                                    Background="{x:Null}"
+                                    BorderBrush="{x:Null}"
+                                    Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                                <ListView.Resources>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="ToolTip" Value="{Binding Body}"/>
+                                        <EventSetter Event="MouseDoubleClick" Handler="OpenListItemInSplash"/>
+                                    </Style>
+                                    <!--<DataTemplate DataType="{x:Type models:CalendarEntry}">
+                                        <CheckBox 
+                                                Click="ChkRecordatorio_Click"
+                                                ToolTip="Marcar como finalizada"
+                                                IsChecked="{Binding IsDone, Mode=TwoWay}">
+                                            <StackPanel Margin="3,0,0,0">
+                                                <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        Text="{Binding Timestamp, StringFormat=\{0:M\}}"
+                                                        Foreground="Gray"
+                                                        FontStyle="Italic"
+                                                        IsHitTestVisible="False"/>
+                                                <TextBlock Text="{Binding Header}" IsHitTestVisible="False"/>
+                                            </StackPanel>
+                                        </CheckBox>
+                                    </DataTemplate>-->
+                                </ListView.Resources>
+                            </ListView>
+                            <TextBlock
+                                    Margin="0,5"
+                                    HorizontalAlignment="Center"
+                                    Text="No hay pendientes."
+                                    Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LstPendientes, Mode=OneWay}" />
+                        </Grid>
+                    </Expander>
+
+                    <!-- Recordatorios -->
+                    <Expander Visibility="{Binding Interactive, Mode=OneWay}">
+                        <Expander.Header>
+                            <WrapPanel>
+                                <TextBlock Text="Recordatorios " FontSize="16" />
+                                <TextBlock
+                                        Text="{Binding Items.Count, ElementName=LstRecordatorios}" 
+                                        Foreground="Gray"
+                                        Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, ElementName=LstRecordatorios, Mode=OneWay}"/>
+                            </WrapPanel>
+                        </Expander.Header>
+                        <StackPanel>
+                            <xctk:DateTimeUpDown
+                                x:Name="DudDia"
+                                BorderBrush="{x:Null}"
+                                Background="{x:Null}"
+                                Value="{Binding DayOfCalendar}"
+                                Format="MonthDay"/>
+                            <ListView
+                                    x:Name="LstRecordatorios"
+                                    Margin="0,5"
+                                    Background="{x:Null}"
+                                    BorderBrush="{x:Null}"
+                                    Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToInvVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                                <ListView.Resources>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="ToolTip" Value="{Binding Body}"/>
+                                        <EventSetter Event="MouseDoubleClick" Handler="OpenListItemInSplash"/>
+                                    </Style>
+                                    <!--<DataTemplate DataType="{x:Type models:CalendarEntry}">
+                                        <CheckBox 
+                                                Click="ChkRecordatorio_Click"
+                                                ToolTip="Marcar como finalizada"
+                                                IsChecked="{Binding IsDone, Mode=TwoWay}">
+                                            <TextBlock Margin="3,0,0,0" Text="{Binding Header}" IsHitTestVisible="False"/>
+                                        </CheckBox>
+                                    </DataTemplate>-->
+                                </ListView.Resources>
+                            </ListView>
+                            <TextBlock
+                                    Margin="0,5"
+                                    HorizontalAlignment="Center"
+                                    Text="No hay recordatorios."
+                                    Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LstRecordatorios, Mode=OneWay}" />
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <GridSplitter />
+
+        <!-- Lista de módulos -->
+        <DockPanel Grid.Column="2">
+            <DockPanel.Resources>
+                <Style TargetType="ListView">
+                    <Setter Property="ItemContainerStyle">
+                        <Setter.Value>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DockPanel.Resources>
+            <TextBlock Text="Módulos" Style="{StaticResource Title}" DockPanel.Dock="Top" />
+            <Separator DockPanel.Dock="Top" />
+            <Expander DockPanel.Dock="Right" ExpandDirection="Right">
+                <Expander.Header>
+                    <TextBlock>
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90"/>
+                        </TextBlock.LayoutTransform>
+                            Todos los módulos
+                    </TextBlock>
+                </Expander.Header>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ListView
+                        fw:PointerTracker.Enabled="True"
+                        ItemsSource="{Binding ModuleLaunchers}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        Background="{x:Null}"
+                        BorderThickness="0"
+                        BorderBrush="{x:Null}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="widgets:Launcher">
+                                <Button
+                                    Margin="0,2"
+                                    
+                                    MinWidth="28"
+                                    MinHeight="28"
+                                    Background="Transparent"
+                                    Style="{StaticResource ButtonRevealStyle}"
+
+                                    Content="{Binding Name, Mode=OneWay}"
+                                    ToolTip="{Binding Description, Mode=OneWay}"
+                                    Command="{Binding Command, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
+            </Expander>
+            <TextBlock DockPanel.Dock="Top" Style="{StaticResource SmallTitle}">Acceso rápido</TextBlock>
+            <ListView 
+                x:Name="LstRoth"
+                ItemsSource="{Binding ModuleMenus, Mode=OneWay}"
+                Style="{StaticResource MenuListView}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="vm:ModulePageViewModel">
+                        <Border
+                            Width="{Binding DataContext.UiModulesWidth, Mode=OneWay,ElementName=LstRoth}" 
+                            Margin="5"
+                            Background="{DynamicResource SystemAltMediumLowColorBrush}">
+                            <StackPanel Margin="5">
+                                <Button 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0,0,0,5"
+                                    Command="{Binding OpenModulePage}"
+                                    Style="{StaticResource EmbossBtn}">
+                                    <TextBlock Text="{Binding Title, Mode=OneWay}"/>
+                                </Button>
+                                <ListView
+                                    MaxHeight="{Binding DataContext.UiModulesHeight, Mode=OneWay, ElementName=LstRoth}" 
+                                    Visibility="{Binding IsBusy, Converter={StaticResource BooleanToInvVisibilityConverter}}"
+                                    ItemsSource="{Binding Essentials, Mode=OneWay}"
+                                    Style="{StaticResource MenuListView}">
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate DataType="widgets:Launcher">
+                                            <Button                                                                                
+                                                MinWidth="28"
+                                                MinHeight="28"
+                                                Background="Transparent"
+                                                Style="{StaticResource ButtonRevealStyle}"                                                
+                                                Margin="0,2"
+                                                Content="{Binding Name, Mode=OneWay}"
+                                                ToolTip="{Binding Description, Mode=OneWay}"
+                                                Command="{Binding Command, Mode=OneWay}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <StackPanel Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <ProgressBar 
+                                    BorderThickness="0"                                    
+                                    Background="{DynamicResource SystemAltMediumLowColorBrush}"
+                                    IsIndeterminate="{Binding IndeterminateProgress}" Value="{Binding Progress, Mode=OneWay}" Height="8"/>
+                                    <TextBlock Text="{Binding Status, Mode=OneWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+    </Grid>
+</base:ProteusPage>

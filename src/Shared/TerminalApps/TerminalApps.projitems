@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>23237288-77a7-45c0-b479-720769cc2dbd</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>TerminalApps</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Component\ConsoleMessageTarget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component\DumpCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component\DumpResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component\IDumpInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component\KickStart.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component\RemoteTerminalClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component\RootElevator.cs" />
+  </ItemGroup>
+</Project>

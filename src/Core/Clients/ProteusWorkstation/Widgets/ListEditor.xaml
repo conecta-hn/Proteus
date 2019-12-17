@@ -1,0 +1,92 @@
+﻿<UserControl
+    x:Class="TheXDS.Proteus.Widgets.ListEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:vm="clr-namespace:TheXDS.Proteus.ViewModels"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d" 
+    d:DataContext="{d:DesignInstance vm:ListEditorViewModel}"
+    d:DesignWidth="350">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="2">
+            <Run Text="{Binding FieldIcon, Mode=OneWay}" Foreground="{DynamicResource CorpColor}"/>
+            <Run Text="{Binding FieldName, Mode=OneWay}"/>
+        </TextBlock>
+        <ContentControl Content="{Binding Selector, Mode=OneWay}" Grid.Row="1"/>
+        <StackPanel Grid.Column="1" IsEnabled="{Binding NotBusy, Mode=OneWay}" Grid.Row="1">
+            <StackPanel Visibility="{Binding CanSelect, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button ToolTip="Agregar..." Command="{Binding AddCommand, Mode=OneWay}">+</Button>
+                <Button ToolTip="Quitar" Command="{Binding RemoveCommand, Mode=OneWay}">-</Button>
+            </StackPanel>
+            <Separator Visibility="{Binding CanAddAndSelect, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <StackPanel Visibility="{Binding CanAdd, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button ToolTip="Nuevo..." Visibility="{Binding UniModel}" Command="{Binding CreateNew, Mode=OneWay}">+✎</Button>
+                <xctk:DropDownButton Visibility="{Binding MultiModel}">
+                    <xctk:DropDownButton.DropDownContent>
+                        <ListView 
+                            ItemsSource="{Binding CreateCommands, Mode=OneWay}"
+                            Style="{StaticResource LauncherList}"/>
+                    </xctk:DropDownButton.DropDownContent>
+                    +✎
+                </xctk:DropDownButton>
+                <Button ToolTip="Editar..."  Command="{Binding EditCurrent, Mode=OneWay}">✎</Button>
+                <Button ToolTip="Eliminar"  Command="{Binding DeleteCurrent, Mode=OneWay}">🗑</Button>
+            </StackPanel>
+        </StackPanel>
+        <fw:AcrylicPopup
+            AllowsTransparency="True"
+            IsOpen="{Binding AddMode, Mode=OneWay}"
+            Placement="Relative">
+            <Grid Background="{DynamicResource SystemBaseLowColorBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ListView
+                    x:Name="LstSelection"
+                    ItemsSource="{Binding SelectionSource, Mode=OneWay}"
+                    View="{Binding ColumnsView, Mode=OneWay}"
+                    SelectionChanged="ListView_SelectionChanged"
+                    MinHeight="100"
+                    MaxWidth="400"
+                    MaxHeight="300">
+                </ListView>
+                <mcart:StretchyWrapPanel Grid.Row="1" fw:PointerTracker.Enabled="True">
+                    <Button Command="{Binding OkAddCommand, Mode=OneWay}" Background="Transparent">Seleccionar</Button>
+                    <Button Command="{Binding CancelAddCommand, Mode=OneWay}" Background="Transparent">Cancelar</Button>
+                </mcart:StretchyWrapPanel>
+            </Grid>
+        </fw:AcrylicPopup>
+        <fw:AcrylicPopup
+            AllowsTransparency="True"
+            IsOpen="{Binding EditMode, Mode=OneWay}"
+            Placement="Relative">
+            <Grid Background="{DynamicResource SystemBaseLowColorBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ContentControl Content="{Binding SelectedEditor, Mode=OneWay}" Margin="10"/>
+                </ScrollViewer>
+                <mcart:StretchyWrapPanel Grid.Row="1">
+                    <Button Command="{Binding SaveCommand, Mode=OneWay}">Aceptar</Button>
+                    <Button Command="{Binding CancelCommand, Mode=OneWay}">Cancelar</Button>
+                </mcart:StretchyWrapPanel>
+            </Grid>
+        </fw:AcrylicPopup>
+    </Grid>
+</UserControl>

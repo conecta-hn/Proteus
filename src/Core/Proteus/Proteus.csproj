@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Proteus Core Data Layer Library</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Resources\Art\FullLogo.png.base64.deflate" />
+    <EmbeddedResource Include="Resources\Art\FullLogo.png.base64.deflate" />
+  </ItemGroup>  
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <PackageReference Include="PDFsharp-MigraDoc-gdi" Version="1.51.5186-beta" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+</Project>

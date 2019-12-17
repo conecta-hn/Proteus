@@ -1,0 +1,229 @@
+﻿<page:ProteusPage
+    xmlns:page="http://schemas.thexds.com/2019/Proteus/page"
+    xmlns:Proteus="http://schemas.thexds.com/2019/Proteus/widgets"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    x:Class="TheXDS.Proteus.Pages.UITestPlayground"
+    mc:Ignorable="d" 
+    d:DesignWidth="400">
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="Ejemplos de controles" Style="{DynamicResource Title}" />
+            <Separator />
+            <TextBlock Text="Este es un texto de ejemplo." />
+            <Expander Header="Controles de formulario">
+                <TabControl Margin="10" Height="200">
+                    <TabItem Header="Cuadros de texto">
+                        <UniformGrid>
+                            <TextBox Proteus:ProteusProp.Watermark="Texto" Proteus:ProteusProp.WatermarkAlwaysVisible="true" Margin="10" Text="test"/>
+                            <TextBox IsEnabled="False" Proteus:ProteusProp.Watermark="Texto desactivado" Margin="10" />
+                            <TextBox Proteus:ProteusProp.Warned="True" Proteus:ProteusProp.Watermark="Texto Error" Margin="10" />
+                            <PasswordBox Proteus:ProteusProp.Watermark="Contraseña" Margin="10" />
+                            <TextBox Proteus:ProteusProp.Watermark="Texto con ícono" Proteus:ProteusProp.Icon="@" Margin="10" />
+                            <TextBox Text="Texto con ícono" Proteus:ProteusProp.Icon="Test" Margin="10" />
+                        </UniformGrid>
+                    </TabItem>
+                    <TabItem Header="Controles especiales">
+                        <StackPanel Margin="10">
+                            <DatePicker Proteus:ProteusProp.Watermark="Test" />
+                            <ToggleButton Proteus:ProteusProp.Watermark="Test" />
+                            <xctk:DecimalUpDown Proteus:ProteusProp.Watermark="Test" />
+                            <xctk:DecimalUpDown Proteus:ProteusProp.Watermark="Test" Proteus:ProteusProp.WatermarkAlwaysVisible="True" Value="10"/>
+                            <xctk:TimePicker
+                                Value="10:15 pm"
+                                Proteus:ProteusProp.Watermark="Test"
+                                Proteus:ProteusProp.WatermarkAlwaysVisible="True"
+                                TimeInterval="0:15:0" Format="Custom" FormatString="hh:mm tt"
+                                CurrentDateTimePart="Hour24" />
+                            <xctk:DateTimePicker
+                                Proteus:ProteusProp.Watermark="Test"
+                                Proteus:ProteusProp.WatermarkAlwaysVisible="True"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Toggles">
+                        <StackPanel>
+                            <CheckBox Content="Un CheckBox" Margin="10" />
+                            <RadioButton Content="RadioButton" Margin="10,0" />
+                            <RadioButton Content="Otro RadioButton" Margin="10,0" />
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Listas">
+                        <StackPanel>
+                            <ComboBox 
+                                Proteus:ProteusProp.Icon="@"
+                                Proteus:ProteusProp.Watermark="Test"
+                                Proteus:ProteusProp.WatermarkAlwaysVisible="True"
+                                SelectedIndex="0"
+                                Margin="10">
+                                <system:String>Elemento 1</system:String>
+                                <system:String>Elemento 2</system:String>
+                                <system:String>Elemento 3</system:String>
+                                <system:String>Elemento 4</system:String>
+                            </ComboBox>
+                            <ListBox Margin="10">
+                                <system:String>Elemento 1</system:String>
+                                <system:String>Elemento 2</system:String>
+                                <system:String>Elemento 3</system:String>
+                                <system:String>Elemento 4</system:String>
+                            </ListBox>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Un Tab desactivado" IsEnabled="False" />
+                </TabControl>
+            </Expander>
+            <Expander Header="Botones">
+                <mcart:StretchyWrapPanel Style="{DynamicResource BotoneraBase}">
+                    <Button Content="Botón" Margin="10" />
+                    <Button Content="Botón, color"
+                        Background="DeepPink"
+                        Foreground="White"/>
+                    <Button Content="Botón, color de acento"
+                        Proteus:ProteusProp.Accent="DeepPink"
+                        Proteus:ProteusProp.TextAccent="White"/>
+                    <Button Content="Ocupado"
+                        Proteus:ProteusProp.Busy="True"/>
+                    <Button Content="Ocupado, color"
+                        Proteus:ProteusProp.Busy="True"
+                        Background="DeepPink"
+                        Foreground="White"/>
+                    <Button Content="Ocupado, color de acento"
+                        Proteus:ProteusProp.Busy="True"
+                        Proteus:ProteusProp.Accent="DeepPink"/>
+                    <xctk:DropDownButton
+                        Proteus:ProteusProp.Watermark="Marca"
+                        Proteus:ProteusProp.WatermarkAlwaysVisible="True"
+                        Content="Test">
+                        <xctk:DropDownButton.DropDownContent>
+                            <StackPanel>
+                                <Button Content="Botón deshabilitado" IsEnabled="False" />
+                            </StackPanel>
+                        </xctk:DropDownButton.DropDownContent>
+                    </xctk:DropDownButton>
+                    <xctk:SplitButton
+                        Content="Botón Split" 
+                        Proteus:ProteusProp.Watermark="test">
+                        <xctk:SplitButton.DropDownContent>
+                            <mcart:BusyIndicator/>
+                        </xctk:SplitButton.DropDownContent>
+                    </xctk:SplitButton>
+                    <Button Style="{DynamicResource SmallBtn}" VerticalAlignment="Center" Content="botón pequeño"/>
+                    <Button Style="{DynamicResource EmbossBtn}" VerticalAlignment="Center" Content="botón emboss"/>
+                    <Button Style="{DynamicResource EmbossBtnShadow}" VerticalAlignment="Center" Content="botón emboss 2"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Content="1"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Proteus:ProteusProp.Busy="True" Content="2"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Proteus:ProteusProp.Accent="DeepPink" Content="3"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Proteus:ProteusProp.Accent="DeepPink" Proteus:ProteusProp.Busy="True" Content="4"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Background="DeepPink" Content="5"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Background="DeepPink" Proteus:ProteusProp.Busy="True" Content="6"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Proteus:ProteusProp.Accent="DeepPink" Background="MediumSpringGreen" Content="7"/>
+                    <Button Style="{DynamicResource BigRoundBtn}" Proteus:ProteusProp.Accent="DeepPink" Background="MediumSpringGreen" Proteus:ProteusProp.Busy="True" Content="8"/>
+                </mcart:StretchyWrapPanel>
+            </Expander>
+            <Expander Header="Indicadores de estado">
+                <UniformGrid>
+                    <mcart:BusyIndicator Margin="10" />
+                    <mcart:BusyIndicator Margin="10" Starting="true" />
+                    <mcart:BusyIndicator Margin="10" Stroke="DeepPink" />
+                    <mcart:BusyIndicator Margin="10" Starting="True" Stroke2="DeepPink" />
+                    <ProgressBar Height="16" Value="50" Margin="10" />
+                    <ProgressBar Height="16" IsIndeterminate="true" Margin="10" />
+                    <mcart:ProgressRing Value="33" Width="100" Margin="10" />
+                    <mcart:ProgressRing IsIndeterminate="true" Width="100" Margin="10" />
+                    <mcart:ProgressRing Value="33" TextFormat="{}{0} Missisipi" Width="100" Margin="10" />
+                </UniformGrid>
+            </Expander>
+            <Expander Header="Tablas de datos">
+                <UniformGrid>
+                    <ListView Margin="10" MaxHeight="90" Style="{x:Null}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="100" Header="Texto"/>
+                                <GridViewColumn Width="100" Header="Longitud" DisplayMemberBinding="{Binding Length, Mode=OneWay}"/>
+                            </GridView>
+                        </ListView.View>
+                        <system:String>Item 1</system:String>
+                        <system:String>List item 2</system:String>
+                        <system:String>Elemento de lista número 3</system:String>
+                    </ListView>
+                    <DataGrid
+                    DataContext=""
+                    Margin="10" Height="100" />
+                    <TreeView Margin="10" Height="100">
+                        <TreeViewItem Header="Item">
+                            <TreeViewItem Header="SubItem" />
+                            <TreeViewItem Header="SubItem" />
+                            <TreeViewItem Header="SubItem" />
+                        </TreeViewItem>
+                        <TreeViewItem Header="Item">
+                            <TreeViewItem Header="SubItem" />
+                            <TreeViewItem Header="SubItem" />
+                            <TreeViewItem Header="SubItem" />
+                        </TreeViewItem>
+                    </TreeView>
+                </UniformGrid>
+            </Expander>
+            <Expander Header="Gráficos">
+                <UniformGrid>
+                    <mcart:LightGraph Height="200" GraphTitle="Graph1" XLabel="Tiempo" YLabel="Azul" Y2Label="Verde">
+                        <mcart:LightGraph.Graph>
+                            <system:Double>1</system:Double>
+                            <system:Double>2</system:Double>
+                            <system:Double>4</system:Double>
+                            <system:Double>0</system:Double>
+                            <system:Double>1</system:Double>
+                        </mcart:LightGraph.Graph>
+                        <mcart:LightGraph.Graph2>
+                            <system:Double>3</system:Double>
+                            <system:Double>1</system:Double>
+                            <system:Double>0</system:Double>
+                            <system:Double>2</system:Double>
+                            <system:Double>4</system:Double>
+                        </mcart:LightGraph.Graph2>
+                    </mcart:LightGraph>
+                    <mcart:LightGraph Height="200" GraphDrawMode="Filled" GraphTitle="Graph2" XLabel="Niveles"
+                                  Y2Label="Menta" YLabel="Aqua">
+                        <mcart:LightGraph.Graph>
+                            <system:Double>1</system:Double>
+                            <system:Double>2</system:Double>
+                            <system:Double>4</system:Double>
+                            <system:Double>0</system:Double>
+                            <system:Double>1</system:Double>
+                        </mcart:LightGraph.Graph>
+                        <mcart:LightGraph.Graph2>
+                            <system:Double>3</system:Double>
+                            <system:Double>1</system:Double>
+                            <system:Double>0</system:Double>
+                            <system:Double>2</system:Double>
+                            <system:Double>4</system:Double>
+                        </mcart:LightGraph.Graph2>
+                    </mcart:LightGraph>
+                    <mcart:LightGraph Height="200" GraphDrawMode="Bars" GraphTitle="Graph3">
+                        <mcart:LightGraph.Graph>
+                            <system:Double>1</system:Double>
+                            <system:Double>2</system:Double>
+                            <system:Double>4</system:Double>
+                            <system:Double>0</system:Double>
+                            <system:Double>1</system:Double>
+                        </mcart:LightGraph.Graph>
+                        <mcart:LightGraph.Graph2>
+                            <system:Double>3</system:Double>
+                            <system:Double>1</system:Double>
+                            <system:Double>0</system:Double>
+                            <system:Double>2</system:Double>
+                            <system:Double>4</system:Double>
+                        </mcart:LightGraph.Graph2>
+                    </mcart:LightGraph>
+                </UniformGrid>
+            </Expander>
+            <Expander Header="Otros">
+                <!--<widgets:CalendarView />-->
+            </Expander>
+            <Expander Header="Reportes"/>
+        </StackPanel>
+    </ScrollViewer>
+</page:ProteusPage>

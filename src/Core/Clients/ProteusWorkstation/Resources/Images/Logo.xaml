@@ -1,0 +1,48 @@
+﻿<Viewbox 
+    Width="256" Height="256"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Stretch="Uniform">
+    <Canvas Width="67.7" Height="67.7">
+        <Canvas.Resources>
+            <LinearGradientBrush
+                x:Key="linearGradient39"
+                MappingMode="ABsolute"
+                StartPoint="34,35.7"
+                EndPoint="49,3.7">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStopCollection>
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </GradientStopCollection>
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>            
+                <LinearGradientBrush
+                    x:Key="linearGradient85"
+                    EndPoint="4.141,8.268"
+                    MappingMode="Absolute"
+                    StartPoint="10.125,3.2">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+        </Canvas.Resources>
+        <Ellipse
+            Width="67.7"
+            Height="67.7"
+            Fill="{StaticResource linearGradient39}">
+        </Ellipse>
+        <Ellipse
+            Canvas.Left="45.9"
+            Width="8.2"
+            Canvas.Top="13.6"
+            Fill="{StaticResource linearGradient85}"
+            Height="8.1">
+        </Ellipse>
+        <Ellipse 
+            Canvas.Left="39.5"
+            Width="4.7"
+            Canvas.Top="6.5"
+            Height="4.6"
+            Fill="{StaticResource linearGradient85}"/>
+    </Canvas>
+</Viewbox>

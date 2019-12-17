@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "Standalone": {
+      "commandName": "Project",
+      "commandLineArgs": "--LocalDb --Init=LoadOnly"
+    },
+    "StandaloneFull": {
+      "commandName": "Project",
+      "commandLineArgs": "--LocalDb --FullCheck"
+    },
+    "WithServer": {
+      "commandName": "Project",
+      "commandLineArgs": "--LaunchServer"
+    },
+    "Fresh": {
+      "commandName": "Project",
+      "commandLineArgs": "--Configure --NoRestart"
+    },
+    "Help": {
+      "commandName": "Project",
+      "commandLineArgs": "--Help"
+    },
+    "Version": {
+      "commandName": "Project",
+      "commandLineArgs": "--Version"
+    }
+  }
+}

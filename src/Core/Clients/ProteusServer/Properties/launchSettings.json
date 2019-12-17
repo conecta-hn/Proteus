@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ProteusServer": {
+      "commandName": "Project"
+    },
+    "Configure": {
+      "commandName": "Project",
+      "commandLineArgs": "configure"
+    }
+  }
+}

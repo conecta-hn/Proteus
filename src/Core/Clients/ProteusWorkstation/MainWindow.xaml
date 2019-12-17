@@ -1,0 +1,50 @@
+﻿<fw:AcrylicWindow
+    x:Class="TheXDS.Proteus.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:resources="clr-namespace:TheXDS.Proteus.Resources"
+    TintOpacity="{Binding Opacity, Mode=OneWay}"
+    Title="{Binding Title, Mode=OneWay}"
+    NoiseOpacity="{Binding NoiseUI, Mode=OneWay}"
+    mc:Ignorable="d" Background="{x:Null}"
+    d:DesignHeight="450" d:DesignWidth="600">
+    <Grid>
+        <Viewbox
+            Opacity="{Binding LogoOpacity}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom">
+            <Viewbox 
+                Opacity="0.4"
+                Height="1"
+                RenderTransformOrigin="0.5,0.5"
+                Child="{x:Static resources:Images.Logo}">
+                <Viewbox.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="0.6" ScaleY="0.6" />
+                        <TranslateTransform X="0.25" Y="0.25" />
+                    </TransformGroup>
+                </Viewbox.RenderTransform>
+            </Viewbox>
+        </Viewbox>
+        <DockPanel 
+            Margin="50"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <mcart:ProgressRing MaxWidth="150" Value="{Binding Progress}"/>
+            <ScrollViewer Margin="20,0,0,0" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
+                <TextBlock Style="{StaticResource Title}" Text="{Binding Status}"/>
+            </ScrollViewer>
+        </DockPanel>
+        <TabControl            
+            x:Name="TabHost"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToInvVisibilityConverter}}"
+            Margin="10"
+            ItemsSource="{Binding Pages}">
+        </TabControl>
+    </Grid>
+</fw:AcrylicWindow>

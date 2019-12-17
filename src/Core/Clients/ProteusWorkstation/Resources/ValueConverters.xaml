@@ -1,0 +1,22 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:System.Windows.Converters;assembly=MCART.WPF"
+    xmlns:valueConverters="clr-namespace:TheXDS.Proteus.ValueConverters">
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converters:BooleanInverter x:Key="BooleanInverter"/>
+    <converters:VisibilityInverter x:Key="VisibilityInverter"/>
+    <converters:NotNullToBooleanConverter x:Key="NotNullToBooleanConverter"/>
+    <converters:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+    <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    <converters:NumberToBooleanConverter x:Key="NumberToBooleanConverter"/>
+    <converters:BrushOpacityAdjust x:Key="OpacityAdjust"/>
+    <converters:BooleanToInvVisibilityConverter x:Key="BooleanToInvVisibilityConverter"/>
+    <valueConverters:BooleanToBlurEffectConverter x:Key="BooleanToBlurEffectConverter"/>
+    <valueConverters:TypeVisibilityConverter x:Key="TypeVisibilityConverter"/>
+    <valueConverters:TypeBooleanConverter x:Key="TypeBooleanConverter"/>
+    <valueConverters:AnyContentVisibilityConverter x:Key="AnyContentVisibilityConverter"/>
+    <valueConverters:EmptyVisiblilityConverter x:Key="EmptyVisiblilityConverter"/>
+    <valueConverters:NotEmptyVisiblilityConverter x:Key="NotEmptyVisiblilityConverter"/>    
+</ResourceDictionary>

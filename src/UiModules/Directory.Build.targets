@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Directory.Build.targets"/>
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>TheXDS.Proteus.$(AssemblyName.Replace("-client", ""))</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)Proteus\Proteus.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="$(McartVersion)" />
+    <ProjectReference Include="$(SolutionDir)Clients\ProteusWorkstation\ProteusWorkstation.csproj" />
+  </ItemGroup>
+</Project>

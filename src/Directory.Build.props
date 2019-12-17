@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Root)'==''">
+    <Root>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</Root>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SrcDir)'==''">
+    <SrcDir>$(Root)src\</SrcDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetsDir)'==''">
+    <TargetsDir>$(Root)targets\</TargetsDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SolutionDir)'==''">
+    <SolutionDir>$(SrcDir)Core\</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SharedDir)'==''">
+    <SharedDir>$(SrcDir)Shared\</SharedDir>
+  </PropertyGroup>
+  <Import Project="$(TargetsDir)Frameworks.props"/>
+  <Import Project="$(TargetsDir)PackageVersion.props"/>
+  <Import Project="$(TargetsDir)PackageInfo.props"/>
+  <Import Project="$(TargetsDir)BuildPaths.props"/>
+</Project>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)'=='.csproj'">
+    <Configurations>Debug;Release</Configurations>
+    <RootNamespace>TheXDS.Proteus</RootNamespace>
+    <Deterministic>true</Deterministic>
+    <DocumentationFile>$(OutDir)$(AssemblyName).xml</DocumentationFile>
+    <PackageId>TheXDS.Proteus.$(AssemblyName)</PackageId>
+    <Title>$(AssemblyTitle)</Title>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugSymbols>false</DebugSymbols>    
+  </PropertyGroup>
+</Project>

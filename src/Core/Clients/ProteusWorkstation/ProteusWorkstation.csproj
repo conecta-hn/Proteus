@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <UseWPF>true</UseWPF>
+    <StartupObject>TheXDS.Proteus.App</StartupObject>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>    
+    <AssemblyName>ProteusWorkstation</AssemblyName>    
+    <Description>Proteus Workstation Client</Description>    
+  </PropertyGroup>
+  <ItemGroup>
+    <Page Remove="Resources\Images\Logo.xaml" />
+    <Page Remove="Resources\Images\Plugin.xaml" />
+    <Page Remove="Resources\Images\Proteus.xaml" />
+    <Page Remove="Resources\Images\Warning.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Images\Logo.xaml" />
+    <EmbeddedResource Include="Resources\Images\Plugin.xaml" />
+    <EmbeddedResource Include="Resources\Images\Proteus.xaml" />
+    <EmbeddedResource Include="Resources\Images\Warning.xaml" />
+  </ItemGroup>  
+  <ItemGroup>
+    <PackageReference Include="BarcodeLib" Version="2.2.3" />
+    <PackageReference Include="WpfScreenHelper" Version="0.4.0" />
+    <PackageReference Include="TheXDS.MCART.Cmd" Version="$(McartVersion)" />
+    <PackageReference Include="TheXDS.MCART.Ext.PrismLike" Version="$(McartVersion)" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+  </ItemGroup>  
+
+  <ItemGroup>
+    <Compile Update="Config\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <None Update="Config\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  
+    <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties properties_4launchsettings_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SharedDir)CmdLineArgs\CmdLineArgs.projitems" Label="Shared" />
+</Project>
