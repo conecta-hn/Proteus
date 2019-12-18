@@ -22,7 +22,6 @@ namespace TheXDS.Proteus.Crud.Mappers
         {
             if (!(p is IObjectPropertyDescription i)) return null;
             return i.Creatable ? (IPropertyMapping)new ObjectEditorMapping(i) : new SearchComboMapping(i);
-            //return i.Creatable ? null : new SimpleObjectMapping(p);
         }
     }
 }

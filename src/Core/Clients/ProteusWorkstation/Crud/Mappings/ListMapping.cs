@@ -54,41 +54,4 @@ namespace TheXDS.Proteus.Crud.Mappings
             if (!_vm.Source.IsReadOnly) _vm.Source.Clear();
         }
     }
-
-    public class ObjectEditorMapping : PropertyMapping
-    {
-        private readonly ObjectEditorViewModel _vm;
-
-        public ObjectEditorMapping(IPropertyDescription property) : base(property, new ObjectEditor())
-        {
-            if (property is IObjectPropertyDescription i)
-            {
-                var t = i.Property.PropertyType.ResolveToDefinedType()!;
-                _vm = new ObjectEditorViewModel(i, GetModels(t));
-                Control.DataContext = _vm;
-            }
-
-        }
-
-        public override object ControlValue
-        { 
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException(); 
-        }
-
-        public override void ClearControlValue()
-        {
-            throw new NotImplementedException();
-        }
-
-        private Type[] GetModels(Type baseModel)
-        {
-            return baseModel.Derivates()
-                .Select(p => p.ResolveToDefinedType()!)
-                .Where(p => p.IsInstantiable())
-                .Distinct()
-                .ToArray();
-        }
-
-    }
 }
