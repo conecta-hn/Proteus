@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="BundleServer" AfterTargets="PostBuildEvent" Condition="'$(UseWPF)'!='true'">
+    <Exec Command="pwsh -File $(TargetsDir)bundle.ps1 $(MSBuildProjectName) ProteusServer" />
+  </Target>
+  <Target Name="BundleWorkstation" AfterTargets="PostBuildEvent">
+    <Exec Command="pwsh -File $(TargetsDir)bundle.ps1 $(MSBuildProjectName)" />
+  </Target>
+</Project>

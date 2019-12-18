@@ -97,7 +97,7 @@ namespace TheXDS.Proteus.Crud
         ///     edición configurados para editar la propiedad en una página
         ///     auto-generada de CRUD.
         /// </returns>
-        public abstract IPropertyMapping? Map(IPropertyDescription p);
+        public abstract IPropertyMapping Map(IPropertyDescription p);
 
         /// <summary>
         ///     Obtiene un <see cref="PropertyMapping"/> que pueda utilizarse
@@ -111,13 +111,13 @@ namespace TheXDS.Proteus.Crud
         /// Un <see cref="PropertyMapping"/> que puede utilizarse para
         /// generar un control de edición para la propiedad especificada.
         /// </returns>
-        public static IPropertyMapping? GetMapping(IPropertyDescription property)
+        public static IPropertyMapping GetMapping(IPropertyDescription property)
         {
             if (property is null) throw new ArgumentNullException(nameof(property));
             if (property.Hidden) return null;
             if (property.ReadOnly) return new ReadOnlyMapping(property);
 
-            PropertyMapper? m = null;
+            PropertyMapper m = null;
             lock (_mappers)
                 m = _mappers.FirstOrDefault(p => p.Maps(property));
 
