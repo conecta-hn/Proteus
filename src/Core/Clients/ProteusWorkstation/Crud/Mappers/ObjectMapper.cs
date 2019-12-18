@@ -18,11 +18,11 @@ namespace TheXDS.Proteus.Crud.Mappers
                 && !(property is IListPropertyDescription);
         }
 
-        public override IPropertyMapping Map(IPropertyDescription p)
+        public override IPropertyMapping? Map(IPropertyDescription p)
         {
             if (!(p is IObjectPropertyDescription i)) return null;
 
-            return new SearchComboMapping(p);
+            return i.Creatable ? null : new SearchComboMapping(p);
 
             //return i.Creatable ? null : new SimpleObjectMapping(p);
         }

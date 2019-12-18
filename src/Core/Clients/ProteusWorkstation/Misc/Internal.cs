@@ -17,7 +17,7 @@ namespace TheXDS.Proteus.Misc
         public static System.Drawing.Image MakeBarcode(this ModelBase item)
         {
             using var barcode = new BarcodeLib.Barcode();
-            return barcode.Encode(BarcodeLib.TYPE.CODE128C, item.StringId.PadLeft(12, '0'));
+            return barcode.Encode(BarcodeLib.TYPE.CODE128B, item.StringId);
         }
 
         public static void ToScreen(this Window window, byte screen)
