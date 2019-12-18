@@ -138,12 +138,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         ///     Obtiene el editor a utlizar para editar a la entidad seleccionada.
         /// </summary>
-        public FrameworkElement SelectedEditor => SelectedElement?.Editor;
+        public FrameworkElement? SelectedEditor => SelectedElement?.Editor;
 
         /// <summary>
         ///     Obtiene la ventana de detalles de la entidad seleccionada.
         /// </summary>
-        public FrameworkElement SelectedDetails => SelectedElement?.Details;
+        public FrameworkElement? SelectedDetails => SelectedElement?.Details;
 
         /// <summary>
         ///     Obtiene un <see cref="CrudElement"/> con información sobre los
@@ -173,8 +173,21 @@ namespace TheXDS.Proteus.ViewModels.Base
             foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>()) j.ContainingControl.IsEnabled = true;
         }
 
+        /// <summary>
+        ///     Obtiene, de ser posible, a la entidad padre de la que se
+        ///     encuentra actualmente seleccionada.
+        /// </summary>
+        /// <returns>
+        ///     La entidad padre de la actualmente seleccionasa, o 
+        ///     <see langword="null"/> si la entidad seleccionada no puede
+        ///     tener información sobre su padre en este contexto.
+        /// </returns>
         protected abstract ModelBase? GetParent();
 
+        /// <summary>
+        ///     Ejecuta una acción a realizar justo después de guardar la
+        ///     información en la base de datos.
+        /// </summary>
         protected abstract void AfterSave();
 
         private protected async Task OnSave()

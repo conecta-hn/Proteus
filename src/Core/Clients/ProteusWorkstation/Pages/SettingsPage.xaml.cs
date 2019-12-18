@@ -40,13 +40,16 @@ namespace TheXDS.Proteus.Pages
             Proteus.CommonReporter?.UpdateStatus("Aplicando configuración");
             if (Settings.Default.Launched)
             {
-                await Proteus.LogonService.GenerateToken(true, out var t);
+
+                string? t = null;
+                if (Proteus.Interactive) await (Proteus.LogonService?.GenerateToken(true, out t) ?? Task.FromResult(Api.DetailedResult.Ok));
                 await Proteus.ReloadSettings(Settings.Default);
-                Proteus.Interactive = true;
-                if ((await Proteus.Login(t)).Success)
+                Proteus.Interactive = App.KickStarter.RequiresInteractiveLogin;
+                if (!Proteus.Interactive ||(await Proteus.Login(t!)).Success)
                 {
                     mvm.OpenMainPage();
                 }
+
                 Proteus.CommonReporter?.Done();
             }
             else
