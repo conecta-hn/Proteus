@@ -616,9 +616,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IPropertyDescriptor Property(Expression<Func<T, object?>> propertySelector)
+        public IPropertyDescriptor Property(Expression<Func<T, object>> propertySelector)
         {
-            return Prop<CrudPropertyDescriptor, object?, T>(propertySelector);
+            return Prop<CrudPropertyDescriptor, object, T>(propertySelector);
         }
 
         /// <summary>
@@ -676,9 +676,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IPropertyTextDescriptor TextProperty(Expression<Func<T, string?>> propertySelector)
+        public IPropertyTextDescriptor TextProperty(Expression<Func<T, string>> propertySelector)
         {
-            return Prop<CrudTextPropertyDescriptor, string?, T>(propertySelector);
+            return Prop<CrudTextPropertyDescriptor, string, T>(propertySelector);
         }
 
         /// <summary>
@@ -740,9 +740,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IObjectPropertyDescriptor ObjectProperty(Expression<Func<T, ModelBase?>> propertySelector)
+        public IObjectPropertyDescriptor ObjectProperty(Expression<Func<T, ModelBase>> propertySelector)
         {
-            return Prop<ObjectPropertyDescriptor, ModelBase?, T>(propertySelector);
+            return Prop<ObjectPropertyDescriptor, ModelBase, T>(propertySelector);
         }
 
         /// <summary>

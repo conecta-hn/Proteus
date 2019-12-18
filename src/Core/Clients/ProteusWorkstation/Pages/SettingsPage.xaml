@@ -1,4 +1,5 @@
-﻿<page:ProteusPage
+﻿<!--<page:ProteusPage-->
+<page:ProteusPage
     xmlns:page="clr-namespace:TheXDS.Proteus.Pages.Base"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -71,7 +72,7 @@
                             widgets:ProteusProp.WatermarkAlwaysVisible="True"
                             widgets:ProteusProp.Icon="📁"
                             Text="{Binding WsPluginsDir}"/>
-                        <GroupBox>
+                        <GroupBox IsEnabled="{x:Static lib:Proteus.Interactive}">
                             <GroupBox.Header>
                                 <CheckBox Content="Recordar último usuario en la ventana de inicio de sesión" IsChecked="{Binding RememberLastLogin}" IsThreeState="False"/>
                             </GroupBox.Header>
@@ -157,6 +158,14 @@
                                 TickPlacement="BottomRight"
                                 SmallChange="25" LargeChange="50"/>
                         </Grid>
+                        <ComboBox
+                            widgets:ProteusProp.Watermark="Presentación de estado ocupado"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="⏳"
+                            ItemsSource="{Binding UiModes}"
+                            SelectedValuePath="Value"
+                            DisplayMemberPath="Name"
+                            SelectedValue="{Binding WindowUiMode}"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

@@ -16,6 +16,7 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using static TheXDS.Proteus.ViewModels.LoginViewModel;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
+using System.Windows;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -53,6 +54,24 @@ namespace TheXDS.Proteus.ViewModels
         ///     visible al fondo de la ventana de la aplicación.
         /// </summary>
         public double MinLogoOpacity => Settings.Default.MinUiOpacity;
+
+        /// <summary>
+        ///     Obtiene la UI a utilizar para mostrar avances de estado.
+        /// </summary>
+        public FrameworkElement? ReporterUi
+        {
+            get
+            {
+                return Settings.Default.WindowUiMode switch
+                {
+                    UiMode.Simple => new SimpleUiMode(),
+                    UiMode.Flat => new FlatUiMode(),
+                    UiMode.Minimal => new MinimalUiMode(),
+                    UiMode.Logging => new LoggingUiMode(this),
+                    _ => null
+                };
+            }
+        }
 
         /// <summary>
         ///     Comando de cierre de sesión.
@@ -192,6 +211,9 @@ namespace TheXDS.Proteus.ViewModels
                     break;
                 case nameof(Settings.NoiseUI):
                     Notify(nameof(NoiseUI));
+                    break;
+                case nameof(Settings.WindowUiMode):
+                    Notify(nameof(ReporterUi));
                     break;
             }
         }

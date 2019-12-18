@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{E7EACAD7-3CBC-42E3-BE62-814F7FE03DA2}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\targets\BuildPaths.props = ..\..\targets\BuildPaths.props
+		..\..\targets\bundle.ps1 = ..\..\targets\bundle.ps1
+		..\..\targets\Bundle.targets = ..\..\targets\Bundle.targets
 		..\..\targets\CompileOptions.targets = ..\..\targets\CompileOptions.targets
 		..\..\targets\Frameworks.props = ..\..\targets\Frameworks.props
 		..\..\targets\GlobalDirectives.targets = ..\..\targets\GlobalDirectives.targets

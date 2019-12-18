@@ -24,6 +24,14 @@ using TheXDS.MCART.Dialogs;
 
 namespace TheXDS.Proteus.Config
 {
+    public enum UiMode : byte
+    {
+        Simple,
+        Flat,
+        Minimal,
+        Logging
+    }
+
     internal sealed partial class Settings : IPageViewModel, ISettings, INotifyPropertyChanged
     {
         private bool _unsavedChanges;
@@ -109,7 +117,14 @@ namespace TheXDS.Proteus.Config
             set => ProteusInitMode = (byte)value;
         }
 
+        public UiMode WindowUiMode
+        {
+            get => (UiMode)MainWindowUiMode;
+            set => MainWindowUiMode = (byte)value;
+        }
+
         public IEnumerable<NamedObject<Proteus.InitMode>> InitModes { get; } = NamedObject<Proteus.InitMode>.FromEnum();
+        public IEnumerable<NamedObject<UiMode>> UiModes { get; } = NamedObject<UiMode>.FromEnum();
 
         public IEnumerable<Service> Services => Proteus.Services;
 
