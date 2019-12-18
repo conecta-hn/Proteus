@@ -57,17 +57,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebServices", "WebServices"
 		..\WebServices\Directory.Build.targets = ..\WebServices\Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CmdLineArgs", "..\..\..\Proteus\src\Shared\CmdLineArgs\CmdLineArgs.shproj", "{7DF0886C-11CD-4ABC-9135-31EF4B7FF44C}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CmdLineArgs", "..\Shared\CmdLineArgs\CmdLineArgs.shproj", "{7DF0886C-11CD-4ABC-9135-31EF4B7FF44C}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "License", "..\..\..\Proteus\src\Shared\License\License.shproj", "{34BA68CC-9822-4656-84F1-81ED63433EA6}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "License", "..\Shared\License\License.shproj", "{34BA68CC-9822-4656-84F1-81ED63433EA6}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TerminalApps", "..\..\..\Proteus\src\Shared\TerminalApps\TerminalApps.shproj", "{23237288-77A7-45C0-B479-720769CC2DBD}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TerminalApps", "..\Shared\TerminalApps\TerminalApps.shproj", "{23237288-77A7-45C0-B479-720769CC2DBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConectaServices", "..\DbServices\ConectaServices\ConectaServices.csproj", "{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XceedPatches", "..\UiModules\XceedPatches\XceedPatches.csproj", "{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conecta-client", "..\UiModules\Conecta-client\Conecta-client.csproj", "{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\..\..\Proteus\src\Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
-		..\..\..\Proteus\src\Shared\License\License.projitems*{34ba68cc-9822-4656-84f1-81ed63433ea6}*SharedItemsImports = 13
-		..\..\..\Proteus\src\Shared\CmdLineArgs\CmdLineArgs.projitems*{7df0886c-11cd-4abc-9135-31ef4b7ff44c}*SharedItemsImports = 13
+		..\Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
+		..\Shared\License\License.projitems*{34ba68cc-9822-4656-84f1-81ed63433ea6}*SharedItemsImports = 13
+		..\Shared\CmdLineArgs\CmdLineArgs.projitems*{7df0886c-11cd-4abc-9135-31ef4b7ff44c}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +106,30 @@ Global
 		{3A1C497E-D0F0-4BD9-8ED8-9E40E5693E82}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
 		{3A1C497E-D0F0-4BD9-8ED8-9E40E5693E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A1C497E-D0F0-4BD9-8ED8-9E40E5693E82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +141,9 @@ Global
 		{7DF0886C-11CD-4ABC-9135-31EF4B7FF44C} = {91519C93-419B-4853-A099-0074211DAF45}
 		{34BA68CC-9822-4656-84F1-81ED63433EA6} = {91519C93-419B-4853-A099-0074211DAF45}
 		{23237288-77A7-45C0-B479-720769CC2DBD} = {91519C93-419B-4853-A099-0074211DAF45}
+		{B7A56498-77C4-4EE8-9AC1-D5DDC1A5F8D7} = {EA21D5E1-04B8-4D62-8F72-51C9ACD8CA9B}
+		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0} = {4241CB00-D102-4F3C-9BF6-3214771DF20D}
+		{A2E0C6F9-9723-4FBE-B30B-E3399B90ADA1} = {4241CB00-D102-4F3C-9BF6-3214771DF20D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A790D96A-1B15-4B2C-8213-B331EDE835E1}

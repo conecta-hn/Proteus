@@ -16,32 +16,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Exceptions;
-using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
-using P = System.Windows.Controls.Primitives;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
-    /// <summary>
-    ///     ViewModel que administra las operaciones de Crud con elementos de UI autogenerados.
-    /// </summary>
-    public abstract class CrudViewModelBase : ProteusViewModel, ICrudViewModel
+    public abstract class CrudViewModelBase: ProteusViewModel, ICrudViewModel
     {
-        /// <summary>
-        ///     Contiene una lista personalizada de columnas a mostrar.
-        /// </summary>
-        protected List<Column> CustomColumns { get; } = new List<Column>();
-
         /// <summary>
         ///     Obtiene una referencia al servicio a utilizar para las
         ///     operaciones CRUD de este ViewModel.
@@ -56,14 +44,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         protected IEnumerable<CrudElement> Elements { get; }
 
         /// <summary>
-        ///     Obtiene al elemento selector de la ventana.
-        /// </summary>
-        public ItemsControl Selector { get; }
-
-        /// <summary>
         ///     Obtiene o establece al elemento seleccionado.
         /// </summary>
-        public object Selection
+        public object? Selection
         {
             get => SelectedElement?.ViewModel?.Entity;
             set
@@ -98,24 +81,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="ViewBase"/> que define la apariencia de
-        ///     un selector <see cref="ListView"/> cuando esta ventana de CRUD
-        ///     controla únicamente un modelo de datos.
-        /// </summary>
-        public ViewBase ColumnsView
-        {
-            get
-            {
-                var v = new GridView();
-                foreach (var j in Elements.First().Description?.ListColumns ?? CustomColumns)
-                {
-                    v.Columns.Add(j);
-                }
-                return v;
-            }
-        }
-
-        /// <summary>
         ///     Abstrae las comprobaciones complejas de tipos de modelos,
         ///     tomando en cuenta si son modelos estáticos o Proxies compilados
         ///     de Entity Framework.
@@ -127,13 +92,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             return j.Model.ResolveToDefinedType() == _selection?.ResolveToDefinedType();
         }
 
-        /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudViewModelBase"/>.
-        /// </summary>
-        /// <param name="source">Colección de orígen a controlar.</param>
-        /// <param name="elements">Elementos de edición a incorporar.</param>
-        public CrudViewModelBase(ICollection<ModelBase> source, params CrudElement[] elements)
+        public CrudViewModelBase(params CrudElement[] elements)
         {
             if (!elements.Any()) throw new ArgumentException("Se necesita al menos un tipo administrado por este ViewModel.", new EmptyCollectionException(elements));
             Elements = elements.ToList();
@@ -150,9 +109,6 @@ namespace TheXDS.Proteus.ViewModels.Base
             {
                 MultiModel = Visibility.Collapsed;
                 UniModel = Visibility.Visible;
-                Selector = new ListView();
-                Selector.SetBinding(P.Selector.SelectedItemProperty, new Binding(nameof(Selection)));
-                Selector.SetBinding(ListView.ViewProperty, new Binding(nameof(ColumnsView)));
             }
             else
             {
@@ -161,53 +117,23 @@ namespace TheXDS.Proteus.ViewModels.Base
                 CreateCommands = new HashSet<Launcher>(
                     elements.Select(p => new Launcher(p.Description.FriendlyName, null, ((Action<object>)OnCreate).Method.FullName(),
                         new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement)), p.Model)));
-
-                // HACK: TreeView es una perra
-                var bg = (Application.Current.TryFindResource("SystemAltHighColorBrush") as Brush).Clone();
-                bg.Opacity = 0.5;
-                Selector = new TreeView()
-                {
-                    Background = bg,
-                    ItemTemplateSelector = new ModelTemplateSelector(Elements.Select(p => p.Description))
-                };
-                ((TreeView)Selector).SelectedItemChanged += TreeViewSelector_SelectionChanged;
             }
-            Source = new ObservableCollectionWrap<ModelBase>(source);
-            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Source)));
-
             RegisterPropertyChangeBroadcast(nameof(IsBusy),
                 nameof(BusyV), nameof(NotBusyV));
             RegisterPropertyChangeBroadcast(nameof(EditMode),
                 nameof(NotEditMode), nameof(EditVis), nameof(NotEditVis));
             RegisterPropertyChangeBroadcast(nameof(Selection),
-                nameof(SelectedEditor), nameof(SelectedElement), nameof(SelectedDetails), nameof(ColumnsView));
+                nameof(SelectedEditor), nameof(SelectedElement), nameof(SelectedDetails));
         }
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudViewModelBase"/>.
+        ///     <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
-        /// <param name="source">Origen de datos a utilizar.</param>
         /// <param name="models">Modelos asociados de datos.</param>
-        protected CrudViewModelBase(ICollection<ModelBase> source, params Type[] models)
-            : this(source, models.Select(p => new CrudElement(p)).ToArray())
+        public CrudViewModelBase(params Type[] models) : this(models.Select(p => new CrudElement(p)).ToArray())
         {
         }
-
-        private void TreeViewSelector_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            Selection = ((TreeView)Selector).SelectedItem;
-        }
-
-        /// <summary>
-        ///     Enumera el orígen de datos establecido para este Crud.
-        /// </summary>
-        public ObservableCollectionWrap<ModelBase> Source
-        {
-            get => _source;
-            set => Change(ref _source, value);
-        }
-        ICollection<ModelBase> ICrudViewModel.Source => Source;
 
         /// <summary>
         ///     Obtiene el editor a utlizar para editar a la entidad seleccionada.
@@ -228,7 +154,6 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         private bool _editMode;
         private Type _selection;
-        private ObservableCollectionWrap<ModelBase> _source;
 
         private protected void OnCancel()
         {
@@ -248,6 +173,10 @@ namespace TheXDS.Proteus.ViewModels.Base
             foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>()) j.ContainingControl.IsEnabled = true;
         }
 
+        protected abstract ModelBase? GetParent();
+
+        protected abstract void AfterSave();
+
         private protected async Task OnSave()
         {
             var e = Selection as ModelBase;
@@ -256,7 +185,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             {
                 SelectedElement.Commit();
 
-                var parent = (Selector as TreeView)?.SelectedItem as ModelBase;
+                var parent = GetParent();
                 bool fail = false;
 
                 try
@@ -324,7 +253,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 Proteus.MessageTarget?.Critical(ex);
             }
 
-            Notify(nameof(Source));
+            AfterSave();
             NewMode = false;
             EditMode = false;
             SelectedElement?.ViewModel.Refresh();
@@ -333,7 +262,7 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         /// <summary>
         ///     Implementa la operación de guardado según lo requerido por la
-        ///     clase base de este <see cref="CrudViewModelBase"/>.
+        ///     clase base de este <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="entity">
         ///     Entidad a guardar.

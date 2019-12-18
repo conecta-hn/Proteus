@@ -17,6 +17,7 @@ using TheXDS.MCART;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using System.Threading.Tasks;
 
 namespace TheXDS.Proteus.Plugins
 {

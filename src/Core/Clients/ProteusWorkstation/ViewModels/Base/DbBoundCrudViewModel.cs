@@ -19,7 +19,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     ///     ViewModel que gestiona una ventana de Crud enlazada directamente a
     ///     una base de datos.
     /// </summary>
-    public class DbBoundCrudViewModel : CrudViewModelBase
+    public class DbBoundCrudViewModel : CrudCollectionViewModelBase
     {
         private readonly IQueryable<ModelBase> _source;
 
