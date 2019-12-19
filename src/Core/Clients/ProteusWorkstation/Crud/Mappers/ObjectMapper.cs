@@ -21,7 +21,7 @@ namespace TheXDS.Proteus.Crud.Mappers
         public override IPropertyMapping? Map(IPropertyDescription p)
         {
             if (!(p is IObjectPropertyDescription i)) return null;
-            return i.Creatable ? (IPropertyMapping)new ObjectEditorMapping(i) : new SearchComboMapping(i);
+            return new ObjectEditorMapping(i);
         }
     }
 }
