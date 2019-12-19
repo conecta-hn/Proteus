@@ -230,7 +230,7 @@ namespace TheXDS.Proteus.ViewModels
             internal set
             {
                 _canSelect = value;
-                SelectCommand.SetCanExecute(value);
+                SelectCommand?.SetCanExecute(value);
             }
         }
 
