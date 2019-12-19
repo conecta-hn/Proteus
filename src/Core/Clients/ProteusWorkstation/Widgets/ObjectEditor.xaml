@@ -59,26 +59,50 @@
             AllowsTransparency="True"
             IsOpen="{Binding SelectMode, Mode=OneWay}"
             Placement="Relative">
-            <Grid Background="{DynamicResource SystemBaseLowColorBrush}">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <ListView
-                    x:Name="LstSelection"
-                    ItemsSource="{Binding SelectionSource, Mode=OneWay}"
-                    View="{Binding ColumnsView, Mode=OneWay}"
-                    SelectedItem="{Binding TempSelection}"
-                    MinHeight="100"
-                    MaxWidth="400"
-                    MaxHeight="300">
-                </ListView>
-                <mcart:StretchyWrapPanel Grid.Row="1" fw:PointerTracker.Enabled="True">
-                    <Button Command="{Binding OkSelectCommand, Mode=OneWay}" Background="Transparent">Seleccionar</Button>
-                    <Button Command="{Binding CancelSelectCommand, Mode=OneWay}" Background="Transparent">Cancelar</Button>
-                </mcart:StretchyWrapPanel>
-            </Grid>
-        </fw:AcrylicPopup>        
-        
+            <mcart:BusyContainer IsBusy="{Binding IsSearching, Mode=OneWay}">
+                <Grid MinWidth="200" MaxWidth="350" MinHeight="150">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ComboBox
+                        Visibility="{Binding CanChangeModel, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        IsEnabled="{Binding CanChangeModel, Mode=OneWay}"
+                        ItemsSource="{Binding Models, Mode=OneWay}"
+                        SelectedItem="{Binding ActiveModel}" 
+                        Grid.ColumnSpan="2"/>
+                    <TextBox
+                        Text="{Binding SearchQuery}"
+                        Grid.Row="1"
+                        local:ProteusProp.Watermark="Buscar..."
+                        local:ProteusProp.Icon="🔍" />
+                    <Button
+                        Content="{Binding SearchLabel, Mode=OneWay}"
+                        Command="{Binding SearchCommand, Mode=OneWay}"
+                        Grid.Row="1"
+                        Grid.Column="1"/>
+                    <ListView
+                        ItemsSource="{Binding Results, Mode=OneWay}"
+                        View="{Binding ColumnsView, Mode=OneWay}"
+                        SelectedItem="{Binding TempSelection}"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"/>
+                    <mcart:StretchyWrapPanel>
+                        <Button Command="{Binding OkSelectCommand, Mode=OneWay}">
+                            Seleccionar
+                        </Button>
+                        <Button Command="{Binding CancelSelectCommand, Mode=OneWay}">
+                            Cancelar
+                        </Button>
+                    </mcart:StretchyWrapPanel>
+                </Grid>
+            </mcart:BusyContainer>
+        </fw:AcrylicPopup>
     </DockPanel>
 </UserControl>
