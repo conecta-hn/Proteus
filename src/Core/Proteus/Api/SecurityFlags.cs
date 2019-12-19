@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+Copyright © 2017-2019 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
+using System;
 
 namespace TheXDS.Proteus.Api
 {
@@ -12,30 +17,37 @@ namespace TheXDS.Proteus.Api
         /// Deniega todos los permisos actuales y futuros. Además, representa el permiso predeterminado nulo.
         /// </summary>
         None,
+
         /// <summary>
         /// Requiere/otorga el permiso para ver un elemento en la UI.
         /// </summary>
         View,
+
         /// <summary>
         /// Requiere/otorga el permiso para listar información.
         /// </summary>
         Open,
+
         /// <summary>
         /// Requiere/otorga el permiso para realizar búsquedas de información.
         /// </summary>
         Search=4,
+
         /// <summary>
         /// Requiere/otorga los permisos estándar de lectura.
         /// </summary>
         Read = View | Open | Search,
+
         /// <summary>
         /// Requiere/otorga el permiso para crear nueva información.
         /// </summary>
         New,
+
         /// <summary>
         /// Requiere/otorga el permiso para editar información.
         /// </summary>
         Edit = 16,
+
         /// <summary>
         ///     Requiere/otorga el permiso para borrar información.
         /// </summary>
@@ -45,14 +57,17 @@ namespace TheXDS.Proteus.Api
         ///     estado. 
         /// </remarks>
         Delete = 32,
+
         /// <summary>
         ///     Requiere/otorga los permisos estándar de escritura.
         /// </summary>
         Write = New | Edit | Delete,
+
         /// <summary>
         ///     Requiere/otorga los permisos estándar de lectura y escritura.
         /// </summary>
         ReadWrite = Read | Write,
+
         /// <summary>
         ///     Requiere/otorga el permiso para purgar información.
         /// </summary>
@@ -62,18 +77,22 @@ namespace TheXDS.Proteus.Api
         ///     recuperarla. 
         /// </remarks>
         Purge = 64,
+
         /// <summary>
         /// Requiere/otorga permisos administrativos estándar.
         /// </summary>
         Admin = 128,
+
         /// <summary>
         /// Requiere/otorga todos los permisos administrativos.
         /// </summary>
         FullAdmin = ReadWrite | Purge | Admin,
+
         /// <summary>
         /// Requiere/otorga el permiso de elevación de permisos.
         /// </summary>
         Elevate = int.MinValue,
+
         /// <summary>
         /// Requiere/otorga todos los permisos actuales y futuros. (aplicar a superusuarios)
         /// </summary>

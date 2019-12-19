@@ -1,4 +1,9 @@
-﻿using TheXDS.Proteus.Api;
+﻿/*
+Copyright © 2017-2019 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
+using TheXDS.Proteus.Api;
 
 namespace TheXDS.Proteus.Models.Base
 {
