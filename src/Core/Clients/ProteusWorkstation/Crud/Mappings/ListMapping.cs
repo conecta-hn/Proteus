@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using System.Windows;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
@@ -36,7 +37,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         private Type[] GetModels(Type baseModel)
         {
             return baseModel.Derivates()
-                .Select(p => p.ResolveToDefinedType())
+                .Select(p => p.ResolveToDefinedType()!)
                 .Where(p=> p.IsInstantiable())
                 .Distinct()
                 .ToArray();
@@ -50,8 +51,7 @@ namespace TheXDS.Proteus.Crud.Mappings
 
         public override void ClearControlValue()
         {
-            if (!_vm.Source.IsReadOnly)
-            _vm.Source.Clear();
+            if (!_vm.Source.IsReadOnly) _vm.Source.Clear();
         }
     }
 }

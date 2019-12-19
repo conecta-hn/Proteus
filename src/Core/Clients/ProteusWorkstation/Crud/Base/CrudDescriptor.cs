@@ -323,12 +323,12 @@ namespace TheXDS.Proteus.Crud.Base
 
         private readonly HashSet<SaveActionChain> _beforeSave = new HashSet<SaveActionChain>();
         private readonly HashSet<SaveActionChain> _afterSave = new HashSet<SaveActionChain>();
-        private Func<ModelBase, bool> _canCreate;
-        private Func<ModelBase, bool> _canEdit;
-        private Func<ModelBase, bool> _canDelete;
-        private string _friendlyName;
-        private Control _details;
-        private DataTemplate _trvTemplate;
+        private Func<ModelBase, bool>? _canCreate;
+        private Func<ModelBase, bool>? _canEdit;
+        private Func<ModelBase, bool>? _canDelete;
+        private string? _friendlyName;
+        private Control? _details;
+        private DataTemplate? _trvTemplate;
         private InteractionType? _onModuleMenu;
         private protected readonly HashSet<IPropertyDescription> _properties = new HashSet<IPropertyDescription>();
         private protected readonly Dictionary<string, Action<ModelBase, NotifyPropertyChangeBase>> _customActions = new Dictionary<string, Action<ModelBase, NotifyPropertyChangeBase>>();
@@ -351,7 +351,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// <summary>
         ///     Obtiene una referencia al editor actualmente activo.
         /// </summary>
-        protected ICrudEditingViewModel CurrentEditor { get; private set; }
+        protected ICrudEditingViewModel? CurrentEditor { get; private set; }
 
         void ICrudDescription.SetCurrentEditor(ICrudEditingViewModel vm) => CurrentEditor = vm;
 
@@ -470,7 +470,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </summary>
         public void Template()
         {
-            Template($"{typeof(T).ResolveToDefinedType().Name}Template");
+            Template($"{typeof(T).ResolveToDefinedType()!.Name}Template");
         }
 
         /// <summary>
@@ -580,16 +580,38 @@ namespace TheXDS.Proteus.Crud.Base
             SetCanAction(ref _canDelete, deletionCheck);
         }
 
+        /// <summary>
+        ///     Configura el descriptor para establecer un valor duro que
+        ///     determina la posibilidad de crear entidades.
+        /// </summary>
+        /// <param name="value">
+        ///     valor a establecer.
+        /// </param>
         public void CanCreate(bool value)
         {
             CanCreate(_ => value);
         }
 
+
+        /// <summary>
+        ///     Configura el descriptor para establecer un valor duro que
+        ///     determina la posibilidad de editar entidades.
+        /// </summary>
+        /// <param name="value">
+        ///     valor a establecer.
+        /// </param>
         public void CanEdit(bool value)
         {
             CanEdit(_ => value);
         }
 
+        /// <summary>
+        ///     Configura el descriptor para establecer un valor duro que
+        ///     determina la posibilidad de eliminar entidades.
+        /// </summary>
+        /// <param name="value">
+        ///     valor a establecer.
+        /// </param>
         public void CanDelete(bool value)
         {
             CanDelete(_ => value);
@@ -616,9 +638,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IPropertyDescriptor Property(Expression<Func<T, object>> propertySelector)
+        public IPropertyDescriptor Property(Expression<Func<T, object?>> propertySelector)
         {
-            return Prop<CrudPropertyDescriptor, object, T>(propertySelector);
+            return Prop<CrudPropertyDescriptor, object?, T>(propertySelector);
         }
 
         /// <summary>
@@ -676,9 +698,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IPropertyTextDescriptor TextProperty(Expression<Func<T, string>> propertySelector)
+        public IPropertyTextDescriptor TextProperty(Expression<Func<T, string?>> propertySelector)
         {
-            return Prop<CrudTextPropertyDescriptor, string, T>(propertySelector);
+            return Prop<CrudTextPropertyDescriptor, string?, T>(propertySelector);
         }
 
         /// <summary>
@@ -740,9 +762,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IObjectPropertyDescriptor ObjectProperty(Expression<Func<T, ModelBase>> propertySelector)
+        public IObjectPropertyDescriptor ObjectProperty(Expression<Func<T, ModelBase?>> propertySelector)
         {
-            return Prop<ObjectPropertyDescriptor, ModelBase, T>(propertySelector);
+            return Prop<ObjectPropertyDescriptor, ModelBase?, T>(propertySelector);
         }
 
         /// <summary>
@@ -871,7 +893,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </param>
         public void RegisterReadOnlyPresenter(Func<T, string> presenter)
         {
-            ReadOnlyPresenter._customConversions.Add(typeof(T), m => presenter(m as T));
+            ReadOnlyPresenter._customConversions.Add(typeof(T), m => presenter((T)m));
         }
 
         #endregion
