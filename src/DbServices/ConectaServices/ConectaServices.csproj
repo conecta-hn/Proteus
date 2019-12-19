@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Servicios de datos básicos para Conect@</Description>
+    <AssemblyName>ConectaServices</AssemblyName>
+  </PropertyGroup>
+</Project>
