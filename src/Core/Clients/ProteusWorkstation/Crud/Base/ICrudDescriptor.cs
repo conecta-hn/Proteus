@@ -83,7 +83,7 @@ namespace TheXDS.Proteus.Crud.Base
         ///     Plantilla a utilizar al presentar el modelo en un
         ///     <see cref="TreeView"/>.
         /// </summary>
-        DataTemplate TreeViewTemplate { get; }
+        DataTemplate? TreeViewTemplate { get; }
 
         /// <summary>
         ///     Obtiene un valor que indica si el módulo debe cargar 
