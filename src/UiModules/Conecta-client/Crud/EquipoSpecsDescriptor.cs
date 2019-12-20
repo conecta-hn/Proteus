@@ -20,7 +20,7 @@ namespace TheXDS.Proteus.Crud
             Property(p => p.Wifi).Label("Tiene WiFi");
             Property(p => p.Bluetooth).Label("Tiene Bluetooth");
             Property(p => p.OpticalDrive).Nullable().Label("Unidad óptica");
-            NumericProperty(p => p.Usb2).Range(0, 100).Label("Cantidad de puertos USB 2.0").Default(4);
+            NumericProperty(p => p.Usb2).Range(0, 100).Label("Cantidad de puertos USB 2.0").Default((byte)4);
             NumericProperty(p => p.Usb3).Range(0, 100).Label("Cantidad de puertos USB 3.0");
             Property(p => p.TypeC).Label("Tiene puertos USB Type-C");
             Property(p => p.Vga).Label("Salidas VGA");
