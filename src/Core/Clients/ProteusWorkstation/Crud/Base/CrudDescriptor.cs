@@ -89,9 +89,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     puede configurar la presentación de la propiedad en una ventana
         ///     de Crud.
         /// </returns>
-        protected IPropertyDescriptor VmProperty(Expression<Func<TViewModel, object>> propertySelector)
+        protected IPropertyDescriptor VmProperty(Expression<Func<TViewModel, object?>> propertySelector)
         {
-            return Prop<CrudPropertyDescriptor, object>(propertySelector);
+            return Prop<CrudPropertyDescriptor, object?>(propertySelector);
         }
 
         /// <summary>
@@ -123,9 +123,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     del cual se puede configurar la presentación de la propiedad en
         ///     una ventana de Crud.
         /// </returns>
-        protected IPropertyTextDescriptor VmTextProperty(Expression<Func<TViewModel, string>> propertySelector)
+        protected IPropertyTextDescriptor VmTextProperty(Expression<Func<TViewModel, string?>> propertySelector)
         {
-            return Prop<CrudTextPropertyDescriptor, string>(propertySelector);
+            return Prop<CrudTextPropertyDescriptor, string?>(propertySelector);
         }
 
         /// <summary>
@@ -184,9 +184,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public ILinkPropertyDescriptor<TLink> VmLinkProperty<TLink>(Expression<Func<TViewModel, object>> propertySelector) where TLink : ModelBase
+        public ILinkPropertyDescriptor<TLink> VmLinkProperty<TLink>(Expression<Func<TViewModel, object?>> propertySelector) where TLink : ModelBase
         {
-            var r = Prop<LinkPropertyDescriptor<TLink>, object, TViewModel>(propertySelector);
+            var r = Prop<LinkPropertyDescriptor<TLink>, object?, TViewModel>(propertySelector);
             r.PropertySource = PropertyLocation.ViewModel;
             return r;
         }
@@ -206,9 +206,9 @@ namespace TheXDS.Proteus.Crud.Base
         ///     autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
-        public IObjectPropertyDescriptor VmObjectProperty(Expression<Func<TViewModel, ModelBase>> propertySelector)
+        public IObjectPropertyDescriptor VmObjectProperty(Expression<Func<TViewModel, ModelBase?>> propertySelector)
         {
-            var r = Prop<ObjectPropertyDescriptor, ModelBase, TViewModel>(propertySelector);
+            var r = Prop<ObjectPropertyDescriptor, ModelBase?, TViewModel>(propertySelector);
             r.PropertySource = PropertyLocation.ViewModel;
             return r;
         }
@@ -420,7 +420,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// </summary>
         Control ICrudDescription.Details => _details;
 
-        DataTemplate ICrudDescription.TreeViewTemplate => _trvTemplate;
+        DataTemplate? ICrudDescription.TreeViewTemplate => _trvTemplate;
 
         InteractionType? ICrudDescription.OnModuleMenu => _onModuleMenu;
 

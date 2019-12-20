@@ -8,13 +8,13 @@
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel 
-            Margin="50"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <ProgressBar Width="250" Value="{Binding Progress}"/>
+        Margin="50"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center"
+        Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <ProgressBar Width="250" Height="16" Value="{Binding Progress, Mode=OneWay}"/>
         <ScrollViewer Margin="0,20,0,0" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
-            <TextBlock Style="{StaticResource Title}" Text="{Binding Status}"/>
+            <TextBlock Style="{StaticResource Title}" Text="{Binding Status, Mode=OneWay}"/>
         </ScrollViewer>
     </StackPanel>
 </UserControl>
