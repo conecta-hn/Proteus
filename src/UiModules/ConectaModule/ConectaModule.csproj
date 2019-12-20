@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <Description>Módulo de UI para Conect@</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DbServices\InventarioService\InventarioService.csproj" />
+  </ItemGroup>
+</Project>
