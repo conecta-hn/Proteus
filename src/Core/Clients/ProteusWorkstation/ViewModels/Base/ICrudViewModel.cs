@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Enumeración de comandos para la creación de entidades cuando
         ///     este ViewModel administra dos o más modelos de datos.
         /// </summary>
-        IEnumerable<Launcher> CreateCommands { get; }
+        IEnumerable<Launcher>? CreateCommands { get; }
 
         /// <summary>
         ///     Determina si es posible ejecutar el comando para la creación de

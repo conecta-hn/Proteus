@@ -9,6 +9,6 @@ namespace TheXDS.Proteus.Crud.Base
 {
     public interface ICallSaveAction
     {
-        void CallSaves(object obj, ModelBase parent);
+        void CallSaves(object obj, ModelBase? parent);
     }
 }
