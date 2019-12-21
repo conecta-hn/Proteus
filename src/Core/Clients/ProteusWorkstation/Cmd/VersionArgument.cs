@@ -27,7 +27,7 @@ namespace TheXDS.Proteus.Cmd
             {
                 App.UiInvoke(() => AboutBox.ShowDialog(Application.Current));
             }
-            App.UiInvoke(() => ((App.RootHost as MainWindowViewModel)?.Host as MainWindow)?.ForceClose());
+            App.UiInvoke(App.RootHost.ForceClose);
         }
     }
 }

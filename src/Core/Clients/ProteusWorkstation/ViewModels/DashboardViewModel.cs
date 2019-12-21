@@ -98,7 +98,7 @@ namespace TheXDS.Proteus.ViewModels
             Title = "Página de inicio";
             Proteus.AlertTarget = this;
             AutoHook();
-            _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)));
+            _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)) ?? Array.Empty<ModulePage>());
             Settings.Default.PropertyChanged += Default_PropertyChanged;
 
             LogoutCommand = new SimpleCommand(Proteus.Logout);

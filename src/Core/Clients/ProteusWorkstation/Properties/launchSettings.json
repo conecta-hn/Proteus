@@ -23,6 +23,10 @@
     "Version": {
       "commandName": "Project",
       "commandLineArgs": "--Version"
+    },
+    "Recovery": {
+      "commandName": "Project",
+      "commandLineArgs": "--RecoveryMode"
     }
   }
 }

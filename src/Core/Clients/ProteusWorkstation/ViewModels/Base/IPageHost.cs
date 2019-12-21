@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System.Collections.Generic;
+using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -53,5 +54,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <typeparam name="TPage">Tipo de página a activar.</typeparam>
         void SwitchTo<TPage>() where TPage : IPage;
+    }
+
+    /// <summary>
+    ///     Define una serie de métodos a implementar por una clase con
+    ///     funcionalidad de cierre que hospede páginas del sistema Proteus.
+    /// </summary>
+    public interface IRootPageHost : IPageHost, ICloseable
+    {
+        /// <summary>
+        ///     Cierra forzosamente la aplicación.
+        /// </summary>
+        void ForceClose();
     }
 }

@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.Crud
         }
         internal static FrameworkElement BuildWarning(Type model)
         {
-            return Misc.Internal.BuildWarning($"No se encontró ningún descriptor de CRUD para el modelo '{model.Name}'.");
+            return Misc.AppInternal.BuildWarning($"No se encontró ningún descriptor de CRUD para el modelo '{model.Name}'.");
         }
         internal static bool DescribesModel(Type t, Type model)
         {

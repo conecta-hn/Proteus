@@ -25,8 +25,10 @@ namespace TheXDS.Proteus.ViewModels
     ///     ViewModel que controla el comportamiento de la ventana principal de
     ///     la aplicación.
     /// </summary>
-    public class MainWindowViewModel : ReportingPageHostViewModel
+    public class MainWindowViewModel : ReportingPageHostViewModel, IRootPageHost
     {
+        private readonly IPageRootVisualHost _rootHost;
+
         /// <summary>
         ///     Obtiene el nivel de opacidad configurado para la ventana.
         /// </summary>
@@ -87,8 +89,9 @@ namespace TheXDS.Proteus.ViewModels
         ///     Host visual de este ViewModel. Debe tratarse de la ventana
         ///     principal de la aplicación.
         /// </param>
-        public MainWindowViewModel(IPageVisualHost window) : base(window, true)
+        public MainWindowViewModel(IPageRootVisualHost window) : base(window, true)
         {
+            _rootHost = window;
             Title = App.Info.Name;
             LogoutCommand = new SimpleCommand(Logout);
             var s = Settings.Default;
@@ -219,6 +222,14 @@ namespace TheXDS.Proteus.ViewModels
                     Notify(nameof(ReporterUi));
                     break;
             }
+        }
+
+        /// <summary>
+        ///     Fureza el cierre de la aplicación.
+        /// </summary>
+        public void ForceClose()
+        {
+            _rootHost.ForceClose();
         }
     }
 }

@@ -20,14 +20,15 @@ namespace TheXDS.Proteus
     /// <summary>
     ///     Lógica de interacción para MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : IPageVisualHost
+    public partial class MainWindow : IPageRootVisualHost
     {
-        private MainWindowViewModel Vm => Dispatcher.Invoke(()=> DataContext as MainWindowViewModel);
+        private bool _forced = false;
+        internal MainWindowViewModel Vm => Dispatcher.Invoke(() => (MainWindowViewModel)DataContext);
 
         /// <summary>
         ///     Obtiene una referencia al host de ventanas de esta instancia.
         /// </summary>
-        public IPageHost PageHost { get; set; } = null;
+        public IPageHost PageHost { get; set; } = null!;
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
@@ -55,14 +56,14 @@ namespace TheXDS.Proteus
             Proteus.Logout(false);
         }
 
-        private void MainWindow_Closed(object sender, EventArgs e) => Application.Current.Shutdown();
+        private void MainWindow_Closed(object? sender, EventArgs e) => Application.Current.Shutdown();
 
         /// <summary>
         ///     Realiza tareas de inicialización una vez abierta la ventana.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(_ => OnLoaded()));
         }
@@ -86,60 +87,8 @@ Asegúrese de que:
 
 Información adicional: {ex.Message}
 ");
-                //Proteus.MessageTarget?.Critical(ex);
                 App.UiInvoke(ForceClose);
             }
-        }
-
-        private static void Dump(StringBuilder j, Exception ex)
-        {
-            const int TextWidth = 80;
-            if (ex is null) return;
-
-            j.AppendLine($"{ex.GetType().Name} en {ex.Source} (0x{ex.HResult.ToString("X").PadLeft(8, '0')})");
-            j.AppendLine(new string('-', TextWidth));
-            foreach (var k in Breakup(ex.Message)) j.AppendLine(k.TrimEnd(' '));
-            j.AppendLine(new string('-', TextWidth));
-            j.AppendLine(ex.StackTrace);
-            j.AppendLine(new string('=', TextWidth));
-
-            foreach (var k in ex.GetType().GetProperties())
-            {
-                if (typeof(IEnumerable<Exception>).IsAssignableFrom(k.PropertyType))
-                {
-                    foreach (var l in (IEnumerable<Exception>) k.GetValue(ex))
-                    {
-                        Dump(j, l);
-                    }
-                }
-                else if (typeof(Exception).IsAssignableFrom(k.PropertyType))
-                {
-                    Dump(j, k.GetValue(ex) as Exception);
-
-                }
-            }
-        }
-
-        private static string[] Breakup(string str, int width = 80)
-        {
-            var l = new List<string>
-            {
-                string.Empty
-            };
-
-            foreach (var j in str.Split(' '))
-            {
-                if (string.IsNullOrEmpty(j)) continue;
-                if (l.Last().Length + j.Length > width)
-                {
-                    l.Add($"{j} ");
-                }
-                else
-                {
-                    l[l.Count - 1] += $"{j} ";
-                }
-            }
-            return l.ToArray();
         }
 
         /// <summary>
@@ -156,11 +105,13 @@ Información adicional: {ex.Message}
             BringIntoView();
         }
 
-        internal void ForceClose()
+        /// <summary>
+        ///     Fuerza el cierre de la aplicación.
+        /// </summary>
+        public void ForceClose()
         {
             _forced = true;
             Close();
         }
-        private bool _forced = false;
     } 
 }

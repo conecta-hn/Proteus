@@ -6,6 +6,8 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using TheXDS.MCART;
@@ -18,9 +20,8 @@ using WpfScreenHelper;
 
 namespace TheXDS.Proteus.Misc
 {
-    public static class Internal
+    public static class AppInternal
     {
-        private static readonly IEnumerable<IModelSearchFilter> _filters = Objects.FindAllObjects<IModelSearchFilter>().ToList();
         
         public static System.Drawing.Image MakeBarcode(this ModelBase item)
         {
@@ -60,18 +61,12 @@ namespace TheXDS.Proteus.Misc
             };
         }
 
-        public static IQueryable Query(string query, Type model)
+        public static bool IsAdministrator()
         {
-            var s = query.ToLower();
-            var f = new List<IFilter>();
-            var o = new OrFilter().PushInto(f);
-
-            foreach (var j in _filters)
-            {
-                if (j.UsableFor(model)) j.AddFilter(f, o, s);
-            }
-
-            return QueryBuilder.BuildQuery(model, f);
+            var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
+
     }
 }
