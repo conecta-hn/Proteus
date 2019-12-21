@@ -28,13 +28,19 @@ using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
+    /// <summary>
+    ///     Clase base para un ViewModel que implemente funcionalidad Crud.
+    /// </summary>
     public abstract class CrudViewModelBase: ProteusViewModel, ICrudViewModel
     {
+        private bool _editMode;
+        private Type? _selection;
+
         /// <summary>
         ///     Obtiene una referencia al servicio a utilizar para las
         ///     operaciones CRUD de este ViewModel.
         /// </summary>
-        protected Service Service => Proteus.Infer(SelectedElement?.Model);
+        protected Service? Service => Proteus.Infer(SelectedElement?.Model);
 
         /// <summary>
         ///     Colección que describe las diferentes presentaciones
@@ -52,6 +58,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             set
             {
                 _selection = value?.GetType();
+
                 foreach (var j in Elements.NotNull())
                 {
                     if (j.ViewModel is null) continue;
@@ -59,12 +66,12 @@ namespace TheXDS.Proteus.ViewModels.Base
                     {
                         if (!(j.ViewModel is null))
                         {
-                            lock (value) lock (j.ViewModel)
+                            lock (value!) lock (j.ViewModel)
                                     j.ViewModel.Entity = value;
                         }
                         foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
                         {
-                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? value : SelectedElement.ViewModel);
+                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? value! : SelectedElement!.ViewModel);
                         }
                     }
                     else
@@ -92,7 +99,15 @@ namespace TheXDS.Proteus.ViewModels.Base
             return j.Model.ResolveToDefinedType() == _selection?.ResolveToDefinedType();
         }
 
-        public CrudViewModelBase(params CrudElement[] elements)
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="CrudCollectionViewModelBase"/>.
+        /// </summary>
+        /// <param name="elements">
+        ///     Arreglo de <see cref="CrudElement"/> que serán utilizados para
+        ///     editar entidades dentro de esta instancia.
+        /// </param>
+        protected CrudViewModelBase(params CrudElement[] elements)
         {
             if (!elements.Any()) throw new ArgumentException("Se necesita al menos un tipo administrado por este ViewModel.", new EmptyCollectionException(elements));
             Elements = elements.ToList();
@@ -131,7 +146,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="models">Modelos asociados de datos.</param>
-        public CrudViewModelBase(params Type[] models) : this(models.Select(p => new CrudElement(p)).ToArray())
+        protected CrudViewModelBase(params Type[] models) : this(models.Select(p => new CrudElement(p)).ToArray())
         {
         }
 
@@ -152,9 +167,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public CrudElement SelectedElement => Elements.FirstOrDefault(IsForType);
 
-        private bool _editMode;
-        private Type _selection;
-
         private protected void OnCancel()
         {
             if (Selection is ModelBase s)
@@ -165,7 +177,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 }
                 else
                 {
-                    Service.Rollback(s);
+                    Service!.Rollback(s);
                 }
             }
             NewMode = false;
@@ -192,50 +204,46 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         private protected async Task OnSave()
         {
-            var e = Selection as ModelBase;
+            if (!(Selection is ModelBase e)) return;
 
-            if (!(SelectedElement is null))
+            SelectedElement.Commit();
+            var parent = GetParent();
+            bool fail = false;
+
+            try
             {
-                SelectedElement.Commit();
-
-                var parent = GetParent();
-                bool fail = false;
-
-                try
+                foreach (var j in SelectedElement.Description.BeforeSave)
                 {
-                    foreach (var j in SelectedElement.Description.BeforeSave)
+                    j.CallSaves(e!, parent);
+                }
+                if (SelectedElement.Description is IVmCrudDescription ivm)
+                {
+                    foreach (var j in ivm.VmBeforeSave)
                     {
-                        j.CallSaves(e, parent);
-                    }
-                    if (SelectedElement.Description is IVmCrudDescription ivm)
-                    {
-                        foreach (var j in ivm.VmBeforeSave)
-                        {
-                            j.CallSaves(SelectedElement.ViewModel, parent);
-                        }
+                        j.CallSaves(SelectedElement.ViewModel, parent);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Proteus.MessageTarget?.Error(ex.Message);
-                    fail = true;
-                }
-
-                foreach (var j in SelectedElement.Description.Descriptions)
-                {
-                    var f = j.Validator?.Invoke(e, j.Property)?.ToList();
-                    if (f?.Any() ?? false)
-                    {
-                        fail = true;
-                        Proteus.MessageTarget?.Stop(string.Concat(f.Select(p => $"{p.FailedProperty?.NameOf().OrNull("{0}: ")}{p.Message}\n")));
-                    }
-                }
-                if (fail) return;
             }
+            catch (Exception ex)
+            {
+                Proteus.MessageTarget?.Error(ex.Message);
+                fail = true;
+            }
+
+            foreach (var j in SelectedElement.Description.Descriptions)
+            {
+                var f = j.Validator?.Invoke(e!, j.Property)?.ToList();
+                if (f?.Any() ?? false)
+                {
+                    fail = true;
+                    Proteus.MessageTarget?.Stop(string.Concat(f.Select(p => $"{p.FailedProperty?.NameOf().OrNull("{0}: ")}{p.Message}\n")));
+                }
+            }
+            if (fail) return;
 
             if (Settings.Default.CheckExists)
             {
-                if (Service.Exists(e))
+                if (Service!.Exists(e))
                 {
                     Proteus.MessageTarget?.Stop($"Ya existe un elemento con el Id '{e.StringId}' en la base de datos.");
                     return;
@@ -249,7 +257,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
             try
             {
-                foreach (var j in SelectedElement.Description.AfterSave)
+                foreach (var j in SelectedElement!.Description.AfterSave)
                 {
                     j.CallSaves(e, null);
                 }
@@ -290,17 +298,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     crear una nueva entidad.
         /// </summary>
         protected bool NewMode { get; private set; } = false;
-        private void OnCreate(Type t)
+        private void OnCreate(Type? t)
         {
             NewMode = true;
-            var entity = (t ?? Elements.FirstOrDefault()?.Model).New();
+            var entity = (t ?? Elements.First().Model).New();
             Selection = entity;
             foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
             {
                 if (k.Description.UseDefault && k.Property.CanWrite)
                 {
                     k.Property.SetValue(entity, k.Description.Default);
-                    (SelectedElement.ViewModel as NotifyPropertyChangeBase)?.Notify(k.Property.Name);
+                    (SelectedElement!.ViewModel as NotifyPropertyChangeBase)?.Notify(k.Property.Name);
                     k.GetValue(entity);
                 }
                 else k.ClearControlValue();
@@ -319,7 +327,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     En su implementación predeterminada, este método siempre
         ///     devuelve <see langword="true"/>.
         /// </returns>
-        public virtual bool CanCreate(Type t) => true;
+        public virtual bool CanCreate(Type? t) => true;
 
         /// <summary>
         ///     Determina si es posible editar a la entidad seleccionada.
@@ -329,7 +337,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     <see langword="true"/> si es posible editar la entidad
         ///     seleccionada, <see langword="false"/> en caso contrario.
         /// </returns>
-        public virtual bool CanEdit(ModelBase entity) => !(entity is null);
+        public virtual bool CanEdit(ModelBase? entity) => !(entity is null);
 
         /// <summary>
         ///     Determina si es posible eliminar a la entidad seleccionada.
@@ -339,7 +347,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     <see langword="true"/> si es posible eliminar la entidad
         ///     seleccionada, <see langword="false"/> en caso contrario.
         /// </returns>
-        public virtual bool CanDelete(ModelBase entity) => !(entity is null) && (SelectedElement?.Description?.CanDelete?.Invoke(entity) ?? true);
+        public virtual bool CanDelete(ModelBase? entity) => !(entity is null) && (SelectedElement?.Description?.CanDelete?.Invoke(entity) ?? true);
 
         /// <summary>
         ///     Comando para la creación de nuevas entidades.
@@ -370,18 +378,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Enumeración de comandos para la creación de entidades cuando
         ///     este ViewModel administra dos o más modelos de datos.
         /// </summary>
-        public IEnumerable<Launcher> CreateCommands { get; }
+        public IEnumerable<Launcher>? CreateCommands { get; }
 
         /// <summary>
-        ///     Ejecuta una operación de eliminado de información de la
+        ///     Ejecuta una operación de eliminación de información de la
         ///     colección activa.
         /// </summary>
         /// <param name="o">
         ///     Elemento a eliminar.
         /// </param>
-        protected abstract void OnDelete(object o);
+        protected abstract void OnDelete(object? o);
 
-        private protected void OnEdit(object o)
+        private protected void OnEdit(object? o)
         {
             EditMode = true;
 
@@ -395,10 +403,10 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
         }
 
-        [Sugar] private void OnCreate(object o) => OnCreate(o as Type);
-        [Sugar] private bool CanCreate(object o) => CanCreate(o as Type);
-        [Sugar] private bool CanEdit(object o) => CanEdit((ModelBase)Selection);
-        [Sugar] private bool CanDelete(object o) => CanDelete((ModelBase)Selection);
+        [Sugar] private void OnCreate(object? o) => OnCreate(o as Type);
+        [Sugar] private bool CanCreate(object? o) => CanCreate(o as Type);
+        [Sugar] private bool CanEdit(object? o) => CanEdit(Selection as ModelBase);
+        [Sugar] private bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
 
         /// <summary>
         ///     Ejecuta una operación colocando a este 

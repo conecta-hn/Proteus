@@ -25,21 +25,21 @@ namespace TheXDS.Proteus.Reporting
         /// <param name="model">
         ///     Modelo para la cual se generará la expresión.
         /// </param>
+        /// <param name="entExp">Expresión que obtiene una referencia a la entidad.</param>
         /// <returns>
         ///     Una expresión que puede utilizarse para filtrar una <see cref="System.Linq.IQueryable{T}"/>
         /// </returns>
-        public override sealed LambdaExpression GetFilter(Type model)
+        public override Expression GetFilterOnly(Type model, ref ParameterExpression? entExp)
         {
-            var entExp = Expression.Parameter(model);
-            return Expression.Lambda(ToFunc(model),
-                Expression.Call(
+            entExp ??= Expression.Parameter(model);
+            
+            return Expression.Call(
                     ToLower(
                         ToStringExp(
                             GetFromEntity(entExp),
                             Property.PropertyType)),
                     typeof(string).GetMethod("Contains", new Type[] { typeof(string) }),
-                    GetValue()),
-                entExp);
+                    GetValue());
         }
     }
 }

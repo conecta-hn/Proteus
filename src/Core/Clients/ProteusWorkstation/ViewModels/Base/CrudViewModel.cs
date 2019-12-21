@@ -3,25 +3,24 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Component;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using TheXDS.Proteus.Widgets;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Crud;
-using System.Windows.Controls;
-using System.Threading.Tasks;
-using TheXDS.MCART.ViewModel;
 using System.ComponentModel;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.Proteus.Reporting;
-using TheXDS.MCART.Types;
 using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Misc;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -33,6 +32,12 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel where TService : Service, new()
     {
+        private readonly Type _model;
+        private bool _willSearch = true;
+        private string? _searchQuery;
+        private bool _isSearching;
+        private ICollectionView? _results;
+
         /// <summary>
         ///     Obtiene un valor que indica si este ViewModel se encuentra 
         ///     ocupado.
@@ -66,12 +71,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         ///     Obtiene la ventana de detalles de la entidad seleccionada.
         /// </summary>
-        public FrameworkElement SelectedDetails => ((ICrudCollectionViewModel)Implementation).SelectedDetails;
+        public FrameworkElement? SelectedDetails => ((ICrudCollectionViewModel)Implementation).SelectedDetails;
 
         /// <summary>
         ///     Obtiene el editor a utlizar para editar a la entidad seleccionada.
         /// </summary>
-        public FrameworkElement SelectedEditor => ((ICrudCollectionViewModel)Implementation).SelectedEditor;
+        public FrameworkElement? SelectedEditor => ((ICrudCollectionViewModel)Implementation).SelectedEditor;
 
         /// <summary>
         ///     Obtiene un <see cref="CrudElement"/> con información sobre los
@@ -334,15 +339,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public bool WillSearch
         {
-            get => _onSearch;
-            private set => Change(ref _onSearch, value);
+            get => _willSearch;
+            private set => Change(ref _willSearch, value);
         }
-
-        private readonly Type _model;
-        private bool _onSearch;
-        private string? _searchQuery;
-        private bool _isSearching;
-        private ICollectionView? _results;
 
         /// <summary>
         ///     Obtiene el comando relacionado a la acción Search.
@@ -354,7 +353,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Obtiene la etiqueta a utilizar para mostrar sobre el botón de
         ///     búsqueda.
         /// </summary>
-        public string SearchLabel => _onSearch ? "🔍" : "❌";
+        public string SearchLabel => _willSearch ? "🔍" : "❌";
 
         /// <summary>
         ///     Limpia los resultados de la búsqueda.
@@ -383,64 +382,9 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         private async Task PerformSearch()
         {
-            var s = SearchQuery!.ToLower();
-            var f = new List<IFilter>();
-            var o = new OrFilter();
-
-
-            if (_model.Implements<ISoftDeletable>())
-            {
-                o.Add(new EqualsFilter()
-                {
-                    Property = _model.GetProperty("IsDeleted")!,
-                    Value = false.ToString()
-                });
-            }
-
-            if (_model.Implements<INameable>())
-            {
-                o.Add(new ContainsFilter()
-                {
-                    Property = _model.GetProperty("Name")!,
-                    Value = s
-                });
-            }
-            //if (_model.Implements<IDescriptible>())
-            //{
-            //    f.Add(new ContainsFilter()
-            //    {
-            //        Property = _model.GetProperty("Description")!,
-            //        Value = s
-            //    });
-            //}
-            //if (_model.Implements<IUserBase>())
-            //{
-            //    f.Add(new ContainsFilter()
-            //    {
-            //        Property = _model.GetProperty("UserId")!,
-            //        Value = s
-            //    });
-            //}
-            //if (_model.Implements<ITitledText>())
-            //{
-            //    f.Add(new EqualsFilter()
-            //    {
-            //        Property = _model.GetProperty("Header")!,
-            //        Value = s
-            //    });
-            //}
-
-            f.Add(new EqualsFilter()
-            {
-                Property = _model.GetProperties().First(p => p.Name == "Id"),
-                Value = s
-            });
-
-            var q = QueryBuilder.BuildQuery(_model, f);
             IsSearching = true;
-            var r = await q.ToListAsync();
 
-            Results = CollectionViewSource.GetDefaultView(r);
+            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, _model).ToListAsync());
             Results.Refresh();
 
             IsSearching = false;

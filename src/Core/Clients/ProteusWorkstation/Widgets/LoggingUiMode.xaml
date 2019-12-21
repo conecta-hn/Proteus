@@ -23,13 +23,14 @@
             Grid.Row="1"
             MaxWidth="16"
             Margin="0,0,5,0"
-            Thickness="20"            
+            Thickness="20"
+            IsIndeterminate="{Binding IndeterminateProgress, Mode=OneWay}"
             Value="{Binding Progress}"
             TextFormat=""/>
         <TextBlock
             Grid.Column="1"
             Grid.Row="1"
-            Text="{Binding Status}"            
+            Text="{Binding Status}" 
             VerticalAlignment="Center"/>
         <Grid Background="Transparent" Grid.Column="1">
             <Grid.OpacityMask>

@@ -3,34 +3,37 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.ViewModels.Base;
 using System;
-using System.Threading.Tasks;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Crud.Base;
 using System.Collections.Generic;
-using TheXDS.MCART.ViewModel;
-using System.Windows.Input;
-using System.Linq;
 using System.ComponentModel;
 using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
-using TheXDS.MCART.Types;
+using System.Windows.Input;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud;
-using TheXDS.Proteus.Reporting;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Misc;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels.Base;
 using static TheXDS.MCART.Types.Extensions.ObservingCommandExtensions;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
 namespace TheXDS.Proteus.ViewModels
 {
+    /// <summary>
+    ///     ViewModel que controla el Widget de edición y selección de 
+    ///     entidades a partir de una lista.
+    /// </summary>
     public class ObjectEditorViewModel : CrudViewModelBase
     {
-        private string _fieldIcon;
-        private string _fieldName;
+        private string _fieldIcon = null!;
+        private string _fieldName = null!;
         private bool _canSelect;
         private bool _selectMode;
         private object? _tempSelection;
@@ -86,6 +89,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             get
             {
+                if (ActiveModel is null) return null;
                 if (!(CrudElement.GetDescription(ActiveModel).ListColumns is { } c)) return null;
                 var v = new GridView();
                 foreach (var j in c)
@@ -137,7 +141,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         ///     Obtiene el origen de selección de este <see cref="ListEditorViewModel"/>.
         /// </summary>
-        public ICollection<ModelBase> SelectionSource { get; }
+        public ICollection<ModelBase>? SelectionSource { get; }
 
         /// <summary>
         ///     Obtiene el comando que agrega elementos desde la lista de
@@ -167,13 +171,26 @@ namespace TheXDS.Proteus.ViewModels
             set => Change(ref _selectMode, value);
         }
 
+        /// <summary>
+        ///     Obtiene o establece el valor de selección temporal de la lista
+        ///     de búsqueda.
+        /// </summary>
         public object? TempSelection
         { 
             get=> _tempSelection; 
             set=>Change(ref _tempSelection, value);
         }
 
-
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="ObjectEditorViewModel"/>.
+        /// </summary>
+        /// <param name="description">
+        ///     Descripción de propiedad con la cual generar el control.
+        /// </param>
+        /// <param name="models">
+        ///     Modelos aceptados por el valor de la propiedad.
+        /// </param>
         public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), description, models) { }
 
         private void OnCancelSelect()
@@ -190,7 +207,20 @@ namespace TheXDS.Proteus.ViewModels
             OnCancelSelect();
         }
 
-        public ObjectEditorViewModel(ICollection<ModelBase> selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="ObjectEditorViewModel"/>.
+        /// </summary>
+        /// <param name="selectionSource">
+        ///     Origen de datos para la lista de selección.
+        /// </param>
+        /// <param name="description">
+        ///     Descripción de propiedad con la cual generar el control.
+        /// </param>
+        /// <param name="models">
+        ///     Modelos aceptados por el valor de la propiedad.
+        /// </param>
+        public ObjectEditorViewModel(ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
         {
             FieldName = description.Label;
             FieldIcon = description.Icon;
@@ -232,28 +262,54 @@ namespace TheXDS.Proteus.ViewModels
         public bool CanSelect
         {
             get => _canSelect;
-            internal set
+            private set
             {
                 _canSelect = value;
                 SelectCommand?.SetCanExecute(value);
             }
         }
 
-        protected override void OnDelete(object o)
+        /// <summary>
+        ///     Elimina el objeto de la selección.
+        /// </summary>
+        /// <param name="o">
+        ///     Valor a eliminar.
+        /// </param>
+        protected override void OnDelete(object? o)
         {
             Selection = null;
         }
 
+        /// <summary>
+        ///     Ejecuta una operación de guardado de la entidad actualmente en 
+        ///     edición.
+        /// </summary>
+        /// <param name="entity">
+        ///     Entidad en edición.
+        /// </param>
+        /// <returns>
+        ///     Este método siempre devuelve <see cref="DetailedResult.Ok"/>.
+        /// </returns>
         protected override Task<DetailedResult> PerformSave(ModelBase entity)
         {
             return Task.FromResult(DetailedResult.Ok);
         }
 
+        /// <summary>
+        ///     Obtiene al pariente de la entidad actualmente seleccionada.
+        /// </summary>
+        /// <returns>
+        ///     Este método siempre devuelve <see langword="null"/>.
+        /// </returns>
         protected override ModelBase? GetParent()
         {
             return null;
         }
 
+        /// <summary>
+        ///     Ejecuta operaciones adicionales posteriores al guardado de una
+        ///     entidad.
+        /// </summary>
         protected override void AfterSave()
         {
         }
@@ -311,63 +367,9 @@ namespace TheXDS.Proteus.ViewModels
 
         private async Task PerformSearch()
         {
-            if (ActiveModel is null) return;
-
-            var s = SearchQuery!.ToLower();
-            var f = new List<IFilter>();
-
-            if (ActiveModel.Implements<ISoftDeletable>())
-            {
-                f.Add(new EqualsFilter()
-                {
-                    Property = ActiveModel.GetProperty("IsDeleted")!,
-                    Value = false.ToString()
-                });
-            }
-            if (ActiveModel.Implements<INameable>())
-            {
-                f.Add(new ContainsFilter()
-                {
-                    Property = ActiveModel.GetProperty("Name")!,
-                    Value = s
-                });
-            }
-            if (ActiveModel.Implements<IDescriptible>())
-            {
-                f.Add(new ContainsFilter()
-                {
-                    Property = ActiveModel.GetProperty("Description")!,
-                    Value = s
-                });
-            }
-            if (ActiveModel.Implements<IUserBase>())
-            {
-                f.Add(new ContainsFilter()
-                {
-                    Property = ActiveModel.GetProperty("UserId")!,
-                    Value = s
-                });
-            }
-            if (ActiveModel.Implements<ITitledText>())
-            {
-                f.Add(new EqualsFilter()
-                {
-                    Property = ActiveModel.GetProperty("Header")!,
-                    Value = s
-                });
-            }
-
-            f.Add(new EqualsFilter()
-            {
-                Property = ActiveModel.GetProperties().First(p=>p.Name == "Id"),
-                Value = s
-            });
-
-            var q = QueryBuilder.BuildQuery(ActiveModel, f);
             IsSearching = true;
-            var r = await q.ToListAsync();
 
-            Results = CollectionViewSource.GetDefaultView(r);
+            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync());
             Results.Refresh();
 
             IsSearching = false;

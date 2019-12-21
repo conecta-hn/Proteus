@@ -27,7 +27,7 @@ namespace TheXDS.Proteus.Reporting
         ///     Un tipo que describe a un delegado 
         ///     <see cref="Func{T, TResult}"/>.
         /// </returns>
-        protected Type ToFunc(Type model)
+        protected static Type ToFunc(Type model)
         {
             return typeof(Func<,>).MakeGenericType(model, typeof(bool));
         }
@@ -58,7 +58,7 @@ namespace TheXDS.Proteus.Reporting
         ///     Una expresión que convierte en una cadena el valor obtenido
         ///     desde la expresión especificada.
         /// </returns>
-        protected Expression ToStringExp(Expression expression, Type valType)
+        protected static Expression ToStringExp(Expression expression, Type valType)
         {
             return Expression.Call(expression, valType.GetMethod("ToString", Type.EmptyTypes));
         }
@@ -73,11 +73,15 @@ namespace TheXDS.Proteus.Reporting
         ///     Una expresión que convierte la cadena obtenida desde la
         ///     expresión especificada a minúsculas.
         /// </returns>
-        protected Expression ToLower(Expression expression)
+        protected static Expression ToLower(Expression expression)
         {
             return Expression.Call(expression, typeof(string).GetMethod("ToLower", Type.EmptyTypes));
         }
 
+        /// <summary>
+        ///     Obtiene una referencia al valor constante relacionado a esta instancia.
+        /// </summary>
+        /// <returns></returns>
         protected Expression GetValue()
         {
             return Expression.Constant(Value.ToLower());
@@ -115,6 +119,6 @@ namespace TheXDS.Proteus.Reporting
             return Expression.Lambda(ToFunc(model), GetFilterOnly(model, ref entExp), entExp);
         }
 
-        public abstract BinaryExpression GetFilterOnly(Type model, ref ParameterExpression? entExp);
+        public abstract Expression GetFilterOnly(Type model, ref ParameterExpression? entExp);
     }
 }

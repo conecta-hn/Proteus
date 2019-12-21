@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.Reporting
         /// </returns>
         protected abstract BinaryExpression Comparer(Expression a, Expression b);
 
-        public override BinaryExpression GetFilterOnly(Type model, ref ParameterExpression? entExp)
+        public override Expression GetFilterOnly(Type model, ref ParameterExpression? entExp)
         {
             entExp ??= Expression.Parameter(model);
 

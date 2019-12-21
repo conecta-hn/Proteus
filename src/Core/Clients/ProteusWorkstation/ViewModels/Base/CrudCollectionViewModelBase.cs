@@ -61,7 +61,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
-        public CrudCollectionViewModelBase(ICollection<ModelBase> source, params CrudElement[] elements) : base(elements)
+        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, params CrudElement[] elements) : base(elements)
         {
             if (elements.Count() == 1)
             {
@@ -116,12 +116,22 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         ICollection<ModelBase> ICrudCollectionViewModel.Source => Source;
 
-
+        /// <summary>
+        ///     Obtiene a la entidad padre de la entidad actualmente
+        ///     seleccionada.
+        /// </summary>
+        /// <returns>
+        ///     El padre de la entidad seleccionada, o <see langword="null"/>
+        ///     si no es posible determinar a un padre en este contexto.
+        /// </returns>
         protected override ModelBase? GetParent()
         {
             return (Selector as TreeView)?.SelectedItem as ModelBase;
         }
 
+        /// <summary>
+        ///     Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
+        /// </summary>
         protected override void AfterSave()
         {
             Notify(nameof(Source));

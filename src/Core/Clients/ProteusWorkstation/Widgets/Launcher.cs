@@ -26,7 +26,7 @@ namespace TheXDS.Proteus.Widgets
         /// <summary>
         ///     Obtiene una descripción para este <see cref="Launcher"/>.
         /// </summary>
-        public string Description { get; }
+        public string? Description { get; }
 
         /// <summary>
         ///     Obtiene un comando para este <see cref="Launcher"/>.
@@ -55,7 +55,7 @@ namespace TheXDS.Proteus.Widgets
         /// <param name="command">
         ///     Comando a ejecutar al activar este <see cref="Launcher"/>.
         /// </param>
-        public Launcher(string name, string description, string id, ICommand command) : this(name, description, id, command, null) { }
+        public Launcher(string name, string? description, string id, ICommand command) : this(name, description, id, command, null) { }
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
@@ -70,7 +70,7 @@ namespace TheXDS.Proteus.Widgets
         /// <param name="action">
         ///     Acción a ejecutar al activar este <see cref="Launcher"/>.
         /// </param>
-        public Launcher(string name, string description, Action action) : this(name, description, action.Method.FullName(), new SimpleCommand(action), null)
+        public Launcher(string name, string? description, Action action) : this(name, description, action.Method.FullName(), new SimpleCommand(action), null)
         {
         }
 
@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.Widgets
         /// <param name="commandParameter">
         ///     Parámetros del comando.
         /// </param>
-        public Launcher(string name, string description, string id, ICommand command, object commandParameter)
+        public Launcher(string name, string? description, string id, ICommand command, object? commandParameter)
         {
             Name = name;
             Description = description;
@@ -155,7 +155,7 @@ namespace TheXDS.Proteus.Widgets
         ///     Obtiene el parámetro a utilizar al realizar llamadas a los
         ///     métodos del comando.
         /// </summary>
-        public object CommandParameter { get; }
+        public object? CommandParameter { get; }
 
         /// <summary>
         ///     Convierte implícitamente un <see cref="InteractionItem"/> en un <see cref="Launcher"/>.

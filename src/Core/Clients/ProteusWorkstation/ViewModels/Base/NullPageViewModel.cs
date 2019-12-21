@@ -1,4 +1,9 @@
-﻿using TheXDS.Proteus.Component;
+﻿/*
+Copyright © 2017-2019 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
+using TheXDS.Proteus.Component;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -6,7 +11,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     {
         public NullPageViewModel(ICloseable host) : base(host)
         {
-            Title = "/!\\ Página sin inicializar!!";
+            Title = "⚠ Página sin inicializar";
         }
     }
 }

@@ -3,6 +3,12 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System.Threading.Tasks;
+using System.Windows;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Math;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Dialogs;
@@ -10,13 +16,8 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
-using System.Threading.Tasks;
-using TheXDS.MCART.Math;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.MCART.ViewModel;
-using static TheXDS.Proteus.ViewModels.LoginViewModel;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
-using System.Windows;
+using static TheXDS.Proteus.ViewModels.LoginViewModel;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -88,6 +89,7 @@ namespace TheXDS.Proteus.ViewModels
         /// </param>
         public MainWindowViewModel(IPageVisualHost window) : base(window, true)
         {
+            Title = App.Info.Name;
             LogoutCommand = new SimpleCommand(Logout);
             var s = Settings.Default;
             if (!(s is null)) s.PropertyChanged += Default_PropertyChanged;
@@ -100,7 +102,7 @@ namespace TheXDS.Proteus.ViewModels
             Proteus.CommonReporter = this;
             App.RootHost = this;
 
-            var args = new TheXDS.MCART.Component.CmdLineParser();
+            var args = new CmdLineParser();
             foreach (var j in args.Present) j.Run(args);
         }
 
@@ -212,6 +214,7 @@ namespace TheXDS.Proteus.ViewModels
                 case nameof(Settings.NoiseUI):
                     Notify(nameof(NoiseUI));
                     break;
+                case nameof(Settings.MainWindowUiMode):
                 case nameof(Settings.WindowUiMode):
                     Notify(nameof(ReporterUi));
                     break;

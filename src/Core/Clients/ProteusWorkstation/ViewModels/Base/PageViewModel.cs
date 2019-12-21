@@ -4,51 +4,18 @@ Licenciado para uso interno solamente.
 */
 
 using TheXDS.Proteus.Component;
-using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
 
-    public abstract class PageModelViewModel<T> : PageViewModel where T : ModelBase
-    {
-        protected PageModelViewModel(ICloseable host) : base(host)
-        {
-        }
-
-        protected PageModelViewModel(ICloseable host, bool closeable) : base(host, closeable)
-        {
-        }
-
-        protected PageModelViewModel(ICloseable host, T entity) : base(host)
-        {
-            Entity = entity;
-        }
-
-        protected PageModelViewModel(ICloseable host, bool closeable, T entity) : base(host, closeable)
-        {
-            Entity = entity;
-        }
-
-        private T _entity;
-
-        /// <summary>
-        ///     Obtiene o establece el valor Entity.
-        /// </summary>
-        /// <value>El valor de Entity.</value>
-        public T Entity
-        {
-            get => _entity;
-            set => Change(ref _entity, value);
-        }
-    }
     /// <summary>
     ///     Clase base para todos los ViewModel que describan ventanas.
     /// </summary>
     public abstract class PageViewModel : ProteusViewModel, IPageViewModel
     {
         private bool _closeable = true;
-        private string _title;
+        private string? _title;
 
         /// <summary>
         ///     Obtiene el título de este ViewModel a mostrar en su
@@ -56,7 +23,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public virtual string Title
         {
-            get => _title;
+            get => _title ?? "⚠ Página sin título";
             set => Change(ref _title, value);
         }
         /// <summary>

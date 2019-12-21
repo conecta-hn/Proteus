@@ -3,16 +3,12 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-#nullable enable
-
 using System.Windows.Controls;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Crud.Mappings.Base;
 using System.Windows.Controls.Primitives;
 using System.Linq;
 using System.Windows.Data;
-using TheXDS.Proteus.Widgets;
-using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {

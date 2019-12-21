@@ -18,67 +18,69 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <DockPanel IsEnabled="{Binding NotEditMode}">
-                <DockPanel Margin="-5" DockPanel.Dock="Top">
-                    <Button
-                        DockPanel.Dock="Right"
-                        Content="{Binding SearchLabel, Mode=OneWay}"
-                        Command="{Binding SearchCommand, Mode=OneWay}"/>
-                    <TextBox
-                        Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
-                        local:ProteusProp.Watermark="Buscar..."
-                        local:ProteusProp.Icon="🔍" />
-                </DockPanel>                
-                <mcart:StretchyWrapPanel Margin="-5,5" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
-                    <xctk:DropDownButton Visibility="{Binding MultiModel}">
-                        <xctk:DropDownButton.DropDownContent>
-                            <ListView
-                                Margin="5"
-                                Background="{x:Null}"
-                                BorderThickness="0"
-                                ItemsSource="{Binding CreateCommands}"
-                                BorderBrush="{x:Null}"
-                                HorizontalContentAlignment="Stretch">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListViewItem}">
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                    <ContentPresenter />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel HorizontalAlignment="Stretch"/>
-                                    </ItemsPanelTemplate>
-                                </ListView.ItemsPanel>
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="widgets:Launcher">
-                                        <Button
-                                            Margin="5"
-                                            Content="{Binding Name, Mode=OneWay}"
-                                            ToolTip="{Binding Description, Mode=OneWay}"
-                                            Command="{Binding Command, Mode=OneWay}"
-                                            CommandParameter="{Binding CommandParameter}"/>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </xctk:DropDownButton.DropDownContent>+</xctk:DropDownButton>
-                    <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}">+</Button>
-                    <Button Command="{Binding EditCurrent}" CommandParameter="{Binding Selection}">✎</Button>
-                    <Button 
-                        Command="{Binding DeleteCurrent}"
-                        CommandParameter="{Binding Selection}"
-                        Background="{StaticResource BadColorT}"
-                        widgets:ProteusProp.Accent="{StaticResource BadColorT2}"
-                        TextElement.Foreground="DarkRed">🗑</Button>
-                </mcart:StretchyWrapPanel>
-                <ContentPresenter Content="{Binding Selector}"/>
-            </DockPanel>
+            <mcart:BusyContainer IsBusy="{Binding IsSearching}">
+                <DockPanel IsEnabled="{Binding NotEditMode}">                    
+                    <DockPanel Margin="-5" DockPanel.Dock="Top">
+                        <Button
+                            DockPanel.Dock="Right"
+                            Content="{Binding SearchLabel, Mode=OneWay}"
+                            Command="{Binding SearchCommand, Mode=OneWay}"/>
+                        <TextBox
+                            Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                            local:ProteusProp.Watermark="Buscar..."
+                            local:ProteusProp.Icon="🔍" />
+                    </DockPanel>                
+                    <mcart:StretchyWrapPanel Margin="-5,5" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+                        <xctk:DropDownButton Visibility="{Binding MultiModel}">
+                            <xctk:DropDownButton.DropDownContent>
+                                <ListView
+                                    Margin="5"
+                                    Background="{x:Null}"
+                                    BorderThickness="0"
+                                    ItemsSource="{Binding CreateCommands}"
+                                    BorderBrush="{x:Null}"
+                                    HorizontalContentAlignment="Stretch">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ListViewItem}">
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                        <ContentPresenter />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch"/>
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate DataType="widgets:Launcher">
+                                            <Button
+                                                Margin="5"
+                                                Content="{Binding Name, Mode=OneWay}"
+                                                ToolTip="{Binding Description, Mode=OneWay}"
+                                                Command="{Binding Command, Mode=OneWay}"
+                                                CommandParameter="{Binding CommandParameter}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </xctk:DropDownButton.DropDownContent>+</xctk:DropDownButton>
+                        <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}">+</Button>
+                        <Button Command="{Binding EditCurrent}" CommandParameter="{Binding Selection}">✎</Button>
+                        <Button 
+                            Command="{Binding DeleteCurrent}"
+                            CommandParameter="{Binding Selection}"
+                            Background="{StaticResource BadColorT}"
+                            widgets:ProteusProp.Accent="{StaticResource BadColorT2}"
+                            TextElement.Foreground="DarkRed">🗑</Button>
+                    </mcart:StretchyWrapPanel>
+                    <ContentPresenter Content="{Binding Selector}"/>
+                </DockPanel>
+            </mcart:BusyContainer>
             <GridSplitter/>
             <Grid Visibility="{Binding Selection, Converter={StaticResource NotNullToVisibilityConverter}}" Grid.Column="2">
                 <DockPanel Visibility="{Binding EditVis}">
