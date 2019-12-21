@@ -32,6 +32,7 @@ namespace TheXDS.Proteus.Cmd
             Settings.Default.WindowUiMode = UiMode.Logging;
             Settings.Default.RememberLastLogin = false;
             Settings.Default.LastLogin = null;
+            Settings.Default.ResartRequired = true;
 
 
             Proteus.CommonReporter?.UpdateStatus($"Iniciando {App.Info.Name} en modo de recuperación...");
@@ -39,6 +40,7 @@ namespace TheXDS.Proteus.Cmd
             {
                 Proteus.DisposeSettings();
                 Settings.Default.Launched = false;
+                Proteus.CommonReporter?.Done();
                 App.UiInvoke(Vm.OpenPage<SettingsPage>);
                 return;
             }

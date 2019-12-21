@@ -36,7 +36,7 @@ namespace TheXDS.Proteus
         /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
             Loaded += MainWindow_Loaded;
             DataContext = new MainWindowViewModel(this);
             Closing += MainWindow_Closing;
