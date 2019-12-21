@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:TheXDS.Proteus.Widgets"
     xmlns:base="clr-namespace:TheXDS.Proteus.Pages.Base"
     xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
     xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
@@ -18,6 +19,16 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <DockPanel IsEnabled="{Binding NotEditMode}">
+                <DockPanel Margin="-5" DockPanel.Dock="Top">
+                    <Button
+                        DockPanel.Dock="Right"
+                        Content="{Binding SearchLabel, Mode=OneWay}"
+                        Command="{Binding SearchCommand, Mode=OneWay}"/>
+                    <TextBox
+                        Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                        local:ProteusProp.Watermark="Buscar..."
+                        local:ProteusProp.Icon="🔍" />
+                </DockPanel>                
                 <mcart:StretchyWrapPanel Margin="-5,5" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
                     <xctk:DropDownButton Visibility="{Binding MultiModel}">
                         <xctk:DropDownButton.DropDownContent>

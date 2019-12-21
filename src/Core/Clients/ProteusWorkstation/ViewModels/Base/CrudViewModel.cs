@@ -15,6 +15,13 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Crud;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using TheXDS.MCART.ViewModel;
+using System.ComponentModel;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Reporting;
+using TheXDS.MCART.Types;
+using System.Data.Entity;
+using System.Windows.Data;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -162,13 +169,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </param>
         public CrudViewModel(ICloseable host, Type model) : base(host)
         {
+            _model = model;
             Implementation = new DbBoundCrudViewModel(model);
             Implementation.ForwardChange(this);
-
-            RegisterPropertyChangeTrigger(nameof(Title),
-                nameof(EditMode));
-
+            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
             RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -183,13 +189,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </param>
         public CrudViewModel(ICloseable host, CrudElement element) : base(host)
         {
+            _model = element.Model;
             Implementation = new DbBoundCrudViewModel(element);
             Implementation.ForwardChange(this);
-
-            RegisterPropertyChangeTrigger(nameof(Title),
-                nameof(EditMode));
-
+            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
             RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -201,8 +206,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="models">Modelos asociados de datos.</param>
         public CrudViewModel(ICloseable host, IQueryable<ModelBase> source, params Type[] models) : base(host, true)
         {
+            _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
             Implementation.ForwardChange(this);
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -214,8 +221,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="elements">Elementos de crud a incorporar.</param>
         public CrudViewModel(ICloseable host, IQueryable<ModelBase> source, params CrudElement[] elements) : base(host, true)
         {
+            _model = elements.First().Model;
             Implementation = new DbBoundCrudViewModel(source, elements);
             Implementation.ForwardChange(this);
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -286,5 +295,156 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="action">Tarea a ejecutar.</param>
         public void BusyDo(Task action) => Implementation.BusyDo(action);
+
+        private ObservingCommand CreateSearchCommand()
+        {
+            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+            return new ObservingCommand(this, OnSearch)
+                .ListensToProperty(() => SearchQuery!)
+                .SetCanExecute(() => !SearchQuery.IsEmpty());
+        }
+
+        /// <summary>
+        ///     Obtiene o establece el valor SearchQuery.
+        /// </summary>
+        /// <value>El valor de SearchQuery.</value>
+        public string? SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                if (!Change(ref _searchQuery, value)) return;
+                WillSearch = true;
+            }
+        }
+
+        /// <summary>
+        ///     Obtiene una colección con los resultados de la búsqueda.
+        /// </summary>
+        public ICollectionView? Results
+        { 
+            get=>_results;
+            private set => Change(ref _results, value);
+        }
+
+        /// <summary>
+        ///     Obtiene un valor que indica si al ejecutar
+        ///     <see cref="SearchCommand"/> se hará una búsqueda o se limpiará
+        ///     la búsqueda actual.
+        /// </summary>
+        public bool WillSearch
+        {
+            get => _onSearch;
+            private set => Change(ref _onSearch, value);
+        }
+
+        private readonly Type _model;
+        private bool _onSearch;
+        private string? _searchQuery;
+        private bool _isSearching;
+        private ICollectionView? _results;
+
+        /// <summary>
+        ///     Obtiene el comando relacionado a la acción Search.
+        /// </summary>
+        /// <returns>El comando Search.</returns>
+        public ObservingCommand SearchCommand { get; }
+
+        /// <summary>
+        ///     Obtiene la etiqueta a utilizar para mostrar sobre el botón de
+        ///     búsqueda.
+        /// </summary>
+        public string SearchLabel => _onSearch ? "🔍" : "❌";
+
+        /// <summary>
+        ///     Limpia los resultados de la búsqueda.
+        /// </summary>
+        public void ClearSearch()
+        {
+            Results = null;
+            SearchQuery = null;
+        }
+
+        /// <summary>
+        ///     Obtiene o establece el valor IsSearching.
+        /// </summary>
+        /// <value>El valor de IsSearching.</value>
+        public bool IsSearching
+        {
+            get => _isSearching;
+            set => Change(ref _isSearching, value);
+        }
+
+        private async void OnSearch()
+        {
+            if (WillSearch && !SearchQuery.IsEmpty()) await PerformSearch();
+            else ClearSearch();
+        }
+
+        private async Task PerformSearch()
+        {
+            var s = SearchQuery!.ToLower();
+            var f = new List<IFilter>();
+            var o = new OrFilter();
+
+
+            if (_model.Implements<ISoftDeletable>())
+            {
+                o.Add(new EqualsFilter()
+                {
+                    Property = _model.GetProperty("IsDeleted")!,
+                    Value = false.ToString()
+                });
+            }
+
+            if (_model.Implements<INameable>())
+            {
+                o.Add(new ContainsFilter()
+                {
+                    Property = _model.GetProperty("Name")!,
+                    Value = s
+                });
+            }
+            //if (_model.Implements<IDescriptible>())
+            //{
+            //    f.Add(new ContainsFilter()
+            //    {
+            //        Property = _model.GetProperty("Description")!,
+            //        Value = s
+            //    });
+            //}
+            //if (_model.Implements<IUserBase>())
+            //{
+            //    f.Add(new ContainsFilter()
+            //    {
+            //        Property = _model.GetProperty("UserId")!,
+            //        Value = s
+            //    });
+            //}
+            //if (_model.Implements<ITitledText>())
+            //{
+            //    f.Add(new EqualsFilter()
+            //    {
+            //        Property = _model.GetProperty("Header")!,
+            //        Value = s
+            //    });
+            //}
+
+            f.Add(new EqualsFilter()
+            {
+                Property = _model.GetProperties().First(p => p.Name == "Id"),
+                Value = s
+            });
+
+            var q = QueryBuilder.BuildQuery(_model, f);
+            IsSearching = true;
+            var r = await q.ToListAsync();
+
+            Results = CollectionViewSource.GetDefaultView(r);
+            Results.Refresh();
+
+            IsSearching = false;
+            WillSearch = false;
+        }
     }
 }

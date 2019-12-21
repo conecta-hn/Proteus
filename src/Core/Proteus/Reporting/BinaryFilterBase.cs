@@ -78,6 +78,11 @@ namespace TheXDS.Proteus.Reporting
             return Expression.Call(expression, typeof(string).GetMethod("ToLower", Type.EmptyTypes));
         }
 
+        protected Expression GetValue()
+        {
+            return Expression.Constant(Value.ToLower());
+        }
+
         /// <summary>
         ///     Obtiene o establece la propiedad del modelo para la cual se
         ///     crearán las expresiones.
@@ -104,6 +109,12 @@ namespace TheXDS.Proteus.Reporting
         /// <returns>
         ///     Una expresión que puede utilizarse para filtrar una <see cref="System.Linq.IQueryable{T}"/>
         /// </returns>
-        public abstract LambdaExpression GetFilter(Type model);
+        public virtual LambdaExpression GetFilter(Type model)
+        {
+            ParameterExpression? entExp = null;
+            return Expression.Lambda(ToFunc(model), GetFilterOnly(model, ref entExp), entExp);
+        }
+
+        public abstract BinaryExpression GetFilterOnly(Type model, ref ParameterExpression? entExp);
     }
 }

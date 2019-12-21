@@ -38,6 +38,7 @@ namespace TheXDS.Proteus.ViewModels
         private string? _searchQuery;
         private bool _canSearch;
         private bool _isSearching;
+        private ICollectionView? _results;
 
         /// <summary>
         ///     Enumera los modelos disponibles para seleccionar en la búsqueda.
@@ -98,7 +99,11 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         ///     Obtiene una colección con los resultados de la búsqueda.
         /// </summary>
-        public ICollectionView? Results { get; private set; }
+        public ICollectionView? Results
+        {
+            get => _results;
+            private set => Change(ref _results, value);
+        }
 
         /// <summary>
         ///     Obtiene un valor que indica si al ejecutar
@@ -115,7 +120,7 @@ namespace TheXDS.Proteus.ViewModels
         ///     Obtiene la etiqueta a utilizar para mostrar sobre el botón de
         ///     búsqueda.
         /// </summary>
-        public string SearchLabel => WillSearch ? "🔍" : "❌";
+        public string SearchLabel => WillSearch ? "❌" : "🔍";
 
         /// <summary>
         ///     Obtiene el comando relacionado a la acción Search.
@@ -308,7 +313,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             if (ActiveModel is null) return;
 
-            var s = SearchQuery!.ToUpper();
+            var s = SearchQuery!.ToLower();
             var f = new List<IFilter>();
 
             if (ActiveModel.Implements<ISoftDeletable>())

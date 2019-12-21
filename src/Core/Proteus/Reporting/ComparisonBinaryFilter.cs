@@ -25,31 +25,16 @@ namespace TheXDS.Proteus.Reporting
         /// </returns>
         protected abstract BinaryExpression Comparer(Expression a, Expression b);
 
-        /// <summary>
-        ///     Obtiene la expresión a utilizar para filtrar una colección.
-        /// </summary>
-        /// <param name="model">
-        ///     Modelo para la cual se generará la expresión.
-        /// </param>
-        /// <returns>
-        ///     Una expresión que puede utilizarse para filtrar una <see cref="System.Linq.IQueryable{T}"/>
-        /// </returns>
-        public override sealed LambdaExpression GetFilter(Type model)
+        public override BinaryExpression GetFilterOnly(Type model, ref ParameterExpression? entExp)
         {
-            var entExp = Expression.Parameter(model);
-            
-            return Expression.Lambda(ToFunc(model),
-                Comparer(
+            entExp ??= Expression.Parameter(model);
+
+            return Comparer(
                     ToLower(
                         ToStringExp(
                             GetFromEntity(entExp),
                             Property.PropertyType)),
-                    Expression.Constant(Value.ToLower())), entExp);
+                    Expression.Constant(Value.ToLower()));
         }
     }
-
-
-
-
-
 }

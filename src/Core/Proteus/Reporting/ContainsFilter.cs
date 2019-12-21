@@ -38,7 +38,7 @@ namespace TheXDS.Proteus.Reporting
                             GetFromEntity(entExp),
                             Property.PropertyType)),
                     typeof(string).GetMethod("Contains", new Type[] { typeof(string) }),
-                    Expression.Constant(Value.ToLower())),
+                    GetValue()),
                 entExp);
         }
     }
