@@ -55,7 +55,7 @@ namespace TheXDS.Proteus.Cmd
             App.UiInvoke(Vm.OpenMainPage);
             Vm.UpdateStatus(100, $"Inicialización completada, {App.Info.Name} se iniciará en unos segundos.");
             Vm.UpdateStatus(100, $"Se escribirá una bitácora en {logger.Logger?.LogFile}");
-            await Task.Delay(10000);
+            await Task.Delay(5000);
             Proteus.CommonReporter?.Done();
         }
     }

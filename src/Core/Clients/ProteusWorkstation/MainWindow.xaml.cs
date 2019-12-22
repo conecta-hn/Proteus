@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace TheXDS.Proteus
 {
@@ -63,12 +64,7 @@ namespace TheXDS.Proteus
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(_ => OnLoaded()));
-        }
-
-        private async void OnLoaded()
+        private async void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
             try
             {

@@ -137,16 +137,16 @@ namespace TheXDS.Proteus.ViewModels
 
         internal async Task PostSettingsInit()
         {
-            UpdateStatus("Preparando aplicación...");
-
+            Proteus.CommonReporter?.UpdateStatus("Preparando aplicación...");
             await Proteus.Init(Settings.Default);
             Proteus.LogoutActions.Add(Logout);
 
-            UpdateStatus("Cargando componentes...");
             await App.LoadPlugins();
 
-            UpdateStatus("Pre-construyendo elementos de UI...");
-            await Task.Run(CrudElement.Preload);
+            if (Settings.Default.EarlyLoadMappings)
+            {
+                await Task.Run(CrudElement.Preload);
+            }
 
             Done();
             if (App.KickStarter.RequiresInteractiveLogin)
@@ -154,16 +154,16 @@ namespace TheXDS.Proteus.ViewModels
                 Proteus.Interactive = true;
                 App.UiInvoke(Logout);
             }
-
             else
             {
-                App.UiInvoke(OpenMainPage);
+                //App.UiInvoke(OpenMainPage);
+                OpenMainPage();
             }
         }
 
         private void Logout()
         {
-            if (!Proteus.Interactive) return;
+            if (!Proteus.Interactive) App.UiInvoke(Close);
             App.UiInvoke(() =>
             {
                 Pages.Clear();

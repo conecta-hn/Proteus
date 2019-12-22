@@ -151,9 +151,7 @@ namespace TheXDS.Proteus
 
         private static async Task<IEnumerable<T>> Load<T>() where T : Plugin
         {
-            var i = GetTypes<T>(true).Select(t => TypeExtensions.New<T>(t, false, Array.Empty<object>())).NotNull().ToList();
-            var pl = (await new PluginLoader().LoadEverythingAsync<T>(Settings.Default.WsPluginsDir)).ToList();
-            return i.Concat(pl).Distinct(new TypeComparer<T>()).ToList();
+            return GetTypes<T>(true).Select(t => TypeExtensions.New<T>(t, false, Array.Empty<object>())).NotNull().Concat(await new PluginLoader().LoadEverythingAsync<T>(Settings.Default.WsPluginsDir)).Distinct(new TypeComparer<T>());
         }
 
         private class TypeComparer<T> : IEqualityComparer<T>
