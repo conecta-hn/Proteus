@@ -1,4 +1,9 @@
-﻿using System.Windows.Controls;
+﻿/*
+Copyright © 2017-2019 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
+using System.Windows.Controls;
 using System.Windows.Documents;
 using TheXDS.Proteus.ViewModels;
 
@@ -21,14 +26,17 @@ namespace TheXDS.Proteus.Widgets
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainWindowViewModel.Status))
+            lock (TxtLog)
             {
-                if (_lastLog != null)
-                { 
-                    App.UiInvoke(()=>TxtLog.Inlines.Add(new LineBreak()));
-                    App.UiInvoke(() => TxtLog.Inlines.Add(new Run(_lastLog)));
+                if (e.PropertyName == nameof(MainWindowViewModel.Status))
+                {
+                    if (!(_lastLog is null))
+                    {
+                        App.UiInvoke(() => TxtLog.Inlines.Add(new LineBreak()));
+                        App.UiInvoke(() => TxtLog.Inlines.Add(new Run(_lastLog)));
+                    }
+                    _lastLog = ((MainWindowViewModel)sender).Status;
                 }
-                _lastLog = ((MainWindowViewModel)sender).Status ?? "Completado";
             }
         }
         private string? _lastLog;

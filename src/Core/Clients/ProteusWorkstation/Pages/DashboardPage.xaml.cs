@@ -10,6 +10,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace TheXDS.Proteus.Pages
 {
@@ -27,10 +28,10 @@ namespace TheXDS.Proteus.Pages
             Loaded += DashboardPage_Loaded;
         }
 
-        private void DashboardPage_Loaded(object sender, RoutedEventArgs e)
+        private async void DashboardPage_Loaded(object sender, RoutedEventArgs e)
         {
             if (_loaded) return;
-            ViewModel.Refresh();
+            await Task.Run(ViewModel.Refresh);
             _loaded = true;
         }
 
