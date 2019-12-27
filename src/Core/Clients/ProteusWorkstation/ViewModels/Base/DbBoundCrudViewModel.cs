@@ -19,7 +19,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     ///     ViewModel que gestiona una ventana de Crud enlazada directamente a
     ///     una base de datos.
     /// </summary>
-    public class DbBoundCrudViewModel : CrudViewModelBase
+    public class DbBoundCrudViewModel : CrudCollectionViewModelBase
     {
         private readonly IQueryable<ModelBase> _source;
 
@@ -32,12 +32,21 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Inicializa una nueva instancia de la clase
         ///     <see cref="DbBoundCrudViewModel"/>.
         /// </summary>
-        /// <param name="model">Modelo único de datos</param>
+        /// <param name="model">Modelo único de datos.</param>
         public DbBoundCrudViewModel(Type model) : base(Infer(model).ToList(), model)
         {
             _source = Infer(model);
         }
 
+
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="DbBoundCrudViewModel"/>.
+        /// </summary>
+        /// <param name="element">
+        ///     <see cref="CrudElement"/>a utilizar para gestionar a una
+        ///     entidad dentro de esta instancia.
+        /// </param>
         public DbBoundCrudViewModel(CrudElement element) : base(Infer(element.Model).ToList(), element)
         {
             _source = Infer(element.Model);
@@ -54,7 +63,16 @@ namespace TheXDS.Proteus.ViewModels.Base
             _source = source;
         }
 
-        public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] models) : base(source.ToList(), models)
+        /// <summary>
+        ///     Inicializa una nueva instancia de la clase
+        ///     <see cref="DbBoundCrudViewModel"/>.
+        /// </summary>
+        /// <param name="source">Origen de datos a utilizar.</param>
+        /// <param name="elements">
+        ///     Arreglo de <see cref="CrudElement"/> a utilizar para gestionar
+        ///     a una entidad dentro de esta instancia.
+        /// </param>
+        public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] elements) : base(source.ToList(), elements)
         {
             _source = source;
         }
@@ -66,7 +84,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <returns></returns>
         protected override async Task<DetailedResult> PerformSave(ModelBase entity)
         {
-            var t = await PerformAsync(() => NewMode ? Service.AddAsync(entity) : Service.SaveAsync());
+            var t = await PerformAsync(() => NewMode ? Service!.AddAsync(entity) : Service!.SaveAsync());
             if (t.Result == Result.Ok)
             {
                 /* HACK: se debe restablecer de manera independiente el
@@ -86,16 +104,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="o">
         ///     Elemento a eliminar.
         /// </param>
-        protected override async void OnDelete(object o)
+        protected override async void OnDelete(object? o)
         {
-            var t = await PerformAsync(() => Service.PurgeAsync(o as ModelBase));
+            if (!(o is ModelBase m)) return;
+            var t = await PerformAsync(() => Service!.PurgeAsync(m));
             if (t.Result == Result.Ok) Source.Substitute(await Query());
         }
         private async Task<List<ModelBase>> Query()
         {
             if (_source is IDbAsyncEnumerable<ModelBase>)
             {
-                Service.Reload(_source);
+                Service!.Reload(_source);
                 return await _source.ToListAsync();
             }
             else

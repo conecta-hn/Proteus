@@ -31,12 +31,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     componentes relacionados al modelo de datos de la entidad
         ///     seleccionada.
         /// </summary>
-        CrudElement SelectedElement { get; }
+        CrudElement? SelectedElement { get; }
 
         /// <summary>
         ///     Obtiene o establece al elemento seleccionado.
         /// </summary>
-        object Selection { get; set; }
+        object? Selection { get; set; }
 
         /// <summary>
         ///     Ejecuta una operación colocando a este 

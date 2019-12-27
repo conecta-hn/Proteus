@@ -25,9 +25,9 @@ namespace TheXDS.Proteus.Cmd
             }
             else
             {
-                App.UiInvoke(() => AboutBox.ShowDialog(Application.Current));
+                App.UiInvoke(() => AboutBox.ShowDialog(new ApplicationInfo(Application.Current,Resources.Images.Logo)));
             }
-            App.UiInvoke(() => ((App.RootHost as MainWindowViewModel)?.Host as MainWindow)?.ForceClose());
+            App.UiInvoke(App.RootHost.ForceClose);
         }
     }
 }

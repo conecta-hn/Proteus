@@ -5,22 +5,22 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TheXDS.MCART;
+using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
-using System.Linq;
+using TheXDS.Proteus.Component.Attributes;
+using TheXDS.Proteus.Protocols;
 using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
-using System.Collections.Specialized;
-using TheXDS.MCART.Exceptions;
-using TheXDS.MCART;
-using TheXDS.Proteus.Component.Attributes;
-using TheXDS.MCART.Types;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.Proteus.Protocols;
-using System.IO;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -41,7 +41,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <inheritdoc />
         /// <summary>
         ///     Notifica de nuevos cambios existentes sobre el contenido de los
-        ///     campos de este <see cref="T:TheXDS.Proteus.ViewModels.Base.ViewModel" />.
+        ///     campos de este <see cref="ProteusViewModel" />.
         /// </summary>
         public override void Refresh()
         {
@@ -64,21 +64,30 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             var n = br.ReadString();
 
-            //foreach (var j in ActuallyActiveVms
-            //    .Where(p => p.GetType().ResolveToDefinedType().Name == n)
-            //    .OfType<IRefreshable>())
-            //{
-            //    j.Refresh();
-            //}
-
             RefreshVmAsync(n).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        ///     Obtiene una instancia activa de un 
+        ///     <see cref="ProteusViewModel"/>.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     Tipo de <see cref="ProteusViewModel"/> a obtener.
+        /// </typeparam>
+        /// <returns>
+        ///     Una instancia activa de <see cref="ProteusViewModel"/>, o
+        ///     <see langword="null"/> si no hay ninguna instancia activa del
+        ///     <see cref="ProteusViewModel"/> especificado.
+        /// </returns>
         public static T Get<T>() where T: ProteusViewModel
         {
             return ActuallyActiveVms.OfType<T>().FirstOrDefault();
         }
 
+        /// <summary>
+        ///     Enumera a todos los <see cref="ProteusViewModel"/> activos de 
+        ///     la aplicación.
+        /// </summary>
         public static IEnumerable<ProteusViewModel> ActuallyActiveVms => ActiveViewModels.Select(p => p.TryGetTarget(out var q) ? q : null).NotNull().ToList();
 
         /// <summary>
@@ -93,7 +102,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </returns>
         public static Task RefreshVmAsync(string typeName)
         {
-            return RefreshVmAsync(p => p.GetType().ResolveToDefinedType().Name == typeName);
+            return RefreshVmAsync(p => p.GetType().ResolveToDefinedType()!.Name == typeName);
         }
 
         /// <summary>
@@ -128,7 +137,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         protected void AutoHook()
         {
-            string UndRem(string name) => name[1].ToString().ToUpper() + name.Substring(2);
+            static string UndRem(string name) => name[1].ToString().ToUpper() + name.Substring(2);
 
             foreach (var j in GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(p => p.FieldType.Implements<INotifyCollectionChanged>() && !p.HasAttr<NoAutoHookAttribute>()))
@@ -194,7 +203,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public Type ActualType => GetActualType(GetType());
 
-        private Type GetActualType(Type t)
+        private Type GetActualType(Type? t)
         {
             if (t is null) return typeof(object);
             return t.Module.Assembly.IsDynamic ? GetActualType(t.BaseType) : t;

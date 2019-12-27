@@ -15,6 +15,8 @@ namespace TheXDS.Proteus.Config
     /// </summary>
     public class LaunchConfig : IKickStarter
     {
+        internal static bool _interactiveLogin = false;
+
         /// <summary>
         ///     Cambia el comportamiento de inicio de sesión de Proteus.
         /// </summary>
@@ -23,7 +25,7 @@ namespace TheXDS.Proteus.Config
         ///     <see langword="false"/> lo deshabilita y permite accesar a toda
         ///     la funcionalidad sin requerir el inicio de sesión.
         /// </value>
-        public bool RequiresInteractiveLogin => false;
+        public bool RequiresInteractiveLogin => _interactiveLogin;
 
         /// <summary>
         ///     Indica si es posible usar o no este <see cref="IKickStarter"/>.

@@ -340,6 +340,8 @@
             </DockPanel.Resources>
             <TextBlock Text="Módulos" Style="{StaticResource Title}" DockPanel.Dock="Top" />
             <Separator DockPanel.Dock="Top" />
+            
+            <!--Listado a la derecha-->
             <Expander DockPanel.Dock="Right" ExpandDirection="Right">
                 <Expander.Header>
                     <TextBlock>
@@ -354,24 +356,23 @@
                         fw:PointerTracker.Enabled="True"
                         ItemsSource="{Binding ModuleLaunchers}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        Background="{x:Null}"
+                        Background="{DynamicResource SystemAltMediumLowColorBrush}"
                         BorderThickness="0"
+                        Margin="10"
                         BorderBrush="{x:Null}">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel/>
+                                <StackPanel Margin="5"/>
                             </ItemsPanelTemplate>
                         </ListView.ItemsPanel>
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="widgets:Launcher">
                                 <Button
-                                    Margin="0,2"
-                                    
+                                    Margin="5"                                    
                                     MinWidth="28"
                                     MinHeight="28"
                                     Background="Transparent"
                                     Style="{StaticResource ButtonRevealStyle}"
-
                                     Content="{Binding Name, Mode=OneWay}"
                                     ToolTip="{Binding Description, Mode=OneWay}"
                                     Command="{Binding Command, Mode=OneWay}"/>
@@ -380,6 +381,8 @@
                     </ListView>
                 </ScrollViewer>
             </Expander>
+            
+            <!--Bloque principal-->
             <TextBlock DockPanel.Dock="Top" Style="{StaticResource SmallTitle}">Acceso rápido</TextBlock>
             <ListView 
                 x:Name="LstRoth"

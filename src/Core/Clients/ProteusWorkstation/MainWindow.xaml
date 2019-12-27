@@ -11,7 +11,7 @@
     Title="{Binding Title, Mode=OneWay}"
     NoiseOpacity="{Binding NoiseUI, Mode=OneWay}"
     mc:Ignorable="d" Background="{x:Null}"
-    d:DesignHeight="450" d:DesignWidth="600">
+    d:DesignHeight="450" d:DesignWidth="600" Icon="Proteus.png">
     <Grid>
         <Viewbox
             Opacity="{Binding LogoOpacity}"
@@ -30,16 +30,7 @@
                 </Viewbox.RenderTransform>
             </Viewbox>
         </Viewbox>
-        <DockPanel 
-            Margin="50"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <mcart:ProgressRing MaxWidth="150" Value="{Binding Progress}"/>
-            <ScrollViewer Margin="20,0,0,0" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
-                <TextBlock Style="{StaticResource Title}" Text="{Binding Status}"/>
-            </ScrollViewer>
-        </DockPanel>
+        <ContentControl Content="{Binding ReporterUi, Mode=OneWay}"/>
         <TabControl            
             x:Name="TabHost"
             Visibility="{Binding IsBusy, Converter={StaticResource BooleanToInvVisibilityConverter}}"

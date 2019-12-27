@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.Widgets
     /// </summary>
     public partial class ListEditor : UserControl
     {
-        private ListEditorViewModel Vm => DataContext as ListEditorViewModel;
+        private ListEditorViewModel Vm => (ListEditorViewModel)DataContext;
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
         ///     <see cref="ListEditor"/>.

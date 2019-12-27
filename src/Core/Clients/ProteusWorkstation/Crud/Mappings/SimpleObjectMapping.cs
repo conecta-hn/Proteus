@@ -27,7 +27,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             if (p is IDataPropertyDescription i)
             {
                 _source = i.Source;
-                Control.ItemsSource = i.Source.ToList();
+                Control.ItemsSource = i.Source?.ToList() ?? Proteus.Infer(i.PropertyType)?.All(i.PropertyType).ToList();
                 Control.DisplayMemberPath = i.DisplayMemberPath;
             }
         }

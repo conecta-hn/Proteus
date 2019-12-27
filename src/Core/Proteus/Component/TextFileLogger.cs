@@ -3,14 +3,12 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-# nullable enable
-
 using System;
-using System.Reflection;
+using TheXDS.Proteus.Misc;
 
 namespace TheXDS.Proteus.Component
 {
-    public class TextFileLogger : IMessageTarget
+    public class TextFileLogger : IMessageTarget, ILogTarget, IStatusReporter
     {
         private static readonly object _lockObj = new object();
         public TextFileLogger() : this(null)
@@ -20,7 +18,7 @@ namespace TheXDS.Proteus.Component
         {
             LogFile = logFile ?? $@"{Proteus.Settings?.PluginsDir ?? "."}\{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.log";
         } 
-        private string LogFile { get; }
+        public string LogFile { get; }
         public void Log(string text)
         {
             lock (_lockObj)
@@ -35,17 +33,7 @@ namespace TheXDS.Proteus.Component
         }
         public void Critical(Exception ex)
         {
-            Log($"(X) {ex.GetType().Name}\n{ex.Message}\n{ex.StackTrace}");
-            if (!(ex.InnerException is null)) Critical(ex.InnerException);
-            switch (ex)
-            {
-                case AggregateException aex:
-                    foreach (var j in aex.InnerExceptions) Critical(j);
-                    break;
-                case ReflectionTypeLoadException rex:
-                    foreach (var j in rex.LoaderExceptions) Critical(j);
-                    break;
-            }
+            Log($"(X) {ex.Dump()}");
         }
         public void Error(string message)
         {
@@ -70,6 +58,31 @@ namespace TheXDS.Proteus.Component
         public void Warning(string message)
         {
             Log($"/!\\ {message}");
+        }
+
+        public void Done()
+        {
+            Log("Operación completada exitosamente.");
+        }
+
+        public void Done(string text)
+        {
+            Log($"Operación finalizada: {text}");
+        }
+
+        public void UpdateStatus(double progress)
+        {
+            Log($"Se está realizando una operación interna ({progress:0.0}%)");
+        }
+
+        public void UpdateStatus(double progress, string text)
+        {
+            Log($"{text} ({progress:0.0}%)");
+        }
+
+        public void UpdateStatus(string text)
+        {
+            Log($"{text}");
         }
     }
 }

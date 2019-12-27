@@ -6,7 +6,6 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Widgets;
@@ -14,36 +13,21 @@ using TheXDS.Proteus.Widgets;
 namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <summary>
-    ///     Define una serie de miembros a implementar por una clase que administre las operaciones de Crud con elementos de UI autogenerados.
+    ///     Define una serie de miembros a implementar por una clase que
+    ///     administre las operaciones de Crud con elementos de UI
+    ///     autogenerados.
     /// </summary>
-    public interface ICrudViewModel:ICrudEditingViewModel
+    public interface ICrudViewModel : ICrudEditingViewModel
     {
-        /// <summary>
-        ///     Enumera el orígen de datos establecido para este Crud.
-        /// </summary>
-        ICollection<ModelBase> Source { get; }
-
-        /// <summary>
-        ///     Obtiene al elemento selector de la ventana.
-        /// </summary>
-        ItemsControl Selector { get; }
-
-        /// <summary>
-        ///     Obtiene un <see cref="ViewBase"/> que define la apariencia de
-        ///     un selector <see cref="ListView"/> cuando esta ventana de CRUD
-        ///     controla únicamente un modelo de datos.
-        /// </summary>
-        ViewBase ColumnsView { get; }
-
         /// <summary>
         ///     Obtiene la ventana de detalles de la entidad seleccionada.
         /// </summary>
-        FrameworkElement SelectedDetails { get; }
+        FrameworkElement? SelectedDetails { get; }
 
         /// <summary>
         ///     Obtiene el editor a utlizar para editar a la entidad seleccionada.
         /// </summary>
-        FrameworkElement SelectedEditor { get; }
+        FrameworkElement? SelectedEditor { get; }
 
         /// <summary>
         ///     Comando para la creación de nuevas entidades.
@@ -110,7 +94,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Enumeración de comandos para la creación de entidades cuando
         ///     este ViewModel administra dos o más modelos de datos.
         /// </summary>
-        IEnumerable<Launcher> CreateCommands { get; }
+        IEnumerable<Launcher>? CreateCommands { get; }
 
         /// <summary>
         ///     Determina si es posible ejecutar el comando para la creación de
@@ -144,5 +128,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     seleccionada, <see langword="false"/> en caso contrario.
         /// </returns>
         bool CanDelete(ModelBase entity);
+
     }
 }

@@ -3,6 +3,12 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System.Threading.Tasks;
+using System.Windows;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Math;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Dialogs;
@@ -10,12 +16,8 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
-using System.Threading.Tasks;
-using TheXDS.MCART.Math;
-using TheXDS.MCART.Types.Extensions;
-using TheXDS.MCART.ViewModel;
-using static TheXDS.Proteus.ViewModels.LoginViewModel;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
+using static TheXDS.Proteus.ViewModels.LoginViewModel;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -23,8 +25,10 @@ namespace TheXDS.Proteus.ViewModels
     ///     ViewModel que controla el comportamiento de la ventana principal de
     ///     la aplicación.
     /// </summary>
-    public class MainWindowViewModel : ReportingPageHostViewModel
+    public class MainWindowViewModel : ReportingPageHostViewModel, IRootPageHost
     {
+        private readonly IPageRootVisualHost _rootHost;
+
         /// <summary>
         ///     Obtiene el nivel de opacidad configurado para la ventana.
         /// </summary>
@@ -55,6 +59,24 @@ namespace TheXDS.Proteus.ViewModels
         public double MinLogoOpacity => Settings.Default.MinUiOpacity;
 
         /// <summary>
+        ///     Obtiene la UI a utilizar para mostrar avances de estado.
+        /// </summary>
+        public FrameworkElement? ReporterUi
+        {
+            get
+            {
+                return Settings.Default.WindowUiMode switch
+                {
+                    UiMode.Simple => new SimpleUiMode(),
+                    UiMode.Flat => new FlatUiMode(),
+                    UiMode.Minimal => new MinimalUiMode(),
+                    UiMode.Logging => new LoggingUiMode(this),
+                    _ => null
+                };
+            }
+        }
+
+        /// <summary>
         ///     Comando de cierre de sesión.
         /// </summary>
         public SimpleCommand LogoutCommand { get; }
@@ -67,8 +89,10 @@ namespace TheXDS.Proteus.ViewModels
         ///     Host visual de este ViewModel. Debe tratarse de la ventana
         ///     principal de la aplicación.
         /// </param>
-        public MainWindowViewModel(IPageVisualHost window) : base(window, true)
+        public MainWindowViewModel(IPageRootVisualHost window) : base(window, true)
         {
+            _rootHost = window;
+            Title = App.Info.Name;
             LogoutCommand = new SimpleCommand(Logout);
             var s = Settings.Default;
             if (!(s is null)) s.PropertyChanged += Default_PropertyChanged;
@@ -81,7 +105,7 @@ namespace TheXDS.Proteus.ViewModels
             Proteus.CommonReporter = this;
             App.RootHost = this;
 
-            var args = new TheXDS.MCART.Component.CmdLineParser();
+            var args = new CmdLineParser();
             foreach (var j in args.Present) j.Run(args);
         }
 
@@ -113,16 +137,16 @@ namespace TheXDS.Proteus.ViewModels
 
         internal async Task PostSettingsInit()
         {
-            UpdateStatus("Preparando aplicación...");
-
+            Proteus.CommonReporter?.UpdateStatus("Preparando aplicación...");
             await Proteus.Init(Settings.Default);
             Proteus.LogoutActions.Add(Logout);
 
-            UpdateStatus("Cargando componentes...");
             await App.LoadPlugins();
 
-            UpdateStatus("Pre-construyendo elementos de UI...");
-            await Task.Run(CrudElement.Preload);
+            if (Settings.Default.EarlyLoadMappings)
+            {
+                await Task.Run(CrudElement.Preload);
+            }
 
             Done();
             if (App.KickStarter.RequiresInteractiveLogin)
@@ -130,16 +154,16 @@ namespace TheXDS.Proteus.ViewModels
                 Proteus.Interactive = true;
                 App.UiInvoke(Logout);
             }
-
             else
             {
-                App.UiInvoke(OpenMainPage);
+                //App.UiInvoke(OpenMainPage);
+                OpenMainPage();
             }
         }
 
         private void Logout()
         {
-            if (!Proteus.Interactive) return;
+            if (!Proteus.Interactive) App.UiInvoke(Close);
             App.UiInvoke(() =>
             {
                 Pages.Clear();
@@ -193,7 +217,19 @@ namespace TheXDS.Proteus.ViewModels
                 case nameof(Settings.NoiseUI):
                     Notify(nameof(NoiseUI));
                     break;
+                case nameof(Settings.MainWindowUiMode):
+                case nameof(Settings.WindowUiMode):
+                    Notify(nameof(ReporterUi));
+                    break;
             }
+        }
+
+        /// <summary>
+        ///     Fureza el cierre de la aplicación.
+        /// </summary>
+        public void ForceClose()
+        {
+            _rootHost.ForceClose();
         }
     }
 }

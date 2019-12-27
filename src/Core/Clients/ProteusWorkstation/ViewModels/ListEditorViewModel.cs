@@ -18,11 +18,12 @@ using TheXDS.Proteus.Crud.Base;
 
 namespace TheXDS.Proteus.ViewModels
 {
+
     /// <summary>
     ///     ViewModel que controla la adición de elementos a una colección de
     ///     un modelo de datos.
     /// </summary>
-    public class ListEditorViewModel : CrudViewModelBase
+    public class ListEditorViewModel : CrudCollectionViewModelBase
     {
         private readonly HashSet<ModelBase> _addedFromSelection = new HashSet<ModelBase>();
         private SelectionMode _selectMode;
@@ -166,13 +167,13 @@ namespace TheXDS.Proteus.ViewModels
 
         private bool CanRemove()
         {
-            var s = Selection as ModelBase;
-            return !(s is null) && _addedFromSelection.Contains(s);
+            return !(!(Selection is ModelBase s)) && _addedFromSelection.Contains(s);
         }
 
         private void OnRemove()
         {
-            var s = Selection as ModelBase;
+            if (!(Selection is ModelBase s)) return;
+
             Source.Remove(s);
             _addedFromSelection.Remove(s);
             Notify(nameof(Source));
@@ -212,7 +213,7 @@ namespace TheXDS.Proteus.ViewModels
         /// </param>
         protected override void OnDelete(object o)
         {
-            var s = o as ModelBase;
+            if (!(o is ModelBase s)) return;
             Source.Remove(s);
             _addedFromSelection.Remove(s);
             Notify(nameof(Source));
