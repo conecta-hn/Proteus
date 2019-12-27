@@ -33,7 +33,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel where TService : Service, new()
     {
-        private const int Limit = 100;
+        private const int _limit = 100;
         private readonly Type _model;
         private bool _willSearch = true;
         private string? _searchQuery;
@@ -366,14 +366,14 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public void ClearSearch()
         {
-            Results = Source.Count() <= Limit ? CollectionViewSource.GetDefaultView(Source) : null;
+            Results = Source.Count() <= _limit ? CollectionViewSource.GetDefaultView(Source) : null;
             SearchQuery = null;
         }
 
         /// <summary>
         ///     Obtiene una cadena que describe la cantidad de resultados encontrados.
         /// </summary>
-        public string ResultsDetails => Results is null ? $"Hay más de {Limit} elementos. Inicie una búsqueda para continuar." : WillSearch ? $"{Source.Count()} elementos{(Source.Count() > Limit ? $" (limitado a los últimos {Limit})":null)}" : $"{Results!.Count()} elementos, {Source.Count()} en total";
+        public string ResultsDetails => Results is null ? $"Hay más de {_limit} elementos. Inicie una búsqueda para continuar." : WillSearch ? $"{Source.Count()} elementos{(Source.Count() > _limit ? $" (limitado a los últimos {_limit})":null)}" : $"{Results!.Count()} elementos, {Source.Count()} en total";
 
         /// <summary>
         ///     Obtiene o establece el valor IsSearching.
