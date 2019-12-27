@@ -15,6 +15,8 @@ namespace TheXDS.Proteus.Component
     /// </summary>
     public class DbConfig : DbConfiguration
     {
+        internal static bool _forceLocalDb;
+
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
         ///     <see cref="DbConfig"/>.
@@ -22,14 +24,13 @@ namespace TheXDS.Proteus.Component
         public DbConfig()
         {
             SetExecutionStrategy("System.Data.SqlClient", () => new SqlAzureExecutionStrategy());
-            if (Proteus.Settings.UseDomainProvider)
-            {
-                SetDefaultConnectionFactory(new DomainProviderFactory(Proteus.Settings.DomainProvider));
-            }
-            else if (Proteus.Settings.UseLocalDbProvider)
+            if ((Proteus.Settings?.UseLocalDbProvider ?? true) || _forceLocalDb)
             {
                 SetDefaultConnectionFactory(new LocalDbConnectionFactory("mssqllocaldb"));
-
+            }
+            else if (Proteus.Settings.UseDomainProvider)
+            {
+                SetDefaultConnectionFactory(new DomainProviderFactory(Proteus.Settings.DomainProvider));
             }
             else if (Proteus.Settings.UseCustomProvider)
             {

@@ -284,6 +284,35 @@ namespace TheXDS.Proteus
             NwClient?.SetupListener();
         }
 
+        public static async Task<bool> SafeInit(ISettings? settings)
+        {
+            if (settings is null) return false;
+
+            DisposeSettings();
+            LogonService = FindSingleObject<UserService>() ?? throw new MissingTypeException(typeof(UserService));
+            Services = new HashSet<Service>(new[] { LogonService });
+            try
+            {
+                await LogonService.RunSeeders(LogonService.InitializeDatabaseAsync()).Throwable();
+                await LogonService.AfterInit();
+            }
+            catch
+            {
+                try
+                {
+                    if (DbConfig._forceLocalDb) throw;
+                    DbConfig._forceLocalDb = true;
+                    await SafeInit(settings).Throwable();
+                }
+                catch
+                {
+                    MessageTarget?.Critical("El servicio de base de datos no está disponible. La aplicación debe ser reconfigurada.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         ///     Vuelve a recargar la configuración.
         /// </summary>

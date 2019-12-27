@@ -5,6 +5,7 @@ Licenciado para uso interno solamente.
 
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Input;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -33,6 +34,5 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     controla únicamente un modelo de datos.
         /// </summary>
         ViewBase ColumnsView { get; }
-
     }
 }

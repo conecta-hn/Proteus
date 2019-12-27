@@ -10,8 +10,11 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d">
     <DockPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-            <Button ToolTip="Seleccionar..." Command="{Binding SelectCommand, Mode=OneWay}">+🔍</Button>
+        <StackPanel
+            Orientation="Horizontal"
+            DockPanel.Dock="Right"
+            IsEnabled="{Binding CanCreate, Mode=OneWay}"
+            Visibility="{Binding CanCreate, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
             <Button ToolTip="Nuevo..." Visibility="{Binding UniModel}" Command="{Binding CreateNew, Mode=OneWay}">
                 <TextBlock>
                     +
@@ -32,6 +35,11 @@
             <Button ToolTip="Editar..."  Command="{Binding EditCurrent, Mode=OneWay}">✎</Button>
             <Button ToolTip="Eliminar"  Command="{Binding DeleteCurrent, Mode=OneWay}">🗑</Button>
         </StackPanel>
+        <Button
+            ToolTip="Seleccionar..." DockPanel.Dock="Right"
+            IsEnabled="{Binding CanSelect, Mode=OneWay}"
+            Visibility="{Binding CanSelect, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+            Command="{Binding SelectCommand, Mode=OneWay}">+🔍</Button>
         <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="100">
             <Run Foreground="{StaticResource CorpColor}" Text="{Binding FieldIcon, Mode=OneWay}"/>
             <Run FontStyle="Italic" Foreground="Gray" Text="{Binding FieldName, Mode=OneWay}"/>

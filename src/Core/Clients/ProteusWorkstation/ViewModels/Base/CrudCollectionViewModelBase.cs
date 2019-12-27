@@ -3,9 +3,6 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud;
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +12,9 @@ using System.Windows.Data;
 using System.Windows.Media;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models.Base;
 using P = System.Windows.Controls.Primitives;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -25,6 +25,8 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </summary>
     public abstract class CrudCollectionViewModelBase : CrudViewModelBase, ICrudCollectionViewModel
     {
+        private ObservableCollectionWrap<ModelBase> _source = null!;
+
         /// <summary>
         ///     Contiene una lista personalizada de columnas a mostrar.
         /// </summary>
@@ -59,12 +61,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
-        public CrudCollectionViewModelBase(ICollection<ModelBase> source, params CrudElement[] elements) : base(elements)
+        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, params CrudElement[] elements) : base(elements)
         {
             if (elements.Count() == 1)
             {
                 Selector = new ListView();
-                Selector.SetBinding(P.Selector.SelectedItemProperty, new Binding(nameof(Selection)));
+                Selector.SetBinding(P.Selector.SelectedItemProperty, new Binding(nameof(Selection))) ;
                 Selector.SetBinding(ListView.ViewProperty, new Binding(nameof(ColumnsView)));
             }
             else
@@ -80,7 +82,10 @@ namespace TheXDS.Proteus.ViewModels.Base
                 ((TreeView)Selector).SelectedItemChanged += TreeViewSelector_SelectionChanged;
             }
             Source = new ObservableCollectionWrap<ModelBase>(source);
-            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Source)));
+            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("Results")// nameof(Source))
+            {
+                Mode = BindingMode.OneWay
+            });
             RegisterPropertyChangeBroadcast(nameof(Selection), nameof(ColumnsView));
         }
 
@@ -110,13 +115,23 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         ICollection<ModelBase> ICrudCollectionViewModel.Source => Source;
-        private ObservableCollectionWrap<ModelBase> _source = null!;
 
+        /// <summary>
+        ///     Obtiene a la entidad padre de la entidad actualmente
+        ///     seleccionada.
+        /// </summary>
+        /// <returns>
+        ///     El padre de la entidad seleccionada, o <see langword="null"/>
+        ///     si no es posible determinar a un padre en este contexto.
+        /// </returns>
         protected override ModelBase? GetParent()
         {
             return (Selector as TreeView)?.SelectedItem as ModelBase;
         }
 
+        /// <summary>
+        ///     Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
+        /// </summary>
         protected override void AfterSave()
         {
             Notify(nameof(Source));

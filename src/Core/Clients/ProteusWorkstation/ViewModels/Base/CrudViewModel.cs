@@ -3,18 +3,24 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Component;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using TheXDS.Proteus.Widgets;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Crud;
-using System.Windows.Controls;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Misc;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -26,6 +32,12 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel where TService : Service, new()
     {
+        private readonly Type _model;
+        private bool _willSearch = true;
+        private string? _searchQuery;
+        private bool _isSearching;
+        private ICollectionView? _results;
+
         /// <summary>
         ///     Obtiene un valor que indica si este ViewModel se encuentra 
         ///     ocupado.
@@ -59,12 +71,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         ///     Obtiene la ventana de detalles de la entidad seleccionada.
         /// </summary>
-        public FrameworkElement SelectedDetails => ((ICrudCollectionViewModel)Implementation).SelectedDetails;
+        public FrameworkElement? SelectedDetails => ((ICrudCollectionViewModel)Implementation).SelectedDetails;
 
         /// <summary>
         ///     Obtiene el editor a utlizar para editar a la entidad seleccionada.
         /// </summary>
-        public FrameworkElement SelectedEditor => ((ICrudCollectionViewModel)Implementation).SelectedEditor;
+        public FrameworkElement? SelectedEditor => ((ICrudCollectionViewModel)Implementation).SelectedEditor;
 
         /// <summary>
         ///     Obtiene un <see cref="CrudElement"/> con información sobre los
@@ -162,13 +174,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </param>
         public CrudViewModel(ICloseable host, Type model) : base(host)
         {
+            _model = model;
             Implementation = new DbBoundCrudViewModel(model);
             Implementation.ForwardChange(this);
-
-            RegisterPropertyChangeTrigger(nameof(Title),
-                nameof(EditMode));
-
+            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
             RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -183,13 +194,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </param>
         public CrudViewModel(ICloseable host, CrudElement element) : base(host)
         {
+            _model = element.Model;
             Implementation = new DbBoundCrudViewModel(element);
             Implementation.ForwardChange(this);
-
-            RegisterPropertyChangeTrigger(nameof(Title),
-                nameof(EditMode));
-
+            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
             RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -201,8 +211,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="models">Modelos asociados de datos.</param>
         public CrudViewModel(ICloseable host, IQueryable<ModelBase> source, params Type[] models) : base(host, true)
         {
+            _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
             Implementation.ForwardChange(this);
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -214,8 +226,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="elements">Elementos de crud a incorporar.</param>
         public CrudViewModel(ICloseable host, IQueryable<ModelBase> source, params CrudElement[] elements) : base(host, true)
         {
+            _model = elements.First().Model;
             Implementation = new DbBoundCrudViewModel(source, elements);
             Implementation.ForwardChange(this);
+            SearchCommand = CreateSearchCommand();
         }
 
         /// <summary>
@@ -286,5 +300,95 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="action">Tarea a ejecutar.</param>
         public void BusyDo(Task action) => Implementation.BusyDo(action);
+
+        private ObservingCommand CreateSearchCommand()
+        {
+            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+            return new ObservingCommand(this, OnSearch)
+                .ListensToProperty(() => SearchQuery!)
+                .SetCanExecute(() => !SearchQuery.IsEmpty());
+        }
+
+        /// <summary>
+        ///     Obtiene o establece el valor SearchQuery.
+        /// </summary>
+        /// <value>El valor de SearchQuery.</value>
+        public string? SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                if (!Change(ref _searchQuery, value)) return;
+                WillSearch = true;
+            }
+        }
+
+        /// <summary>
+        ///     Obtiene una colección con los resultados de la búsqueda.
+        /// </summary>
+        public ICollectionView? Results
+        { 
+            get=>_results;
+            private set => Change(ref _results, value);
+        }
+
+        /// <summary>
+        ///     Obtiene un valor que indica si al ejecutar
+        ///     <see cref="SearchCommand"/> se hará una búsqueda o se limpiará
+        ///     la búsqueda actual.
+        /// </summary>
+        public bool WillSearch
+        {
+            get => _willSearch;
+            private set => Change(ref _willSearch, value);
+        }
+
+        /// <summary>
+        ///     Obtiene el comando relacionado a la acción Search.
+        /// </summary>
+        /// <returns>El comando Search.</returns>
+        public ObservingCommand SearchCommand { get; }
+
+        /// <summary>
+        ///     Obtiene la etiqueta a utilizar para mostrar sobre el botón de
+        ///     búsqueda.
+        /// </summary>
+        public string SearchLabel => _willSearch ? "🔍" : "❌";
+
+        /// <summary>
+        ///     Limpia los resultados de la búsqueda.
+        /// </summary>
+        public void ClearSearch()
+        {
+            Results = null;
+            SearchQuery = null;
+        }
+
+        /// <summary>
+        ///     Obtiene o establece el valor IsSearching.
+        /// </summary>
+        /// <value>El valor de IsSearching.</value>
+        public bool IsSearching
+        {
+            get => _isSearching;
+            set => Change(ref _isSearching, value);
+        }
+
+        private async void OnSearch()
+        {
+            if (WillSearch && !SearchQuery.IsEmpty()) await PerformSearch();
+            else ClearSearch();
+        }
+
+        private async Task PerformSearch()
+        {
+            IsSearching = true;
+
+            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, _model).ToListAsync());
+            Results.Refresh();
+
+            IsSearching = false;
+            WillSearch = false;
+        }
     }
 }

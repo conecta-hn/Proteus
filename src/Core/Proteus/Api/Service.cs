@@ -1660,7 +1660,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         protected async Task<DetailedResult> InternalSaveAsync()
         {
-            CancellationTokenSource cs = null;
+            CancellationTokenSource? cs = null;
             try
             {
                 if (!ChangesPending()) return Result.Ok;
@@ -1679,7 +1679,7 @@ namespace TheXDS.Proteus.Api
 
                 var logResult = await (Logger?.Log(Context.ChangeTracker, Session) ?? Task.FromResult(Result.Ok));
 
-                cs = new CancellationTokenSource(Settings.ServerTimeout);
+                cs = new CancellationTokenSource(Settings?.ServerTimeout ?? 15000);
                 await Context.SaveChangesAsync(cs.Token);
                 if (cs.IsCancellationRequested) return Result.Unreachable | logResult;
                 cs.Dispose();
@@ -1700,7 +1700,6 @@ namespace TheXDS.Proteus.Api
             {
 #if DEBUG
                 MessageTarget?.Critical(ex);
-                MessageTarget?.Info("El depurador será iniciado ahora");
                 if (System.Diagnostics.Debugger.Launch())
                     System.Diagnostics.Debugger.Break();
 #endif
@@ -1864,7 +1863,6 @@ namespace TheXDS.Proteus.Api
 
         internal async Task<Result> RunSeeders(Task<bool> runRegardless)
         {
-
             foreach (var j in
                 GetType().GetAttrs<SeederAttribute>()
                     .Select(p => p.Value)

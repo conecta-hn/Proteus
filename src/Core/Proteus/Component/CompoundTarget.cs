@@ -12,6 +12,58 @@ using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Component
 {
+    public class CompoundReporter : IStatusReporter
+    {
+        public ICollection<IStatusReporter> Reporters { get; private set; } = new HashSet<IStatusReporter>();
+        public static void Register(IEnumerable<IStatusReporter> reporters)
+        {
+            if (Proteus.CommonReporter is CompoundReporter cp)
+            {
+                foreach (var j in reporters.ExceptFor(cp).NotNull()) cp.Reporters.Add(j);
+            }
+            else
+            {
+                Proteus.CommonReporter = new CompoundReporter
+                {
+                    Reporters = new HashSet<IStatusReporter>(reporters.Concat(new[] { Proteus.CommonReporter }).NotNull().Where(p => p.GetType() != typeof(CompoundReporter)))
+                };
+            }
+
+        }
+        [Sugar]
+        public static void Register(IStatusReporter target)
+        {
+            Register(new[] { target });
+        }
+
+        public void Done()
+        {
+            foreach (var j in Reporters) j.Done();
+        }
+
+        public void Done(string text)
+        {
+            foreach (var j in Reporters) j.Done(text);
+        }
+
+        public void UpdateStatus(double progress)
+        {
+            foreach (var j in Reporters) j.UpdateStatus(progress);
+        }
+
+        public void UpdateStatus(double progress, string text)
+        {
+            foreach (var j in Reporters) j.UpdateStatus(progress,text);
+        }
+
+        public void UpdateStatus(string text)
+        {
+            foreach (var j in Reporters)
+            {
+                j.UpdateStatus(text);
+            }
+        }
+    }
     public class CompoundTarget : IMessageTarget
     {
         public static void Register(IEnumerable<IMessageTarget> targets)
@@ -38,50 +90,50 @@ namespace TheXDS.Proteus.Component
 
         public void Critical(string message)
         {
-            Parallel.ForEach(Targets, j => j.Critical(message));
-            //foreach(var j in Targets)j.Critical(message);
+            foreach (var j in Targets) j.Critical(message);
+            //Parallel.ForEach(Targets, j => j.Critical(message));
         }
 
         public void Critical(Exception ex)
         {
-            Parallel.ForEach(Targets, j => j.Critical(ex));
-            //foreach (var j in Targets) j.Critical(ex);
+            foreach (var j in Targets) j.Critical(ex);
+            //Parallel.ForEach(Targets, j => j.Critical(ex));
         }
 
         public void Error(string message)
         {
-            Parallel.ForEach(Targets, j => j.Error(message));
-            //foreach (var j in Targets) j.Error(message);
+            foreach (var j in Targets) j.Error(message);
+            //Parallel.ForEach(Targets, j => j.Error(message));
         }
 
         public void Info(string message)
         {
-            Parallel.ForEach(Targets, j => j.Info(message));
-            //foreach (var j in Targets) j.Info(message);
+            foreach (var j in Targets) j.Info(message);
+            //Parallel.ForEach(Targets, j => j.Info(message));
         }
 
         public void Show(string message)
         {
-            Parallel.ForEach(Targets, j => j.Show(message));
-            //foreach (var j in Targets) j.Show(message);
+            foreach (var j in Targets) j.Show(message);
+            //Parallel.ForEach(Targets, j => j.Show(message));
         }
 
         public void Show(string title, string message)
         {
-            Parallel.ForEach(Targets, j => j.Show(title, message));
-            //foreach (var j in Targets) j.Show(title, message);
+            foreach (var j in Targets) j.Show(title, message);
+            //Parallel.ForEach(Targets, j => j.Show(title, message));
         }
 
         public void Stop(string message)
         {
-            Parallel.ForEach(Targets, j => j.Stop(message));
-            //foreach (var j in Targets) j.Stop(message);
+            foreach (var j in Targets) j.Stop(message);
+            //Parallel.ForEach(Targets, j => j.Stop(message));
         }
 
         public void Warning(string message)
         {
-            Parallel.ForEach(Targets, j => j.Warning(message));
-            //foreach (var j in Targets) j.Warning(message);
+            foreach (var j in Targets) j.Warning(message);
+            //Parallel.ForEach(Targets, j => j.Warning(message));
         }
     }
 }

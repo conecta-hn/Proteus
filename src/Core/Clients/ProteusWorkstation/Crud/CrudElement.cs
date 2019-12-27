@@ -248,6 +248,7 @@ namespace TheXDS.Proteus.Crud
         /// </summary>
         public static void Preload()
         {
+            Proteus.CommonReporter?.UpdateStatus("Pre-construyendo elementos de UI...");
             foreach (var j in FindAllObjects<ICrudDescription>())
             {
                 _descriptions.Add(j);

@@ -30,8 +30,8 @@ namespace TheXDS.Proteus.Reporting
         /// </returns>
         public static IQueryable BuildQuery(Type model, IEnumerable<IFilter> filters)
         {
-            var m = typeof(QueryBuilder).GetMethod("BuildQuery", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(IEnumerable<IFilter>) }, null).MakeGenericMethod(model);
-            return (IQueryable)m.Invoke(null, new[] { filters });
+            var m = typeof(QueryBuilder).GetMethod("BuildQuery", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(IEnumerable<IFilter>) }, null)!.MakeGenericMethod(model);
+            return (IQueryable)m.Invoke(null, new[] { filters })!;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace TheXDS.Proteus.Reporting
         /// </returns>
         public static IQueryable<T> BuildQuery<T>(IEnumerable<IFilter> filters) where T : ModelBase, new()
         {
-            var q = Proteus.Infer(typeof(T)).All<T>();
+            var q = Proteus.Infer(typeof(T))?.All<T>() ?? throw new InvalidOperationException();
             foreach (var j in filters)
             {
                 q = q.Where((Expression<Func<T, bool>>)j.GetFilter(typeof(T)));

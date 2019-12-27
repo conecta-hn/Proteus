@@ -29,8 +29,6 @@ using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
 [assembly: XmlnsDefinition("http://schemas.thexds.com/2019/Proteus/valueconverters", "TheXDS.Proteus.ValueConverters", AssemblyName = "ProteusWorkstation")]
 [assembly: XmlnsDefinition("http://schemas.thexds.com/2019/Proteus/res", "TheXDS.Proteus.Resources", AssemblyName = "ProteusWorkstation")]
 [assembly: Name("Proteus Workstation")]
-[assembly: LicenseFile("License.txt")]
-
 
 namespace TheXDS.Proteus
 {
@@ -39,11 +37,11 @@ namespace TheXDS.Proteus
     /// </summary>
     public partial class App
     {
-        private static HashSet<Tool> _tools;
-        private static HashSet<UiModule> _modules;
-        private static HashSet<Patch> _patches;
-        private static HashSet<IKickStarter> _kickStarters;
-        private static readonly IKickStarter _fallbackKickStarter = FindFirstObject<IKickStarter>();
+        private static HashSet<Tool> _tools = null!;
+        internal static HashSet<UiModule> _modules = null!;
+        private static HashSet<Patch> _patches = null!;
+        private static HashSet<IKickStarter> _kickStarters = null!;
+        private static readonly IKickStarter _fallbackKickStarter = FindFirstObject<IKickStarter>()!;
 
         /// <summary>
         ///     Carga los plugins de la aplicación de forma asíncrona.
@@ -94,7 +92,7 @@ namespace TheXDS.Proteus
             {
                 if (!Settings.Default.UseAltLauncher)
                 {
-                    return _kickStarters.FirstOrDefault(p => p.Usable) ?? _fallbackKickStarter;
+                    return _kickStarters?.FirstOrDefault(p => p.Usable) ?? _fallbackKickStarter;
                 }
                 return _kickStarters.FirstOrDefault(p => p.Usable && p.GetType().Name == Settings.Default.AltLauncher) ?? _fallbackKickStarter;
             }
@@ -138,7 +136,7 @@ namespace TheXDS.Proteus
         /// <returns>
         ///     Una instancia activa del módulo del tipo especificado.
         /// </returns>
-        public static T Module<T>() where T : UiModule, new() => Modules.FirstOrDefault(p => p.GetType() == typeof(T)) as T;
+        public static T? Module<T>() where T : UiModule, new() => Modules.FirstOrDefault(p => p.GetType() == typeof(T)) as T;
 
         /// <summary>
         ///     Enumera los parches cargados de la aplicación.
@@ -153,21 +151,19 @@ namespace TheXDS.Proteus
 
         private static async Task<IEnumerable<T>> Load<T>() where T : Plugin
         {
-            var i = GetTypes<T>(true).Select(t => TypeExtensions.New<T>(t, false, Array.Empty<object>())).NotNull().ToList();
-            var pl = (await new PluginLoader().LoadEverythingAsync<T>(Settings.Default.WsPluginsDir)).ToList();
-            return i.Concat(pl).Distinct(new TypeComparer<T>()).ToList();
+            return GetTypes<T>(true).Select(t => TypeExtensions.New<T>(t, false, Array.Empty<object>())).NotNull().Concat(await new PluginLoader().LoadEverythingAsync<T>(Settings.Default.WsPluginsDir)).Distinct(new TypeComparer<T>());
         }
 
         private class TypeComparer<T> : IEqualityComparer<T>
         {
             public bool Equals(T x, T y)
             {
-                return x.GetType() == y.GetType();
+                return x!.GetType() == y!.GetType();
             }
 
             public int GetHashCode(T obj)
             {
-                return obj.GetType().GetHashCode();
+                return obj!.GetType().GetHashCode();
             }
         }
 
@@ -175,7 +171,7 @@ namespace TheXDS.Proteus
         ///     Obtiene el objeto registrado como huésped raíz de páginas para
         ///     la aplicación.
         /// </summary>
-        public static IPageHost RootHost { get; internal set; }
+        public static IRootPageHost RootHost { get; internal set; } = null!;
 
         /// <summary>
         ///     Aplica los parches pertinentes a un objeto.

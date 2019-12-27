@@ -5,6 +5,9 @@ Licenciado para uso interno solamente.
 
 namespace TheXDS.Proteus.Component
 {
+    /// <summary>
+    ///     Enumera los comandos disponibles para el protocolo Dump.
+    /// </summary>
     public enum DumpCommand : byte
     {
         /// <summary>

@@ -20,7 +20,8 @@
         <ResourceDictionary Source="Misc.xaml"/>
         <ResourceDictionary Source="Styles/Containers.xaml"/>
         <ResourceDictionary Source="Styles/Lists.xaml"/>
-        <ResourceDictionary Source="Styles/Basic.xaml"/>        
+        <ResourceDictionary Source="Styles/Basic.xaml"/>
+        <ResourceDictionary Source="Styles/Controls.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Estilos base -->

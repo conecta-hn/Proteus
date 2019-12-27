@@ -3,8 +3,8 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART.Attributes;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Component
 {
@@ -30,12 +30,4 @@ namespace TheXDS.Proteus.Component
             return true;
         }
     }
-
-    //public class UacElevator : IElevator
-    //{
-    //    public bool Elevate(ref IProteusUserCredential credential)
-    //    {
-    //        throw new System.NotImplementedException();
-    //    }
-    //}
 }

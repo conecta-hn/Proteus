@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TheXDS.MCART;
@@ -36,10 +37,11 @@ namespace TheXDS.Proteus.ViewModels
         public string UserGreeting => Proteus.Interactive ? $"Hola, {Proteus.Session?.Name.Split()[0] ?? "usuario"}." : "Inicio";
         private readonly ObservableCollection<Alerta> _alertas = new ObservableCollection<Alerta>();
         private DateTime _dayOfCalendar;
+        private List<Aviso> _avisos;
         private readonly HashSet<ModulePage> _modules;
 
         public Visibility Interactive => Proteus.Interactive ? Visibility.Visible : Visibility.Collapsed;
-        public IEnumerable<Aviso> Avisos => UserService.AllAvisos.ToList();
+        public IEnumerable<Aviso> Avisos => _avisos;
         public ICollection<Alerta> Alertas => _alertas;
 
         public IEnumerable<object> Pendientes => null;
@@ -98,10 +100,14 @@ namespace TheXDS.Proteus.ViewModels
             Title = "Página de inicio";
             Proteus.AlertTarget = this;
             AutoHook();
-            _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)));
+            _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)) ?? Array.Empty<ModulePage>());
             Settings.Default.PropertyChanged += Default_PropertyChanged;
-
             LogoutCommand = new SimpleCommand(Proteus.Logout);
+            PostOpen();
+        }
+        private async void PostOpen()
+        {
+            _avisos = await (await Task.Run(()=>UserService.AllAvisos)).ToListAsync();
         }
 
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
