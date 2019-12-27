@@ -20,6 +20,7 @@ using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.Reporting;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -32,6 +33,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel where TService : Service, new()
     {
+        private const int Limit = 100;
         private readonly Type _model;
         private bool _willSearch = true;
         private string? _searchQuery;
@@ -54,7 +56,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         ///     Obtiene o establece al elemento seleccionado.
         /// </summary>
-        public object Selection { get => ((ICrudCollectionViewModel)Implementation).Selection; set => ((ICrudCollectionViewModel)Implementation).Selection = value; }
+        public object? Selection { get => ((ICrudCollectionViewModel)Implementation).Selection; set => ((ICrudCollectionViewModel)Implementation).Selection = value; }
 
         /// <summary>
         ///     Obtiene un <see cref="ViewBase"/> que define la apariencia de
@@ -83,7 +85,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     componentes relacionados al modelo de datos de la entidad
         ///     seleccionada.
         /// </summary>
-        public CrudElement SelectedElement => ((ICrudCollectionViewModel)Implementation).SelectedElement;
+        public CrudElement? SelectedElement => ((ICrudCollectionViewModel)Implementation).SelectedElement;
 
         /// <summary>
         ///     Comando para la creación de nuevas entidades.
@@ -160,7 +162,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Enumeración de comandos para la creación de entidades cuando
         ///     este ViewModel administra dos o más modelos de datos.
         /// </summary>
-        public IEnumerable<Launcher> CreateCommands => ((ICrudCollectionViewModel)Implementation).CreateCommands;
+        public IEnumerable<Launcher>? CreateCommands => ((ICrudCollectionViewModel)Implementation).CreateCommands;
 
         /// <summary>
         ///     Inicializa una nueva instancia de la clase
@@ -176,10 +178,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = model;
             Implementation = new DbBoundCrudViewModel(model);
-            Implementation.ForwardChange(this);
-            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
-            RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
-            SearchCommand = CreateSearchCommand();
+            Init();
         }
 
         /// <summary>
@@ -196,10 +195,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = element.Model;
             Implementation = new DbBoundCrudViewModel(element);
-            Implementation.ForwardChange(this);
-            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
-            RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
-            SearchCommand = CreateSearchCommand();
+            Init();
         }
 
         /// <summary>
@@ -213,8 +209,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
-            Implementation.ForwardChange(this);
-            SearchCommand = CreateSearchCommand();
+            Init();
         }
 
         /// <summary>
@@ -228,8 +223,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = elements.First().Model;
             Implementation = new DbBoundCrudViewModel(source, elements);
+            Init();
+        }
+
+        private void Init()
+        {
             Implementation.ForwardChange(this);
+            RegisterPropertyChangeTrigger(nameof(Title), nameof(EditMode));
+            RegisterPropertyChangeBroadcast(nameof(EditMode), nameof(Closeable));
+            RegisterPropertyChangeTrigger(nameof(ResultsDetails), nameof(Results), nameof(Source));
             SearchCommand = CreateSearchCommand();
+            ClearSearch();
         }
 
         /// <summary>
@@ -242,12 +246,11 @@ namespace TheXDS.Proteus.ViewModels.Base
                 if (EditMode)
                 {
                     return ((Selection as ModelBase)?.IsNew ?? true) 
-                        ? $"Nuevo {SelectedElement.Description.FriendlyName}"
-                        : $"Editar {SelectedElement.Description.FriendlyName} {(Selection as ModelBase)?.StringId}";
+                        ? $"Nuevo {SelectedElement?.Description.FriendlyName ?? "elemento"}"
+                        : $"Editar {SelectedElement?.Description.FriendlyName ?? "elemento"} {(Selection as ModelBase)?.StringId}";
                 }
                 return base.Title;
             }
-
             set => base.Title = value;
         }
 
@@ -327,9 +330,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Obtiene una colección con los resultados de la búsqueda.
         /// </summary>
         public ICollectionView? Results
-        { 
-            get=>_results;
-            private set => Change(ref _results, value);
+        {
+            get => _results;
+            private set
+            {
+                if (Change(ref _results, value)) _results?.Refresh();
+            }
         }
 
         /// <summary>
@@ -347,7 +353,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     Obtiene el comando relacionado a la acción Search.
         /// </summary>
         /// <returns>El comando Search.</returns>
-        public ObservingCommand SearchCommand { get; }
+        public ObservingCommand SearchCommand { get; private set; } = null!;
 
         /// <summary>
         ///     Obtiene la etiqueta a utilizar para mostrar sobre el botón de
@@ -360,9 +366,14 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public void ClearSearch()
         {
-            Results = null;
+            Results = Source.Count() <= Limit ? CollectionViewSource.GetDefaultView(Source) : null;
             SearchQuery = null;
         }
+
+        /// <summary>
+        ///     Obtiene una cadena que describe la cantidad de resultados encontrados.
+        /// </summary>
+        public string ResultsDetails => Results is null ? $"Hay más de {Limit} elementos. Inicie una búsqueda para continuar." : WillSearch ? $"{Source.Count()} elementos{(Source.Count() > Limit ? $" (limitado a los últimos {Limit})":null)}" : $"{Results!.Count()} elementos, {Source.Count()} en total";
 
         /// <summary>
         ///     Obtiene o establece el valor IsSearching.
@@ -378,15 +389,13 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             if (WillSearch && !SearchQuery.IsEmpty()) await PerformSearch();
             else ClearSearch();
+            Notify(nameof(ResultsDetails));
         }
 
         private async Task PerformSearch()
         {
             IsSearching = true;
-
             Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, _model).ToListAsync());
-            Results.Refresh();
-
             IsSearching = false;
             WillSearch = false;
         }

@@ -12,15 +12,16 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d">
     <mcart:BusyContainer IsBusy="{Binding IsBusy}">
-        <Grid Style="{StaticResource BotoneraBase}">            
+        <Grid Style="{StaticResource BotoneraBase}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <mcart:BusyContainer IsBusy="{Binding IsSearching}">
-                <DockPanel IsEnabled="{Binding NotEditMode}">                    
+                <DockPanel IsEnabled="{Binding NotEditMode}">
                     <DockPanel Margin="-5" DockPanel.Dock="Top">
+                        <TextBlock DockPanel.Dock="Bottom" Text="{Binding ResultsDetails, Mode=OneWay}"/>
                         <Button
                             DockPanel.Dock="Right"
                             Content="{Binding SearchLabel, Mode=OneWay}"
@@ -29,7 +30,7 @@
                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                             local:ProteusProp.Watermark="Buscar..."
                             local:ProteusProp.Icon="🔍" />
-                    </DockPanel>                
+                    </DockPanel>
                     <mcart:StretchyWrapPanel Margin="-5,5" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
                         <xctk:DropDownButton Visibility="{Binding MultiModel}">
                             <xctk:DropDownButton.DropDownContent>
