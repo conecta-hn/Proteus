@@ -12,6 +12,8 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
 using static TheXDS.Proteus.Annotations.InteractionType;
 using TheXDS.Proteus.Annotations;
+using TheXDS.Proteus.Dialogs;
+
 namespace TheXDS.Proteus.Conecta
 {
     namespace Crud
@@ -39,6 +41,39 @@ namespace TheXDS.Proteus.Conecta
                 VmProperty(p => p.LastPagoWhen).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
                 VmProperty(p => p.LastPagoHowMuch).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
                 ShowAllInDetails();
+
+                CustomAction("Agregar un nuevo ítem igual a este...", OnAddSame);
+            }
+
+            private async void OnAddSame(Item obj)
+            {
+                if (obj.IsNew)
+                {
+                    Proteus.MessageTarget?.Stop("Debe guardar el ítem primero.");
+                    return;
+                }
+                if (!InputSplash.GetNew("Introduzca el nuevo número de serie", out string sn)) return;
+
+                var r = await Proteus.Service<ConectaService>().AddAsync(new Item
+                {
+                    Name = obj.Name,
+                    NumSerie = sn,
+                    Proveedor = obj.Proveedor,
+                    Description = obj.Description,
+                    Timestamp = DateTime.Now,
+                    Qty = obj.Qty,
+                    Total = obj.Total,
+                    UnitVenta = obj.UnitVenta
+                });
+
+                if (r.Result == TheXDS.Proteus.Api.Result.Ok)
+                {
+                    Proteus.MessageTarget?.Info("Item agregado correctamente. Necesitará agregar la información de fotos e información de pago manualmente.");
+                }
+                else
+                {
+                    Proteus.MessageTarget?.Error($"Hubo un problema agregando el ítem: {r.Message}");
+                }
             }
         }
 
@@ -47,7 +82,7 @@ namespace TheXDS.Proteus.Conecta
             protected override void DescribeModel()
             {
                 FriendlyName("Imagen de artículo");
-                TextProperty(p => p.Path).TextKind(TextKind.PicturePath).Label("Imagen");
+                TextProperty(p => p.Path).TextKind(TextKind.PicturePath).Label("Imagen").AsListColumn();
                 TextProperty(p => p.Notes).Big().Label("Notas");
                 ShowAllInDetails();
             }
@@ -123,11 +158,11 @@ namespace TheXDS.Proteus.Conecta
             {
                 get
                 {
-                    if (Pendiente == 0m) return null;
+                    if (Pendiente == 0m || !Entity!.Pagos.Any()) return null;
                     return Entity!.Pagos.OrderBy(p => p.Timestamp).Last();
                 }
             }
-            public TimeSpan? LastPagoWhen => DateTime.Now - (LastPago?.Timestamp ?? Entity?.Timestamp);
+            public string LastPagoWhen => (Entity?.IsNew ?? true) ? "sin datos." : $"Hace {(int)(DateTime.Now - (LastPago?.Timestamp ?? Entity.Timestamp)).TotalDays} días";
             public decimal? LastPagoHowMuch => LastPago?.Abono;
         }
     }
