@@ -147,5 +147,15 @@ namespace TheXDS.Proteus.Pages.Base
         {
             InitializeComponent();
         }
+
+        private void TextBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter || e.Key == System.Windows.Input.Key.Return)
+            {
+                e.Handled = true;
+                var vm = ((ISearchViewModel)ViewModel).SearchCommand;
+                if (vm.CanExecute(null)) vm.Execute(null);
+            }
+        }
     }
 }

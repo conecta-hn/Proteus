@@ -182,6 +182,11 @@
                                     widgets:ProteusProp.WatermarkAlwaysVisible="True"
                                     widgets:ProteusProp.Watermark="Tiempo de espera máximo de conexión" 
                                     Value="{Binding ServerTimeout}"/>
+                                <xctk:IntegerUpDown 
+                                    widgets:ProteusProp.Icon="📚"
+                                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                    widgets:ProteusProp.Watermark="Límite de carga de filas" 
+                                    Value="{Binding RowLimit}"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="Conexión">

@@ -394,5 +394,17 @@ namespace TheXDS.Proteus.Config {
                 this["MainWindowUiMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int RowLimit {
+            get {
+                return ((int)(this["RowLimit"]));
+            }
+            set {
+                this["RowLimit"] = value;
+            }
+        }
     }
 }
