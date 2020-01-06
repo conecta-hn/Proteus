@@ -30,13 +30,14 @@ namespace TheXDS.Proteus.ViewModels
         public ModelInfo(Type model)
         {
             Model = model;
-            Name = Crud.CrudElement.GetDescription(model).FriendlyName;
+            Name = Crud.CrudElement.GetDescription(model)?.FriendlyName ?? model.NameOf();
         }
     }
 
     public class GenericReportViewModel : PageViewModel
     {
-        private Type _model;
+        private ModelInfo? _model;
+        private FlowDocument? _actualReport;
 
         /// <summary>
         ///     Enumera los modelos disponibles para generar reportes.
@@ -68,7 +69,7 @@ namespace TheXDS.Proteus.ViewModels
         ///     Obtiene o establece el valor Model.
         /// </summary>
         /// <value>El valor de Model.</value>
-        public Type Model
+        public ModelInfo? Model
         {
             get => _model;
             set
@@ -77,14 +78,14 @@ namespace TheXDS.Proteus.ViewModels
                 Filters.Clear();
                 Columns.Clear();
                 if (value is null) return;
-                foreach (var j in ValidProperties)
+                foreach (var j in ValidProperties ?? Array.Empty<PropertyInfo>())
                 {
                     Columns.Add(new ColumnSelectionViewModel(j));
                 }
             }
         }
 
-        public IEnumerable<PropertyInfo> ValidProperties => Model?.GetProperties().Where(IsValidProperty).Reverse();
+        public IEnumerable<PropertyInfo>? ValidProperties => Model?.Model.GetProperties().Where(IsValidProperty).Reverse();
         private bool IsValidProperty(PropertyInfo p)
         {
             return p.CanRead && p.CanWrite 
@@ -120,8 +121,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private void OnPrint()
         {
-            //TODO: Fix impresión
-
+            if (ActualReport is null) return;
             var dialog = new PrintDialog();
             if (!dialog.ShowDialog() ?? true) return;
             var sz = new Size(dialog.PrintableAreaWidth, dialog.PrintableAreaHeight);
@@ -129,31 +129,22 @@ namespace TheXDS.Proteus.ViewModels
             var paginator = (ActualReport as IDocumentPaginatorSource).DocumentPaginator;
             ActualReport.ColumnWidth *= 2;
             paginator.PageSize = sz;
-            dialog.PrintDocument(paginator, $"Reporte de {Crud.CrudElement.GetDescription(Model).FriendlyName} - Proteus");
-
-
-
-
-
-
-            //ActualReport?.Print($"Reporte de {Model} - Proteus");
+            dialog.PrintDocument(paginator, $"Reporte de {Model!.Name} - Proteus");
         }
 
         private void OnGenerate()
         {
-            var q = QueryBuilder.BuildQuery(Model, Filters.Select(p=>p.Entity));
-            var fd = ReportBuilder.MakeReport($"Reporte de {Model}");
+            var q = QueryBuilder.BuildQuery(Model!.Model, Filters.Select(p=>p.Entity));
+            var fd = ReportBuilder.MakeReport($"Reporte de {Model.Name}");
             ReportBuilder.MakeTable(fd, q, Columns.Where(p => p.Selected).Select(p => p.Property));
             ActualReport = fd;
         }
-
-        private FlowDocument _actualReport;
 
         /// <summary>
         ///     Obtiene o establece el valor ActualReport.
         /// </summary>
         /// <value>El valor de ActualReport.</value>
-        public FlowDocument ActualReport
+        public FlowDocument? ActualReport
         {
             get => _actualReport;
             set => Change(ref _actualReport, value);
