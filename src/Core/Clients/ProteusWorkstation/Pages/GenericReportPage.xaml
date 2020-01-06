@@ -20,7 +20,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <ComboBox ItemsSource="{Binding Models, Mode=OneWay}" SelectedValue="{Binding Model}" DisplayMemberPath="Name" SelectedValuePath="Model"/>
+            <ComboBox ItemsSource="{Binding Models, Mode=OneWay}" SelectedItem="{Binding Model}" DisplayMemberPath="Name"/>
             <ListView Grid.Row="1" ItemsSource="{Binding Filters, Mode=OneWay}">
                 <ListView.View>
                     <GridView>
