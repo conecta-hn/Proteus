@@ -406,5 +406,17 @@ namespace TheXDS.Proteus.Config {
                 this["RowLimit"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Acme, Ltd.")]
+        public string BussinessName {
+            get {
+                return ((string)(this["BussinessName"]));
+            }
+            set {
+                this["BussinessName"] = value;
+            }
+        }
     }
 }

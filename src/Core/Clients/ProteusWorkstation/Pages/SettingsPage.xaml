@@ -54,6 +54,11 @@
             <TabItem Header="General" IsEnabled="{Binding IsAdmin, Mode=OneWay}">
                 <ScrollViewer>
                     <StackPanel>
+                        <TextBox 
+                            widgets:ProteusProp.Watermark="Nombre de la empresa"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="🏢"
+                            Text="{Binding BussinessName}"/>
                         <DockPanel>
                             <TextBlock VerticalAlignment="Center" Text="Modo de inicialización"/>
                             <ComboBox
