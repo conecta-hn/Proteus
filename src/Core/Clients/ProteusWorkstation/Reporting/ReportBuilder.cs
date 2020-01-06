@@ -14,6 +14,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Types.Extensions.FlowDocumentExtensions;
+using TheXDS.Proteus.Config;
 
 namespace TheXDS.Proteus.Reporting
 {
@@ -98,7 +99,7 @@ namespace TheXDS.Proteus.Reporting
                 ColumnWidth = 700,
                 IsColumnWidthFlexible = true
             }
-                .Title("Laboratorios Médicos S. de R. L.", 3)
+                .Title(Settings.Default.BussinessName, 3)
                 .Title(title)
                 .Text($"Reporte generado el {DateTime.Now}");
         }

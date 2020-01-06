@@ -27,6 +27,7 @@
                             Content="{Binding SearchLabel, Mode=OneWay}"
                             Command="{Binding SearchCommand, Mode=OneWay}"/>
                         <TextBox
+                            KeyUp="TextBox_KeyUp"
                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                             local:ProteusProp.Watermark="Buscar..."
                             local:ProteusProp.Icon="🔍" />

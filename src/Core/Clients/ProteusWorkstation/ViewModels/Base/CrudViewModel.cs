@@ -17,6 +17,7 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
@@ -31,9 +32,8 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// <typeparam name="TService">
     ///     Tipo de servicio enlazado.
     /// </typeparam>
-    public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel where TService : Service, new()
+    public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel where TService : Service, new()
     {
-        private const int _limit = 100;
         private readonly Type _model;
         private bool _willSearch = true;
         private string? _searchQuery;
@@ -245,7 +245,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             {
                 if (EditMode)
                 {
-                    return ((Selection as ModelBase)?.IsNew ?? true) 
+                    return ((Selection as ModelBase)?.IsNew ?? true)
                         ? $"Nuevo {SelectedElement?.Description.FriendlyName ?? "elemento"}"
                         : $"Editar {SelectedElement?.Description.FriendlyName ?? "elemento"} {(Selection as ModelBase)?.StringId}";
                 }
@@ -366,14 +366,14 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public void ClearSearch()
         {
-            Results = Source.Count() <= _limit ? CollectionViewSource.GetDefaultView(Source) : null;
+            Results = Source.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(Source) : null;
             SearchQuery = null;
         }
 
         /// <summary>
         ///     Obtiene una cadena que describe la cantidad de resultados encontrados.
         /// </summary>
-        public string ResultsDetails => Results is null ? $"Hay más de {_limit} elementos. Inicie una búsqueda para continuar." : WillSearch ? $"{Source.Count()} elementos{(Source.Count() > _limit ? $" (limitado a los últimos {_limit})":null)}" : $"{Results!.Count()} elementos, {Source.Count()} en total";
+        public string ResultsDetails => Results is null ? $"Hay más de {Settings.Default.RowLimit} elementos. Inicie una búsqueda para continuar." : WillSearch ? $"{Source.Count()} elementos{(Source.Count() > Settings.Default.RowLimit ? $" (limitado a los últimos {Settings.Default.RowLimit})" : null)}" : $"{Results!.Count()} elementos, {Source.Count()} en total";
 
         /// <summary>
         ///     Obtiene o establece el valor IsSearching.

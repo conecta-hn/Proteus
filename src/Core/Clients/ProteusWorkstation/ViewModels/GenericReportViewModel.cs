@@ -22,6 +22,18 @@ using System.Windows.Controls;
 
 namespace TheXDS.Proteus.ViewModels
 {
+    public class ModelInfo
+    {
+        public Type Model { get; }
+        public string Name { get; }
+
+        public ModelInfo(Type model)
+        {
+            Model = model;
+            Name = Crud.CrudElement.GetDescription(model).FriendlyName;
+        }
+    }
+
     public class GenericReportViewModel : PageViewModel
     {
         private Type _model;
@@ -29,7 +41,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         ///     Enumera los modelos disponibles para generar reportes.
         /// </summary>
-        public IEnumerable<Type> Models => GetTypes<ModelBase>(true);
+        public IEnumerable<ModelInfo> Models => GetTypes<ModelBase>(true).Select(p => p.ResolveToDefinedType()).Distinct().NotNull().Select(p => new ModelInfo(p));
 
         /// <summary>
         ///     Filtros a aplicar al reporte.
@@ -117,7 +129,7 @@ namespace TheXDS.Proteus.ViewModels
             var paginator = (ActualReport as IDocumentPaginatorSource).DocumentPaginator;
             ActualReport.ColumnWidth *= 2;
             paginator.PageSize = sz;
-            dialog.PrintDocument(paginator, $"Reporte de {Model} - Proteus");
+            dialog.PrintDocument(paginator, $"Reporte de {Crud.CrudElement.GetDescription(Model).FriendlyName} - Proteus");
 
 
 
