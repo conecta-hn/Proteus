@@ -13,66 +13,114 @@ using TheXDS.Proteus.Plugins;
 using static TheXDS.Proteus.Annotations.InteractionType;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Dialogs;
+using System.IO;
+using Microsoft.Win32;
+using TheXDS.MCART.PluginSupport.Legacy;
+using TheXDS.MCART.Attributes;
 
 namespace TheXDS.Proteus.Conecta
 {
+    //namespace Tools
+    //{
+    //    public class ExportTool : Tool
+    //    {
+    //        [InteractionItem, Name("Exportar datos")]
+    //        public async void ExportAsync(object? sender, EventArgs e)
+    //        {
+    //            var fd = new SaveFileDialog();
+    //            if (!(fd.ShowDialog() ?? false)) return;
+    //            var svc = Proteus.Service<ConectaService>();
+
+    //            using var fs = new FileStream(fd.FileName, FileMode.Create);
+    //            using var bw = new BinaryWriter(fs);
+
+    //            bw.Write(svc.All<Proveedor>().Count());
+    //            foreach (var j in await svc.AllAsync<Proveedor>())
+    //            {
+    //                bw.Write(j.Id);
+    //                bw.Write(j.Name);
+    //            }
+
+    //            bw.Write(svc.All<Vendedor>().Count());
+    //            foreach (var j in await svc.AllAsync<Vendedor>())
+    //            {
+    //                bw.Write(j.Id);
+    //                bw.Write(j.Name);
+    //            }
+
+    //            bw.Write(svc.All<Lote>().Count());
+    //            foreach (var j in await svc.AllAsync<Lote>())
+    //            {
+    //                bw.Write(j.Id);
+    //                bw.Write(j.Name);
+    //                bw.Write(j.NumSerie ?? string.Empty);
+    //                bw.Write(j.Proveedor?.Id ?? 0);
+    //                bw.Write(j.Description ?? string.Empty);
+    //                bw.Write(j.Timestamp.ToBinary());
+    //                bw.Write(j.Qty);
+    //                bw.Write(j.Total);
+    //                bw.Write(j.UnitVenta ?? 0m);
+    //            }
+    //        }
+    //    }
+    //}
+
     namespace Crud
     {
-        public class ItemDescriptor : CrudDescriptor<Item, PagoViewModel<Item>>
+        public class ItemDescriptor : CrudDescriptor<Item>
         {
             protected override void DescribeModel()
             {
                 OnModuleMenu(Essential | Catalog);
                 FriendlyName("Artículo");
+                Property(p => p.Name).Nullable().Label("Número de serie");
+                TextProperty(p => p.Description).Big().Nullable().Label("Descripción");
+                NumericProperty(p => p.Descuento).Nullable().Label("Descuento");
+                ObjectProperty(p => p.MenudeoParent).Selectable().Important("En menudeo").Nullable();
+            }
+        }
+
+        public class LoteDescriptor : CrudDescriptor<Lote>
+        {
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Essential | Catalog);
+                FriendlyName("Lote de artículos");
 
                 Property(p => p.Name).AsName().NotEmpty();
-                Property(p => p.NumSerie).Nullable().Label("Número de serie");
-                ObjectProperty(p => p.Proveedor).Selectable().Nullable();//.Creatable().Important();
-                TextProperty(p => p.Description).Big().Label("Descripción del artículo");
+                ObjectProperty(p => p.Proveedor).Selectable().Nullable();
+                ListProperty(p => p.Inversion).Creatable().Label("Inversiones");
+                TextProperty(p => p.Description).Big().Label("Descripción del lote de artículos");
+                ListProperty(p => p.Items).Creatable().Label("Ítems");
                 ListProperty(p => p.Pictures).Creatable().Label("Fotografías");
                 DateProperty(p => p.Timestamp).WithTime().Label("Fecha/hora de ingreso").Default(DateTime.Now);
-                NumericProperty(p => p.Qty).Range(1,int.MaxValue).Label("Cantidad de artículos").Default(1).AsListColumn();
-                NumericProperty(p => p.Total).Label("Costo total");
-                NumericProperty(p => p.UnitVenta).Nullable().Label("Precio de venta unitario");
+                NumericProperty(p => p.UnitVenta).Nullable().Important("Precio de venta unitario");
 
-                ListProperty(p => p.Pagos).Creatable().Important("Abonos realizados al proveedor");
-                VmProperty(p => p.Pendiente).ShowInDetails().AsListColumn().ReadOnly();
-                VmProperty(p => p.Abonado).ShowInDetails().AsListColumn().ReadOnly();
-                VmProperty(p => p.LastPagoWhen).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
-                VmProperty(p => p.LastPagoHowMuch).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
                 ShowAllInDetails();
 
-                CustomAction("Agregar un nuevo ítem igual a este...", OnAddSame);
+                CustomAction("Agregar bulk de items", OnAddItems);
+                CustomAction("Agregar cantidad de items", OnAddQty);
             }
 
-            private async void OnAddSame(Item obj)
+            private async void OnAddQty(Lote obj)
             {
-                if (obj.IsNew)
+                if (InputSplash.GetNew("Cantidad de items a agregar", out int qty))
                 {
-                    Proteus.MessageTarget?.Stop("Debe guardar el ítem primero.");
-                    return;
+                    for (var j = 0; j< qty; j++)
+                    {
+                        obj.Items.Add(new Item());
+                    }
                 }
-                if (!InputSplash.GetNew("Introduzca el nuevo número de serie", out string sn)) return;
-
-                var r = await Proteus.Service<ConectaService>().AddAsync(new Item
+            }
+            private async void OnAddItems(Lote obj)
+            {
+                var c = 0;
+                while (InputSplash.GetNew($"Introduzca el nuevo número de serie. ({c++} hasta ahora)", out string sn))
                 {
-                    Name = obj.Name,
-                    NumSerie = sn,
-                    Proveedor = obj.Proveedor,
-                    Description = obj.Description,
-                    Timestamp = DateTime.Now,
-                    Qty = obj.Qty,
-                    Total = obj.Total,
-                    UnitVenta = obj.UnitVenta
-                });
-
-                if (r.Result == TheXDS.Proteus.Api.Result.Ok)
-                {
-                    Proteus.MessageTarget?.Info("Item agregado correctamente. Necesitará agregar la información de fotos e información de pago manualmente.");
-                }
-                else
-                {
-                    Proteus.MessageTarget?.Error($"Hubo un problema agregando el ítem: {r.Message}");
+                    obj.Items.Add(new Item
+                    {
+                        Name = sn
+                    });
                 }
             }
         }
@@ -88,51 +136,20 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
-        public class ProveedorDescriptor : CrudDescriptor<Proveedor>
-        {            
-            protected override void DescribeModel()
-            {
-                OnModuleMenu(Essential | AdminTool);
-
-                Property(p => p.Name).AsName("Nombre del proveedor");
-                this.DescribeContact();
-                ListProperty(p => p.Inventario).Creatable().Label("Productos ofrecidos");
-
-                ShowAllInDetails();
-            }
-        }
-
-        public class CompraDescriptor : CrudDescriptor<Compra, PagoViewModel<Compra>>
+        public class InversionDescriptor  : CrudDescriptor<Inversion, PagoViewModel<Inversion>> 
         {
             protected override void DescribeModel()
             {
-                OnModuleMenu(Essential | Operation);
-
-                ObjectProperty(p => p.Comprador).Selectable().Important().Required();
-                ObjectProperty(p => p.Item).Selectable().Important().Required();
-                NumericProperty(p => p.Qty).Range(1, int.MaxValue).Important("Cantidad").Default(1);
-                NumericProperty(p => p.Total).Label("Total a pagar");
+                FriendlyName("Inversión");
+                DateProperty(p => p.Timestamp).WithTime().Label("Fecha/hora de ingreso").Default(DateTime.Now);
+                ObjectProperty(p => p.Inversor).Selectable().Required().Important();
+                NumericProperty(p => p.Total).Label("Inversión total");
                 ListProperty(p => p.Pagos).Creatable().Important("Abonos realizados");
+
                 VmProperty(p => p.Pendiente).ShowInDetails().AsListColumn().ReadOnly();
                 VmProperty(p => p.Abonado).ShowInDetails().AsListColumn().ReadOnly();
                 VmProperty(p => p.LastPagoWhen).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
                 VmProperty(p => p.LastPagoHowMuch).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
-
-                ShowAllInDetails();
-            }
-        }
-
-        public class ClienteDescriptor : CrudDescriptor<Cliente>
-        {
-            protected override void DescribeModel()
-            {
-                OnModuleMenu(Essential | AdminTool);
-
-                Property(p => p.Name).AsName("Nombre del cliente");
-                this.DescribeContact();
-                ListProperty(p => p.Compras).Creatable().Label("Compras realizadas");
-
-                ShowAllInDetails();
             }
         }
 
@@ -146,6 +163,68 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
+        public class ProveedorDescriptor : CrudDescriptor<Proveedor>
+        {
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Essential | AdminTool);
+
+                Property(p => p.Name).AsName("Nombre del proveedor");
+                this.DescribeContact();
+                ListProperty(p => p.Inventario).Creatable().Label("Productos ofrecidos");
+
+                ShowAllInDetails();
+            }
+        }
+
+        public class InversorDescriptor : CrudDescriptor<Inversor>
+        {
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Essential | AdminTool);
+
+                Property(p => p.Name).AsName("Nombre del inversor");
+                this.DescribeContact();
+                ListProperty(p => p.Inversion).Creatable().Label("Inversiones");
+
+                ShowAllInDetails();
+            }
+        }
+
+        public class VendedorDescriptor : CrudDescriptor<Vendedor>
+        {
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Essential | AdminTool);
+
+                Property(p => p.Name).AsName("Nombre del vendedor");
+                this.DescribeContact();
+                ListProperty(p => p.Items).Creatable().Label("Artículos en menudeo");
+
+                ShowAllInDetails();
+            }
+        }
+
+
+        public class CompraDescriptor : CrudDescriptor<Menudeo, PagoViewModel<Menudeo>>
+        {
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Essential | Operation);
+
+                ObjectProperty(p => p.Vendedor).Selectable().Important().Required();
+                ListProperty(p => p.Items).Selectable().Important("Artículos en menudeo");
+                NumericProperty(p => p.Total).Label("Total a pagar a favor");
+                ListProperty(p => p.Pagos).Creatable().Important("Abonos realizados");
+
+                VmProperty(p => p.Pendiente).ShowInDetails().AsListColumn().ReadOnly();
+                VmProperty(p => p.Abonado).ShowInDetails().AsListColumn().ReadOnly();
+                VmProperty(p => p.LastPagoWhen).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
+                VmProperty(p => p.LastPagoHowMuch).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
+
+                ShowAllInDetails();
+            }
+        }
     }
 
     namespace ViewModels
