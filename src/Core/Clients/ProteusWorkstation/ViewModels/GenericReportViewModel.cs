@@ -100,6 +100,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="host"></param>
         public GenericReportViewModel(ICloseable host) : base(host)
         {
+            Title = "Reportería genérica";
             AddFilterCommand = new SimpleCommand(OnAddFilter);
             GenerateCommand = new SimpleCommand(OnGenerate);
             PrintCommand = new SimpleCommand(OnPrint);

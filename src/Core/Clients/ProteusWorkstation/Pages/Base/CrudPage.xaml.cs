@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
+using System.Windows.Input;
 
 namespace TheXDS.Proteus.Pages.Base
 {
@@ -146,11 +147,44 @@ namespace TheXDS.Proteus.Pages.Base
         protected CrudPage()
         {
             InitializeComponent();
+            //PreviewKeyUp += CrudPage_PreviewKeyUp;
         }
 
-        private void TextBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void CrudPage_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter || e.Key == System.Windows.Input.Key.Return)
+            if (Keyboard.Modifiers != ModifierKeys.Alt) return;
+            var sel = ((ICrudViewModel)ViewModel).Selection;
+            
+            switch (e.Key)
+            {
+                case Key.B:
+                    TxtSearch.Focus();
+                    break;
+
+                case Key.N:
+                    var cc = ((ICrudViewModel)ViewModel).CreateNew;
+                    if (cc.CanExecute(null)) cc.Execute(null);
+                    break;
+
+                case Key.E:
+                    var ec = ((ICrudViewModel)ViewModel).EditCurrent;
+                    if (ec.CanExecute(sel)) ec.Execute(sel);
+                    break;
+
+                case Key.D:
+                    var dc = ((ICrudViewModel)ViewModel).DeleteCurrent;
+                    if (dc.CanExecute(sel)) dc.Execute(sel);
+                    break;
+
+                default:
+                    return;
+            }
+            e.Handled = true;
+        }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if ((e.Key == Key.Enter || e.Key == Key.Return) && Keyboard.Modifiers == ModifierKeys.None)
             {
                 e.Handled = true;
                 var vm = ((ISearchViewModel)ViewModel).SearchCommand;
