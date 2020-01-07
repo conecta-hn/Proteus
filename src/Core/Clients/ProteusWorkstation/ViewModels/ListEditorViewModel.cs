@@ -15,6 +15,7 @@ using TheXDS.Proteus.Models.Base;
 using System.Windows.Controls;
 using System.Collections;
 using TheXDS.Proteus.Crud.Base;
+using TheXDS.MCART.Types;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -47,7 +48,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         ///     Modelos creables desde este <see cref="ListEditorViewModel"/>.
         /// </param>
-        public ListEditorViewModel(ICollection<ModelBase> selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models)
+        public ListEditorViewModel(ICollection<ModelBase> selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models, nameof(Source))
         {
             SelectionSource = selectionSource;
             AddCommand = new SimpleCommand(OnSelect);

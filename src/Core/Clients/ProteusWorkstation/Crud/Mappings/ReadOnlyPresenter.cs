@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Config;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
@@ -33,16 +34,16 @@ namespace TheXDS.Proteus.Crud.Mappings
             _enumerateLists = enumerateLists;
         }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return ToString(_linkResolutionType is null ? value : Proteus.ResolveLink(_linkResolutionType, value), culture);
         }
 
-        public string ToString(object? value)
+        public string? ToString(object? value)
         {
             return ToString(value, CultureInfo.CurrentCulture);
         }
-        public string ToString(object? value, CultureInfo? culture)
+        public string? ToString(object? value, CultureInfo? culture)
         {
             culture ??= CultureInfo.CreateSpecificCulture("es-HN");
             if (value is ModelBase m && _customConversions.ContainsKey(m.GetType()))
@@ -64,7 +65,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         private string Enumerate(IEnumerable c, CultureInfo? culture)
         {
             culture ??= CultureInfo.CreateSpecificCulture("es-HN");
-            var cc = c.ToGeneric().ToList();
+            var cc = c.ToGeneric().Take(Settings.Default.RowLimit).ToList();
             return cc.Any() ? $"{_sep}{string.Join(_sep, cc.Select(p => ToString(p, culture)).ToArray())}" : "sin datos.";
         }
 
