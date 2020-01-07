@@ -33,7 +33,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     <see cref="DbBoundCrudViewModel"/>.
         /// </summary>
         /// <param name="model">Modelo único de datos.</param>
-        public DbBoundCrudViewModel(Type model) : base(TryGet(model), model)
+        public DbBoundCrudViewModel(Type model) : base(TryGet(model),new[] { model })
         {
             _source = Infer(model);
         }
@@ -63,7 +63,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     <see cref="CrudElement"/>a utilizar para gestionar a una
         ///     entidad dentro de esta instancia.
         /// </param>
-        public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), element)
+        public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), new[] { element })
         {
             _source = Infer(element.Model);
         }

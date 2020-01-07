@@ -61,7 +61,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
-        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, params CrudElement[] elements) : base(elements)
+        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, CrudElement[] elements, string csource = "Results") : base(elements)
         {
             if (elements.Count() == 1)
             {
@@ -82,7 +82,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 ((TreeView)Selector).SelectedItemChanged += TreeViewSelector_SelectionChanged;
             }
             Source = new ObservableCollectionWrap<ModelBase>(source);
-            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("Results")// nameof(Source))
+            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(csource)// nameof(Source))
             {
                 Mode = BindingMode.OneWay
             });
@@ -95,8 +95,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Origen de datos a utilizar.</param>
         /// <param name="models">Modelos asociados de datos.</param>
-        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, params Type[] models)
-            : this(source, models.Select(p => new CrudElement(p)).ToArray())
+        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, Type[] models,string csource = "Results")
+            : this(source, models.Select(p => new CrudElement(p)).ToArray(),csource)
         {
         }
 
