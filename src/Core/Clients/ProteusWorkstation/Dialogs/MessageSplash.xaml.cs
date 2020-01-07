@@ -24,7 +24,14 @@ namespace TheXDS.Proteus.Dialogs
         public MessageSplash()
         {
             InitializeComponent();
+            Loaded += MessageSplash_Loaded;
         }
+
+        private void MessageSplash_Loaded(object sender, RoutedEventArgs e)
+        {
+            BtnClose.Focus();
+        }
+
         /// <summary>
         ///     Muestra una mensaje por medio de una ventana
         ///     <see cref="MessageSplash"/>.

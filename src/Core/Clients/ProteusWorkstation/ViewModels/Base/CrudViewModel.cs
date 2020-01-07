@@ -32,7 +32,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// <typeparam name="TService">
     ///     Tipo de servicio enlazado.
     /// </typeparam>
-    public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel where TService : Service, new()
+    public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel, IEditingCrudViewModel where TService : Service, new()
     {
         private readonly Type _model;
         private bool _willSearch = true;

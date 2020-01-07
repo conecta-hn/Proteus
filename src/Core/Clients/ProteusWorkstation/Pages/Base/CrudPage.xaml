@@ -27,6 +27,7 @@
                             Content="{Binding SearchLabel, Mode=OneWay}"
                             Command="{Binding SearchCommand, Mode=OneWay}"/>
                         <TextBox
+                            x:Name="TxtSearch"
                             KeyUp="TextBox_KeyUp"
                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                             local:ProteusProp.Watermark="Buscar..."
@@ -71,14 +72,14 @@
                                     </ListView.ItemTemplate>
                                 </ListView>
                             </xctk:DropDownButton.DropDownContent>+</xctk:DropDownButton>
-                        <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}">+</Button>
-                        <Button Command="{Binding EditCurrent}" CommandParameter="{Binding Selection}">✎</Button>
+                        <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}" ToolTip="Nuevo">+</Button>
+                        <Button Command="{Binding EditCurrent}" CommandParameter="{Binding Selection}" ToolTip="Editar">✎</Button>
                         <Button 
                             Command="{Binding DeleteCurrent}"
                             CommandParameter="{Binding Selection}"
-                            Background="{StaticResource BadColorT}"
+                            Background="{StaticResource BadColorT}"                            
                             widgets:ProteusProp.Accent="{StaticResource BadColorT2}"
-                            TextElement.Foreground="DarkRed">🗑</Button>
+                            TextElement.Foreground="DarkRed" ToolTip="Eliminar">🗑</Button>
                     </mcart:StretchyWrapPanel>
                     <ContentPresenter Content="{Binding Selector}"/>
                 </DockPanel>
@@ -90,8 +91,8 @@
                         Rows="1"
                         DockPanel.Dock="Bottom"
                         HorizontalAlignment="Center" Margin="5">
-                        <Button Command="{Binding SaveCommand}" Content="Guardar"/>
-                        <Button Command="{Binding CancelCommand}" Content="Cancelar"/>
+                        <Button Command="{Binding SaveCommand}" Content="_Guardar"/>
+                        <Button Command="{Binding CancelCommand}" Content="_Cancelar"/>
                     </UniformGrid>
                     <ScrollViewer Content="{Binding SelectedEditor}"/>
                 </DockPanel>
