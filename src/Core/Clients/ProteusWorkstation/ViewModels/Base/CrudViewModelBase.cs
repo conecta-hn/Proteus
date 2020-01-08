@@ -57,7 +57,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             get => SelectedElement?.ViewModel?.Entity;
             set
             {
-                _selection = value?.GetType();
+                _selection = value?.GetType().ResolveToDefinedType();
 
                 foreach (var j in Elements.NotNull())
                 {
