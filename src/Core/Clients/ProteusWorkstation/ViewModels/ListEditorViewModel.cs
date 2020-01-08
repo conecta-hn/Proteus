@@ -224,10 +224,12 @@ namespace TheXDS.Proteus.ViewModels
         /// </param>
         protected override void OnDelete(object o)
         {
-            if (!(o is ModelBase s)) return;
-            Source.Remove(s);
-            _addedFromSelection.Remove(s);
-            Notify(nameof(Source));
+            //if (!(o is ModelBase s)) return;
+            //Source.Remove(s);
+            //_addedFromSelection.Remove(s);
+            //Notify(nameof(Source));
+
+            OnRemove();
         }
 
         /// <summary>
