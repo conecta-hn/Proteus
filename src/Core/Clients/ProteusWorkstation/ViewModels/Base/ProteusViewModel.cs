@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using TheXDS.MCART;
 using TheXDS.MCART.Exceptions;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;

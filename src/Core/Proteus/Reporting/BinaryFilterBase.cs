@@ -6,7 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Proteus.Reporting
 {

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Models.Base

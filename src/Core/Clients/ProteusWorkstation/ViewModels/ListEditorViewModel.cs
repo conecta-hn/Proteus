@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Collections;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -52,11 +53,11 @@ namespace TheXDS.Proteus.ViewModels
         {
             SelectionSource = selectionSource;
             AddCommand = new SimpleCommand(OnSelect);
-            RemoveCommand = new ObservingCommand(this, OnRemove, CanRemove, nameof(Selection));
+            RemoveCommand = new SimpleCommand(OnRemove);//new ObservingCommand(this, OnRemove, CanRemove, nameof(Selection));
             OkAddCommand = new SimpleCommand(OnOkAdd);
             CancelAddCommand = new SimpleCommand(OnCancelAdd);
             RegisterPropertyChangeBroadcast(nameof(CanAdd), nameof(CanAddAndSelect));
-            RegisterPropertyChangeBroadcast(nameof(CanSelect), nameof(CanAddAndSelect));
+            RegisterPropertyChangeBroadcast(nameof(CanSelect), nameof(CanAddAndSelect));            
         }
 
         /// <summary>
@@ -77,6 +78,15 @@ namespace TheXDS.Proteus.ViewModels
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CustomColumns.AddRange(description.Columns);
+            if (Selector is ListView lv)
+            {
+                lv.SelectionChanged += ListViewSelector_SelectionChanged;
+            }
+        }
+        private void ListViewSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(Selector is ListView lv)) return;
+            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault();
         }
 
         /// <summary>
@@ -168,7 +178,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private bool CanRemove()
         {
-            return !(!(Selection is ModelBase s)) && _addedFromSelection.Contains(s);
+            return Selection is ModelBase s && (_addedFromSelection.Contains(s) || !s.IsNew);
         }
 
         private void OnRemove()
