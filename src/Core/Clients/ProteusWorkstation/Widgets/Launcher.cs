@@ -7,7 +7,7 @@ using System;
 using System.Windows.Input;
 using TheXDS.MCART;
 using TheXDS.MCART.PluginSupport.Legacy;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Widgets

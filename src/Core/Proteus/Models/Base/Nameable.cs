@@ -4,7 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Proteus.Models.Base
 {
