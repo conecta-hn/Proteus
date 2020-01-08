@@ -53,7 +53,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             SelectionSource = selectionSource;
             AddCommand = new SimpleCommand(OnSelect);
-            RemoveCommand = new ObservingCommand(this, OnRemove, CanRemove, nameof(Selection));
+            RemoveCommand = new SimpleCommand(OnRemove);//new ObservingCommand(this, OnRemove, CanRemove, nameof(Selection));
             OkAddCommand = new SimpleCommand(OnOkAdd);
             CancelAddCommand = new SimpleCommand(OnCancelAdd);
             RegisterPropertyChangeBroadcast(nameof(CanAdd), nameof(CanAddAndSelect));
