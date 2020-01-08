@@ -3,7 +3,7 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Proteus.Models.Base
 {

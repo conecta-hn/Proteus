@@ -8,7 +8,7 @@ using TheXDS.Proteus.Crud.Mappings.Base;
 using TheXDS.Proteus.Models.Base;
 using System.Linq;
 using System.Windows.Controls;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 using System.Windows.Controls.Primitives;
 using System.Windows;
 using System.Windows.Data;

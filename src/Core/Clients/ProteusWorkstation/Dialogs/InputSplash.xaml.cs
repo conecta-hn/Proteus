@@ -10,7 +10,7 @@ using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using System.ComponentModel;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Proteus.Dialogs
 {

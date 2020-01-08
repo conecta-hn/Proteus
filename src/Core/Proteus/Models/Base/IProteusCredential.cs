@@ -5,7 +5,7 @@ Licenciado para uso interno solamente.
 
 using TheXDS.Proteus.Api;
 using System.Collections.Generic;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Proteus.Models.Base
 {

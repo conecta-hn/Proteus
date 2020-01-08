@@ -57,34 +57,44 @@ namespace TheXDS.Proteus.ViewModels.Base
             get => SelectedElement?.ViewModel?.Entity;
             set
             {
-                _selection = value?.GetType();
+                _selection = value?.GetType().ResolveToDefinedType();
 
-                foreach (var j in Elements.NotNull())
-                {
-                    if (j.ViewModel is null) continue;
-                    if (IsForType(j))
-                    {
-                        if (!(j.ViewModel is null))
-                        {
-                            lock (value!) lock (j.ViewModel)
-                                    j.ViewModel.Entity = value;
-                        }
-                        foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
-                        {
-                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? value! : SelectedElement!.ViewModel);
-                        }
-                    }
-                    else
-                    {
-                        if (!(j.ViewModel is null)) j.ViewModel.Entity = null;
-                    }
-                    j.ViewModel?.Refresh();
-                }
+                if (!PerformSelection(IsForType, value))
+                    PerformSelection(Implements,value);
+
                 OnPropertyChanged();
 
                 // HACK: Bruteforce a notification ¯\_(ツ)_/¯
                 SelectedElement?.Commit();
             }
+        }
+
+        private bool PerformSelection(Func<CrudElement,bool> check, object? value)
+        {
+            var flag = false;
+            foreach (var j in Elements.NotNull())
+            {
+                if (j.ViewModel is null) continue;
+                if (check(j))
+                {
+                    flag = true;
+                    if (!(j.ViewModel is null))
+                    {
+                        lock (value!) lock (j.ViewModel)
+                                j.ViewModel.Entity = value;
+                    }
+                    foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
+                    {
+                        k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? value! : SelectedElement!.ViewModel);
+                    }
+                }
+                else
+                {
+                    if (!(j.ViewModel is null)) j.ViewModel.Entity = null;
+                }
+                j.ViewModel?.Refresh();
+            }
+            return flag || value is null;
         }
 
         /// <summary>
@@ -97,6 +107,11 @@ namespace TheXDS.Proteus.ViewModels.Base
         private bool IsForType(CrudElement j)
         {
             return j.Model.ResolveToDefinedType() == _selection?.ResolveToDefinedType();
+        }
+
+        private bool Implements(CrudElement j)
+        {
+            return _selection!.Implements(j.Model.ResolveToDefinedType()!);
         }
 
         /// <summary>
@@ -165,7 +180,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         ///     componentes relacionados al modelo de datos de la entidad
         ///     seleccionada.
         /// </summary>
-        public CrudElement SelectedElement => Elements.FirstOrDefault(IsForType);
+        public CrudElement SelectedElement => Elements.FirstOrDefault(IsForType) ?? Elements.FirstOrDefault(Implements);
 
         private protected void OnCancel()
         {

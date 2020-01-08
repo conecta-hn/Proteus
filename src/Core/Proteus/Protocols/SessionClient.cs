@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Networking;
 using TheXDS.MCART.Networking.Client;
-using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Protocols
