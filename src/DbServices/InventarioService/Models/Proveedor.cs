@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Conecta.Context;
@@ -19,6 +20,12 @@ namespace TheXDS.Proteus.Conecta
             public string? Name { get; set; }
             public string? Description { get; set; }
             public decimal? Descuento { get; set; }
+
+            public override string ToString()
+            {
+                return $"{Parent?.Name.OrNull("{0} ")}{Name.OrNull("({0})") ?? Id.ToString()}";
+            }
+            public string? Info => Parent?.Name;
         }
         public class Lote : Nameable<long>, ITimestamp, IDescriptible
         {

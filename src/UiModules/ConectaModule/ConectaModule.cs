@@ -17,53 +17,68 @@ using System.IO;
 using Microsoft.Win32;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Conecta
 {
-    //namespace Tools
-    //{
-    //    public class ExportTool : Tool
-    //    {
-    //        [InteractionItem, Name("Exportar datos")]
-    //        public async void ExportAsync(object? sender, EventArgs e)
-    //        {
-    //            var fd = new SaveFileDialog();
-    //            if (!(fd.ShowDialog() ?? false)) return;
-    //            var svc = Proteus.Service<ConectaService>();
+    namespace Tools
+    {
+        //public class ExportTool : Tool
+        //{
+        //    [InteractionItem, Name("Importar datos")]
+        //    public async void ExportAsync(object? sender, EventArgs e)
+        //    {
+        //        var fd = new OpenFileDialog();
+        //        if (!(fd.ShowDialog() ?? false)) return;
+        //        var svc = Proteus.Service<ConectaService>();
 
-    //            using var fs = new FileStream(fd.FileName, FileMode.Create);
-    //            using var bw = new BinaryWriter(fs);
+        //        using var fs = new FileStream(fd.FileName, FileMode.Open);
+        //        using var bw = new BinaryReader(fs);
 
-    //            bw.Write(svc.All<Proveedor>().Count());
-    //            foreach (var j in await svc.AllAsync<Proveedor>())
-    //            {
-    //                bw.Write(j.Id);
-    //                bw.Write(j.Name);
-    //            }
+        //        var c = bw.ReadInt32();
+        //        for(var j = 0; j < c; j++)
+        //        {
+        //            _ = bw.ReadInt32();
+        //            _ = bw.ReadString();
+        //        }
 
-    //            bw.Write(svc.All<Vendedor>().Count());
-    //            foreach (var j in await svc.AllAsync<Vendedor>())
-    //            {
-    //                bw.Write(j.Id);
-    //                bw.Write(j.Name);
-    //            }
+        //        c = bw.ReadInt32();
+        //        for (var j = 0; j < c; j++)
+        //        {
+        //            _ = bw.ReadInt32();
+        //            _ = bw.ReadString();
+        //        }
+        //        c = bw.ReadInt32();
 
-    //            bw.Write(svc.All<Lote>().Count());
-    //            foreach (var j in await svc.AllAsync<Lote>())
-    //            {
-    //                bw.Write(j.Id);
-    //                bw.Write(j.Name);
-    //                bw.Write(j.NumSerie ?? string.Empty);
-    //                bw.Write(j.Proveedor?.Id ?? 0);
-    //                bw.Write(j.Description ?? string.Empty);
-    //                bw.Write(j.Timestamp.ToBinary());
-    //                bw.Write(j.Qty);
-    //                bw.Write(j.Total);
-    //                bw.Write(j.UnitVenta ?? 0m);
-    //            }
-    //        }
-    //    }
-    //}
+        //        for (var j = 0; j < c; j++)
+        //        {
+        //            _ = bw.ReadInt64();
+
+        //            var l = new Lote
+        //            {
+        //                Name = bw.ReadString()
+        //            };
+        //            var ns = bw.ReadString();
+        //            if (!ns.IsEmpty())
+        //            {
+        //                l.Items.Add(new Item { Name = ns });
+        //            }
+        //            _ = bw.ReadInt32();
+        //            l.Description = bw.ReadString();
+        //            l.Timestamp = DateTime.FromBinary(bw.ReadInt64());
+        //            var cc = bw.ReadInt32();
+        //            while (l.Items.Count < cc)
+        //            {
+        //                l.Items.Add(new Item());
+        //            }
+        //            _ = bw.ReadDecimal();
+        //            _ = bw.ReadDecimal();
+
+        //            await svc.AddAsync(l);
+        //        }
+        //    }
+        //}
+    }
 
     namespace Crud
     {
@@ -72,10 +87,11 @@ namespace TheXDS.Proteus.Conecta
             protected override void DescribeModel()
             {
                 OnModuleMenu(Essential | Catalog);
-                FriendlyName("Artículo");
-                Property(p => p.Name).Nullable().Label("Número de serie");
-                TextProperty(p => p.Description).Big().Nullable().Label("Descripción");
-                NumericProperty(p => p.Descuento).Nullable().Label("Descuento");
+                FriendlyName("Artículo");                
+                Property(p => p.Info).Label("Descripción").AsListColumn().ShowInDetails().ReadOnly();
+                Property(p => p.Name).Nullable().Important("Número de serie");
+                TextProperty(p => p.Description).Big().Nullable().Important("Detalles");
+                NumericProperty(p => p.Descuento).Nullable().Important("Descuento");
                 ObjectProperty(p => p.MenudeoParent).Selectable().Important("En menudeo").Nullable();
             }
         }
@@ -90,7 +106,7 @@ namespace TheXDS.Proteus.Conecta
                 Property(p => p.Name).AsName().NotEmpty();
                 ObjectProperty(p => p.Proveedor).Selectable().Nullable();
                 ListProperty(p => p.Inversion).Creatable().Label("Inversiones");
-                TextProperty(p => p.Description).Big().Label("Descripción del lote de artículos");
+                TextProperty(p => p.Description).Big().Label("Detalles");
                 ListProperty(p => p.Items).Creatable().Label("Ítems");
                 ListProperty(p => p.Pictures).Creatable().Label("Fotografías");
                 DateProperty(p => p.Timestamp).WithTime().Label("Fecha/hora de ingreso").Default(DateTime.Now);
