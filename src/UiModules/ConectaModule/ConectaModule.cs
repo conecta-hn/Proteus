@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using TheXDS.MCART.Attributes;
+using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Conecta.Api;
 using TheXDS.Proteus.Conecta.Models;
 using TheXDS.Proteus.Conecta.ViewModels;
-using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Dialogs;
+using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
+using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
+using static TheXDS.MCART.Types.Extensions.FlowDocumentExtensions;
+using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.Proteus.Annotations.InteractionType;
-using TheXDS.Proteus.Annotations;
-using TheXDS.Proteus.Dialogs;
-using System.IO;
-using Microsoft.Win32;
-using TheXDS.MCART.PluginSupport.Legacy;
-using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Types.Extensions;
+using QE = System.Data.Entity.QueryableExtensions;
 
 namespace TheXDS.Proteus.Conecta
 {
@@ -266,6 +271,166 @@ namespace TheXDS.Proteus.Conecta
     {
         public class ConectaModule : UiModule<ConectaService>
         {
+            [InteractionItem, InteractionType(Reports), Name("Lista de productos")]
+            public async void ListProducts(object? sender, EventArgs e)
+            {
+                if (!InputSplash.GetNew("Ingrese una búsqueda ", out string query)) return;
+                await MakeListProducts(query);
+            }
+
+            [InteractionItem, InteractionType(Reports), Name("Lista agrupada de productos")]
+            public async void GroupProducts(object? sender, EventArgs e) 
+            {
+                if (!InputSplash.GetNew("Ingrese una búsqueda ", out string query)) return;
+                await MakeGroupProducts(query);
+            }
+
+            private async Task MakeListProducts(string query)
+            {
+                Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
+                var fd = Reporting.ReportBuilder.MakeReport("Lista de productos");
+
+                List<Item> l;
+                if (query.IsEmpty())
+                {
+                    l = await QE.ToListAsync(Service.All<Item>());
+                }
+                else
+                {
+                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).ToList();
+                }
+
+                fd.Text($"Total de artículos: {l.Count}");
+
+                var tbl = fd.AddTable(new[] 
+                {
+                    new KeyValuePair<string, GridLength>("Ítem", new GridLength(3, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Descripción", new GridLength(4, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Precio", new GridLength(2, GridUnitType.Star)),
+                });
+
+                tbl.BorderBrush = Brushes.Black;
+                tbl.BorderThickness = new Thickness(3);
+
+                var flag = false;
+
+                
+                foreach (var j in l)
+                {
+                    if (j.Parent is null) continue;
+                    var row = AddR(tbl, new string[]
+                    {
+                        j.Parent.Name,
+                        string.Join(Environment.NewLine, new string?[]{ j.Parent.Description, j.Description }.NotNull()).OrNull() ?? "-",
+                        CalcPrecio(j)
+                    });
+
+                    if (flag)
+                    {
+                        flag = false;
+                        row.Background = Brushes.LightGray;
+                    }
+                    else { flag = true; }
+
+                }
+                try
+                {
+                    fd.Print("Lista de productos - Proteus");
+                }
+                catch
+                {
+                    Proteus.MessageTarget?.Stop("Hubo un problema al imprimir el reporte.");
+                }
+                Proteus.CommonReporter?.Done();
+            }
+            private async Task MakeGroupProducts(string query)
+            {
+                Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
+                var fd = Reporting.ReportBuilder.MakeReport("Lista agrupada de productos");
+
+                List<Lote> l;
+                if (query.IsEmpty())
+                {
+                    l = await QE.ToListAsync(Service.All<Lote>());
+                }
+                else
+                {
+                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().ToList();
+                }
+
+                fd.Text($"Total de artículos: {l.Count}");
+
+                foreach (var j in l.NotNull())
+                {
+                    fd.Title(j.Name, 3);
+                    fd.Text(string.Join(Environment.NewLine, new[] {
+                        j.Description.OrNull() ?? "",
+                        $"Precio de venta: {j.UnitVenta?.ToString("C") ?? "Pregunte"}",
+                        $"Total de artículos: {j.Items.Count}"
+                    }.NotNull()));
+                    var ll = j.Items.Where(p => (!p.Description.IsEmpty()) || p.Descuento.HasValue).ToList();                    
+                    if (ll.Any())
+                    {
+                        fd.Text($"Ítems con detalles: {ll.Count}");
+                        var tbl = fd.AddTable(new[]
+                        {
+                            new KeyValuePair<string, GridLength>("Detalle", new GridLength(2, GridUnitType.Star)),
+                            new KeyValuePair<string, GridLength>("Precio", new GridLength(1, GridUnitType.Star)),
+                        });
+                        tbl.BorderBrush = Brushes.Black;
+                        tbl.BorderThickness = new Thickness(3);
+                        var flag = false;
+                        foreach (var k in ll)
+                        {
+                            var row = AddR(tbl, new string[]
+                            {                        
+                                k.Description ?? "-",
+                                CalcPrecio(k)
+                            });
+                            if (flag)
+                            {
+                                flag = false;
+                                row.Background = Brushes.LightGray;
+                            }
+                            else { flag = true; }
+                        }
+                    }
+                    fd.Blocks.Add(new BlockUIContainer(new Separator()));
+                }
+                try
+                {
+                    fd.Print("Lista agrupada de productos - Proteus");
+                }
+                catch
+                {
+                    Proteus.MessageTarget?.Stop("Hubo un problema al imprimir el reporte.");
+                }
+                Proteus.CommonReporter?.Done();
+            }
+            private static string CalcPrecio(Item i)
+            {
+                return (i.Parent.UnitVenta, i.Descuento) switch
+                {
+                    (decimal v, null) => v.ToString("C"),
+                    (decimal v, decimal d) => $"{v:C} ({v-d:C} lo menos)",
+                    _ => "Pregunte"
+                }; 
+            }
+            private static TableRow AddR(Table tbl, IEnumerable<string> values)
+            {
+                var lst = values.ToList();
+
+                if (lst.Count > tbl.Columns.Count) throw new ArgumentOutOfRangeException();
+
+                var rg = new TableRowGroup();
+                var row = new TableRow();
+                foreach (var j in lst) row.Cells.Add(new TableCell(new Paragraph(new Run(j))));
+                rg.Rows.Add(row);
+
+                tbl.RowGroups.Add(rg);
+
+                return row;
+            }
         }
     }
 }
