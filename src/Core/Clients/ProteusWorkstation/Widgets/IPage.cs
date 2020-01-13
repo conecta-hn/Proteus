@@ -9,18 +9,18 @@ using TheXDS.Proteus.ViewModels.Base;
 namespace TheXDS.Proteus.Widgets
 {
     /// <summary>
-    ///     Define una serie de miembros a implementar por una clase que 
-    ///     funcione como una página huésped de Proteus.
+    /// Define una serie de miembros a implementar por una clase que 
+    /// funcione como una página huésped de Proteus.
     /// </summary>
     public interface IPage : ICloseable
     {
         /// <summary>
-        ///     Obtiene o establece una referencia al hospedaje de páginas de
-        ///     Proteus.
+        /// Obtiene o establece una referencia al hospedaje de páginas de
+        /// Proteus.
         /// </summary>
         IPageHost PageHost { get; set; }
         /// <summary>
-        ///     Activa esta página de Proteus.
+        /// Activa esta página de Proteus.
         /// </summary>
         void Activate();
     }    

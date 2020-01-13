@@ -12,26 +12,26 @@ namespace TheXDS.Proteus.ViewModels.Base
 {
 
     /// <summary>
-    ///     Define una serie de miembros a implementar por una clase que
-    ///     administre las operaciones de Crud con colecciones con elementos de
-    ///     UI autogenerados.
+    /// Define una serie de miembros a implementar por una clase que
+    /// administre las operaciones de Crud con colecciones con elementos de
+    /// UI autogenerados.
     /// </summary>
     public interface ICrudCollectionViewModel : ICrudViewModel
     {
         /// <summary>
-        ///     Enumera el orígen de datos establecido para este Crud.
+        /// Enumera el orígen de datos establecido para este Crud.
         /// </summary>
         ICollection<ModelBase> Source { get; }
 
         /// <summary>
-        ///     Obtiene al elemento selector de la ventana.
+        /// Obtiene al elemento selector de la ventana.
         /// </summary>
         ItemsControl Selector { get; }
 
         /// <summary>
-        ///     Obtiene un <see cref="ViewBase"/> que define la apariencia de
-        ///     un selector <see cref="ListView"/> cuando esta ventana de CRUD
-        ///     controla únicamente un modelo de datos.
+        /// Obtiene un <see cref="ViewBase"/> que define la apariencia de
+        /// un selector <see cref="ListView"/> cuando esta ventana de CRUD
+        /// controla únicamente un modelo de datos.
         /// </summary>
         ViewBase ColumnsView { get; }
     }

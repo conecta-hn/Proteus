@@ -13,30 +13,30 @@ using Xceed.Wpf.Toolkit.Primitives;
 namespace TheXDS.Proteus.Crud.Mappings.Base
 {
     /// <summary>
-    ///     Clase base para mapear rangos de valores por medio de controles de
-    ///     Xceed.
+    /// Clase base para mapear rangos de valores por medio de controles de
+    /// Xceed.
     /// </summary>
     /// <typeparam name="TControl">
-    ///     Tipo de control a utilizar para gestionar los valores del rango.
+    /// Tipo de control a utilizar para gestionar los valores del rango.
     /// </typeparam>
     /// <typeparam name="T">
-    ///     Tipo de valores del rango.
+    /// Tipo de valores del rango.
     /// </typeparam>
     public abstract class XceedUpDownRangeMapping<TControl, T> : XceedUpDownMappingBase<T> where TControl : UpDownBase<T?>, new() where T : struct, IComparable<T>
     {
         /// <summary>
-        ///     Obtiene el control que contieneel valor mínimo del rango.
+        /// Obtiene el control que contieneel valor mínimo del rango.
         /// </summary>
         protected readonly TControl _lower = new TControl();
 
         /// <summary>
-        ///     Obtiene el control que contieneel valor máximo del rango.
+        /// Obtiene el control que contieneel valor máximo del rango.
         /// </summary>
         protected readonly TControl _upper = new TControl();
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="XceedUpDownRangeMapping{TControl, T}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="XceedUpDownRangeMapping{TControl, T}"/>.
         /// </summary>
         /// <param name="property"></param>
         public XceedUpDownRangeMapping(IPropertyDescription property) : base(property, new UniformGrid { Columns = 1 })
@@ -61,8 +61,8 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor contenido por el contorl de este
-        ///     <see cref="XceedUpDownRangeMapping{TControl, T}"/>.
+        /// Obtiene o establece el valor contenido por el contorl de este
+        /// <see cref="XceedUpDownRangeMapping{TControl, T}"/>.
         /// </summary>
         public override object ControlValue
         {
@@ -76,8 +76,8 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         }
 
         /// <summary>
-        ///     Limpia el valor contenido en este 
-        ///     <see cref="XceedUpDownRangeMapping{TControl, T}"/>.
+        /// Limpia el valor contenido en este 
+        /// <see cref="XceedUpDownRangeMapping{TControl, T}"/>.
         /// </summary>
         public override void ClearControlValue()
         {

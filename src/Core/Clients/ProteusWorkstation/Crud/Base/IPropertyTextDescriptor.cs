@@ -8,11 +8,11 @@ namespace TheXDS.Proteus.Crud.Base
     public interface IPropertyTextDescriptor : IPropertyDescriptor
     {
         /// <summary>
-        ///     Indica que un campo de texto debe ser grande.
+        /// Indica que un campo de texto debe ser grande.
         /// </summary>
         /// <returns>
-        ///     Una referencia a la misma instancia para utilizar sintáxis
-        ///     Fluent.
+        /// Una referencia a la misma instancia para utilizar sintáxis
+        /// Fluent.
         /// </returns>
         IPropertyTextDescriptor Big();
         IPropertyTextDescriptor TextKind(TextKind kind);

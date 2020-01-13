@@ -8,6 +8,9 @@ using TheXDS.Proteus.Misc;
 
 namespace TheXDS.Proteus.Cmd
 {
+    /// <summary>
+    /// Describe un argumento que requiere de permisos administrativos para ejecutarse.
+    /// </summary>
     public abstract class AdministrativeArgument : Argument
     {
         public override sealed void Run(CmdLineParser args)

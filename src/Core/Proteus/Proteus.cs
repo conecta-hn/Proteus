@@ -28,22 +28,22 @@ using static TheXDS.MCART.Objects;
 namespace TheXDS.Proteus
 {
     /// <summary>
-    ///     Librería principal de control, gestión y acceso a bases de datos.
+    /// Librería principal de control, gestión y acceso a bases de datos.
     /// </summary>
     public static class Proteus
     {
         private static readonly HashSet<ISettingsRepository> _externalRepositories = new HashSet<ISettingsRepository>(new TypeComparer());
 
         /// <summary>
-        ///     Enumera los repositorios de configuración definidos en los servicios.
+        /// Enumera los repositorios de configuración definidos en los servicios.
         /// </summary>
         public static IEnumerable<ISettingsRepository>? SettingsRepositories => Services?.OfType<ISettingsRepository>().Concat(_externalRepositories);
 
         /// <summary>
-        ///     Registra un repositorio externo de configuración.
+        /// Registra un repositorio externo de configuración.
         /// </summary>
         /// <param name="repo">
-        ///     Repositorio a registrar.
+        /// Repositorio a registrar.
         /// </param>
         public static void RegisterExternalSettingsRepo(ISettingsRepository repo)
         {
@@ -51,7 +51,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Inicializa la clase <see cref="Proteus"/>
+        /// Inicializa la clase <see cref="Proteus"/>
         /// </summary>
         static Proteus()
         {
@@ -59,7 +59,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Obtiene una colección de semilladores de base de datos.
+        /// Obtiene una colección de semilladores de base de datos.
         /// </summary>
         public static IEnumerable<IAsyncDbSeeder> Seeders => FindAllObjects<IAsyncDbSeeder>();
 
@@ -77,48 +77,48 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Cliente de red de Proteus.
+        /// Cliente de red de Proteus.
         /// </summary>
         public static SessionClient NwClient { get; private set; } = new SessionClient();
 
         /// <summary>
-        ///     Obtiene un valor que indica si el servicio de gestión de sesión
-        ///     se encuentra actualmente conectado.
+        /// Obtiene un valor que indica si el servicio de gestión de sesión
+        /// se encuentra actualmente conectado.
         /// </summary>
         public static bool IsNwClientAlive => NwClient.IsAlive;
 
         /// <summary>
-        ///     Obtiene un valor que indica si Proteus ha sido inicializado.
+        /// Obtiene un valor que indica si Proteus ha sido inicializado.
         /// </summary>
         public static bool Initialized => !(Settings is null);
 
         /// <summary>
-        ///     Enumera los posibles modos de inicialización de Proteus.
+        /// Enumera los posibles modos de inicialización de Proteus.
         /// </summary>
         [Flags]
         public enum InitMode : byte
         {
             /// <summary>
-            ///     Únicamente cargar los servicios.
+            /// Únicamente cargar los servicios.
             /// </summary>
             [Name("Únicamente cargar")] LoadOnly,
             /// <summary>
-            ///     Cargar servicios, y realizar una comprobación de base de
-            ///     datos.
+            /// Cargar servicios, y realizar una comprobación de base de
+            /// datos.
             /// </summary>
             [Name("Cargar y comprobar")] Check,
             /// <summary>
-            ///     Cargar servicios, y ejecutar semillas para las bases de
-            ///     datos.
+            /// Cargar servicios, y ejecutar semillas para las bases de
+            /// datos.
             /// </summary>
             [Name("Cargar y ejecutar semillas")] Seed,
             /// <summary>
-            ///     Cargar servicios, y ejecutar sanidad sobre las bases de datos.
+            /// Cargar servicios, y ejecutar sanidad sobre las bases de datos.
             /// </summary>
             [Name("Cargar y ejecutar sanidad")] Sanitize = 4,
             /// <summary>
-            ///     Inicialización completa, incluyendo carga, comprobación y
-            ///     ejecución de semillas.
+            /// Inicialización completa, incluyendo carga, comprobación y
+            /// ejecución de semillas.
             /// </summary>
             [Name("Inicialización completa")] Full = byte.MaxValue
         }
@@ -143,68 +143,68 @@ namespace TheXDS.Proteus
         internal static HashSet<ExternalSeeder>? ExternalSeeders { get; private set; }
 
         /// <summary>
-        ///     Obtiene una colección de orígenes de inicio de sesión
-        ///     registrados en Proteus.
+        /// Obtiene una colección de orígenes de inicio de sesión
+        /// registrados en Proteus.
         /// </summary>
         public static IEnumerable<ILoginSource> LoginSources => _loginSources;
 
         /// <summary>
-        ///     Enumera los servicios cargados en el sistema.
+        /// Enumera los servicios cargados en el sistema.
         /// </summary>
         public static HashSet<Service>? Services { get; private set; }
 
         /// <summary>
-        ///     Repositorio de configuración utilizado para inciar y configurar
-        ///     Proteus al iniciar la aplicación.
+        /// Repositorio de configuración utilizado para inciar y configurar
+        /// Proteus al iniciar la aplicación.
         /// </summary>
         public static ISettings? Settings { get; private set; }
 
         /// <summary>
-        ///     Objeto que administrará las elevaciones de permisos en el
-        ///     sistema. Determinado de forma automática mediante escaneo de
-        ///     ensamblados.
+        /// Objeto que administrará las elevaciones de permisos en el
+        /// sistema. Determinado de forma automática mediante escaneo de
+        /// ensamblados.
         /// </summary>
         public static IElevator? Elevator { get; } = FindSingleObject<IElevator>();
         
         /// <summary>
-        ///     Obtiene o establece el objetivo de mensajes predeterminado de
-        ///     la aplicación.
+        /// Obtiene o establece el objetivo de mensajes predeterminado de
+        /// la aplicación.
         /// </summary>
         public static IMessageTarget? MessageTarget { get; set; }
 
         /// <summary>
-        ///     Obtiene el objeto registrado como objetivo de alertas de la
-        ///     aplicación.
+        /// Obtiene el objeto registrado como objetivo de alertas de la
+        /// aplicación.
         /// </summary>
         public static IAlertTarget? AlertTarget { get; set; }
 
         /// <summary>
-        ///     Objeto que administrará las entradas de bitácora sobre los
-        ///     cambios ocurridos en la base de datos. Determinado de forma
-        ///     automática mediante escaneo de ensamblados.
+        /// Objeto que administrará las entradas de bitácora sobre los
+        /// cambios ocurridos en la base de datos. Determinado de forma
+        /// automática mediante escaneo de ensamblados.
         /// </summary>
         public static IDbLogger? Logger { get; private set; }
 
         /// <summary>
-        ///     Referencia a las credenciales que han iniciado sesión en Proteus.
+        /// Referencia a las credenciales que han iniciado sesión en Proteus.
         /// </summary>
         public static IProteusUserCredential? Session { get; private set; }
 
         /// <summary>
-        ///     Obtiene o establece el objeto que administrará el reporte de
-        ///     estados cuando se realicen operaciones de larga duración.
+        /// Obtiene o establece el objeto que administrará el reporte de
+        /// estados cuando se realicen operaciones de larga duración.
         /// </summary>
         public static IStatusReporter? CommonReporter { get; set; }
 
         /// <summary>
-        ///     Obtiene una referencia al servicio utilizado para controlar los
-        ///     modelos básicos de datos de Proteus.
+        /// Obtiene una referencia al servicio utilizado para controlar los
+        /// modelos básicos de datos de Proteus.
         /// </summary>
         public static UserService? LogonService { get; private set; }
 
         /// <summary>
-        ///     Obtiene o establece un valor que determina si Proteus funcionará
-        ///     en un entorno interactivo o no.
+        /// Obtiene o establece un valor que determina si Proteus funcionará
+        /// en un entorno interactivo o no.
         /// </summary>
         public static bool Interactive
         {
@@ -216,8 +216,8 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Obtiene una ruta predeterminada para la ubicación de un archivo
-        ///     de inicio de sesión por medio de token.
+        /// Obtiene una ruta predeterminada para la ubicación de un archivo
+        /// de inicio de sesión por medio de token.
         /// </summary>
         public static string DefaultTokenFilePath => Path.Combine(new[]
         {
@@ -226,10 +226,10 @@ namespace TheXDS.Proteus
         });
 
         /// <summary>
-        ///     Registra un origen de inicio de sesión.
+        /// Registra un origen de inicio de sesión.
         /// </summary>
         /// <param name="source">
-        ///     Origen de inicio de sesión a registrar.
+        /// Origen de inicio de sesión a registrar.
         /// </param>
         public static void RegisterLoginSource(ILoginSource source)
         {
@@ -237,17 +237,17 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Inicializa Proteus buscando automáticamente la configuración a
-        ///     utilizar.
+        /// Inicializa Proteus buscando automáticamente la configuración a
+        /// utilizar.
         /// </summary>
         /// <returns></returns>
         public static Task Init() => Init(FindFirstObject<ISettings>()!);
         
         /// <summary>
-        ///     Inicializa Proteus.
+        /// Inicializa Proteus.
         /// </summary>
         /// <param name="settings">
-        ///     Configuración a utilizar para inicializar Proteus.
+        /// Configuración a utilizar para inicializar Proteus.
         /// </param>
         public static async Task Init(ISettings settings)
         {
@@ -284,6 +284,16 @@ namespace TheXDS.Proteus
             NwClient?.SetupListener();
         }
 
+        /// <summary>
+        /// Enecuta una inicialización mínima segura de Proteus.
+        /// </summary>
+        /// <param name="settings">
+        /// Set de configuraciones a utilizar para inicializar Proteus.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si Proteus se ha inicializado correctamente,
+        /// <see langword="false"/> en caso contrario.
+        /// </returns>
         public static async Task<bool> SafeInit(ISettings? settings)
         {
             if (settings is null) return false;
@@ -314,7 +324,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Vuelve a recargar la configuración.
+        /// Vuelve a recargar la configuración.
         /// </summary>
         /// <param name="settings"></param>
         /// <returns></returns>
@@ -326,7 +336,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Deshace las inicializaciones de Proteus.
+        /// Deshace las inicializaciones de Proteus.
         /// </summary>
         [Beta]
         public static void DisposeSettings()
@@ -344,13 +354,13 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Inicia sesión en Proteus.
+        /// Inicia sesión en Proteus.
         /// </summary>
         /// <param name="user">Usuario</param>
         /// <param name="password">Contraseña.</param>
         /// <returns>
-        ///     Un objeto <see cref="LoginResult"/> que describe el resultado
-        ///     de la operación de inicio de sesión.
+        /// Un objeto <see cref="LoginResult"/> que describe el resultado
+        /// de la operación de inicio de sesión.
         /// </returns>
         public static Task<LoginResult> Login(string user, SecureString password)
         {
@@ -389,15 +399,15 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Inicia sesión en Proteus.
+        /// Inicia sesión en Proteus.
         /// </summary>
         /// <param name="token">
-        ///     Ruta del archivo que contiene una credencial de inicio de
-        ///     sesión por medio de un token.
-        ///     </param>
+        /// Ruta del archivo que contiene una credencial de inicio de
+        /// sesión por medio de un token.
+        /// </param>
         /// <returns>
-        ///     Un objeto <see cref="LoginResult"/> que describe el resultado
-        ///     de la operación de inicio de sesión.
+        /// Un objeto <see cref="LoginResult"/> que describe el resultado
+        /// de la operación de inicio de sesión.
         /// </returns>
         public static Task<LoginResult> Login(string token)
         {
@@ -405,19 +415,19 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Inicia sesión en Proteus.
+        /// Inicia sesión en Proteus.
         /// </summary>
         /// <param name="token">
-        ///     Archivo local que contiene el token de seguridad.
+        /// Archivo local que contiene el token de seguridad.
         /// </param>
         /// <param name="checkProteusMode">
-        ///     Si se establece en <see langword="true"/>, se comprobará el
-        ///     modo de interactividad de Proteus contra la configuración de
-        ///     la misma sobre el usuario que inicia sesión.
+        /// Si se establece en <see langword="true"/>, se comprobará el
+        /// modo de interactividad de Proteus contra la configuración de
+        /// la misma sobre el usuario que inicia sesión.
         /// </param>
         /// <returns>
-        ///     Un objeto <see cref="LoginResult"/> que describe el resultado
-        ///     de la operación.
+        /// Un objeto <see cref="LoginResult"/> que describe el resultado
+        /// de la operación.
         /// </returns>
         public static async Task<LoginResult> TryLogin(string token, bool checkProteusMode = true)
         {
@@ -443,17 +453,17 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Permite registrar acciones adicionales a ejecutar al realizar
-        ///     un cierre de sesión.
+        /// Permite registrar acciones adicionales a ejecutar al realizar
+        /// un cierre de sesión.
         /// </summary>
         public static HashSet<Action> LogoutActions { get; } = new HashSet<Action>();
 
         /// <summary>
-        ///     Cierra la sesión en Proteus.
+        /// Cierra la sesión en Proteus.
         /// </summary>
         /// <param name="invokeActions">
-        ///     Determina si se deben ejecutar las acciones personalizadas de
-        ///     cierre de sesión.
+        /// Determina si se deben ejecutar las acciones personalizadas de
+        /// cierre de sesión.
         /// </param>
         public static void Logout(bool invokeActions)
         {
@@ -466,33 +476,33 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Cierra la sesión en Proteus.
+        /// Cierra la sesión en Proteus.
         /// </summary>
         public static void Logout() => Logout(true);
 
         /// <summary>
-        ///     Obtiene un servicio del tipo especificado.
+        /// Obtiene un servicio del tipo especificado.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de servicio a obtener.
+        /// Tipo de servicio a obtener.
         /// </typeparam>
         /// <returns>
-        ///     Una instancia del servicio solicitado, o <see langword="null"/>
-        ///     si dicho servicio no pudo ser cargado.
+        /// Una instancia del servicio solicitado, o <see langword="null"/>
+        /// si dicho servicio no pudo ser cargado.
         /// </returns>
         public static T Service<T>() where T : Service => Services.OfType<T>().SingleOrDefault();
 
         /// <summary>
-        ///     Infiere un servicio que pueda manejar entidades del tipo
-        ///     especificado.
+        /// Infiere un servicio que pueda manejar entidades del tipo
+        /// especificado.
         /// </summary>
         /// <typeparam name="TEntity">
-        ///     Modelo de datos con el cual trabajar.
+        /// Modelo de datos con el cual trabajar.
         /// </typeparam>
         /// <returns>
-        ///     Un servicio que pueda administrar y almacenar entidades del
-        ///     tipo especificado, o <see langword="null"/> si ningún servicio
-        ///     puede manejar el modelo.
+        /// Un servicio que pueda administrar y almacenar entidades del
+        /// tipo especificado, o <see langword="null"/> si ningún servicio
+        /// puede manejar el modelo.
         /// </returns>
         public static Service InferService<TEntity>() where TEntity : ModelBase, new()
         {
@@ -500,16 +510,16 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Infiere un servicio que pueda manejar entidades del tipo
-        ///     especificado.
+        /// Infiere un servicio que pueda manejar entidades del tipo
+        /// especificado.
         /// </summary>
         /// <param name="tEntity">
-        ///     Modelo de datos con el cual trabajar.
+        /// Modelo de datos con el cual trabajar.
         /// </param>
         /// <returns>
-        ///     Un servicio que pueda administrar y almacenar entidades del
-        ///     tipo especificado, o <see langword="null"/> si ningún servicio
-        ///     puede manejar el modelo.
+        /// Un servicio que pueda administrar y almacenar entidades del
+        /// tipo especificado, o <see langword="null"/> si ningún servicio
+        /// puede manejar el modelo.
         /// </returns>
         public static Service InferService(Type tEntity)
         {
@@ -517,16 +527,16 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Infiere un servicio que pueda manejar entidades del tipo base
-        ///     especificado.
+        /// Infiere un servicio que pueda manejar entidades del tipo base
+        /// especificado.
         /// </summary>
         /// <param name="tEntity">
-        ///     Modelo de datos con el cual trabajar.
+        /// Modelo de datos con el cual trabajar.
         /// </param>
         /// <returns>
-        ///     Un servicio que pueda administrar y almacenar entidades del
-        ///     tipo especificado, o <see langword="null"/> si ningún servicio
-        ///     puede manejar el tipo básico de modelos.
+        /// Un servicio que pueda administrar y almacenar entidades del
+        /// tipo especificado, o <see langword="null"/> si ningún servicio
+        /// puede manejar el tipo básico de modelos.
         /// </returns>
         public static Service InferBaseService(Type tEntity)
         {
@@ -534,16 +544,16 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Infiere un servicio que pueda manejar entidades del tipo
-        ///     especificado.
+        /// Infiere un servicio que pueda manejar entidades del tipo
+        /// especificado.
         /// </summary>
         /// <param name="entity">
-        ///     Entidad para la cual se necesita un servicio.
+        /// Entidad para la cual se necesita un servicio.
         /// </param>
         /// <returns>
-        ///     Un servicio que pueda administrar y almacenar a la entidad
-        ///     especificada, o <see langword="null"/> si ningún servicio puede
-        ///     manejar a la entidad.
+        /// Un servicio que pueda administrar y almacenar a la entidad
+        /// especificada, o <see langword="null"/> si ningún servicio puede
+        /// manejar a la entidad.
         /// </returns>
         public static Service? InferService(ModelBase entity)
         {
@@ -551,32 +561,32 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Infiere un servicio que pueda manejar entidades del tipo
-        ///     especificado.
+        /// Infiere un servicio que pueda manejar entidades del tipo
+        /// especificado.
         /// </summary>
         /// <param name="model">
-        ///     Modelo de datos con el cual trabajar.
+        /// Modelo de datos con el cual trabajar.
         /// </param>
         /// <returns>
-        ///     Un servicio que pueda administrar y almacenar entidades del
-        ///     tipo especificado, o <see langword="null"/> si ningún servicio
-        ///     puede manejar al modelo.
+        /// Un servicio que pueda administrar y almacenar entidades del
+        /// tipo especificado, o <see langword="null"/> si ningún servicio
+        /// puede manejar al modelo.
         /// </returns>
         public static Service? Infer(Type? model)
         {
             if (model is null) return null;
-            model = model.ResolveToDefinedType();
+            model = model.ResolveToDefinedType()!;
             return InferService(model) ?? InferBaseService(model);
         }
 
         /// <summary>
-        ///     Durante las fases de inicialización temprana, permite
-        ///     reemplazar al cliente de red para conectarse al servidor por
-        ///     medio de una implementación personalizada de la clase
-        ///     <see cref="SessionClient"/>.
+        /// Durante las fases de inicialización temprana, permite
+        /// reemplazar al cliente de red para conectarse al servidor por
+        /// medio de una implementación personalizada de la clase
+        /// <see cref="SessionClient"/>.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de cliente de red a instanciar.
+        /// Tipo de cliente de red a instanciar.
         /// </typeparam>
         public static void ReplaceClient<T>() where T: SessionClient, new()
         {
@@ -587,46 +597,46 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Resuelve un objeto vinculado por medio de un Id.
+        /// Resuelve un objeto vinculado por medio de un Id.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de objeto a resolver.
+        /// Tipo de objeto a resolver.
         /// </typeparam>
         /// <param name="id">
-        ///     Id del objeto a obtener.
+        /// Id del objeto a obtener.
         /// </param>
         /// <returns>
-        ///     La entidad resuelta, o <see langword="null"/> si no se encontró
-        ///     una entidad que coincida con el Id especificado.
+        /// La entidad resuelta, o <see langword="null"/> si no se encontró
+        /// una entidad que coincida con el Id especificado.
         /// </returns>
-        public static T ResolveLink<T>(object id) where T : ModelBase, new()
+        public static T? ResolveLink<T>(object id) where T : ModelBase, new()
         {
-            return Infer(typeof(T)).Get<T>(id?.ToString() ?? string.Empty);
+            return Infer(typeof(T))?.Get<T>(id?.ToString() ?? string.Empty) ?? default!;
         }
 
         /// <summary>
-        ///     Resuelve un objeto vinculado por medio de un Id.
+        /// Resuelve un objeto vinculado por medio de un Id.
         /// </summary>
         /// <param name="model">
-        ///     Tipo de objeto a resolver.
+        /// Tipo de objeto a resolver.
         /// </param>
         /// <param name="id">
-        ///     Id del objeto a obtener.
+        /// Id del objeto a obtener.
         /// </param>
         /// <returns>
-        ///     La entidad resuelta, o <see langword="null"/> si no se encontró
-        ///     una entidad que coincida con el Id especificado.
+        /// La entidad resuelta, o <see langword="null"/> si no se encontró
+        /// una entidad que coincida con el Id especificado.
         /// </returns>
-        public static ModelBase ResolveLink(Type model, object id)
+        public static ModelBase? ResolveLink(Type model, object id)
         {
-            return Infer(model).Get(model, id?.ToString() ?? string.Empty);
+            return Infer(model)?.Get(model, id?.ToString() ?? string.Empty);
         }
 
         private static IEnumerable<T> Load<T>(PluginLoader pl) where T : class, IPlugin
         {
             try
             {
-                return pl.LoadEverything<T>(Settings.PluginsDir).OrNull() ?? GetTypes<T>(true).Select(p => p.New<T>());
+                return pl.LoadEverything<T>(Settings!.PluginsDir).OrNull() ?? GetTypes<T>(true).Select(p => p.New<T>());
             }
             catch (Exception ex)
             {

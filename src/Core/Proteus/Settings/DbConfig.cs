@@ -18,8 +18,8 @@ namespace TheXDS.Proteus.Component
         internal static bool _forceLocalDb;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DbConfig"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="DbConfig"/>.
         /// </summary>
         public DbConfig()
         {

@@ -15,51 +15,51 @@ using TheXDS.MCART.Types.Base;
 namespace TheXDS.Proteus.Crud.Base
 {
     /// <summary>
-    ///     Define una serie de miembros a implementar por una clase que provea
-    ///     de mecanismos de descripción para modelos de datos.
+    /// Define una serie de miembros a implementar por una clase que provea
+    /// de mecanismos de descripción para modelos de datos.
     /// </summary>
     public interface ICrudDescription
     {
         /// <summary>
-        ///     Obtiene una referencia al modelo de datos descrito poe este
-        ///     <see cref="ICrudDescription"/>.
+        /// Obtiene una referencia al modelo de datos descrito poe este
+        /// <see cref="ICrudDescription"/>.
         /// </summary>
         Type DescribedModel { get; }
 
         /// <summary>
-        ///     Obtiene un tipo base definido para la generación del ViewModel
-        ///     interno del editor de Crud, o <see langword="null"/> si no se
-        ///     ha definido un tipo base a implementar.
+        /// Obtiene un tipo base definido para la generación del ViewModel
+        /// interno del editor de Crud, o <see langword="null"/> si no se
+        /// ha definido un tipo base a implementar.
         /// </summary>
         Type BaseViewModelType { get; }
 
         /// <summary>
-        ///     Enumera a las descripciones definidas para las propiedades del
-        ///     modelo.
+        /// Enumera a las descripciones definidas para las propiedades del
+        /// modelo.
         /// </summary>
         IEnumerable<IPropertyDescription> Descriptions { get; }
 
         /// <summary>
-        ///     Obtiene una función definida a ejecutar previo a guardar una
-        ///     enitdad.
+        /// Obtiene una función definida a ejecutar previo a guardar una
+        /// enitdad.
         /// </summary>
         IEnumerable<ICallSaveAction> BeforeSave { get; }
 
         /// <summary>
-        ///     Obtiene una función definida a ejecutar luego de guardar una
-        ///     enitdad.
+        /// Obtiene una función definida a ejecutar luego de guardar una
+        /// enitdad.
         /// </summary>
         IEnumerable<ICallSaveAction> AfterSave { get; }
 
         /// <summary>
-        ///     Obtiene la función que determina si es posible eliminar a la
-        ///     entidad actualmente seleccionada.
+        /// Obtiene la función que determina si es posible eliminar a la
+        /// entidad actualmente seleccionada.
         /// </summary>
         Func<ModelBase,bool> CanDelete { get; }
 
         /// <summary>
-        ///     Enumera una serie de acciones personalizadas definidas para 
-        ///     mostrar en la venana del editor de Crud.
+        /// Enumera una serie de acciones personalizadas definidas para 
+        /// mostrar en la venana del editor de Crud.
         /// </summary>
         IDictionary<string, Action<ModelBase, NotifyPropertyChangeBase>> CustomActions { get; }
 
@@ -70,36 +70,36 @@ namespace TheXDS.Proteus.Crud.Base
         IEnumerable<Column> ListColumns { get; }
 
         /// <summary>
-        ///     Obtiene un nombre amigable a utilizar para nomrbar al modelo.
+        /// Obtiene un nombre amigable a utilizar para nomrbar al modelo.
         /// </summary>
         string FriendlyName { get; }
 
         /// <summary>
-        ///     Obtiene un control personalizado de detalles a presentar.
+        /// Obtiene un control personalizado de detalles a presentar.
         /// </summary>
         Control Details { get; }
 
         /// <summary>
-        ///     Plantilla a utilizar al presentar el modelo en un
-        ///     <see cref="TreeView"/>.
+        /// Plantilla a utilizar al presentar el modelo en un
+        /// <see cref="TreeView"/>.
         /// </summary>
         DataTemplate? TreeViewTemplate { get; }
 
         /// <summary>
-        ///     Obtiene un valor que indica si el módulo debe cargar 
-        ///     automáticamente este descriptor en el menú.
+        /// Obtiene un valor que indica si el módulo debe cargar 
+        /// automáticamente este descriptor en el menú.
         /// </summary>
         InteractionType? OnModuleMenu { get; }
 
         /// <summary>
-        ///     Obtiene un valor de determina si es posible crear nuevas 
-        ///     entidades.
+        /// Obtiene un valor de determina si es posible crear nuevas 
+        /// entidades.
         /// </summary>
         Func<ModelBase, bool> CanCreate { get; }
 
         /// <summary>
-        ///     Obtiene un valor que determina si es posible editar una
-        ///     entidad.
+        /// Obtiene un valor que determina si es posible editar una
+        /// entidad.
         /// </summary>
         Func<ModelBase, bool> CanEdit { get; }
 

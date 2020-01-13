@@ -8,29 +8,29 @@ using System;
 namespace TheXDS.Proteus.Models.Base
 {
     /// <summary>
-    ///     Enumera los posibles valores que describen un comportamiento de
-    ///     seguridad dentro de Proteus.
+    /// Enumera los posibles valores que describen un comportamiento de
+    /// seguridad dentro de Proteus.
     /// </summary>
     [Flags]
     public enum SecurityBehavior
     {
         /// <summary>
-        ///     Componente bloqueado.
+        /// Componente bloqueado.
         /// </summary>
         Locked,
 
         /// <summary>
-        ///     Componente visible.
+        /// Componente visible.
         /// </summary>
         Visible,
 
         /// <summary>
-        ///     Componente habilitado.
+        /// Componente habilitado.
         /// </summary>
         Enabled,
 
         /// <summary>
-        ///     Componente desbloqueado.
+        /// Componente desbloqueado.
         /// </summary>
         Unlocked,
     }

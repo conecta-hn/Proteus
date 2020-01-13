@@ -19,13 +19,13 @@ namespace TheXDS.Proteus.Pages
     {
         private static bool _launched;
         /// <summary>
-        ///     ViewModel que gestiona a esta página de Login.
+        /// ViewModel que gestiona a esta página de Login.
         /// </summary>
         public new LoginViewModel ViewModel => base.ViewModel as LoginViewModel;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="SimpleLoginPage"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="SimpleLoginPage"/>.
         /// </summary>
         public SimpleLoginPage()
         {
@@ -48,7 +48,7 @@ namespace TheXDS.Proteus.Pages
         }
 
         /// <summary>
-        ///     Cierra esta página.
+        /// Cierra esta página.
         /// </summary>
         public override void Close()
         {

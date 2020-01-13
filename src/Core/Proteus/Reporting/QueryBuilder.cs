@@ -13,20 +13,20 @@ using System.Reflection;
 namespace TheXDS.Proteus.Reporting
 {
     /// <summary>
-    ///     Contiene métodos para construir Queries a partir de una lista de 
-    ///     <see cref="IFilter"/> especificados.
+    /// Contiene métodos para construir Queries a partir de una lista de 
+    /// <see cref="IFilter"/> especificados.
     /// </summary>
     public static class QueryBuilder
     {
         /// <summary>
-        ///     Construye un Query a partir de los filtros especificados.
+        /// Construye un Query a partir de los filtros especificados.
         /// </summary>
         /// <param name="model">Modelo para el cual construir un Query.</param>
         /// <param name="filters">
-        ///     Secuencia de filtros a aplicar al Query.
-        ///     </param>
+        /// Secuencia de filtros a aplicar al Query.
+        /// </param>
         /// <returns>
-        ///     Un Query con todos los filtros especificados aplicados.
+        /// Un Query con todos los filtros especificados aplicados.
         /// </returns>
         public static IQueryable BuildQuery(Type model, IEnumerable<IFilter> filters)
         {
@@ -35,14 +35,14 @@ namespace TheXDS.Proteus.Reporting
         }
 
         /// <summary>
-        ///     Construye un Query a partir de los filtros especificados.
+        /// Construye un Query a partir de los filtros especificados.
         /// </summary>
         /// <typeparam name="T">Modelo para el cual construir un Query.</typeparam>
         /// <param name="filters">
-        ///     Secuencia de filtros a aplicar al Query.
-        ///     </param>
+        /// Secuencia de filtros a aplicar al Query.
+        /// </param>
         /// <returns>
-        ///     Un Query con todos los filtros especificados aplicados.
+        /// Un Query con todos los filtros especificados aplicados.
         /// </returns>
         public static IQueryable<T> BuildQuery<T>(IEnumerable<IFilter> filters) where T : ModelBase, new()
         {

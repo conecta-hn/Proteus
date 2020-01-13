@@ -66,25 +66,25 @@ namespace TheXDS.Proteus.Dialogs
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        ///     Obtiene o establece el valor Title.
+        /// Obtiene o establece el valor Title.
         /// </summary>
         /// <value>El valor de Title.</value>
         public string Prompt { get; }
 
         /// <summary>
-        ///     Obtiene el control de edición a utilizar para obtener el valor
-        ///     introducido por el usuario.
+        /// Obtiene el control de edición a utilizar para obtener el valor
+        /// introducido por el usuario.
         /// </summary>
         public FrameworkElement InputControl { get; }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Close.
+        /// Obtiene el comando relacionado a la acción Close.
         /// </summary>
         /// <returns>El comando Close.</returns>
         public SimpleCommand CloseCommand { get; }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Go.
+        /// Obtiene el comando relacionado a la acción Go.
         /// </summary>
         /// <returns>El comando Go.</returns>
         public SimpleCommand GoCommand { get; }

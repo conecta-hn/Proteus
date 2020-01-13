@@ -11,8 +11,8 @@ namespace TheXDS.Proteus.Plugins
 {
     /// <inheritdoc cref="IProteusProtocolPlugin" />
     /// <summary>
-    ///     Clase base para los plugins que ofrezcan protocolos de red para el
-    ///     servidor de Proteus.
+    /// Clase base para los plugins que ofrezcan protocolos de red para el
+    /// servidor de Proteus.
     /// </summary>
     /// <typeparam name="TProtocol">Tipo de protocolo a exponer.</typeparam>
     /// <typeparam name="TClient">Tipo de cliente a atender.</typeparam>
@@ -23,12 +23,12 @@ namespace TheXDS.Proteus.Plugins
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Construye un nuevo servidor utilizando el protocolo ofrecido
-        ///     por este plugin.
+        /// Construye un nuevo servidor utilizando el protocolo ofrecido
+        /// por este plugin.
         /// </summary>
         /// <returns>
-        ///     Un nuevo servidor utilizando el protocolo ofrecido por este
-        ///     plugin.
+        /// Un nuevo servidor utilizando el protocolo ofrecido por este
+        /// plugin.
         /// </returns>
         public Server BuildServer()
         {
@@ -37,21 +37,21 @@ namespace TheXDS.Proteus.Plugins
 
         /// <inheritdoc />
         /// <summary>
-        ///     Obtiene el tipo de clientes que el protocolo de este plugin
-        ///     atiende.
+        /// Obtiene el tipo de clientes que el protocolo de este plugin
+        /// atiende.
         /// </summary>
         public Type ClientType => typeof(TClient);
 
         /// <inheritdoc />
         /// <summary>
-        ///     Obtiene la instancia asociada del protocolo ofrecido por este
-        ///     plugin.
+        /// Obtiene la instancia asociada del protocolo ofrecido por este
+        /// plugin.
         /// </summary>
         public IProtocol Protocol { get; } = new TProtocol();
 
         /// <inheritdoc />
         /// <summary>
-        ///     Obtiene el tipo del protocolo ofrecido por este plugin.
+        /// Obtiene el tipo del protocolo ofrecido por este plugin.
         /// </summary>
         public Type ProtocolType => typeof(TProtocol);
     }

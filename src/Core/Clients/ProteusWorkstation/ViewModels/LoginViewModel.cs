@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace TheXDS.Proteus.ViewModels
 {
     /// <summary>
-    ///     ViewModel que controla el inicio de sesión.
+    /// ViewModel que controla el inicio de sesión.
     /// </summary>
     public class LoginViewModel : PageViewModel
     {
@@ -20,14 +20,14 @@ namespace TheXDS.Proteus.ViewModels
         private string _errorMessage;
                
         /// <summary>
-        ///     Obtiene o establece un valor que indica si se llamará al método
-        ///     de cerrado asociado a este <see cref="LoginViewModel"/> luego
-        ///     de un inicio de sesión válido.
+        /// Obtiene o establece un valor que indica si se llamará al método
+        /// de cerrado asociado a este <see cref="LoginViewModel"/> luego
+        /// de un inicio de sesión válido.
         /// </summary>
         public bool CloseAfterLogin { get; set; }
 
         /// <summary>
-        ///     Obtiene o establece el usuario que se autenticará.
+        /// Obtiene o establece el usuario que se autenticará.
         /// </summary>
         public string User
         {
@@ -40,7 +40,7 @@ namespace TheXDS.Proteus.ViewModels
         }
   
         /// <summary>
-        ///     Obtiene o establece la contraseña a utilizar para autenticarse.
+        /// Obtiene o establece la contraseña a utilizar para autenticarse.
         /// </summary>
         public SecureString Password
         {
@@ -53,8 +53,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si la operación de inicio de sesión
-        ///     fue exitosa.
+        /// Obtiene un valor que indica si la operación de inicio de sesión
+        /// fue exitosa.
         /// </summary>
         public bool Success
         {
@@ -63,13 +63,13 @@ namespace TheXDS.Proteus.ViewModels
         }
        
         /// <summary>
-        ///     Obtiene un valor que determina si ha ocurrido un error de
-        ///     inicio de sesión.
+        /// Obtiene un valor que determina si ha ocurrido un error de
+        /// inicio de sesión.
         /// </summary>
         public bool Failed => ErrorMessage != null;
   
         /// <summary>
-        ///     Obtiene un mensaje de error de inicio de sesión.
+        /// Obtiene un mensaje de error de inicio de sesión.
         /// </summary>
         public string ErrorMessage
         {
@@ -82,28 +82,28 @@ namespace TheXDS.Proteus.ViewModels
         }
   
         /// <summary>
-        ///     Obtiene un comando que al ejecutarse intenta iniciar sesión.
+        /// Obtiene un comando que al ejecutarse intenta iniciar sesión.
         /// </summary>
         public SimpleCommand LoginCommand { get; }
  
         /// <summary>
-        ///     Se produce cuando se ha iniciado sesión correctamente.
+        /// Se produce cuando se ha iniciado sesión correctamente.
         /// </summary>
         public event EventHandler<LoginSuccessEventArgs> LoginSuccess;
 
         /// <summary>
-        ///     Se produce cuando el inicio de sesión ha fallado.
+        /// Se produce cuando el inicio de sesión ha fallado.
         /// </summary>
         public event EventHandler LoginFailed;
 
         /// <summary>
-        ///     Se produce cuando se cancela el intento de inicio de sesión.
+        /// Se produce cuando se cancela el intento de inicio de sesión.
         /// </summary>
         public event EventHandler LoginCancel;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="LoginViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="LoginViewModel"/>.
         /// </summary>
         public LoginViewModel(ICloseable host) : base(host, true)
         {
@@ -112,13 +112,13 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="LoginViewModel"/> a partir de una credencial con los
-        ///     valores de usuario y contraseña a utilizar.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="LoginViewModel"/> a partir de una credencial con los
+        /// valores de usuario y contraseña a utilizar.
         /// </summary>
         /// <param name="host">Host visual que hospeda a esta página.</param>
         /// <param name="fromCredential">
-        ///     Credencial inicial a mostrar.
+        /// Credencial inicial a mostrar.
         /// </param>
         public LoginViewModel(ICloseable host, ICredential fromCredential) : this(host)
         {
@@ -128,7 +128,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Cierra esta página.
+        /// Cierra esta página.
         /// </summary>
         public override sealed void Close()
         {
@@ -170,7 +170,7 @@ namespace TheXDS.Proteus.ViewModels
         private bool _elevation;
 
         /// <summary>
-        ///     Obtiene o establece el valor Elevation.
+        /// Obtiene o establece el valor Elevation.
         /// </summary>
         /// <value>El valor de Elevation.</value>
         public bool Elevation

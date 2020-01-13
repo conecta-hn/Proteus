@@ -27,14 +27,14 @@ using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 namespace TheXDS.Proteus.Crud.Base
 {
     /// <summary>
-    ///     Clase base para describir la presentación y generación de ventanas
-    ///     Crud para un modelo de datos que incluye definiciones de ViewModel.
+    /// Clase base para describir la presentación y generación de ventanas
+    /// Crud para un modelo de datos que incluye definiciones de ViewModel.
     /// </summary>
     /// <typeparam name="TModel">
-    ///     Tipo de modelo a describir.
+    /// Tipo de modelo a describir.
     /// </typeparam>
     /// <typeparam name="TViewModel">
-    ///     Tipo de ViewModel a describir.
+    /// Tipo de ViewModel a describir.
     /// </typeparam>
     public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : class, IDynamicViewModel<TModel>
     {
@@ -79,15 +79,15 @@ namespace TheXDS.Proteus.Crud.Base
         private readonly HashSet<SaveActionChain> _afterSave = new HashSet<SaveActionChain>();
 
         /// <summary>
-        ///     Obtiene una referencia a una propiedad dentro de un ViewModel.
+        /// Obtiene una referencia a una propiedad dentro de un ViewModel.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad.
+        /// Expresión de selección de propiedad.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyDescriptor"/> por medio del cual se
-        ///     puede configurar la presentación de la propiedad en una ventana
-        ///     de Crud.
+        /// Un <see cref="IPropertyDescriptor"/> por medio del cual se
+        /// puede configurar la presentación de la propiedad en una ventana
+        /// de Crud.
         /// </returns>
         protected IPropertyDescriptor VmProperty(Expression<Func<TViewModel, object?>> propertySelector)
         {
@@ -95,16 +95,16 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene una referencia a una propiedad numérica dentro de un
-        ///     ViewModel.
+        /// Obtiene una referencia a una propiedad numérica dentro de un
+        /// ViewModel.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad.
+        /// Expresión de selección de propiedad.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyNumberDescriptor{TValue}"/> por medio
-        ///     del cual se puede configurar la presentación de la propiedad en
-        ///     una ventana de Crud.
+        /// Un <see cref="IPropertyNumberDescriptor{TValue}"/> por medio
+        /// del cual se puede configurar la presentación de la propiedad en
+        /// una ventana de Crud.
         /// </returns>
         protected IPropertyNumberDescriptor<TValue> VmNumericProperty<TValue>(Expression<Func<TViewModel, TValue>> propertySelector) where TValue : IComparable<TValue>
         {
@@ -112,16 +112,16 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene una referencia a una propiedad de texto dentro de un
-        ///     ViewModel.
+        /// Obtiene una referencia a una propiedad de texto dentro de un
+        /// ViewModel.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad.
+        /// Expresión de selección de propiedad.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyTextDescriptor"/> por medio
-        ///     del cual se puede configurar la presentación de la propiedad en
-        ///     una ventana de Crud.
+        /// Un <see cref="IPropertyTextDescriptor"/> por medio
+        /// del cual se puede configurar la presentación de la propiedad en
+        /// una ventana de Crud.
         /// </returns>
         protected IPropertyTextDescriptor VmTextProperty(Expression<Func<TViewModel, string?>> propertySelector)
         {
@@ -129,16 +129,16 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene una referencia a una propiedad de fecha dentro de un
-        ///     ViewModel.
+        /// Obtiene una referencia a una propiedad de fecha dentro de un
+        /// ViewModel.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad.
+        /// Expresión de selección de propiedad.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyDateDescriptor"/> por medio
-        ///     del cual se puede configurar la presentación de la propiedad en
-        ///     una ventana de Crud.
+        /// Un <see cref="IPropertyDateDescriptor"/> por medio
+        /// del cual se puede configurar la presentación de la propiedad en
+        /// una ventana de Crud.
         /// </returns>
         protected IPropertyDateDescriptor VmDateProperty(Expression<Func<TViewModel, DateTime>> propertySelector)
         {
@@ -148,18 +148,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IListPropertyDescriptor{T}"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IListPropertyDescriptor{T}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IListPropertyDescriptor{T}"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IListPropertyDescriptor{T}"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IListPropertyDescriptor<TItem> VmListProperty<TItem>(Expression<Func<TViewModel, IEnumerable<TItem>>> propertySelector) where TItem : ModelBase
@@ -170,18 +170,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public ILinkPropertyDescriptor<TLink> VmLinkProperty<TLink>(Expression<Func<TViewModel, object?>> propertySelector) where TLink : ModelBase
@@ -192,18 +192,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IObjectPropertyDescriptor"/> con el cual
-        ///     se puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IObjectPropertyDescriptor"/> con el cual
+        /// se puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IObjectPropertyDescriptor"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IObjectPropertyDescriptor"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IObjectPropertyDescriptor VmObjectProperty(Expression<Func<TViewModel, ModelBase?>> propertySelector)
@@ -215,8 +215,8 @@ namespace TheXDS.Proteus.Crud.Base
 
 
         /// <summary>
-        ///     Obtiene el tipo efectivo de ViewModel a utilizar como base para
-        ///     compilar.
+        /// Obtiene el tipo efectivo de ViewModel a utilizar como base para
+        /// compilar.
         /// </summary>
         public override Type BaseViewModelType => typeof(TViewModel);
 
@@ -224,10 +224,10 @@ namespace TheXDS.Proteus.Crud.Base
         IEnumerable<ICallSaveAction> IVmCrudDescription.VmAfterSave => _afterSave;
 
         /// <summary>
-        ///     Define una acción a ejecutar previamente a guardar una entidad.
+        /// Define una acción a ejecutar previamente a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         protected IVmSaveActionChain<TModel, TViewModel> VmBeforeSave(Action<TViewModel, ModelBase> action)
         {
@@ -235,10 +235,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar previamente a guardar una entidad.
+        /// Define una acción a ejecutar previamente a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         protected IVmSaveActionChain<TModel, TViewModel> VmBeforeSave(Action<TViewModel> action)
         {
@@ -246,10 +246,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar previamente a guardar una entidad.
+        /// Define una acción a ejecutar previamente a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         protected IVmSaveActionChain<TModel, TViewModel> VmAfterSave(Action<TViewModel, ModelBase> action)
         {
@@ -257,10 +257,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar previamente a guardar una entidad.
+        /// Define una acción a ejecutar previamente a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         protected IVmSaveActionChain<TModel, TViewModel> VmAfterSave(Action<TViewModel> action)
         {
@@ -276,11 +276,11 @@ namespace TheXDS.Proteus.Crud.Base
     }
 
     /// <summary>
-    ///     Clase base para describir la presentación y generación de ventanas
-    ///     Crud para un modelo de datos.
+    /// Clase base para describir la presentación y generación de ventanas
+    /// Crud para un modelo de datos.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de modelo a describir.
+    /// Tipo de modelo a describir.
     /// </typeparam>
     public abstract class CrudDescriptor<T> : ICrudDescription where T : ModelBase, new()
     {
@@ -335,8 +335,8 @@ namespace TheXDS.Proteus.Crud.Base
         private readonly HashSet<Column> _listColumns = new HashSet<Column>();
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudDescriptor{T}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudDescriptor{T}"/>.
         /// </summary>
         protected CrudDescriptor()
         {
@@ -344,12 +344,12 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Ejecuta las tareas de descripción de un modelo de datos.
+        /// Ejecuta las tareas de descripción de un modelo de datos.
         /// </summary>
         protected abstract void DescribeModel();
 
         /// <summary>
-        ///     Obtiene una referencia al editor actualmente activo.
+        /// Obtiene una referencia al editor actualmente activo.
         /// </summary>
         protected ICrudEditingViewModel? CurrentEditor { get; private set; }
 
@@ -358,14 +358,14 @@ namespace TheXDS.Proteus.Crud.Base
         #region ICrudDescription
 
         /// <summary>
-        ///     Enumera a las descripciones definidas para las propiedades del
-        ///     modelo.
+        /// Enumera a las descripciones definidas para las propiedades del
+        /// modelo.
         /// </summary>
         IEnumerable<IPropertyDescription> ICrudDescription.Descriptions => _properties;
 
         /// <summary>
-        ///     Obtiene una función definida a ejecutar previo a guardar una
-        ///     enitdad.
+        /// Obtiene una función definida a ejecutar previo a guardar una
+        /// enitdad.
         /// </summary>
         IEnumerable<ICallSaveAction> ICrudDescription.BeforeSave => _beforeSave;
         IEnumerable<ICallSaveAction> ICrudDescription.AfterSave => _afterSave;
@@ -375,8 +375,8 @@ namespace TheXDS.Proteus.Crud.Base
         Func<ModelBase, bool> ICrudDescription.CanDelete => _canDelete;
 
         /// <summary>
-        ///     Enumera una serie de acciones personalizadas definidas para 
-        ///     mostrar en la venana del editor de Crud.
+        /// Enumera una serie de acciones personalizadas definidas para 
+        /// mostrar en la venana del editor de Crud.
         /// </summary>
         IDictionary<string, Action<ModelBase, NotifyPropertyChangeBase>> ICrudDescription.CustomActions => _customActions;
 
@@ -401,22 +401,22 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene el nombre amigable establecido para este modelo.
+        /// Obtiene el nombre amigable establecido para este modelo.
         /// </summary>
         string ICrudDescription.FriendlyName => _friendlyName.OrNull() ?? typeof(T).Name;
 
         /// <summary>
-        ///     Obtiene un nombre amigable a utilizar para nomrbar al modelo.
+        /// Obtiene un nombre amigable a utilizar para nomrbar al modelo.
         /// </summary>
         public virtual Type BaseViewModelType => null;
 
         /// <summary>
-        ///     Obtiene una referencia al tipo de modelo descrito.
+        /// Obtiene una referencia al tipo de modelo descrito.
         /// </summary>
         Type ICrudDescription.DescribedModel => typeof(T);
 
         /// <summary>
-        ///     Obtiene una página personalizada de detalles.
+        /// Obtiene una página personalizada de detalles.
         /// </summary>
         Control ICrudDescription.Details => _details;
 
@@ -429,11 +429,11 @@ namespace TheXDS.Proteus.Crud.Base
         #region Métodos de descripción
 
         /// <summary>
-        ///     Configura un modelo para aparecer de forma automática en el 
-        ///     menú del módulo.
+        /// Configura un modelo para aparecer de forma automática en el 
+        /// menú del módulo.
         /// </summary>
         /// <param name="type">
-        ///     Tipo de interacción.
+        /// Tipo de interacción.
         /// </param>
         [DebuggerStepThrough]
         public void OnModuleMenu(InteractionType type)
@@ -443,8 +443,8 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Configura un modelo para aparecer de forma automática en el 
-        ///     menú del módulo.
+        /// Configura un modelo para aparecer de forma automática en el 
+        /// menú del módulo.
         /// </summary>
         [DebuggerStepThrough]
         public void OnModuleMenu()
@@ -453,11 +453,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Registra una plantilla para utilizar al mostrar entidades de
-        ///     este modelo en un control <see cref="TreeView"/>.
+        /// Registra una plantilla para utilizar al mostrar entidades de
+        /// este modelo en un control <see cref="TreeView"/>.
         /// </summary>
         /// <param name="templateName">
-        ///     Nombre de la plantilla a utilizar.
+        /// Nombre de la plantilla a utilizar.
         /// </param>
         public void Template(string templateName)
         {
@@ -465,8 +465,8 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Registra una plantilla para utilizar al mostrar entidades de
-        ///     este modelo en un control <see cref="TreeView"/>.
+        /// Registra una plantilla para utilizar al mostrar entidades de
+        /// este modelo en un control <see cref="TreeView"/>.
         /// </summary>
         public void Template()
         {
@@ -474,8 +474,8 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Muesra todos los campos descritos hasta ahora en la vista
-        ///     autogenerada de detalles.
+        /// Muesra todos los campos descritos hasta ahora en la vista
+        /// autogenerada de detalles.
         /// </summary>
         public void ShowAllInDetails()
         {
@@ -486,8 +486,8 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Muestra todos los campos descritos hasta ahora como columnas 
-        ///     de lista.
+        /// Muestra todos los campos descritos hasta ahora como columnas 
+        /// de lista.
         /// </summary>
         public void AllListColumn()
         {
@@ -499,7 +499,7 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Establece una página personalizada de detalles a utilizar.
+        /// Establece una página personalizada de detalles a utilizar.
         /// </summary>
         /// <typeparam name="TDetails"></typeparam>
         public void CustomDetails<TDetails>() where TDetails : Control, new()
@@ -509,10 +509,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar previamente a guardar una entidad.
+        /// Define una acción a ejecutar previamente a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         protected ISaveActionChain<T> BeforeSave(Action<T, ModelBase> action)
         {
@@ -520,10 +520,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar previamente a guardar una entidad.
+        /// Define una acción a ejecutar previamente a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         public ISaveActionChain<T> BeforeSave(Action<T> action)
         {
@@ -531,10 +531,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar luego de guardar una entidad.
+        /// Define una acción a ejecutar luego de guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         protected ISaveActionChain<T> AfterSave(Action<T, ModelBase> action)
         {
@@ -542,10 +542,10 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define una acción a ejecutar luego de a guardar una entidad.
+        /// Define una acción a ejecutar luego de a guardar una entidad.
         /// </summary>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         public ISaveActionChain<T> AfterSave(Action<T> action)
         {
@@ -553,7 +553,7 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Establece un método de comprobación de creación de entidades.
+        /// Establece un método de comprobación de creación de entidades.
         /// </summary>
         /// <param name="check"></param>
         public void CanCreate(Func<ModelBase, bool> check)
@@ -563,7 +563,7 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Establece un método de comprobación de edición de entidades.
+        /// Establece un método de comprobación de edición de entidades.
         /// </summary>
         /// <param name="editCheck"></param>
         public void CanEdit(Func<T, bool> editCheck)
@@ -572,7 +572,7 @@ namespace TheXDS.Proteus.Crud.Base
         }    
         
         /// <summary>
-        ///     Establece un método de comprobación de borrado de entidades.
+        /// Establece un método de comprobación de borrado de entidades.
         /// </summary>
         /// <param name="deletionCheck"></param>
         public void CanDelete(Func<T, bool> deletionCheck)
@@ -581,11 +581,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Configura el descriptor para establecer un valor duro que
-        ///     determina la posibilidad de crear entidades.
+        /// Configura el descriptor para establecer un valor duro que
+        /// determina la posibilidad de crear entidades.
         /// </summary>
         /// <param name="value">
-        ///     valor a establecer.
+        /// valor a establecer.
         /// </param>
         public void CanCreate(bool value)
         {
@@ -594,11 +594,11 @@ namespace TheXDS.Proteus.Crud.Base
 
 
         /// <summary>
-        ///     Configura el descriptor para establecer un valor duro que
-        ///     determina la posibilidad de editar entidades.
+        /// Configura el descriptor para establecer un valor duro que
+        /// determina la posibilidad de editar entidades.
         /// </summary>
         /// <param name="value">
-        ///     valor a establecer.
+        /// valor a establecer.
         /// </param>
         public void CanEdit(bool value)
         {
@@ -606,11 +606,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Configura el descriptor para establecer un valor duro que
-        ///     determina la posibilidad de eliminar entidades.
+        /// Configura el descriptor para establecer un valor duro que
+        /// determina la posibilidad de eliminar entidades.
         /// </summary>
         /// <param name="value">
-        ///     valor a establecer.
+        /// valor a establecer.
         /// </param>
         public void CanDelete(bool value)
         {
@@ -624,18 +624,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IPropertyDescriptor"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IPropertyDescriptor"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyDescriptor"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IPropertyDescriptor"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IPropertyDescriptor Property(Expression<Func<T, object?>> propertySelector)
@@ -644,18 +644,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IPropertyNumberDescriptor{T}"/> con el
-        ///     cual se puede configurar la presentación de una propiedad en
-        ///     una ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IPropertyNumberDescriptor{T}"/> con el
+        /// cual se puede configurar la presentación de una propiedad en
+        /// una ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyNumberDescriptor{T}"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IPropertyNumberDescriptor{T}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IPropertyNumberDescriptor<TValue> NumericProperty<TValue>(Expression<Func<T, TValue>> propertySelector) where TValue : IComparable<TValue>
@@ -664,18 +664,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IPropertyNumberDescriptor{T}"/> con el
-        ///     cual se puede configurar la presentación de una propiedad en
-        ///     una ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IPropertyNumberDescriptor{T}"/> con el
+        /// cual se puede configurar la presentación de una propiedad en
+        /// una ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyNumberDescriptor{T}"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IPropertyNumberDescriptor{T}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IPropertyNumberDescriptor<TValue> NumericProperty<TValue>(Expression<Func<T, TValue?>> propertySelector) where TValue : struct, IComparable<TValue>
@@ -684,18 +684,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IPropertyTextDescriptor"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IPropertyTextDescriptor"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyTextDescriptor"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IPropertyTextDescriptor"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IPropertyTextDescriptor TextProperty(Expression<Func<T, string?>> propertySelector)
@@ -704,18 +704,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IPropertyDateDescriptor"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IPropertyDateDescriptor"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyDateDescriptor"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IPropertyDateDescriptor"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IPropertyDateDescriptor DateProperty(Expression<Func<T, DateTime>> propertySelector)
@@ -726,18 +726,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IPropertyDateDescriptor"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IPropertyDateDescriptor"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IPropertyDateDescriptor"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IPropertyDateDescriptor"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IPropertyDateDescriptor DateProperty(Expression<Func<T, DateTime?>> propertySelector)
@@ -748,18 +748,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IObjectPropertyDescriptor"/> con el cual
-        ///     se puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IObjectPropertyDescriptor"/> con el cual
+        /// se puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IObjectPropertyDescriptor"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IObjectPropertyDescriptor"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IObjectPropertyDescriptor ObjectProperty(Expression<Func<T, ModelBase?>> propertySelector)
@@ -768,18 +768,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="IListPropertyDescriptor{T}"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="IListPropertyDescriptor{T}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="IListPropertyDescriptor{T}"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="IListPropertyDescriptor{T}"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public IListPropertyDescriptor<TItem> ListProperty<TItem>(Expression<Func<T, IEnumerable<TItem>>> propertySelector) where TItem : ModelBase
@@ -788,18 +788,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Obtiene un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se
-        ///     puede configurar la presentación de una propiedad en una
-        ///     ventana autogenerada de Crud utilizando sintáxis Fluent.
+        /// Obtiene un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se
+        /// puede configurar la presentación de una propiedad en una
+        /// ventana autogenerada de Crud utilizando sintáxis Fluent.
         /// </summary>
         /// <param name="propertySelector">
-        ///     Expresión de selección de propiedad. Debe ser un acceso simple
-        ///     a un valor del modelo de datos.
+        /// Expresión de selección de propiedad. Debe ser un acceso simple
+        /// a un valor del modelo de datos.
         /// </param>
         /// <returns>
-        ///     Un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se puede
-        ///     configurar la presentación de una propiedad en una ventana
-        ///     autogenerada de Crud utilizando sintáxis Fluent.
+        /// Un <see cref="ILinkPropertyDescriptor{T}"/> con el cual se puede
+        /// configurar la presentación de una propiedad en una ventana
+        /// autogenerada de Crud utilizando sintáxis Fluent.
         /// </returns>
         [DebuggerStepThrough]
         public ILinkPropertyDescriptor<TLink> LinkProperty<TLink>(Expression<Func<T, object>> propertySelector) where TLink : ModelBase
@@ -808,14 +808,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Agrega una acción personalizada a la ventana del editor de Crud
-        ///     autogenerada.
+        /// Agrega una acción personalizada a la ventana del editor de Crud
+        /// autogenerada.
         /// </summary>
         /// <param name="label">
-        ///     Etiqueta del botón
+        /// Etiqueta del botón
         /// </param>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         public void CustomAction(string label, Action<T> action)
         {
@@ -825,14 +825,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Agrega una acción personalizada a la ventana del editor de Crud
-        ///     autogenerada.
+        /// Agrega una acción personalizada a la ventana del editor de Crud
+        /// autogenerada.
         /// </summary>
         /// <param name="label">
-        ///     Etiqueta del botón
+        /// Etiqueta del botón
         /// </param>
         /// <param name="action">
-        ///     Acción a ejecutar.
+        /// Acción a ejecutar.
         /// </param>
         public void CustomAction(string label, Action<T, NotifyPropertyChangeBase> action)
         {
@@ -843,11 +843,11 @@ namespace TheXDS.Proteus.Crud.Base
 
 
         /// <summary>
-        ///     Define las columnas a mostrar en los controles 
-        ///     <see cref="ListView"/>.
+        /// Define las columnas a mostrar en los controles 
+        /// <see cref="ListView"/>.
         /// </summary>
         /// <param name="columns">
-        ///     Columnas a mostrar.
+        /// Columnas a mostrar.
         /// </param>
         public void ListColumns(params Column[] columns)
         {
@@ -855,11 +855,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Define las columnas a mostrar en los controles 
-        ///     <see cref="ListView"/>.
+        /// Define las columnas a mostrar en los controles 
+        /// <see cref="ListView"/>.
         /// </summary>
         /// <param name="columns">
-        ///     Columnas a mostrar.
+        /// Columnas a mostrar.
         /// </param>
         public void ListColumns(IEnumerable<Column> columns)
         {
@@ -867,8 +867,8 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Agrega una nueva columna de lista a presentar en un control
-        ///     <see cref="ListView"/>.
+        /// Agrega una nueva columna de lista a presentar en un control
+        /// <see cref="ListView"/>.
         /// </summary>
         public void ListColumn(Column c)
         {
@@ -876,7 +876,7 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Establece un nombre amigable a utilizar para nombrar al modelo.
+        /// Establece un nombre amigable a utilizar para nombrar al modelo.
         /// </summary>
         /// <param name="name">Nombre amigable del modelo.</param>
         public void FriendlyName(string name)
@@ -885,11 +885,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Registra una función personalizada de presentación de una
-        ///     entidad al mostrarse en un contexto de solo lectura.
+        /// Registra una función personalizada de presentación de una
+        /// entidad al mostrarse en un contexto de solo lectura.
         /// </summary>
         /// <param name="presenter">
-        ///     Función que realizará la conversión.
+        /// Función que realizará la conversión.
         /// </param>
         public void RegisterReadOnlyPresenter(Func<T, string> presenter)
         {

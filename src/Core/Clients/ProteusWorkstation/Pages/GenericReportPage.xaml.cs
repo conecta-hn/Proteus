@@ -9,7 +9,7 @@ using TheXDS.Proteus.ViewModels;
 namespace TheXDS.Proteus.Pages
 {
     /// <summary>
-    ///     Lógica de interacción para GenericReportPage.xaml
+    /// Lógica de interacción para GenericReportPage.xaml
     /// </summary>
     public partial class GenericReportPage : ProteusPage
     {

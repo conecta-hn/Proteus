@@ -19,15 +19,15 @@ using static TheXDS.MCART.ReflectionHelpers;
 namespace TheXDS.Proteus.Crud
 {
     /// <summary>
-    ///     Clase base que mapea la descripción de una propiedad con un control
-    ///     de edición apropiado para editar el valor de la misma.
+    /// Clase base que mapea la descripción de una propiedad con un control
+    /// de edición apropiado para editar el valor de la misma.
     /// </summary>
     public abstract class PropertyMapper
     {
         private static readonly HashSet<PropertyMapper> _mappers = new HashSet<PropertyMapper>();
 
         /// <summary>
-        ///     Elementos de mapeo de propiedades cargados.
+        /// Elementos de mapeo de propiedades cargados.
         /// </summary>
         public static IEnumerable<PropertyMapper> Mappers => _mappers;
 
@@ -58,20 +58,20 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Enumera los tipos de propiedad mapeados por este
-        ///     <see cref="PropertyMapper"/>.
+        /// Enumera los tipos de propiedad mapeados por este
+        /// <see cref="PropertyMapper"/>.
         /// </summary>
         public virtual IEnumerable<Type> MapsTypes { get { yield break; } }
 
         /// <summary>
-        ///     Comprueba que este <see cref="PropertyMapper"/> sea capaz de
-        ///     mapear la propiedad especificada.
+        /// Comprueba que este <see cref="PropertyMapper"/> sea capaz de
+        /// mapear la propiedad especificada.
         /// </summary>
         /// <param name="property">Propiedad a comprobar.</param>
         /// <returns>
-        ///     <see langword="true"/> si este <see cref="PropertyMapper"/>
-        ///     puede mapear la propiedad, <see langword="false"/> en caso
-        ///     contrario.
+        /// <see langword="true"/> si este <see cref="PropertyMapper"/>
+        /// puede mapear la propiedad, <see langword="false"/> en caso
+        /// contrario.
         /// </returns>
         public virtual bool Maps(IPropertyDescription property)
         {
@@ -87,22 +87,22 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Mapea la propiedad por medio de esta instancia.
+        /// Mapea la propiedad por medio de esta instancia.
         /// </summary>
         /// <param name="p">
-        ///     Propiedad a mapear.
+        /// Propiedad a mapear.
         /// </param>
         /// <returns>
-        ///     Un objeto <see cref="IPropertyMapping"/> con controles de
-        ///     edición configurados para editar la propiedad en una página
-        ///     auto-generada de CRUD.
+        /// Un objeto <see cref="IPropertyMapping"/> con controles de
+        /// edición configurados para editar la propiedad en una página
+        /// auto-generada de CRUD.
         /// </returns>
         public abstract IPropertyMapping Map(IPropertyDescription p);
 
         /// <summary>
-        ///     Obtiene un <see cref="PropertyMapping"/> que pueda utilizarse
-        ///     para generar un control de edición para la propiedad
-        ///     especificada.
+        /// Obtiene un <see cref="PropertyMapping"/> que pueda utilizarse
+        /// para generar un control de edición para la propiedad
+        /// especificada.
         /// </summary>
         /// <param name="property">
         /// Propiedad a partir de la cual generar un control.

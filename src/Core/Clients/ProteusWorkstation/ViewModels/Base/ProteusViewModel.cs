@@ -26,22 +26,22 @@ namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Clase base para todos los objetos que definan la capa de
-    ///     interacción de MVVM que además expone un servicio de forma
-    ///     predeterminada.
+    /// Clase base para todos los objetos que definan la capa de
+    /// interacción de MVVM que además expone un servicio de forma
+    /// predeterminada.
     /// </summary>
     public abstract class ProteusViewModel<T> : ProteusViewModel where T : Service, new()
     {
         /// <summary>
-        ///     Obtiene una referencia al servicio expuesto por este
-        ///     <see cref="ViewModel{T}"/>
+        /// Obtiene una referencia al servicio expuesto por este
+        /// <see cref="ViewModel{T}"/>
         /// </summary>
         protected T Service => Proteus.Service<T>();
 
         /// <inheritdoc />
         /// <summary>
-        ///     Notifica de nuevos cambios existentes sobre el contenido de los
-        ///     campos de este <see cref="ProteusViewModel" />.
+        /// Notifica de nuevos cambios existentes sobre el contenido de los
+        /// campos de este <see cref="ProteusViewModel" />.
         /// </summary>
         public override void Refresh()
         {
@@ -51,7 +51,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     }
 
     /// <summary>
-    ///     Clase base para todos los ViewModel de Proteus.
+    /// Clase base para todos los ViewModel de Proteus.
     /// </summary>
     public abstract class ProteusViewModel : ViewModelBase
     {
@@ -68,16 +68,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene una instancia activa de un 
-        ///     <see cref="ProteusViewModel"/>.
+        /// Obtiene una instancia activa de un 
+        /// <see cref="ProteusViewModel"/>.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de <see cref="ProteusViewModel"/> a obtener.
+        /// Tipo de <see cref="ProteusViewModel"/> a obtener.
         /// </typeparam>
         /// <returns>
-        ///     Una instancia activa de <see cref="ProteusViewModel"/>, o
-        ///     <see langword="null"/> si no hay ninguna instancia activa del
-        ///     <see cref="ProteusViewModel"/> especificado.
+        /// Una instancia activa de <see cref="ProteusViewModel"/>, o
+        /// <see langword="null"/> si no hay ninguna instancia activa del
+        /// <see cref="ProteusViewModel"/> especificado.
         /// </returns>
         public static T Get<T>() where T: ProteusViewModel
         {
@@ -85,20 +85,20 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Enumera a todos los <see cref="ProteusViewModel"/> activos de 
-        ///     la aplicación.
+        /// Enumera a todos los <see cref="ProteusViewModel"/> activos de 
+        /// la aplicación.
         /// </summary>
         public static IEnumerable<ProteusViewModel> ActuallyActiveVms => ActiveViewModels.Select(p => p.TryGetTarget(out var q) ? q : null).NotNull().ToList();
 
         /// <summary>
-        ///     Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
         /// </summary>
         /// <param name="typeName">
-        ///     Nombre del tipo de ViewModel que debe actualizarse.
+        /// Nombre del tipo de ViewModel que debe actualizarse.
         /// </param>
         /// <returns>
-        ///     Una tarea que pude utilizarse para observar la operación
-        ///     asíncrona.
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
         /// </returns>
         public static Task RefreshVmAsync(string typeName)
         {
@@ -106,24 +106,24 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obliga a todos los ViewModel con refresco asíncrono a
-        ///     actualizarse.
+        /// Obliga a todos los ViewModel con refresco asíncrono a
+        /// actualizarse.
         /// </summary>
         /// <returns>
-        ///     Una tarea que pude utilizarse para observar la operación
-        ///     asíncrona.
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
         /// </returns>
         public static Task RefreshVmAsync() => RefreshVmAsync(_ => true);
 
         /// <summary>
-        ///     Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
         /// </summary>
         /// <param name="predicate">
-        ///     Función que determina si un ViewModel se actualizará o no.
+        /// Función que determina si un ViewModel se actualizará o no.
         /// </param>
         /// <returns>
-        ///     Una tarea que pude utilizarse para observar la operación
-        ///     asíncrona.
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
         /// </returns>
         public static async Task RefreshVmAsync(Func<ProteusViewModel, bool> predicate)
         {
@@ -132,8 +132,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Conecta automáticamente todas las colecciones observables a su
-        ///     respectivo evento de notificación de cambios en la colección.
+        /// Conecta automáticamente todas las colecciones observables a su
+        /// respectivo evento de notificación de cambios en la colección.
         /// </summary>
         protected void AutoHook()
         {
@@ -154,8 +154,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Indica a una colección que debe notificar del cambio de un
-        ///     campo cuando la misma cambie.
+        /// Indica a una colección que debe notificar del cambio de un
+        /// campo cuando la misma cambie.
         /// </summary>
         /// <param name="collection">Colección a conectar.</param>
         /// <param name="fieldName">Campo a notificar.</param>
@@ -167,8 +167,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Indica a una colección que debe notificar del cambio de un
-        ///     conjunto de campos cuando la misma cambie.
+        /// Indica a una colección que debe notificar del cambio de un
+        /// conjunto de campos cuando la misma cambie.
         /// </summary>
         /// <param name="collection">Colección a conectar.</param>
         /// <param name="fields">Campos a notificar.</param>
@@ -187,8 +187,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Indica a una colección que debe notificar del cambio de un
-        ///     conjunto de campos cuando la misma cambie.
+        /// Indica a una colección que debe notificar del cambio de un
+        /// conjunto de campos cuando la misma cambie.
         /// </summary>
         /// <param name="collection">Colección a conectar.</param>
         /// <param name="fields">Campos a notificar.</param>
@@ -198,8 +198,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
         
         /// <summary>
-        ///     Obtiene el tipo real del objeto, de-referenciando un tipo
-        ///     dinámico en caso de ser necesario.
+        /// Obtiene el tipo real del objeto, de-referenciando un tipo
+        /// dinámico en caso de ser necesario.
         /// </summary>
         public Type ActualType => GetActualType(GetType());
 
@@ -210,18 +210,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene un nombre amigable para este elemento.
+        /// Obtiene un nombre amigable para este elemento.
         /// </summary>
         public string ModelFriendlyName => ActualType.NameOf();
 
         /// <summary>
-        ///     Obtiene una lista con las referencias débiles de todos los
-        ///     <see cref="ViewModels"/> activos en la aplicación.
+        /// Obtiene una lista con las referencias débiles de todos los
+        /// <see cref="ViewModels"/> activos en la aplicación.
         /// </summary>
         public static HashSet<WeakReference<ProteusViewModel>> ActiveViewModels { get; } = new HashSet<WeakReference<ProteusViewModel>>();
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="ViewModels"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="ViewModels"/>.
         /// </summary>
         protected ProteusViewModel()
         {
@@ -232,14 +232,14 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta una acción, colocando a este <see cref="ViewModels"/> en
-        ///     un estado de espera.
+        /// Ejecuta una acción, colocando a este <see cref="ViewModels"/> en
+        /// un estado de espera.
         /// </summary>
         /// <param name="action">
         /// Acción a ejecutar. Puede ser un método asíncrono.
         /// </param>
         /// <param name="commands">
-        ///     Comandos a deshabilitar/reactivar.
+        /// Comandos a deshabilitar/reactivar.
         /// </param>
         protected void Perform(Action action, params SimpleCommand[] commands)
         {
@@ -269,12 +269,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta una tarea, colocando a este <see cref="ViewModels"/> en
-        ///     un estado de espera.
+        /// Ejecuta una tarea, colocando a este <see cref="ViewModels"/> en
+        /// un estado de espera.
         /// </summary>
         /// <param name="task">Tarea a ejecutar.</param>
         /// <param name="commands">
-        ///     Comandos a deshabilitar/reactivar.
+        /// Comandos a deshabilitar/reactivar.
         /// </param>
         protected Task PerformAsync(Func<Task> task, params SimpleCommand[] commands)
         {
@@ -284,15 +284,15 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta una tarea, colocando a este <see cref="ViewModels"/> en
-        ///     un estado de espera.
+        /// Ejecuta una tarea, colocando a este <see cref="ViewModels"/> en
+        /// un estado de espera.
         /// </summary>
         /// <param name="task">Tarea a ejecutar.</param>
         /// <param name="commands">
-        ///     Comandos a deshabilitar/reactivar.
+        /// Comandos a deshabilitar/reactivar.
         /// </param>
         /// <returns>
-        ///     El resultado de la operación asíncrona.
+        /// El resultado de la operación asíncrona.
         /// </returns>
         protected Task<DetailedResult> PerformAsync(Func<Task<DetailedResult>> task, params SimpleCommand[] commands)
         {
@@ -302,7 +302,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta acciones adicionales para asegurar la destrucción de este ViewModel.
+        /// Ejecuta acciones adicionales para asegurar la destrucción de este ViewModel.
         /// </summary>
         public void Destroy()
         {
@@ -314,7 +314,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Destruye esta instancia de la clase <see cref="ProteusViewModel"/>.
+        /// Destruye esta instancia de la clase <see cref="ProteusViewModel"/>.
         /// </summary>
         ~ProteusViewModel()
         {

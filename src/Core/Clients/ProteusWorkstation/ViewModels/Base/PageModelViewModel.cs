@@ -9,14 +9,14 @@ using TheXDS.Proteus.Models.Base;
 namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <summary>
-    ///     Clase base para un <see cref="PageViewModel"/> con capacidad de
-    ///     administrar a una entidad de datos.
+    /// Clase base para un <see cref="PageViewModel"/> con capacidad de
+    /// administrar a una entidad de datos.
     /// </summary>
     /// <typeparam name="T">Modelo de la entidad a administrar.</typeparam>
     public abstract class PageModelViewModel<T> : PageViewModel where T : ModelBase
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
         /// </summary>
         /// <param name="host">Host visual de esta página.</param>
         protected PageModelViewModel(ICloseable host) : base(host)
@@ -24,18 +24,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
         /// </summary>
         /// <param name="host">Host visual de esta página.</param>
         /// <param name="closeable">
-        ///     Establece la posibilidad de cerrar la página.
+        /// Establece la posibilidad de cerrar la página.
         /// </param>
         protected PageModelViewModel(ICloseable host, bool closeable) : base(host, closeable)
         {
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
         /// </summary>
         /// <param name="host">Host visual de esta página.</param>
         /// <param name="entity">Entidad a administrar.</param>
@@ -45,11 +45,11 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="PageModelViewModel{T}"/>.
         /// </summary>
         /// <param name="host">Host visual de esta página.</param>
         /// <param name="closeable">
-        ///     Establece la posibilidad de cerrar la página.
+        /// Establece la posibilidad de cerrar la página.
         /// </param>
         /// <param name="entity">Entidad a administrar.</param>
         protected PageModelViewModel(ICloseable host, bool closeable, T? entity) : base(host, closeable)
@@ -60,7 +60,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         private T? _entity;
 
         /// <summary>
-        ///     Obtiene o establece el valor Entity.
+        /// Obtiene o establece el valor Entity.
         /// </summary>
         /// <value>El valor de Entity.</value>
         public T? Entity

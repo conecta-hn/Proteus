@@ -12,17 +12,17 @@ using TheXDS.MCART.Attributes;
 namespace TheXDS.Proteus.Component.Attributes
 {
     /// <summary>
-    ///     Indica que un elemento utilizará un filtro de archivo personalizado
-    ///     a la hora de generar un cuadro de diálogo para abrir o guardar
-    ///     archivos.
+    /// Indica que un elemento utilizará un filtro de archivo personalizado
+    /// a la hora de generar un cuadro de diálogo para abrir o guardar
+    /// archivos.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class FileAttribute : TextAttribute
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="FileAttribute" />.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="FileAttribute" />.
         /// </summary>
         /// <param name="fileFilter">Filtro de archivos a aplicar.</param>
         public FileAttribute(string fileFilter) : base(fileFilter)
@@ -31,8 +31,8 @@ namespace TheXDS.Proteus.Component.Attributes
 
         /// <inheritdoc />
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="T:TheXDS.Proteus.Component.Attributes.FileAttribute" />.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="T:TheXDS.Proteus.Component.Attributes.FileAttribute" />.
         /// </summary>
         public FileAttribute():base("Todos los archivos|*")
         {
@@ -40,8 +40,8 @@ namespace TheXDS.Proteus.Component.Attributes
 
         /// <inheritdoc />
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="FileAttribute" />.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="FileAttribute" />.
         /// </summary>
         /// <param name="values">Tipos de archivo admitidos.</param>
         public FileAttribute(IEnumerable<KeyValuePair<string, string>> values) : base(string.Join("|", values.SelectMany(Decompose)))
@@ -50,8 +50,8 @@ namespace TheXDS.Proteus.Component.Attributes
 
         /// <inheritdoc />
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="FileAttribute" />.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="FileAttribute" />.
         /// </summary>
         /// <param name="values">Tipos de archivo admitidos.</param>
         public FileAttribute(IEnumerable<string> values) : this(values.Select(p =>
@@ -62,8 +62,8 @@ namespace TheXDS.Proteus.Component.Attributes
 
         /// <inheritdoc />
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="FileAttribute" />.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="FileAttribute" />.
         /// </summary>
         /// <param name="values">Tipos de archivo admitidos.</param>
         public FileAttribute(params (string, string)[] values) : base(string.Join("|", values.SelectMany(Decompose)))
@@ -72,7 +72,7 @@ namespace TheXDS.Proteus.Component.Attributes
         }
 
         /// <summary>
-        ///     Crea un nuevo diálogo de apertura de archivos.
+        /// Crea un nuevo diálogo de apertura de archivos.
         /// </summary>
         /// <returns></returns>
         public OpenFileDialog MakeDialog()

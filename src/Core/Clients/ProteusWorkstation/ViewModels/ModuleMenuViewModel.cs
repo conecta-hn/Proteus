@@ -15,7 +15,7 @@ using System.Linq;
 namespace TheXDS.Proteus.ViewModels
 {
     /// <summary>
-    ///     ViewModel que controla la presentación visual de un módulo.
+    /// ViewModel que controla la presentación visual de un módulo.
     /// </summary>
     public class ModulePageViewModel : ReportingPageHostViewModel
     {
@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.ViewModels
         internal IPage PageInstance { get; }
 
         /// <summary>
-        ///     Obtiene o establece el módulo gestionado por este ViewModel.
+        /// Obtiene o establece el módulo gestionado por este ViewModel.
         /// </summary>
         public UiModule Module
         {
@@ -34,17 +34,17 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el menú de elementos escenciales del módulo.
+        /// Obtiene el menú de elementos escenciales del módulo.
         /// </summary>
         public IEnumerable<Launcher> Essentials => Module.Essentials;
 
         /// <summary>
-        ///     Obtiene el menú completo del módulo, agrupado por categorías.
+        /// Obtiene el menú completo del módulo, agrupado por categorías.
         /// </summary>
         public IDictionary<string, ICollection<Launcher>> FullMenu => Module.FullMenu;
 
         /// <summary>
-        ///     Obtiene el título de la ventana actual.
+        /// Obtiene el título de la ventana actual.
         /// </summary>
         public override string Title
         {
@@ -53,16 +53,16 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Comando de apertura de la página especial del módulo.
+        /// Comando de apertura de la página especial del módulo.
         /// </summary>
         public ICommand OpenModulePage { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ModulePageViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ModulePageViewModel"/>.
         /// </summary>
         /// <param name="host">
-        ///     Host visual de este ViewModel.
+        /// Host visual de este ViewModel.
         /// </param>
         public ModulePageViewModel(IPageVisualHost host) : base(host)
         {
@@ -82,8 +82,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece un valor que indica si el menú de al lado
-        ///     está abierto o no.
+        /// Obtiene o establece un valor que indica si el menú de al lado
+        /// está abierto o no.
         /// </summary>
         public bool IsFullMenuVisible
         {

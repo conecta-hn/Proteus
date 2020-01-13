@@ -10,8 +10,8 @@ using System.Windows.Controls;
 namespace TheXDS.Proteus.Crud.Mappings
 {
     /// <summary>
-    ///     Mapea propiedades de contraseña en un control
-    ///     <see cref="PasswordBox"/>.
+    /// Mapea propiedades de contraseña en un control
+    /// <see cref="PasswordBox"/>.
     /// </summary>
     public class PasswordMapping : PropertyMapping
     {
@@ -20,11 +20,11 @@ namespace TheXDS.Proteus.Crud.Mappings
         private bool _changed;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="PasswordMapping"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="PasswordMapping"/>.
         /// </summary>
         /// <param name="property">
-        ///     Propiedad a enlazar a este <see cref="PropertyMapping"/>.
+        /// Propiedad a enlazar a este <see cref="PropertyMapping"/>.
         /// </param>
         public PasswordMapping(IPropertyDescription property) : base(property, new PasswordBox())
         {
@@ -33,7 +33,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Obtiene o establce manualmente el valor de este control.
+        /// Obtiene o establce manualmente el valor de este control.
         /// </summary>
         public override object ControlValue
         {
@@ -50,11 +50,11 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Obtiene el valor de una entidad de datos y lo establece en este
-        ///     control.
+        /// Obtiene el valor de una entidad de datos y lo establece en este
+        /// control.
         /// </summary>
         /// <param name="instance">
-        ///     Instancia desde la cual obtener el valor.
+        /// Instancia desde la cual obtener el valor.
         /// </param>
         public override void GetValue(object instance)
         {
@@ -64,7 +64,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Limpia el contenido del control generado.
+        /// Limpia el contenido del control generado.
         /// </summary>
         public override void ClearControlValue()
         {

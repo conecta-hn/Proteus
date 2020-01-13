@@ -8,13 +8,13 @@ using System.Reflection;
 namespace TheXDS.Proteus.Crud
 {
     /// <summary>
-    ///     Describe un error de validación.
+    /// Describe un error de validación.
     /// </summary>
     public class ValidationError
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="T:TheXDS.Proteus.Component.ValidationError" />.
+        /// Inicializa una nueva instancia de la clase <see cref="T:TheXDS.Proteus.Component.ValidationError" />.
         /// </summary>
         /// <param name="failedProperty">Propiedad que ha fallado.</param>
         public ValidationError(PropertyInfo failedProperty) : 
@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.Crud
 
         /// <inheritdoc />
         /// <summary>
-        ///     inicializa una nueva instancia de la clase <see cref="T:TheXDS.Proteus.Component.ValidationError" />.
+        /// inicializa una nueva instancia de la clase <see cref="T:TheXDS.Proteus.Component.ValidationError" />.
         /// </summary>
         /// <param name="message">Mensaje de error.</param>
         public ValidationError(string message) : this(null, message)
@@ -32,7 +32,7 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="ValidationError" />.
+        /// Inicializa una nueva instancia de la clase <see cref="ValidationError" />.
         /// </summary>
         /// <param name="failedProperty">Propiedad que ha fallado.</param>
         /// <param name="message">Mensaje de error.</param>
@@ -43,12 +43,12 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Propiedad que ha fallado.
+        /// Propiedad que ha fallado.
         /// </summary>
         public PropertyInfo FailedProperty { get; }
 
         /// <summary>
-        ///     Mensaje sobre el fallo.
+        /// Mensaje sobre el fallo.
         /// </summary>
         public string Message { get; }
 
@@ -57,7 +57,7 @@ namespace TheXDS.Proteus.Crud
 
     /// <inheritdoc />
     /// <summary>
-    ///     Describe un error de validación donde el campo no contiene un valor.
+    /// Describe un error de validación donde el campo no contiene un valor.
     /// </summary>
     public class NullValidationError : ValidationError
     {

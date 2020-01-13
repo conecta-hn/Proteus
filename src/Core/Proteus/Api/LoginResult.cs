@@ -9,8 +9,8 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
-    ///     Estructura que describe el resultado de una operación de inicio
-    ///     de sesión en Proteus.
+    /// Estructura que describe el resultado de una operación de inicio
+    /// de sesión en Proteus.
     /// </summary>
     public struct LoginResult
     {
@@ -29,32 +29,32 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        ///     Indica si la operación fue exitosa o no.
+        /// Indica si la operación fue exitosa o no.
         /// </summary>
         public bool Success => Result == LoginResultCode.Ok;
             
         /// <summary>
-        ///     Determina el resultado del inicio de sesión utilizando un
-        ///     código de estado.
+        /// Determina el resultado del inicio de sesión utilizando un
+        /// código de estado.
         /// </summary>
         public LoginResultCode Result { get; }
 
         /// <summary>
-        ///     Mensaje de inicio de sesión.
+        /// Mensaje de inicio de sesión.
         /// </summary>
         public string Message { get; }
 
         /// <summary>
-        ///     Referencia a la sesión que fue iniciada.
+        /// Referencia a la sesión que fue iniciada.
         /// </summary>
         public IUser Logon { get; }
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="string"/> en un
-        ///     <see cref="LoginResult"/>.
+        /// Convierte implícitamente un <see cref="string"/> en un
+        /// <see cref="LoginResult"/>.
         /// </summary>
         /// <param name="message">
-        ///     Objeto a convertir.
+        /// Objeto a convertir.
         /// </param>
         public static implicit operator LoginResult(string message)
         {
@@ -62,11 +62,11 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="bool"/> en un
-        ///     <see cref="LoginResult"/>.
+        /// Convierte implícitamente un <see cref="bool"/> en un
+        /// <see cref="LoginResult"/>.
         /// </summary>
         /// <param name="success">
-        ///     Objeto a convertir.
+        /// Objeto a convertir.
         /// </param>
         public static implicit operator LoginResult(bool success)
         {
@@ -74,11 +74,11 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="LoginResultCode"/> en un
-        ///     <see cref="LoginResult"/>.
+        /// Convierte implícitamente un <see cref="LoginResultCode"/> en un
+        /// <see cref="LoginResult"/>.
         /// </summary>
         /// <param name="code">
-        ///     Objeto a convertir.
+        /// Objeto a convertir.
         /// </param>
         public static implicit operator LoginResult(LoginResultCode code)
         {
@@ -86,29 +86,29 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="LoginResult"/> en un
-        ///     <see cref="bool"/>.
+        /// Convierte implícitamente un <see cref="LoginResult"/> en un
+        /// <see cref="bool"/>.
         /// </summary>
         /// <param name="result">
-        ///     Objeto a convertir.
+        /// Objeto a convertir.
         /// </param>
         public static implicit operator bool(LoginResult result) => result.Success;
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="LoginResult"/> en un
-        ///     <see cref="LoginResultCode"/>.
+        /// Convierte implícitamente un <see cref="LoginResult"/> en un
+        /// <see cref="LoginResultCode"/>.
         /// </summary>
         /// <param name="result">
-        ///     Objeto a convertir.
+        /// Objeto a convertir.
         /// </param>
         public static implicit operator LoginResultCode(LoginResult result) => result.Result;
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="LoginResult"/> en un
-        ///     <see cref="string"/>.
+        /// Convierte implícitamente un <see cref="LoginResult"/> en un
+        /// <see cref="string"/>.
         /// </summary>
         /// <param name="result">
-        ///     Objeto a convertir.
+        /// Objeto a convertir.
         /// </param>
         public static implicit operator string(LoginResult result) => result.Message;
     }
