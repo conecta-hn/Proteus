@@ -179,7 +179,7 @@ namespace TheXDS.Proteus
         /// <param name="o"></param>
         public static void ApplyPatches(object o)
         {
-            foreach (var j in _patches)
+            foreach (var j in _patches?.NotNull() ?? Array.Empty<Patch>())
             {
                 if (!j.Patches(o)) continue;
                 j.Apply(o);

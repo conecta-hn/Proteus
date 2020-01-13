@@ -163,7 +163,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private void Logout()
         {
-            if (!Proteus.Interactive) App.UiInvoke(Close);
+            if (!Proteus.Interactive) Close();
             App.UiInvoke(() =>
             {
                 Pages.Clear();

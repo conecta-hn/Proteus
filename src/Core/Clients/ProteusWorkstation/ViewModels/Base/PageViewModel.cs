@@ -26,14 +26,17 @@ namespace TheXDS.Proteus.ViewModels.Base
             get => _title ?? "⚠ Página sin título";
             set => Change(ref _title, value);
         }
+
         /// <summary>
         /// Obtiene al contenedor visual cerrable de este ViewModel.
         /// </summary>
         public ICloseable Host { get; }
+
         /// <summary>
         /// Obtiene un comando de cierre de este ViewModel.
         /// </summary>
         public SimpleCommand CloseCommand { get; }
+
         /// <summary>
         /// Obtiene un valor que determina si este ViewModel puede ser
         /// cerrado.
@@ -47,6 +50,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                     CloseCommand.SetCanExecute(value);
             }
         }
+
         /// <summary>
         /// Inicializa una nueva instancia de la clase
         /// <see cref="PageViewModel"/>.
@@ -61,18 +65,21 @@ namespace TheXDS.Proteus.ViewModels.Base
             Closeable = closeable;
             Host = host;
         }
+        
         /// <summary>
         /// Inicializa una nueva instancia de la clase
         /// <see cref="PageViewModel"/>.
         /// </summary>
         /// <param name="host">Huésped visual de este ViewModel.</param>
         protected PageViewModel(ICloseable host) : this(host, true) { }
+        
         /// <summary>
         /// Cierra este ViewModel manualmente.
         /// </summary>
         public virtual void Close()
         {
-            if (Closeable) Host?.Close();
+            if (Host is null) return;
+            if (Closeable) App.UiInvoke(Host.Close);
         }
     }
 }
