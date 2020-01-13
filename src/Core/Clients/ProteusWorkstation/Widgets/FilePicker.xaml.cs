@@ -10,7 +10,7 @@ namespace TheXDS.Proteus.Widgets
 
     /// <inheritdoc cref="UserControl"/>
     /// <summary>
-    ///     Lógica de interacción para FilePicker.xaml
+    /// Lógica de interacción para FilePicker.xaml
     /// </summary>
     public partial class FilePicker : PathPickerBase
     {

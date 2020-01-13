@@ -36,7 +36,7 @@ namespace TheXDS.Proteus.Protocols
         private bool _deaf = false;
 
         /// <summary>
-        ///     Construye un nuevo servidor qpara alojar este protocolo.
+        /// Construye un nuevo servidor qpara alojar este protocolo.
         /// </summary>
         /// <returns></returns>
         public Server BuildServer() => new Server<Client<HostData>>(this);
@@ -47,8 +47,8 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase 
-        ///     <see cref="SessionProtocol"/>.
+        /// Inicializa una nueva instancia de la clase 
+        /// <see cref="SessionProtocol"/>.
         /// </summary>
         public SessionProtocol()
         {
@@ -114,10 +114,10 @@ namespace TheXDS.Proteus.Protocols
         #region Funciones de protocolo
 
         /// <summary>
-        ///     Atiende la desconexión controlada de un cliente.
+        /// Atiende la desconexión controlada de un cliente.
         /// </summary>
         /// <param name="client">
-        ///     Cliente que solicita la desconexión.
+        /// Cliente que solicita la desconexión.
         /// </param>
         public override void ClientBye(Client<HostData> client)
         {
@@ -128,10 +128,10 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Atiende la desconexión inesperada de un cliente.
+        /// Atiende la desconexión inesperada de un cliente.
         /// </summary>
         /// <param name="client">
-        ///     Cliente desconectado inesperadamente.
+        /// Cliente desconectado inesperadamente.
         /// </param>
         public override void ClientDisconnect(Client<HostData> client)
         {
@@ -142,7 +142,7 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Anuncia la disponibilidad de este servicio en la red.
+        /// Anuncia la disponibilidad de este servicio en la red.
         /// </summary>
         public void Announce() => OnAnnounce(null);
         #endregion
@@ -508,14 +508,14 @@ namespace TheXDS.Proteus.Protocols
         #region Configuración
 
         /// <summary>
-        ///     Configura un comando extendido para atenderse por medio de este
-        ///     cliente de red.
+        /// Configura un comando extendido para atenderse por medio de este
+        /// cliente de red.
         /// </summary>
         /// <param name="command">
-        ///     Respuesta a atender.
+        /// Respuesta a atender.
         /// </param>
         /// <param name="callback">
-        ///     Método de atención.
+        /// Método de atención.
         /// </param>
         [Thunk]
         public void Wire(Command command, Action<Request> callback)
@@ -524,14 +524,14 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Configura un comando extendido para atenderse por medio de este
-        ///     cliente de red.
+        /// Configura un comando extendido para atenderse por medio de este
+        /// cliente de red.
         /// </summary>
         /// <param name="command">
-        ///     Respuesta a atender.
+        /// Respuesta a atender.
         /// </param>
         /// <param name="callback">
-        ///     Método de atención.
+        /// Método de atención.
         /// </param>
         public void Extend(short command, Action<Request> callback)
         {
@@ -539,11 +539,11 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Instruye al protocolo de reenviar el mismo paquete de comando
-        ///     extendido a todos los clientes conectados.
+        /// Instruye al protocolo de reenviar el mismo paquete de comando
+        /// extendido a todos los clientes conectados.
         /// </summary>
         /// <param name="command">
-        ///     Comando extendido a registrar para el reenvío de datos.
+        /// Comando extendido a registrar para el reenvío de datos.
         /// </param>
         public void Relay(short command)
         {

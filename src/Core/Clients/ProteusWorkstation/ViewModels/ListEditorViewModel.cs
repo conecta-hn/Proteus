@@ -22,8 +22,8 @@ namespace TheXDS.Proteus.ViewModels
 {
 
     /// <summary>
-    ///     ViewModel que controla la adición de elementos a una colección de
-    ///     un modelo de datos.
+    /// ViewModel que controla la adición de elementos a una colección de
+    /// un modelo de datos.
     /// </summary>
     public class ListEditorViewModel : CrudCollectionViewModelBase
     {
@@ -37,17 +37,17 @@ namespace TheXDS.Proteus.ViewModels
         private string _fieldIcon;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ListEditorViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ListEditorViewModel"/>.
         /// </summary>
         /// <param name="selectionSource">
-        ///     Origen de selección.
+        /// Origen de selección.
         /// </param>
         /// <param name="collection">
-        ///     Colección subyacente a administrar.
+        /// Colección subyacente a administrar.
         /// </param>
         /// <param name="models">
-        ///     Modelos creables desde este <see cref="ListEditorViewModel"/>.
+        /// Modelos creables desde este <see cref="ListEditorViewModel"/>.
         /// </param>
         public ListEditorViewModel(ICollection<ModelBase> selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models, nameof(Source))
         {
@@ -61,11 +61,11 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ListEditorViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ListEditorViewModel"/>.
         /// </summary>
         /// <param name="description">
-        ///     Descripción bajo la cual se debe instanciar este objeto.
+        /// Descripción bajo la cual se debe instanciar este objeto.
         /// </param>
         public ListEditorViewModel(IListPropertyDescription description) : this(description, new[] { description.Property.PropertyType })
         {
@@ -90,8 +90,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el nombre configurado para mostrar del campo
-        ///     correspondiente a la colección subyacente del modelo de datos.
+        /// Obtiene el nombre configurado para mostrar del campo
+        /// correspondiente a la colección subyacente del modelo de datos.
         /// </summary>
         public string FieldName
         {
@@ -100,8 +100,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el ícono configurado para mostrar del campo
-        ///     correspondiente a la colección subyacente del modelo de datos.
+        /// Obtiene el ícono configurado para mostrar del campo
+        /// correspondiente a la colección subyacente del modelo de datos.
         /// </summary>
         public string FieldIcon
         {
@@ -110,9 +110,9 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si este
-        ///     <see cref="ListEditorViewModel"/> permite adicionar elementos
-        ///     existentes a la colección del modelo de datos.
+        /// Obtiene un valor que indica si este
+        /// <see cref="ListEditorViewModel"/> permite adicionar elementos
+        /// existentes a la colección del modelo de datos.
         /// </summary>
         public bool CanSelect
         {
@@ -125,21 +125,21 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si es posible crear una nueva
-        ///     entidad del tipo especificado.
+        /// Obtiene un valor que indica si es posible crear una nueva
+        /// entidad del tipo especificado.
         /// </summary>
         /// <param name="t">Modelo de datos a instanciar.</param>
         /// <returns>
-        ///     <see langword="true"/> si es posible crear una nueva entidad de
-        ///     tipo <paramref name="t"/>, <see langword="false"/> en caso
-        ///     contrario.
+        /// <see langword="true"/> si es posible crear una nueva entidad de
+        /// tipo <paramref name="t"/>, <see langword="false"/> en caso
+        /// contrario.
         /// </returns>
         public override bool CanCreate(Type t) => CanAdd && base.CanCreate(t);
 
         /// <summary>
-        ///     Obtiene un valor que indica si este
-        ///     <see cref="ListEditorViewModel"/> permite adicionar nuevas
-        ///     entidades.
+        /// Obtiene un valor que indica si este
+        /// <see cref="ListEditorViewModel"/> permite adicionar nuevas
+        /// entidades.
         /// </summary>
         public bool CanAdd
         {
@@ -151,9 +151,9 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si es posible agregar y seleccionar
-        ///     elementos existentes para agregar a la colección del modelo de 
-        ///     datos.
+        /// Obtiene un valor que indica si es posible agregar y seleccionar
+        /// elementos existentes para agregar a la colección del modelo de 
+        /// datos.
         /// </summary>
         public bool CanAddAndSelect => CanAdd && CanSelect;
 
@@ -198,7 +198,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Agrega un elemento a la colección del modelo de datos.
+        /// Agrega un elemento a la colección del modelo de datos.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -216,11 +216,11 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Ejecuta una operación de eliminado de información de la
-        ///     colección activa.
+        /// Ejecuta una operación de eliminado de información de la
+        /// colección activa.
         /// </summary>
         /// <param name="o">
-        ///     Elemento a eliminar.
+        /// Elemento a eliminar.
         /// </param>
         protected override void OnDelete(object o)
         {
@@ -233,8 +233,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el modo de selección a utilizar para la
-        ///     lista de origen de selección.
+        /// Obtiene o establece el modo de selección a utilizar para la
+        /// lista de origen de selección.
         /// </summary>
         public SelectionMode SelectMode
         {
@@ -243,14 +243,14 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el comando que agrega elementos desde la lista de
-        ///     origen de selección a la colección del modelo de datos.
+        /// Obtiene el comando que agrega elementos desde la lista de
+        /// origen de selección a la colección del modelo de datos.
         /// </summary>
         public SimpleCommand AddCommand { get; }
 
         /// <summary>
-        ///     Obtiene el comando que quita un elemento de la colección del
-        ///     modleo de datos.
+        /// Obtiene el comando que quita un elemento de la colección del
+        /// modleo de datos.
         /// </summary>
         public ICommand RemoveCommand { get; }
 
@@ -260,15 +260,15 @@ namespace TheXDS.Proteus.ViewModels
         public ICommand OkAddCommand { get; }
 
         /// <summary>
-        ///     Obtiene el comando que cancela la adición de elementos
-        ///     seleccionados desde una lista.
+        /// Obtiene el comando que cancela la adición de elementos
+        /// seleccionados desde una lista.
         /// </summary>
         public ICommand CancelAddCommand { get; }
 
         /// <summary>
-        ///     Obtiene o establece un valor que configura este
-        ///     <see cref="ListEditorViewModel"/> para agregar elementos desde
-        ///     una lista.
+        /// Obtiene o establece un valor que configura este
+        /// <see cref="ListEditorViewModel"/> para agregar elementos desde
+        /// una lista.
         /// </summary>
         public bool AddMode
         {
@@ -277,8 +277,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece la lista de elementos seleccionados para
-        ///     agregar a la colección del modelo de datos.
+        /// Obtiene o establece la lista de elementos seleccionados para
+        /// agregar a la colección del modelo de datos.
         /// </summary>
         public IList AddSelections
         {
@@ -287,12 +287,12 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el origen de selección de este <see cref="ListEditorViewModel"/>.
+        /// Obtiene el origen de selección de este <see cref="ListEditorViewModel"/>.
         /// </summary>
         public ICollection<ModelBase> SelectionSource { get; }
 
         /// <summary>
-        ///     Ocurre cuando no hay nada seleccionado.
+        /// Ocurre cuando no hay nada seleccionado.
         /// </summary>
         public event EventHandler Unselected;
     }

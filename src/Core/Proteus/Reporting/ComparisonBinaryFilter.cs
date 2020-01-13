@@ -9,19 +9,19 @@ using System.Linq.Expressions;
 namespace TheXDS.Proteus.Reporting
 {
     /// <summary>
-    ///     Clase abstracta que describe un <see cref="BinaryFilterBase"/> que
-    ///     utiliza operandos de comparación.
+    /// Clase abstracta que describe un <see cref="BinaryFilterBase"/> que
+    /// utiliza operandos de comparación.
     /// </summary>
     public abstract class ComparisonBinaryFilter : BinaryFilterBase
     {
         /// <summary>
-        ///     Obtiene la expresión de comparación binaria.
+        /// Obtiene la expresión de comparación binaria.
         /// </summary>
         /// <param name="a">Primer operando de la expresión.</param>
         /// <param name="b">Segundo operando de la expresión.</param>
         /// <returns>
-        ///     Una expresión que contiene la comparación entre ambos
-        ///     operandos.
+        /// Una expresión que contiene la comparación entre ambos
+        /// operandos.
         /// </returns>
         protected abstract BinaryExpression Comparer(Expression a, Expression b);
 

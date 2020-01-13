@@ -9,14 +9,14 @@ using TheXDS.MCART.Types;
 namespace TheXDS.Proteus.Component
 {
     /// <summary>
-    ///     Implementa un <see cref="ModelSearchFilter{T}"/> que puede filtrar
-    ///     entidades que implementen la interfaz <see cref="INameable"/>.
+    /// Implementa un <see cref="ModelSearchFilter{T}"/> que puede filtrar
+    /// entidades que implementen la interfaz <see cref="INameable"/>.
     /// </summary>
     public class UserIdFilter : SimpleModelSearchFilter<IUserBase>
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="UserIdFilter"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="UserIdFilter"/>.
         /// </summary>
         public UserIdFilter() : base(nameof(IUserBase.UserId)) { }
     }

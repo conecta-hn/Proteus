@@ -8,17 +8,17 @@ using System;
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
-    ///     Establece un campo llave de <see cref="string"/> para una nueva
-    ///     entidad que no tenga establecido un Id.
+    /// Establece un campo llave de <see cref="string"/> para una nueva
+    /// entidad que no tenga establecido un Id.
     /// </summary>
     public class StringIdModelPreprocessor : AutoIdModelPreprocessor<string>
     {
         /// <summary>
-        ///     Obtiene un nuevo <see cref="string"/> para utilizarlo como Id
-        ///     de la nueva entidad.
+        /// Obtiene un nuevo <see cref="string"/> para utilizarlo como Id
+        /// de la nueva entidad.
         /// </summary>
         /// <returns>
-        ///     Un valor para utilizar como Id de la nueva entidad.
+        /// Un valor para utilizar como Id de la nueva entidad.
         /// </returns>
         protected override string GetNewValue()
         {

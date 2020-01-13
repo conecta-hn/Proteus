@@ -8,14 +8,14 @@ using TheXDS.MCART.Types.Base;
 namespace TheXDS.Proteus.Component
 {
     /// <summary>
-    ///     Implementa un <see cref="ModelSearchFilter{T}"/> que puede filtrar
-    ///     entidades que implementen la interfaz <see cref="IDescriptible"/>.
+    /// Implementa un <see cref="ModelSearchFilter{T}"/> que puede filtrar
+    /// entidades que implementen la interfaz <see cref="IDescriptible"/>.
     /// </summary>
     public class DescriptionFilter : SimpleModelSearchFilter<IDescriptible>
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DescriptionFilter"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="DescriptionFilter"/>.
         /// </summary>
         public DescriptionFilter() : base(nameof(IDescriptible.Description)) { }
     }

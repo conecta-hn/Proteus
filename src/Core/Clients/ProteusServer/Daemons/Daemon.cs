@@ -13,7 +13,7 @@ namespace TheXDS.Proteus.Daemons
         public virtual bool CanRun => true;
 
         /// <summary>
-        ///     Hora de ejecución, en periodos de 15 minutos.
+        /// Hora de ejecución, en periodos de 15 minutos.
         /// </summary>
         public virtual byte Schedule => (byte)(DateTime.Now.TimeOfDay.TotalMinutes / 15);
 

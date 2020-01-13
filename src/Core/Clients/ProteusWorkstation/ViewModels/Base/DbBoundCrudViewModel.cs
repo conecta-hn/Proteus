@@ -16,8 +16,8 @@ using System.Threading.Tasks;
 namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <summary>
-    ///     ViewModel que gestiona una ventana de Crud enlazada directamente a
-    ///     una base de datos.
+    /// ViewModel que gestiona una ventana de Crud enlazada directamente a
+    /// una base de datos.
     /// </summary>
     public class DbBoundCrudViewModel : CrudCollectionViewModelBase
     {
@@ -29,8 +29,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DbBoundCrudViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="DbBoundCrudViewModel"/>.
         /// </summary>
         /// <param name="model">Modelo único de datos.</param>
         public DbBoundCrudViewModel(Type model) : base(TryGet(model),new[] { model })
@@ -55,22 +55,22 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
 
-        /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DbBoundCrudViewModel"/>.
-        /// </summary>
-        /// <param name="element">
-        ///     <see cref="CrudElement"/>a utilizar para gestionar a una
-        ///     entidad dentro de esta instancia.
-        /// </param>
-        public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), new[] { element })
-        {
-            _source = Infer(element.Model);
-        }
+        ///// <summary>
+        ///// Inicializa una nueva instancia de la clase
+        ///// <see cref="DbBoundCrudViewModel"/>.
+        ///// </summary>
+        ///// <param name="element">
+        ///// <see cref="CrudElement"/>a utilizar para gestionar a una
+        ///// entidad dentro de esta instancia.
+        ///// </param>
+        //public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), new[] { element })
+        //{
+        //    _source = Infer(element.Model);
+        //}
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DbBoundCrudViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="DbBoundCrudViewModel"/>.
         /// </summary>
         /// <param name="source">Origen de datos a utilizar.</param>
         /// <param name="models">Modelos asociados de datos.</param>
@@ -79,22 +79,22 @@ namespace TheXDS.Proteus.ViewModels.Base
             _source = source;
         }
 
-        /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DbBoundCrudViewModel"/>.
-        /// </summary>
-        /// <param name="source">Origen de datos a utilizar.</param>
-        /// <param name="elements">
-        ///     Arreglo de <see cref="CrudElement"/> a utilizar para gestionar
-        ///     a una entidad dentro de esta instancia.
-        /// </param>
-        public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] elements) : base(source.ToList(), elements)
-        {
-            _source = source;
-        }
+        ///// <summary>
+        ///// Inicializa una nueva instancia de la clase
+        ///// <see cref="DbBoundCrudViewModel"/>.
+        ///// </summary>
+        ///// <param name="source">Origen de datos a utilizar.</param>
+        ///// <param name="elements">
+        ///// Arreglo de <see cref="CrudElement"/> a utilizar para gestionar
+        ///// a una entidad dentro de esta instancia.
+        ///// </param>
+        //public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] elements) : base(source.ToList(), elements)
+        //{
+        //    _source = source;
+        //}
 
         /// <summary>
-        ///     Ejecuta la operación de guardado sobre la base de datos.
+        /// Ejecuta la operación de guardado sobre la base de datos.
         /// </summary>
         /// <param name="entity">Entidad a guardar.</param>
         /// <returns></returns>
@@ -114,11 +114,11 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta una operación de eliminado de información de la
-        ///     colección activa.
+        /// Ejecuta una operación de eliminado de información de la
+        /// colección activa.
         /// </summary>
         /// <param name="o">
-        ///     Elemento a eliminar.
+        /// Elemento a eliminar.
         /// </param>
         protected override async void OnDelete(object? o)
         {

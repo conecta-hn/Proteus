@@ -14,7 +14,7 @@ namespace TheXDS.Proteus.ViewModels
         private bool _selected = true;
 
         /// <summary>
-        ///     Obtiene o establece el valor Model.
+        /// Obtiene o establece el valor Model.
         /// </summary>
         /// <value>El valor de Model.</value>
         public PropertyInfo Property { get; }
@@ -22,7 +22,7 @@ namespace TheXDS.Proteus.ViewModels
         public string PropName => Property.NameOf();
 
         /// <summary>
-        ///     Obtiene o establece el valor Selected.
+        /// Obtiene o establece el valor Selected.
         /// </summary>
         /// <value>El valor de Selected.</value>
         public bool Selected
@@ -32,11 +32,11 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ColumnSelectionViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ColumnSelectionViewModel"/>.
         /// </summary>
         /// <param name="property">
-        ///     Modelo parael cual definir un filtro.
+        /// Modelo parael cual definir un filtro.
         /// </param>
         public ColumnSelectionViewModel(PropertyInfo property)
         {

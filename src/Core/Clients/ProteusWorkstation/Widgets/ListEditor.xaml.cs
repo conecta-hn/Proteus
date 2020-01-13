@@ -16,8 +16,8 @@ namespace TheXDS.Proteus.Widgets
     {
         private ListEditorViewModel Vm => (ListEditorViewModel)DataContext;
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ListEditor"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ListEditor"/>.
         /// </summary>
         public ListEditor()
         {

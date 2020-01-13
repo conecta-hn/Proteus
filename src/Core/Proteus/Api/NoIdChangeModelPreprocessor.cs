@@ -12,20 +12,20 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
-    ///     Previene el cambio de campos llave primarios a las entidades que ya
-    ///     han sido guardadas.
+    /// Previene el cambio de campos llave primarios a las entidades que ya
+    /// han sido guardadas.
     /// </summary>
     public class NoIdChangeModelPreprocessor : IModelPreprocessor
     {
         /// <summary>
-        ///     Determina si este <see cref="IModelPreprocessor"/> puede
-        ///     procesar a la entidad especificada.
+        /// Determina si este <see cref="IModelPreprocessor"/> puede
+        /// procesar a la entidad especificada.
         /// </summary>
         /// <param name="entry">Entidad a procesar.</param>
         /// <returns>
-        ///     <see langword="true"/> si este <see cref="IModelPreprocessor"/>
-        ///     puede procesar a la entidad especificada,
-        ///     <see langword="false"/> en caso contrario.
+        /// <see langword="true"/> si este <see cref="IModelPreprocessor"/>
+        /// puede procesar a la entidad especificada,
+        /// <see langword="false"/> en caso contrario.
         /// </returns>
         public bool CanProcess(DbEntityEntry entry)
         {
@@ -36,7 +36,7 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        ///     Procesa una entidad.
+        /// Procesa una entidad.
         /// </summary>
         /// <param name="entry">Entidad a procesar.</param>
         public void Process(DbEntityEntry entry)

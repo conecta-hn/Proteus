@@ -10,27 +10,27 @@ using TheXDS.MCART.Attributes;
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
-    ///     Procesa los Id de objeto para implementar correctamente las
-    ///     validaciones que Entity Framework realiza sobre las entidades con
-    ///     Id de tipo genérico.
+    /// Procesa los Id de objeto para implementar correctamente las
+    /// validaciones que Entity Framework realiza sobre las entidades con
+    /// Id de tipo genérico.
     /// </summary>
     /// <remarks>
-    ///     FIX: Id de ModelBase no se implementa en las bases
-    ///     de datos, pero es necesario establecerlo para evitar
-    ///     errores de validación a la hora de guardar.
+    /// FIX: Id de ModelBase no se implementa en las bases
+    /// de datos, pero es necesario establecerlo para evitar
+    /// errores de validación a la hora de guardar.
     /// </remarks>
     [Priority(int.MaxValue)]
     public class ObjIdModelPreprocessor : IModelPreprocessor
     {
         /// <summary>
-        ///     Determina si este <see cref="IModelPreprocessor"/> puede
-        ///     procesar a la entidad especificada.
+        /// Determina si este <see cref="IModelPreprocessor"/> puede
+        /// procesar a la entidad especificada.
         /// </summary>
         /// <param name="entry">Entidad a procesar.</param>
         /// <returns>
-        ///     <see langword="true"/> si este <see cref="IModelPreprocessor"/>
-        ///     puede procesar a la entidad especificada,
-        ///     <see langword="false"/> en caso contrario.
+        /// <see langword="true"/> si este <see cref="IModelPreprocessor"/>
+        /// puede procesar a la entidad especificada,
+        /// <see langword="false"/> en caso contrario.
         /// </returns>
         public bool CanProcess(DbEntityEntry entry)
         {
@@ -39,7 +39,7 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        ///     Procesa una entidad.
+        /// Procesa una entidad.
         /// </summary>
         /// <param name="entry">Entidad a procesar.</param>
         public void Process(DbEntityEntry entry)

@@ -10,12 +10,12 @@ namespace TheXDS.Proteus.Protocols
     public interface IProteusProtocol
     {
         /// <summary>
-        ///     Construye un nuevo servidor utilizando el protocolo ofrecido
-        ///     por este plugin.
+        /// Construye un nuevo servidor utilizando el protocolo ofrecido
+        /// por este plugin.
         /// </summary>
         /// <returns>
-        ///     Un nuevo servidor utilizando el protocolo ofrecido por este
-        ///     plugin.
+        /// Un nuevo servidor utilizando el protocolo ofrecido por este
+        /// plugin.
         /// </returns>
         Server BuildServer();
     }

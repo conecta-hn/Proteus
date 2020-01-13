@@ -8,7 +8,7 @@ using TheXDS.MCART.Attributes;
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
-    ///     Enumera los posibles valores de resultado de inicio de sesión.
+    /// Enumera los posibles valores de resultado de inicio de sesión.
     /// </summary>
     public enum LoginResultCode : byte
     {

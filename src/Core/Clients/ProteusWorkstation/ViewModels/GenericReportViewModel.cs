@@ -40,22 +40,22 @@ namespace TheXDS.Proteus.ViewModels
         private FlowDocument? _actualReport;
 
         /// <summary>
-        ///     Enumera los modelos disponibles para generar reportes.
+        /// Enumera los modelos disponibles para generar reportes.
         /// </summary>
         public IEnumerable<ModelInfo> Models => GetTypes<ModelBase>(true).Select(p => p.ResolveToDefinedType()).Distinct().NotNull().Select(p => new ModelInfo(p));
 
         /// <summary>
-        ///     Filtros a aplicar al reporte.
+        /// Filtros a aplicar al reporte.
         /// </summary>
         public ObservableCollection<ReportFilterViewModel> Filters { get; } = new ObservableCollection<ReportFilterViewModel>();
 
         /// <summary>
-        ///     Columnas del reporte.
+        /// Columnas del reporte.
         /// </summary>
         public ObservableCollection<ColumnSelectionViewModel> Columns { get; } = new ObservableCollection<ColumnSelectionViewModel>();
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción AddFilter.
+        /// Obtiene el comando relacionado a la acción AddFilter.
         /// </summary>
         /// <returns>El comando AddFilter.</returns>
         public SimpleCommand AddFilterCommand { get; }
@@ -66,7 +66,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor Model.
+        /// Obtiene o establece el valor Model.
         /// </summary>
         /// <value>El valor de Model.</value>
         public ModelInfo? Model
@@ -94,8 +94,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="GenericReportViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="GenericReportViewModel"/>.
         /// </summary>
         /// <param name="host"></param>
         public GenericReportViewModel(ICloseable host) : base(host)
@@ -108,14 +108,14 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Generate.
+        /// Obtiene el comando relacionado a la acción Generate.
         /// </summary>
         /// <returns>El comando Generate.</returns>
         public SimpleCommand GenerateCommand { get; }
 
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Print.
+        /// Obtiene el comando relacionado a la acción Print.
         /// </summary>
         /// <returns>El comando Print.</returns>
         public SimpleCommand PrintCommand { get; }
@@ -142,7 +142,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor ActualReport.
+        /// Obtiene o establece el valor ActualReport.
         /// </summary>
         /// <value>El valor de ActualReport.</value>
         public FlowDocument? ActualReport

@@ -4,13 +4,11 @@ Licenciado para uso interno solamente.
 */
 
 using System.Data.Entity;
-using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Context
 {
-    [DbConfigurationType(typeof(DbConfig))]
-    public class UserContext : DbContext
+    public class UserContext : ProteusContext
     {
         public DbSet<ButtonSecurityDescriptor> ButtonSecurityDescriptors { get; set; }
         public DbSet<ModuleSecurityDescriptor> ModuleSecurityDescriptors { get; set; }

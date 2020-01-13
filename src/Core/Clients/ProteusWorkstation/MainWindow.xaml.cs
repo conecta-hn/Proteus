@@ -3,23 +3,18 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System;
+using System.Windows;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.ViewModels;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows;
-using System.Threading.Tasks;
 
 namespace TheXDS.Proteus
 {
     /// <summary>
-    ///     Lógica de interacción para MainWindow.xaml
+    /// Lógica de interacción para MainWindow.xaml
     /// </summary>
     public partial class MainWindow : IPageRootVisualHost
     {
@@ -27,13 +22,13 @@ namespace TheXDS.Proteus
         internal MainWindowViewModel Vm => Dispatcher.Invoke(() => (MainWindowViewModel)DataContext);
 
         /// <summary>
-        ///     Obtiene una referencia al host de ventanas de esta instancia.
+        /// Obtiene una referencia al host de ventanas de esta instancia.
         /// </summary>
         public IPageHost PageHost { get; set; } = null!;
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="MainWindow"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="MainWindow"/>.
         /// </summary>
         public MainWindow()
         {
@@ -60,7 +55,7 @@ namespace TheXDS.Proteus
         private void MainWindow_Closed(object? sender, EventArgs e) => Application.Current.Shutdown();
 
         /// <summary>
-        ///     Realiza tareas de inicialización una vez abierta la ventana.
+        /// Realiza tareas de inicialización una vez abierta la ventana.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -88,7 +83,7 @@ Información adicional: {ex.Message}
         }
 
         /// <summary>
-        ///     Activa una tab abierta en la ventana.
+        /// Activa una tab abierta en la ventana.
         /// </summary>
         /// <param name="page"></param>
         public void Activate(IPage page)
@@ -102,7 +97,7 @@ Información adicional: {ex.Message}
         }
 
         /// <summary>
-        ///     Fuerza el cierre de la aplicación.
+        /// Fuerza el cierre de la aplicación.
         /// </summary>
         public void ForceClose()
         {

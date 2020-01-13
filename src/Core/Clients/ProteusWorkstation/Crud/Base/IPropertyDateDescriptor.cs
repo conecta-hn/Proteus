@@ -10,7 +10,7 @@ namespace TheXDS.Proteus.Crud.Base
     public interface IPropertyDateDescriptor : IPropertyNumberDescriptor<DateTime>
     {
         /// <summary>
-        ///     Indica que el campo de fecha incluirá el componente de hora.
+        /// Indica que el campo de fecha incluirá el componente de hora.
         /// </summary>
         /// <returns></returns>
         IPropertyDateDescriptor WithTime();

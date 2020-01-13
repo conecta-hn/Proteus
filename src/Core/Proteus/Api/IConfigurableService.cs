@@ -10,8 +10,8 @@ using TheXDS.MCART.Types.Base;
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
-    ///     Define una serie de miembros a implementar por un servicio que
-    ///     ofrezca acceso a valores de configuración.
+    /// Define una serie de miembros a implementar por un servicio que
+    /// ofrezca acceso a valores de configuración.
     /// </summary>
     public interface IConfigurableService : INameable
     {

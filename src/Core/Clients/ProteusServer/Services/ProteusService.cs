@@ -29,7 +29,7 @@ namespace TheXDS.Proteus.Services
     internal class ProteusService : ServiceBase, IMessageTarget
     {
         /// <summary>
-        ///     Arranca manualmente el servicio.
+        /// Arranca manualmente el servicio.
         /// </summary>
         public void StartService() => OnStart(Array.Empty<string>());
 
@@ -67,13 +67,13 @@ namespace TheXDS.Proteus.Services
 
         /// <inheritdoc />
         /// <summary>
-        ///     Cuando se implementa en una clase derivada, se ejecuta cuando
-        ///     se envía un comando de inicio al servicio mediante el
-        ///     Administrador de Control de servicios (SCM) o cuando se inicia
-        ///     el sistema operativo (para un servicio que se inicia
-        ///     automáticamente).
-        ///     Especifica las acciones que deben realizarse cuando se inicia
-        ///     el servicio.
+        /// Cuando se implementa en una clase derivada, se ejecuta cuando
+        /// se envía un comando de inicio al servicio mediante el
+        /// Administrador de Control de servicios (SCM) o cuando se inicia
+        /// el sistema operativo (para un servicio que se inicia
+        /// automáticamente).
+        /// Especifica las acciones que deben realizarse cuando se inicia
+        /// el servicio.
         /// </summary>
         /// <param name="args">Datos pasados por el comando de inicio.</param>
         protected override void OnStart(string[] args)

@@ -23,19 +23,19 @@ namespace TheXDS.Proteus.Pages.Base
     public partial class CrudPage
     {
         /// <summary>
-        ///     Crea una nueva página de CRUD utilizando el servicio y el
-        ///     modelo especificados.
+        /// Crea una nueva página de CRUD utilizando el servicio y el
+        /// modelo especificados.
         /// </summary>
         /// <typeparam name="TService">
-        ///     Tipo del servicio subyacente en el cual realizar las
-        ///     operaciones CRUD.
+        /// Tipo del servicio subyacente en el cual realizar las
+        /// operaciones CRUD.
         /// </typeparam>
         /// <typeparam name="TModel">
-        ///     Tipo de modelo para el cual diseñar el CRUD.
+        /// Tipo de modelo para el cual diseñar el CRUD.
         /// </typeparam>
         /// <returns>
-        ///     Una página de Proteus con funcionalidad CRUD para el modelo
-        ///     especificado.
+        /// Una página de Proteus con funcionalidad CRUD para el modelo
+        /// especificado.
         /// </returns>
         public static CrudPage New<TService,TModel>() where TService:Service,new() where TModel : ModelBase, new()
         {
@@ -45,23 +45,23 @@ namespace TheXDS.Proteus.Pages.Base
             return p;
         }
 
-        public static CrudPage New<TService>(CrudElement crud) where TService : Service, new()
-        {
-            var p = new CrudPage();
-            var vm = new CrudViewModel<TService>(p, crud);
-            p.ViewModel = vm;
-            return p;
-        }
+        //public static CrudPage New<TService>(CrudElement crud) where TService : Service, new()
+        //{
+        //    var p = new CrudPage();
+        //    var vm = new CrudViewModel<TService>(p, crud);
+        //    p.ViewModel = vm;
+        //    return p;
+        //}
 
         /// <summary>
-        ///     Crea una nueva página de CRUD para el modelo especificado.
+        /// Crea una nueva página de CRUD para el modelo especificado.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de modelo para el cual diseñar el CRUD.
+        /// Tipo de modelo para el cual diseñar el CRUD.
         /// </typeparam>
         /// <returns>
-        ///     Una página de Proteus con funcionalidad CRUD para el modelo
-        ///     especificado.
+        /// Una página de Proteus con funcionalidad CRUD para el modelo
+        /// especificado.
         /// </returns>
         public static CrudPage New<T>() where T : ModelBase, new()
         {
@@ -69,13 +69,13 @@ namespace TheXDS.Proteus.Pages.Base
         }
 
         /// <summary>
-        ///     Crea una nueva instancia de la clase <see cref="CrudPage"/>.
+        /// Crea una nueva instancia de la clase <see cref="CrudPage"/>.
         /// </summary>
         /// <param name="t">
-        ///     Modelo a administrar.
+        /// Modelo a administrar.
         /// </param>
         /// <returns>
-        ///     Una nueva instancia de la clase <see cref="CrudPage"/>.
+        /// Una nueva instancia de la clase <see cref="CrudPage"/>.
         /// </returns>
         public static CrudPage New(Type t)
         {
@@ -98,22 +98,22 @@ namespace TheXDS.Proteus.Pages.Base
         }
 
         /// <summary>
-        ///     Crea una nueva instancia de la clase <see cref="CrudPage"/>.
+        /// Crea una nueva instancia de la clase <see cref="CrudPage"/>.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de servicio a utilizar para administrar la información.
+        /// Tipo de servicio a utilizar para administrar la información.
         /// </typeparam>
         /// <param name="title">
-        ///     Título de la ventana.
+        /// Título de la ventana.
         /// </param>
         /// <param name="source">
-        ///     Origen del árbol de datos.
+        /// Origen del árbol de datos.
         /// </param>
         /// <param name="models">
-        ///     Modelos de datos a utilizar.
+        /// Modelos de datos a utilizar.
         /// </param>
         /// <returns>
-        ///     Una nueva instanci ade la clase <see cref="CrudPage"/>.
+        /// Una nueva instanci ade la clase <see cref="CrudPage"/>.
         /// </returns>
         public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<Type> models) where T : Service, new()
         {
@@ -125,15 +125,15 @@ namespace TheXDS.Proteus.Pages.Base
             return p;
         }
 
-        public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<CrudElement> cruds) where T : Service, new()
-        {
-            var p = new CrudPage();
-            p.ViewModel = new CrudViewModel<T>(p, source, cruds.ToArray())
-            {
-                Title = title
-            };
-            return p;
-        }
+        //public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<CrudElement> cruds) where T : Service, new()
+        //{
+        //    var p = new CrudPage();
+        //    p.ViewModel = new CrudViewModel<T>(p, source, cruds.ToArray())
+        //    {
+        //        Title = title
+        //    };
+        //    return p;
+        //}
 
         public static CrudPage FromDescription<T>() where T:ICrudDescription, new()
         {
@@ -142,7 +142,7 @@ namespace TheXDS.Proteus.Pages.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase <see cref="CrudPage"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="CrudPage"/>.
         /// </summary>
         protected CrudPage()
         {

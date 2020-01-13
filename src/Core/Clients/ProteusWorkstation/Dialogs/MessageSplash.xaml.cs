@@ -18,8 +18,8 @@ namespace TheXDS.Proteus.Dialogs
     public partial class MessageSplash : AcrylicWindow, ICloseable
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="MessageSplash"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="MessageSplash"/>.
         /// </summary>
         public MessageSplash()
         {
@@ -33,13 +33,13 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Muestra una mensaje por medio de una ventana
-        ///     <see cref="MessageSplash"/>.
+        /// Muestra una mensaje por medio de una ventana
+        /// <see cref="MessageSplash"/>.
         /// </summary>
         /// <param name="title">Título del mensaje.</param>
         /// <param name="message">Mensaje a mostrar.</param>
         /// <param name="type">
-        ///     Tipo de mensaje. Afecta la apariencia de la ventana generada.
+        /// Tipo de mensaje. Afecta la apariencia de la ventana generada.
         /// </param>
         public static void Show(string title, string message, MessageType type)
         {
@@ -51,13 +51,13 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Realiza una pregunta al usuario.
+        /// Realiza una pregunta al usuario.
         /// </summary>
         /// <param name="title">Título del mensaje.</param>
         /// <param name="message">Contenido de la pregunta.</param>
         /// <returns>
-        ///     <see langword="true"/> si el usuario ha dicho que sí al cuadro
-        ///     de diálogo, <see langword="false"/> en caso contrario.
+        /// <see langword="true"/> si el usuario ha dicho que sí al cuadro
+        /// de diálogo, <see langword="false"/> en caso contrario.
         /// </returns>
         public static bool Ask(string title, string message)
         {
@@ -70,12 +70,12 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Realiza una pregunta al usuario.
+        /// Realiza una pregunta al usuario.
         /// </summary>
         /// <param name="title">Título del mensaje.</param>
         /// <returns>
-        ///     <see langword="true"/> si el usuario ha dicho que sí al cuadro
-        ///     de diálogo, <see langword="false"/> en caso contrario.
+        /// <see langword="true"/> si el usuario ha dicho que sí al cuadro
+        /// de diálogo, <see langword="false"/> en caso contrario.
         /// </returns>
         public static bool Ask(string title)
         {
@@ -85,8 +85,8 @@ namespace TheXDS.Proteus.Dialogs
     }
 
     /// <summary>
-    ///     Define el comportamiento de una instancia de la clase
-    ///     <see cref="MessageSplash"/>.
+    /// Define el comportamiento de una instancia de la clase
+    /// <see cref="MessageSplash"/>.
     /// </summary>
     public class MessageSplashViewModel: ViewModelBase
     {
@@ -94,25 +94,25 @@ namespace TheXDS.Proteus.Dialogs
         private bool _result;
 
         /// <summary>
-        ///     Obtiene o establece el valor Title.
+        /// Obtiene o establece el valor Title.
         /// </summary>
         /// <value>El valor de Title.</value>
         public string Title { get; }
 
         /// <summary>
-        ///     Obtiene o establece el valor Message.
+        /// Obtiene o establece el valor Message.
         /// </summary>
         /// <value>El valor de Message.</value>
         public string Message { get; }
 
         /// <summary>
-        ///     Obtiene o establece el valor Type.
+        /// Obtiene o establece el valor Type.
         /// </summary>
         /// <value>El valor de Type.</value>
         public MessageType Type { get; }
 
         /// <summary>
-        ///     Obtiene el color de fondo a utilizar para la ventana.
+        /// Obtiene el color de fondo a utilizar para la ventana.
         /// </summary>
         public Color Background
         {
@@ -138,8 +138,8 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Obtiene el <see cref="Brush"/> a utilizar para dibujar el ícono
-        ///     a la izquierda del mensaje.
+        /// Obtiene el <see cref="Brush"/> a utilizar para dibujar el ícono
+        /// a la izquierda del mensaje.
         /// </summary>
         public Brush IconBrush
         {
@@ -167,7 +167,7 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Obtiene el ícono a mostrar a la izquierda del mensaje.
+        /// Obtiene el ícono a mostrar a la izquierda del mensaje.
         /// </summary>
         public string? Icon
         {
@@ -187,20 +187,20 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="MessageSplashViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="MessageSplashViewModel"/>.
         /// </summary>
         /// <param name="host">
-        ///     Ventana host de este ViewModel.
+        /// Ventana host de este ViewModel.
         /// </param>
         /// <param name="title">
-        ///     Título a mostrar en la ventana de mensaje.
+        /// Título a mostrar en la ventana de mensaje.
         /// </param>
         /// <param name="message">
-        ///     Mensaje a desplegar.
+        /// Mensaje a desplegar.
         /// </param>
         /// <param name="type">
-        ///     Tipo de mensaje. Cambia la apariencia de la ventana generada.
+        /// Tipo de mensaje. Cambia la apariencia de la ventana generada.
         /// </param>
         public MessageSplashViewModel(ICloseable host, string title, string message, MessageType type)
         {
@@ -213,7 +213,7 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Close.
+        /// Obtiene el comando relacionado a la acción Close.
         /// </summary>
         /// <returns>El comando Close.</returns>
         public SimpleCommand CloseCommand { get; }
@@ -229,22 +229,22 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Obtiene el comando realcionado a la acción de aceptación de una pregunta.
+        /// Obtiene el comando realcionado a la acción de aceptación de una pregunta.
         /// </summary>
         public SimpleCommand OkCommand { get; }
 
         /// <summary>
-        ///     Obtiene un valor de visibilidad para las preguntas.
+        /// Obtiene un valor de visibilidad para las preguntas.
         /// </summary>
         public Visibility QuestionVis => Type == MessageType.Question ? Visibility.Visible : Visibility.Collapsed;
 
         /// <summary>
-        ///     Obtiene la etiqueta a mostrar en el botón para cerrar la ventana.
+        /// Obtiene la etiqueta a mostrar en el botón para cerrar la ventana.
         /// </summary>
         public string CloseLabel => Type == MessageType.Question ? "No" : "Cerrar";
 
         /// <summary>
-        ///     Obtiene el valor de resultado del cuadro de diálogo.
+        /// Obtiene el valor de resultado del cuadro de diálogo.
         /// </summary>
         public bool Result
         {
@@ -254,16 +254,16 @@ namespace TheXDS.Proteus.Dialogs
     }
 
     /// <summary>
-    ///     <see cref="IMessageTarget"/> para mostrar mensajes por medio de una
-    ///     instancia de la clase <see cref="MessageSplash"/>.
+    /// <see cref="IMessageTarget"/> para mostrar mensajes por medio de una
+    /// instancia de la clase <see cref="MessageSplash"/>.
     /// </summary>
     public class MessageSplashTarget : IMessageTarget
     {
         /// <summary>
-        ///     Notifica de un error crítico.
+        /// Notifica de un error crítico.
         /// </summary>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Critical(string message)
         {
@@ -271,10 +271,10 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Notifica de un error crítico.
+        /// Notifica de un error crítico.
         /// </summary>
         /// <param name="ex">
-        ///     Excepción producida a notificar.
+        /// Excepción producida a notificar.
         /// </param>
         public void Critical(Exception ex)
         {
@@ -282,10 +282,10 @@ namespace TheXDS.Proteus.Dialogs
         }
         
         /// <summary>
-        ///     Notifica de un mensaje de error.
+        /// Notifica de un mensaje de error.
         /// </summary>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Error(string message)
         {
@@ -293,10 +293,10 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Notifica de un mensaje informativo.
+        /// Notifica de un mensaje informativo.
         /// </summary>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Info(string message)
         {
@@ -304,10 +304,10 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Notifica de un mensaje simple.
+        /// Notifica de un mensaje simple.
         /// </summary>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Show(string message)
         {
@@ -315,13 +315,13 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Notifica de un mensaje simple.
+        /// Notifica de un mensaje simple.
         /// </summary>
         /// <param name="title">
-        ///     Título del mensaje.
+        /// Título del mensaje.
         /// </param>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Show(string title, string message)
         {
@@ -329,11 +329,11 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Notifica de un mensaje producido por una operación que debe
-        ///     detenerse.
+        /// Notifica de un mensaje producido por una operación que debe
+        /// detenerse.
         /// </summary>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Stop(string message)
         {
@@ -341,10 +341,10 @@ namespace TheXDS.Proteus.Dialogs
         }
 
         /// <summary>
-        ///     Notifica de una advertencia.
+        /// Notifica de una advertencia.
         /// </summary>
         /// <param name="message">
-        ///     Mensaje a enviar al objetivo.
+        /// Mensaje a enviar al objetivo.
         /// </param>
         public void Warning(string message)
         {
@@ -353,42 +353,42 @@ namespace TheXDS.Proteus.Dialogs
     }
 
     /// <summary>
-    ///     Enumera el tipo de mensaje a mostrar.
+    /// Enumera el tipo de mensaje a mostrar.
     /// </summary>
     public enum MessageType
     {
         /// <summary>
-        ///     Mensaje.
+        /// Mensaje.
         /// </summary>
         Message,
 
         /// <summary>
-        ///     Mensaje informativo.
+        /// Mensaje informativo.
         /// </summary>
         Info,
 
         /// <summary>
-        ///     Pregunta.
+        /// Pregunta.
         /// </summary>
         Question,
 
         /// <summary>
-        ///     Advertencia.
+        /// Advertencia.
         /// </summary>
         Warning,
 
         /// <summary>
-        ///     Detención de operación.
+        /// Detención de operación.
         /// </summary>
         Stop,
 
         /// <summary>
-        ///     Error.
+        /// Error.
         /// </summary>
         Error,
 
         /// <summary>
-        ///     Crítico.
+        /// Crítico.
         /// </summary>
         Critical
     }

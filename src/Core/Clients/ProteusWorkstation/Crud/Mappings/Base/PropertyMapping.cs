@@ -20,35 +20,35 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Proteus.Crud.Mappings.Base
 {
     /// <summary>
-    ///     Clase base que describe todas las instancias de controles de
-    ///     edición para propiedades de objetos dentro de una página de CRUD
-    ///     auto-generada.
+    /// Clase base que describe todas las instancias de controles de
+    /// edición para propiedades de objetos dentro de una página de CRUD
+    /// auto-generada.
     /// </summary>
     public abstract class PropertyMapping : IPropertyMapping
     {
         private readonly FrameworkElement _containingControl;
 
         /// <summary>
-        ///     Obtiene al control contenedor del control generado por este
-        ///     <see cref="IPropertyMapping"/>, o al mismo.
+        /// Obtiene al control contenedor del control generado por este
+        /// <see cref="IPropertyMapping"/>, o al mismo.
         /// </summary>
         public FrameworkElement ContainingControl => _containingControl ?? Control;
 
         /// <summary>
-        ///     Obtiene la descripción utilizada para construir este
-        ///     <see cref="PropertyMapping"/>.
+        /// Obtiene la descripción utilizada para construir este
+        /// <see cref="PropertyMapping"/>.
         /// </summary>
         public IPropertyDescription Description { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="PropertyMapping"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="PropertyMapping"/>.
         /// </summary>
         /// <param name="property">
-        ///     Objeto que describe la propiedad a mapear.
+        /// Objeto que describe la propiedad a mapear.
         /// </param>
         /// <param name="control">
-        ///     Control a asociar a este <see cref="PropertyMapping"/>.
+        /// Control a asociar a este <see cref="PropertyMapping"/>.
         /// </param>
         public PropertyMapping(IPropertyDescription property, FrameworkElement control)
         {
@@ -140,32 +140,32 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         }
 
         /// <summary>
-        ///     Propiedad controlada por esta instancia de
-        ///     <see cref="PropertyMapping"/>.
+        /// Propiedad controlada por esta instancia de
+        /// <see cref="PropertyMapping"/>.
         /// </summary>
         public PropertyInfo Property { get; }
 
         /// <summary>
-        ///     Control de edición asociado a esta instancia de
-        ///     <see cref="PropertyMapping"/>.
+        /// Control de edición asociado a esta instancia de
+        /// <see cref="PropertyMapping"/>.
         /// </summary>
         public FrameworkElement Control { get; }
 
         /// <summary>
-        ///     Obtiene o establece el valor del control de forma manual.
+        /// Obtiene o establece el valor del control de forma manual.
         /// </summary>
         public abstract object ControlValue { get; set; }
 
         /// <summary>
-        ///     Limpia el valor del control e edición asociado a este
-        ///     <see cref="PropertyMapping"/>.
+        /// Limpia el valor del control e edición asociado a este
+        /// <see cref="PropertyMapping"/>.
         /// </summary>
         public abstract void ClearControlValue();
 
         /// <summary>
-        ///     Obtiene el valor de la propiedad asociada a este
-        ///     <see cref="PropertyMapping"/> desde la instancia de objet
-        ///     especificada.
+        /// Obtiene el valor de la propiedad asociada a este
+        /// <see cref="PropertyMapping"/> desde la instancia de objet
+        /// especificada.
         /// </summary>
         /// <param name="instance"></param>
         public virtual void GetValue(object instance)
@@ -178,12 +178,12 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         }
 
         /// <summary>
-        ///     Establece el valor de la propiedad de la instancia especificada
-        ///     utilizando el valor obtenido desde el control asociado a este
-        ///     <see cref="PropertyMapping"/>.
+        /// Establece el valor de la propiedad de la instancia especificada
+        /// utilizando el valor obtenido desde el control asociado a este
+        /// <see cref="PropertyMapping"/>.
         /// </summary>
         /// <param name="instance">
-        ///     Instancia de destino para el valor obtenido desde el control.
+        /// Instancia de destino para el valor obtenido desde el control.
         /// </param>
         public virtual void SetValue(object instance)
         {

@@ -22,17 +22,17 @@ using System.Threading.Tasks;
 namespace TheXDS.Proteus.Plugins
 {
     /// <summary>
-    ///     Clase base que describe la estructura de un módulo de UI de Proteus.
+    /// Clase base que describe la estructura de un módulo de UI de Proteus.
     /// </summary>
     public abstract class UiModule : WpfPlugin
     {
         /// <summary>
-        ///     Registra un diccionario de recursos contenido en este
-        ///     ensamblado.
+        /// Registra un diccionario de recursos contenido en este
+        /// ensamblado.
         /// </summary>
         /// <param name="path">
-        ///     Ruta dentro del ensamblado en el cual está embebido el
-        ///     diccionario.
+        /// Ruta dentro del ensamblado en el cual está embebido el
+        /// diccionario.
         /// </param>
         protected void RegisterDictionary(string path)
         {
@@ -42,8 +42,8 @@ namespace TheXDS.Proteus.Plugins
         private IPageHost _host;
         
         /// <summary>
-        ///     Obtiene al host de ventana que se utilizará para contener las
-        ///     ventanas abiertas de este módulo.
+        /// Obtiene al host de ventana que se utilizará para contener las
+        /// ventanas abiertas de este módulo.
         /// </summary>
         public IPageHost Host
         {
@@ -124,17 +124,17 @@ namespace TheXDS.Proteus.Plugins
     }
 
     /// <summary>
-    ///     Clase base que describe la estructura de un módulo de UI de Proteus.
+    /// Clase base que describe la estructura de un módulo de UI de Proteus.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de servicio por medio del cual este módulo interactuará con la
-    ///     base de datos.
+    /// Tipo de servicio por medio del cual este módulo interactuará con la
+    /// base de datos.
     /// </typeparam>
     public abstract class UiModule<T> : UiModule where T : Service, new()
     {
         /// <summary>
-        ///     Registra de forma automática las ventanas de Crud para los
-        ///     modelos administrados por el servicio <typeparamref name="T"/>.
+        /// Registra de forma automática las ventanas de Crud para los
+        /// modelos administrados por el servicio <typeparamref name="T"/>.
         /// </summary>
         protected internal override void AfterInitialization()
         {
@@ -142,7 +142,7 @@ namespace TheXDS.Proteus.Plugins
         }
 
         /// <summary>
-        ///     Obtiene una referencia a la instancia del servicio especificado.
+        /// Obtiene una referencia a la instancia del servicio especificado.
         /// </summary>
         protected T Service => Proteus.Service<T>();
     }

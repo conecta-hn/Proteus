@@ -20,18 +20,18 @@ namespace TheXDS.Proteus.ViewModels
         public static IEnumerable<IPropComparisonFilter> Filters { get; } = FindAllObjects<IPropComparisonFilter>().ToList();
 
         /// <summary>
-        ///     Enumera las propiesdades del modelo de datos.
+        /// Enumera las propiesdades del modelo de datos.
         /// </summary>
         public IEnumerable<PropertyInfo> Properties => Parent.ValidProperties;
 
         /// <summary>
-        ///     Obtiene o establece el valor Model.
+        /// Obtiene o establece el valor Model.
         /// </summary>
         /// <value>El valor de Model.</value>
         public GenericReportViewModel Parent { get; }
 
         /// <summary>
-        ///     Obtiene o establece el valor Field.
+        /// Obtiene o establece el valor Field.
         /// </summary>
         /// <value>El valor de Field.</value>
         public PropertyInfo Field
@@ -59,7 +59,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor Value.
+        /// Obtiene o establece el valor Value.
         /// </summary>
         /// <value>El valor de Value.</value>
         public string Value
@@ -74,11 +74,11 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ReportFilterViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ReportFilterViewModel"/>.
         /// </summary>
         /// <param name="parent">
-        ///     Modelo parael cual definir un filtro.
+        /// Modelo parael cual definir un filtro.
         /// </param>
         public ReportFilterViewModel(GenericReportViewModel parent)
         {
@@ -87,7 +87,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Remove.
+        /// Obtiene el comando relacionado a la acción Remove.
         /// </summary>
         /// <returns>El comando Remove.</returns>
         public SimpleCommand RemoveCommand { get; }

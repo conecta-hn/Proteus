@@ -10,36 +10,36 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Proteus.Protocols
 {
     /// <summary>
-    ///     Clase que contiene información sobre los clientes que hayan
-    ///     iniciado sesión.
+    /// Clase que contiene información sobre los clientes que hayan
+    /// iniciado sesión.
     /// </summary>
     public class HostData
     {
         /// <summary>
-        ///     Enumera los distintos tipos de sesión que pueden existir en el
-        ///     servidor.
+        /// Enumera los distintos tipos de sesión que pueden existir en el
+        /// servidor.
         /// </summary>
         public enum SessionKind : byte
         {
             /// <summary>
-            ///     Sesión regular.
+            /// Sesión regular.
             /// </summary>
             Regular,
 
             /// <summary>
-            ///     Sesión para un servicio no interactivo.
+            /// Sesión para un servicio no interactivo.
             /// </summary>
             Service,
 
             /// <summary>
-            ///     Sesión con facultades administrativas.
+            /// Sesión con facultades administrativas.
             /// </summary>
             Admin
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="HostData"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="HostData"/>.
         /// </summary>
         /// <param name="hostId">Id del equipo que inicia sesión.</param>
         /// <param name="userId">Id del usuario que inicia sesión.</param>
@@ -52,8 +52,8 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="HostData"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="HostData"/>.
         /// </summary>
         /// <param name="hostId">Id del equipo que inicia sesión.</param>
         /// <param name="userId">Id del usuario que inicia sesión.</param>
@@ -61,27 +61,27 @@ namespace TheXDS.Proteus.Protocols
         { }
 
         /// <summary>
-        ///     Identificador del host.
+        /// Identificador del host.
         /// </summary>
         public string HostId { get; }
 
         /// <summary>
-        ///     Identificador del usuario de la sesión.
+        /// Identificador del usuario de la sesión.
         /// </summary>
         public string UserId { get; }
 
         /// <summary>
-        ///     Tipo de sesión asociada al cliente.
+        /// Tipo de sesión asociada al cliente.
         /// </summary>
         public SessionKind Kind { get; }
 
         /// <summary>
-        ///     Grupo de pertenencia para Multi-cast
+        /// Grupo de pertenencia para Multi-cast
         /// </summary>
         public HashSet<string> MulticastChannels { get; } = new HashSet<string>();
 
         /// <summary>
-        ///     Objetos bloqueados por el cliente.
+        /// Objetos bloqueados por el cliente.
         /// </summary>
         public HashSet<ResourceLock> Locks { get; } = new HashSet<ResourceLock>();
 
@@ -92,19 +92,19 @@ namespace TheXDS.Proteus.Protocols
     }
 
     /// <summary>
-    ///     Contiene información sobre los recursos bloqueados por un cliente.
+    /// Contiene información sobre los recursos bloqueados por un cliente.
     /// </summary>
     public class ResourceLock
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ResourceLock"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ResourceLock"/>.
         /// </summary>
         /// <param name="kind">
-        ///     Identificador del tipo de elemento que ha sido bloqueado.
+        /// Identificador del tipo de elemento que ha sido bloqueado.
         /// </param>
         /// <param name="id">
-        ///     Id del objeto bloqueado.
+        /// Id del objeto bloqueado.
         /// </param>
         public ResourceLock(string kind, string id)
         {
@@ -113,14 +113,14 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Identifica el tipo de elemento bloqueado representado por este
-        ///     <see cref="ResourceLock"/>.
+        /// Identifica el tipo de elemento bloqueado representado por este
+        /// <see cref="ResourceLock"/>.
         /// </summary>
         public string Kind { get; }
 
         /// <summary>
-        ///     Id del elemento bloqueado representado por este
-        ///     <see cref="ResourceLock"/>.
+        /// Id del elemento bloqueado representado por este
+        /// <see cref="ResourceLock"/>.
         /// </summary>
         public string Id { get; }
     }

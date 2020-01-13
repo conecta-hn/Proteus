@@ -9,58 +9,58 @@ using TheXDS.MCART.Attributes;
 namespace TheXDS.Proteus.Component
 {
     /// <summary>
-    ///     Describe los días de la semana como una lista de banderas.
+    /// Describe los días de la semana como una lista de banderas.
     /// </summary>
     [Flags]
     public enum DaysOfWeek : byte
     {
         /// <summary>
-        ///     Lunes.
+        /// Lunes.
         /// </summary>
         [Name("Lunes")] Monday = 1,
 
         /// <summary>
-        ///     Martes.
+        /// Martes.
         /// </summary>
         [Name("Martes")] Thursday = 2,
 
         /// <summary>
-        ///     Miércoles.
+        /// Miércoles.
         /// </summary>
         [Name("Miércoles")] Wednesday = 4,
 
         /// <summary>
-        ///     Jueves.
+        /// Jueves.
         /// </summary>
         [Name("Jueves")] Tuesday = 8,
 
         /// <summary>
-        ///     Viernes.
+        /// Viernes.
         /// </summary>
         [Name("Viernes")] Friday = 16,
 
         /// <summary>
-        ///     Sábado.
+        /// Sábado.
         /// </summary>
         [Name("Sábado")] Saturday = 32,
 
         /// <summary>
-        ///     Domingo.
+        /// Domingo.
         /// </summary>
         [Name("Domingo")] Sunday = 64,
 
         /// <summary>
-        ///     Días de semana.
+        /// Días de semana.
         /// </summary>
         [Name("Días de semana")] WeekDays = Monday|Thursday|Wednesday|Tuesday|Friday,
 
         /// <summary>
-        ///     Fin de semana.
+        /// Fin de semana.
         /// </summary>
         [Name("Fin de semana")] Weekends = Saturday | Sunday,
 
         /// <summary>
-        ///     Todos los días.
+        /// Todos los días.
         /// </summary>
         [Name("Todos los días")] Everyday = WeekDays | Weekends
     }

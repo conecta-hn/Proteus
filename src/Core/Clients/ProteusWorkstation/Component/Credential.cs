@@ -11,23 +11,23 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Proteus.Component
 {
     /// <summary>
-    ///     Describe una credencial básica.
+    /// Describe una credencial básica.
     /// </summary>
     public struct Credential : ICredential
     {
         /// <summary>
-        ///     Nombre del usuario.
+        /// Nombre del usuario.
         /// </summary>
         public string Username { get; }
 
         /// <summary>
-        ///     Contraseña del usuario.
+        /// Contraseña del usuario.
         /// </summary>
         public SecureString Password { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la estructura
-        ///     <see cref="Credential"/>.
+        /// Inicializa una nueva instancia de la estructura
+        /// <see cref="Credential"/>.
         /// </summary>
         /// <param name="user">Nombre de usuario.</param>
         /// <param name="pass">Contraseña.</param>
@@ -38,8 +38,8 @@ namespace TheXDS.Proteus.Component
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la estructura
-        ///     <see cref="Credential"/> sin contraseña.
+        /// Inicializa una nueva instancia de la estructura
+        /// <see cref="Credential"/> sin contraseña.
         /// </summary>
         /// <param name="user">Nombre de usuario.</param>
         public Credential(string user)
@@ -49,7 +49,7 @@ namespace TheXDS.Proteus.Component
         }
 
         /// <summary>
-        ///     Obtiene una credencial desde la configuración local.
+        /// Obtiene una credencial desde la configuración local.
         /// </summary>
         /// <returns></returns>
         public static Credential FromSettings()

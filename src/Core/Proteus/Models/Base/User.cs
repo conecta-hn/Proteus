@@ -8,16 +8,16 @@ using System;
 namespace TheXDS.Proteus.Models.Base
 {
     /// <summary>
-    ///     Clase base para modelos que describan un rol operativo de sistema
-    ///     dentro de un módulo.
+    /// Clase base para modelos que describan un rol operativo de sistema
+    /// dentro de un módulo.
     /// </summary>
     /// <typeparam name="T">
-    ///     Tipo de campo llave a utilizar para el modelo subyacente.
+    /// Tipo de campo llave a utilizar para el modelo subyacente.
     /// </typeparam>
     public abstract class User<T> : ModelBase<T>, IUserBase where T : IComparable<T>
     {
         /// <summary>
-        ///     Obtiene o establece el Id del usuario enlazado.
+        /// Obtiene o establece el Id del usuario enlazado.
         /// </summary>
         public string UserId { get; set; }
 
