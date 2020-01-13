@@ -293,11 +293,11 @@ namespace TheXDS.Proteus.Conecta
                 List<Item> l;
                 if (query.IsEmpty())
                 {
-                    l = await QE.ToListAsync(Service.All<Item>());
+                    l = await QE.ToListAsync(Service.All<Item>().Where(p => p.MenudeoParent == null));
                 }
                 else
                 {
-                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).ToList();
+                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).Where(p => p.MenudeoParent is null).ToList();
                 }
 
                 fd.Text($"Total de artículos: {l.Count}");
@@ -358,17 +358,21 @@ namespace TheXDS.Proteus.Conecta
                     l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().ToList();
                 }
 
-                fd.Text($"Total de artículos: {l.Count}");
+                fd.Text($"Total de productos distintos: {l.Count}");
+                fd.Text($"Gran total de artículos: {l.SelectMany(p=>p.Items).Where(p => p.MenudeoParent is null).Count()}");
+
 
                 foreach (var j in l.NotNull())
                 {
+                    var itms = j.Items.Where(p => p.MenudeoParent is null).ToList();
+                    if (itms.Count == 0) continue;
                     fd.Title(j.Name, 3);
                     fd.Text(string.Join(Environment.NewLine, new[] {
                         j.Description.OrNull() ?? "",
                         $"Precio de venta: {j.UnitVenta?.ToString("C") ?? "Pregunte"}",
-                        $"Total de artículos: {j.Items.Count}"
+                        $"Total de artículos: {itms.Count}"
                     }.NotNull()));
-                    var ll = j.Items.Where(p => (!p.Description.IsEmpty()) || p.Descuento.HasValue).ToList();                    
+                    var ll = itms.Where(p => (!p.Description.IsEmpty()) || p.Descuento.HasValue).ToList();                    
                     if (ll.Any())
                     {
                         fd.Text($"Ítems con detalles: {ll.Count}");
