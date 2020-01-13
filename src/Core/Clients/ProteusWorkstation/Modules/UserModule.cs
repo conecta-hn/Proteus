@@ -46,7 +46,7 @@ namespace TheXDS.Proteus.Modules
         }
 
         [InteractionItem, Essential, InteractionType(InteractionType.Tool), Name("Borrar tokens")]
-        [Description("Permite eliminar todos los tokens de inicio de sesión de la bas de datos.")]
+        [Description("Permite eliminar todos los tokens de inicio de sesión de la base de datos.")]
         public async void PurgeTokens(object sender, EventArgs e)
         {
             Proteus.CommonReporter?.UpdateStatus("Eliminando todos los tokens de inicio de sesión...");

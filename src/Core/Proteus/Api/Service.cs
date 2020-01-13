@@ -26,6 +26,7 @@ using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.Proteus.Proteus;
 using Timer = System.Timers.Timer;
+using TheXDS.Proteus.Context;
 
 namespace TheXDS.Proteus.Api
 {
@@ -2021,9 +2022,9 @@ namespace TheXDS.Proteus.Api
     /// <inheritdoc cref="Service" />
     /// <summary>
     /// Clase base para los servicios que pueden ser ofrecidos por Proteus,
-    /// asociándoles un <see cref="DbContext" /> específico a utilizar.
+    /// asociándoles un <see cref="ProteusContext" /> específico a utilizar.
     /// </summary>
-    public abstract class Service<T> : Service where T : DbContext, new()
+    public abstract class Service<T> : Service where T : ProteusContext, new()
     {
         /// <inheritdoc />
         /// <summary>
@@ -2036,13 +2037,12 @@ namespace TheXDS.Proteus.Api
         /// Contexto de Entity Framework asociado a este servicio.
         /// </summary>
         protected new T Context => (T)base.Context;
-
     }
 
     /// <inheritdoc cref="Service" />
     /// <summary>
     /// Clase base para los servicios que pueden ser ofrecidos por Proteus,
-    /// asociándoles un <see cref="DbContext" /> y un 
+    /// asociándoles un <see cref="ProteusContext" /> y un 
     /// <see cref="ISettingsRepository"/> específicos a utilizar.
     /// </summary>
     /// <typeparam name="TContext">
@@ -2052,7 +2052,7 @@ namespace TheXDS.Proteus.Api
     /// <typeparam name="TSettings">
     /// Enumeración con los valores de configuración.
     /// </typeparam>
-    public abstract class Service<TContext, TSettings> : Service<TContext>, ISettingsRepository where TContext : DbContext, new() where TSettings : class, ISettingsRepository, new()
+    public abstract class Service<TContext, TSettings> : Service<TContext>, ISettingsRepository where TContext : ProteusContext, new() where TSettings : class, ISettingsRepository, new()
     {
         /// <summary>
         /// Obtiene o establece un valor de configuración.
