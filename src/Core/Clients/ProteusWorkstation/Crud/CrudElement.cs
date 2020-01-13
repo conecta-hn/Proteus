@@ -231,9 +231,9 @@ namespace TheXDS.Proteus.Crud
         /// <returns>
         /// Una descripción del modelo de datos.
         /// </returns>
-        public static ICrudDescription GetDescription(Type model)
+        public static ICrudDescription? GetDescription(Type model)
         {
-            var r = _descriptions.FirstOrDefault(p => p.DescribedModel == model);
+            ICrudDescription? r = _descriptions.FirstOrDefault(p => p.DescribedModel == model);
             if (r is null)
             {
                 r = FindFirstObject<ICrudDescription>(p => CrudBuilder.DescribesModel(p, model));

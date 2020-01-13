@@ -47,7 +47,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             get
             {
                 var v = new GridView();
-                foreach (var j in Elements.First().Description?.ListColumns ?? CustomColumns)
+                foreach (var j in CrudElement.GetDescription(Models.First())?.ListColumns ?? CustomColumns)
                 {
                     v.Columns.Add(j);
                 }
@@ -61,7 +61,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
-        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, CrudElement[] elements, string csource = "Results") : base(elements)
+        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
         {
             if (elements.Count() == 1)
             {
@@ -87,17 +87,6 @@ namespace TheXDS.Proteus.ViewModels.Base
                 Mode = BindingMode.OneWay
             });
             RegisterPropertyChangeBroadcast(nameof(Selection), nameof(ColumnsView));
-        }
-
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase
-        /// <see cref="CrudCollectionViewModelBase"/>.
-        /// </summary>
-        /// <param name="source">Origen de datos a utilizar.</param>
-        /// <param name="models">Modelos asociados de datos.</param>
-        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, Type[] models,string csource = "Results")
-            : this(source, models.Select(p => new CrudElement(p)).ToArray(),csource)
-        {
         }
 
         private void TreeViewSelector_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

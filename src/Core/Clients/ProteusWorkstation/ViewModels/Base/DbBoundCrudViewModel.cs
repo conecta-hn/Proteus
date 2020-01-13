@@ -55,18 +55,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
 
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase
-        /// <see cref="DbBoundCrudViewModel"/>.
-        /// </summary>
-        /// <param name="element">
-        /// <see cref="CrudElement"/>a utilizar para gestionar a una
-        /// entidad dentro de esta instancia.
-        /// </param>
-        public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), new[] { element })
-        {
-            _source = Infer(element.Model);
-        }
+        ///// <summary>
+        ///// Inicializa una nueva instancia de la clase
+        ///// <see cref="DbBoundCrudViewModel"/>.
+        ///// </summary>
+        ///// <param name="element">
+        ///// <see cref="CrudElement"/>a utilizar para gestionar a una
+        ///// entidad dentro de esta instancia.
+        ///// </param>
+        //public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), new[] { element })
+        //{
+        //    _source = Infer(element.Model);
+        //}
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -79,19 +79,19 @@ namespace TheXDS.Proteus.ViewModels.Base
             _source = source;
         }
 
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase
-        /// <see cref="DbBoundCrudViewModel"/>.
-        /// </summary>
-        /// <param name="source">Origen de datos a utilizar.</param>
-        /// <param name="elements">
-        /// Arreglo de <see cref="CrudElement"/> a utilizar para gestionar
-        /// a una entidad dentro de esta instancia.
-        /// </param>
-        public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] elements) : base(source.ToList(), elements)
-        {
-            _source = source;
-        }
+        ///// <summary>
+        ///// Inicializa una nueva instancia de la clase
+        ///// <see cref="DbBoundCrudViewModel"/>.
+        ///// </summary>
+        ///// <param name="source">Origen de datos a utilizar.</param>
+        ///// <param name="elements">
+        ///// Arreglo de <see cref="CrudElement"/> a utilizar para gestionar
+        ///// a una entidad dentro de esta instancia.
+        ///// </param>
+        //public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] elements) : base(source.ToList(), elements)
+        //{
+        //    _source = source;
+        //}
 
         /// <summary>
         /// Ejecuta la operación de guardado sobre la base de datos.
