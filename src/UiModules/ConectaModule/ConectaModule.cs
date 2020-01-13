@@ -97,7 +97,7 @@ namespace TheXDS.Proteus.Conecta
                 Property(p => p.Name).Nullable().Important("Número de serie");
                 TextProperty(p => p.Description).Big().Nullable().Important("Detalles");
                 NumericProperty(p => p.Descuento).Nullable().Important("Descuento");
-                ObjectProperty(p => p.MenudeoParent).Selectable().Important("En menudeo").Nullable();
+                ObjectProperty(p => p.MenudeoParent).Creatable().Important("En menudeo").Nullable();
             }
         }
 
@@ -146,7 +146,7 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
-        public class ItemPictureDescriptor : CrudDescriptor<ItemPicture>
+jh¡        public class ItemPictureDescriptor : CrudDescriptor<ItemPicture>
         {
             protected override void DescribeModel()
             {
