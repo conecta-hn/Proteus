@@ -13,31 +13,31 @@ using TheXDS.MCART.Resources;
 namespace TheXDS.Proteus.Resources
 {
     /// <summary>
-    ///     Contiene íconos genéricos que pueden ser utilizados en cualquier parte de Proteus.
+    /// Contiene íconos genéricos que pueden ser utilizados en cualquier parte de Proteus.
     /// </summary>
     public static class Images
     {
         private static readonly StringUnpacker _unpacker = new StringUnpacker(typeof(Images).Assembly, typeof(Images).FullName);
 
         /// <summary>
-        ///     Obtiene una nueva instancia del logo de Laboratorios Médicos sin Texto.
+        /// Obtiene una nueva instancia del logo de Laboratorios Médicos sin Texto.
         /// </summary>
         public static UIElement Logo => GetXamlIcon();
 
         /// <summary>
-        ///     Obtiene una nueva instancia del ícomo a utilizar para
-        ///     representar a Proteus.
+        /// Obtiene una nueva instancia del ícomo a utilizar para
+        /// representar a Proteus.
         /// </summary>
         public static UIElement Proteus => GetXamlIcon();
 
         /// <summary>
-        ///     Obtiene una nueva instancia del ícomo a utilizar para
-        ///     representar a un plugin.
+        /// Obtiene una nueva instancia del ícomo a utilizar para
+        /// representar a un plugin.
         /// </summary>
         public static UIElement Plugin => GetXamlIcon();
 
         /// <summary>
-        ///     Obtiene una nueva instancia del logo de advertencia.
+        /// Obtiene una nueva instancia del logo de advertencia.
         /// </summary>
         public static UIElement Warning => GetXamlIcon();
 

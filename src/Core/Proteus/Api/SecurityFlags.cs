@@ -49,32 +49,32 @@ namespace TheXDS.Proteus.Api
         Edit = 16,
 
         /// <summary>
-        ///     Requiere/otorga el permiso para borrar información.
+        /// Requiere/otorga el permiso para borrar información.
         /// </summary>
         /// <remarks>
-        ///     Contrario a purgar, borrar únicamente marca entidades como
-        ///     borradas, por lo que es posible restaurarlas cambiando su
-        ///     estado. 
+        /// Contrario a purgar, borrar únicamente marca entidades como
+        /// borradas, por lo que es posible restaurarlas cambiando su
+        /// estado. 
         /// </remarks>
         Delete = 32,
 
         /// <summary>
-        ///     Requiere/otorga los permisos estándar de escritura.
+        /// Requiere/otorga los permisos estándar de escritura.
         /// </summary>
         Write = New | Edit | Delete,
 
         /// <summary>
-        ///     Requiere/otorga los permisos estándar de lectura y escritura.
+        /// Requiere/otorga los permisos estándar de lectura y escritura.
         /// </summary>
         ReadWrite = Read | Write,
 
         /// <summary>
-        ///     Requiere/otorga el permiso para purgar información.
+        /// Requiere/otorga el permiso para purgar información.
         /// </summary>
         /// <remarks>
-        ///     Contrario a borrar, purgar elimina permanentemente la
-        ///     información de la base de datos, por lo que no es posible
-        ///     recuperarla. 
+        /// Contrario a borrar, purgar elimina permanentemente la
+        /// información de la base de datos, por lo que no es posible
+        /// recuperarla. 
         /// </remarks>
         Purge = 64,
 

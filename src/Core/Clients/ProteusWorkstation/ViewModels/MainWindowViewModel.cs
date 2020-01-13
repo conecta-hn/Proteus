@@ -22,44 +22,44 @@ using static TheXDS.Proteus.ViewModels.LoginViewModel;
 namespace TheXDS.Proteus.ViewModels
 {
     /// <summary>
-    ///     ViewModel que controla el comportamiento de la ventana principal de
-    ///     la aplicación.
+    /// ViewModel que controla el comportamiento de la ventana principal de
+    /// la aplicación.
     /// </summary>
     public class MainWindowViewModel : ReportingPageHostViewModel, IRootPageHost
     {
         private readonly IPageRootVisualHost _rootHost;
 
         /// <summary>
-        ///     Obtiene el nivel de opacidad configurado para la ventana.
+        /// Obtiene el nivel de opacidad configurado para la ventana.
         /// </summary>
         public double Opacity => Settings.Default.UiOpacity;
 
         /// <summary>
-        ///     Determina si el logo de la aplicación debería ser visible al
-        ///     fondo de la ventana principal.
+        /// Determina si el logo de la aplicación debería ser visible al
+        /// fondo de la ventana principal.
         /// </summary>
         public bool IsLogoVisible => Opacity > MinLogoOpacity;
 
         /// <summary>
-        ///     Obtiene el nivel de opacidad de la capa de ruido del fondo de
-        ///     la aplicación.
+        /// Obtiene el nivel de opacidad de la capa de ruido del fondo de
+        /// la aplicación.
         /// </summary>
         public double NoiseUI => Settings.Default.NoiseUI;
 
         /// <summary>
-        ///     Obtiene el nivel de opacidad a utilizar para el logotipo de la
-        ///     aplicación.
+        /// Obtiene el nivel de opacidad a utilizar para el logotipo de la
+        /// aplicación.
         /// </summary>
         public double LogoOpacity => ((Opacity - MinLogoOpacity) / (1 - MinLogoOpacity)).Clamp(0, 1);
 
         /// <summary>
-        ///     Obtiene el nivel de opacidad en el cual el logo deja de ser
-        ///     visible al fondo de la ventana de la aplicación.
+        /// Obtiene el nivel de opacidad en el cual el logo deja de ser
+        /// visible al fondo de la ventana de la aplicación.
         /// </summary>
         public double MinLogoOpacity => Settings.Default.MinUiOpacity;
 
         /// <summary>
-        ///     Obtiene la UI a utilizar para mostrar avances de estado.
+        /// Obtiene la UI a utilizar para mostrar avances de estado.
         /// </summary>
         public FrameworkElement? ReporterUi
         {
@@ -77,17 +77,17 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Comando de cierre de sesión.
+        /// Comando de cierre de sesión.
         /// </summary>
         public SimpleCommand LogoutCommand { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="MainWindowViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="MainWindowViewModel"/>.
         /// </summary>
         /// <param name="window">
-        ///     Host visual de este ViewModel. Debe tratarse de la ventana
-        ///     principal de la aplicación.
+        /// Host visual de este ViewModel. Debe tratarse de la ventana
+        /// principal de la aplicación.
         /// </param>
         public MainWindowViewModel(IPageRootVisualHost window) : base(window, true)
         {
@@ -112,10 +112,10 @@ namespace TheXDS.Proteus.ViewModels
         internal static bool _exiting = false;
 
         /// <summary>
-        ///     Inicia la aplicación de forma asíncrona.
+        /// Inicia la aplicación de forma asíncrona.
         /// </summary>
         /// <returns>
-        ///     Una tarea que puede utilizarse para monitorear la operación.
+        /// Una tarea que puede utilizarse para monitorear la operación.
         /// </returns>
         public Task LaunchAsync()
         {
@@ -186,7 +186,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Abre la página principal de la aplicación.
+        /// Abre la página principal de la aplicación.
         /// </summary>
         public void OpenMainPage()
         {
@@ -225,7 +225,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Fureza el cierre de la aplicación.
+        /// Fureza el cierre de la aplicación.
         /// </summary>
         public void ForceClose()
         {

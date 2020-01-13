@@ -9,17 +9,17 @@ using TheXDS.MCART.PluginSupport.Legacy;
 namespace TheXDS.Proteus.Plugins
 {
     /// <summary>
-    ///     Clase base para un <see cref="Plugin"/> que permite extender al
-    ///     protocolo de sesión de Proteus.
+    /// Clase base para un <see cref="Plugin"/> que permite extender al
+    /// protocolo de sesión de Proteus.
     /// </summary>
     public abstract class ProteusProtocolExtensionPlugin : Plugin
     {
         /// <summary>
-        ///     Extiende al protocolo de sesión de Proteus conectando nuevos
-        ///     comandos y manejadores.
+        /// Extiende al protocolo de sesión de Proteus conectando nuevos
+        /// comandos y manejadores.
         /// </summary>
         /// <param name="protocol">
-        ///     Instancia del protocolo a extender.
+        /// Instancia del protocolo a extender.
         /// </param>
         protected internal abstract void WireUp(SessionProtocol protocol);
     }

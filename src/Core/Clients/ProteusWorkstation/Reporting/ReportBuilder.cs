@@ -19,27 +19,27 @@ using TheXDS.Proteus.Config;
 namespace TheXDS.Proteus.Reporting
 {
     /// <summary>
-    ///     Contiene helpers para la creación de reportes.
+    /// Contiene helpers para la creación de reportes.
     /// </summary>
     public static class ReportBuilder
     {
         private static readonly ReadOnlyPresenter _rop = new ReadOnlyPresenter(false);
 
         /// <summary>
-        ///     Crea una tabla a partir de la información brindada.
+        /// Crea una tabla a partir de la información brindada.
         /// </summary>
         /// <param name="fd">
-        ///     <see cref="FlowDocument"/> sobre el cual crear la nueva tabla.
+        /// <see cref="FlowDocument"/> sobre el cual crear la nueva tabla.
         /// </param>
         /// <param name="query">
-        ///     Query con la información de la tabla a generar.
+        /// Query con la información de la tabla a generar.
         /// </param>
         /// <param name="columns">
-        ///     Columnas a mostrar.
+        /// Columnas a mostrar.
         /// </param>
         /// <returns>
-        ///     Un <see cref="Table"/> generado a partir de la información
-        ///     brindada.
+        /// Un <see cref="Table"/> generado a partir de la información
+        /// brindada.
         /// </returns>
         public static Table MakeTable(FlowDocument fd, IQueryable<ModelBase> query, IEnumerable<PropertyInfo> columns)
         {
@@ -54,20 +54,20 @@ namespace TheXDS.Proteus.Reporting
         }
 
         /// <summary>
-        ///     Crea una tabla a partir de la información brindada.
+        /// Crea una tabla a partir de la información brindada.
         /// </summary>
         /// <param name="fd">
-        ///     <see cref="FlowDocument"/> sobre el cual crear la nueva tabla.
+        /// <see cref="FlowDocument"/> sobre el cual crear la nueva tabla.
         /// </param>
         /// <param name="query">
-        ///     Query con la información de la tabla a generar.
+        /// Query con la información de la tabla a generar.
         /// </param>
         /// <param name="columns">
-        ///     Columnas a mostrar.
+        /// Columnas a mostrar.
         /// </param>
         /// <returns>
-        ///     Un <see cref="Table"/> generado a partir de la información
-        ///     brindada.
+        /// Un <see cref="Table"/> generado a partir de la información
+        /// brindada.
         /// </returns>
         public static Table MakeTable(FlowDocument fd, IQueryable query, IEnumerable<PropertyInfo> columns)
         {
@@ -83,12 +83,12 @@ namespace TheXDS.Proteus.Reporting
         }
 
         /// <summary>
-        ///     Genera un <see cref="FlowDocument"/> con encabezado estándar
-        ///     para utilizar al crear un reporte.
+        /// Genera un <see cref="FlowDocument"/> con encabezado estándar
+        /// para utilizar al crear un reporte.
         /// </summary>
         /// <param name="title">Título del reporte</param>
         /// <returns>
-        ///     Un <see cref="FlowDocument"/> con encabezado estándar.
+        /// Un <see cref="FlowDocument"/> con encabezado estándar.
         /// </returns>
         public static FlowDocument MakeReport(string title)
         {

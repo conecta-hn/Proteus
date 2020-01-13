@@ -16,22 +16,22 @@ using static TheXDS.MCART.Objects;
 namespace TheXDS.Proteus.Crud.Base
 {
     /// <summary>
-    ///     Contiene métodos de extensión que proveen de atajos de
-    ///     configuración para descriptores de propiedades de CRUD.
+    /// Contiene métodos de extensión que proveen de atajos de
+    /// configuración para descriptores de propiedades de CRUD.
     /// </summary>
     public static class PropertyDescriptorShortcuts
     {
         #region Atajos de descripción de propiedad
 
         /// <summary>
-        ///     Atajo que configura una propiedad como un nombre.
+        /// Atajo que configura una propiedad como un nombre.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="label">
-        ///     Etiqueta opcional a mostrar.
+        /// Etiqueta opcional a mostrar.
         /// </param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor AsName(this IPropertyDescriptor p, string label)
@@ -40,11 +40,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Atajo que configura una propiedad como un nombre.
+        /// Atajo que configura una propiedad como un nombre.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor AsName(this IPropertyDescriptor p)
@@ -53,11 +53,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Muestra una propiedad únicamente en la vista de detalles.
+        /// Muestra una propiedad únicamente en la vista de detalles.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor OnlyInDetails(this IPropertyDescriptor p)
@@ -67,14 +67,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Muestra una propiedad únicamente en la vista de detalles.
+        /// Muestra una propiedad únicamente en la vista de detalles.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="label">
-        ///     Etiqueta opcional a mostrar.
+        /// Etiqueta opcional a mostrar.
         /// </param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor OnlyInDetails(this IPropertyDescriptor p, string label)
@@ -84,15 +84,15 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Atajo que configura una propiedad como un nombre.
+        /// Atajo que configura una propiedad como un nombre.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="label">
-        ///     Etiqueta opcional a mostrar.
+        /// Etiqueta opcional a mostrar.
         /// </param>
         /// <param name="icon">Ícono opcional a mostrar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor AsName(this IPropertyDescriptor p, string label, string icon)
@@ -101,14 +101,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Establece la propiedad como importante, ejecutando
-        ///     <see cref="IPropertyDescriptor.WatermarkAlwaysVisible()"/>,
-        ///     <see cref="IPropertyDescriptor.AsListColumn()"/> y 
-        ///     <see cref="IPropertyDescriptor.ShowInDetails()"/>
+        /// Establece la propiedad como importante, ejecutando
+        /// <see cref="IPropertyDescriptor.WatermarkAlwaysVisible()"/>,
+        /// <see cref="IPropertyDescriptor.AsListColumn()"/> y 
+        /// <see cref="IPropertyDescriptor.ShowInDetails()"/>
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Important(this IPropertyDescriptor p)
@@ -119,15 +119,15 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Establece la propiedad como importante, ejecutando
-        ///     <see cref="IPropertyDescriptor.WatermarkAlwaysVisible()"/>,
-        ///     <see cref="IPropertyDescriptor.AsListColumn()"/> y 
-        ///     <see cref="IPropertyDescriptor.ShowInDetails()"/>
+        /// Establece la propiedad como importante, ejecutando
+        /// <see cref="IPropertyDescriptor.WatermarkAlwaysVisible()"/>,
+        /// <see cref="IPropertyDescriptor.AsListColumn()"/> y 
+        /// <see cref="IPropertyDescriptor.ShowInDetails()"/>
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="label">Etiqueta a establecer.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Important(this IPropertyDescriptor p, string label)
@@ -139,13 +139,13 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Atajo que configura una propiedad de campo llave.
+        /// Atajo que configura una propiedad de campo llave.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="label">Etiqueta a mostrar.</param>
         /// <param name="icon">Ícono opcional a mostrar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Id(this IPropertyDescriptor p, string label, string icon)
@@ -154,12 +154,12 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Atajo que configura una propiedad de campo llave.
+        /// Atajo que configura una propiedad de campo llave.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="label">Etiqueta a mostrar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Id(this IPropertyDescriptor p, string label)
@@ -168,11 +168,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Atajo que configura una propiedad de campo llave.
+        /// Atajo que configura una propiedad de campo llave.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Id(this IPropertyDescriptor p)
@@ -181,12 +181,12 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Marca una lista como únicamente creable, lo cual permite hacer
-        ///     Binding de orígen de lista personalizado.
+        /// Marca una lista como únicamente creable, lo cual permite hacer
+        /// Binding de orígen de lista personalizado.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IListPropertyDescriptor<T> CreatableOnly<T>(this IListPropertyDescriptor<T> p) where T : ModelBase
@@ -195,11 +195,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Marca un campo para no ser una cadena nula.
+        /// Marca un campo para no ser una cadena nula.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor NotEmpty(this IPropertyDescriptor p)
@@ -208,11 +208,11 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Marca una colección para indicar que debe contener al menos un elemento.
+        /// Marca una colección para indicar que debe contener al menos un elemento.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor NotEmpty<T>(this IListPropertyDescriptor<T> p) where T : ModelBase
@@ -221,15 +221,15 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Permite agregar múltiples funciones de validación a un mismo
-        ///     campo.
+        /// Permite agregar múltiples funciones de validación a un mismo
+        /// campo.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="validations">
-        ///     Funciones de validación a concatenar.
+        /// Funciones de validación a concatenar.
         /// </param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Validations(this IPropertyDescriptor p, params Func<ModelBase, PropertyInfo, IEnumerable<ValidationError>>[] validations)
@@ -238,15 +238,15 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Permite agregar múltiples funciones de validación a un mismo
-        ///     campo.
+        /// Permite agregar múltiples funciones de validación a un mismo
+        /// campo.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="validations">
-        ///     Funciones de validación a concatenar.
+        /// Funciones de validación a concatenar.
         /// </param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor Validations<T>(this IPropertyDescriptor p, params Func<T, PropertyInfo, IEnumerable<ValidationError>>[] validations) where T: ModelBase, new()
@@ -255,12 +255,12 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Marca un campo como columna de una lista.
+        /// Marca un campo como columna de una lista.
         /// </summary>
         /// <param name="p">Propiedad a configurar.</param>
         /// <param name="format">Formato a aplicar al campo.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IPropertyDescriptor AsListColumn(this IPropertyDescriptor p, string format)
@@ -269,16 +269,16 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Indica que una lista debe contener controles para la creación
-        ///     de nuevas entidades de la clase base especificada.
+        /// Indica que una lista debe contener controles para la creación
+        /// de nuevas entidades de la clase base especificada.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo base de los modelos que deben estar disponibles para la
-        ///     creación.
+        /// Tipo base de los modelos que deben estar disponibles para la
+        /// creación.
         /// </typeparam>
         /// <param name="p">Propiedad a configurar.</param>
         /// <returns>
-        ///     La misma instancia que <paramref name="p"/>.
+        /// La misma instancia que <paramref name="p"/>.
         /// </returns>
         [Sugar]
         public static IDataPropertyDescriptor Creatable<T>(this IDataPropertyDescriptor p) where T : ModelBase
@@ -291,14 +291,14 @@ namespace TheXDS.Proteus.Crud.Base
         #region Bulks de descripción de modelos
 
         /// <summary>
-        ///     Describe rápidamente las propiedades de dirección del modelo
-        ///     actual.
+        /// Describe rápidamente las propiedades de dirección del modelo
+        /// actual.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo a describir.
+        /// Modelo a describir.
         /// </typeparam>
         /// <param name="descriptor">
-        ///     Instancia del descriptor de modelos.
+        /// Instancia del descriptor de modelos.
         /// </param>
         [Sugar]
         public static void DescribeAddress<T>(this CrudDescriptor<T> descriptor) where T : ModelBase, IAddressable, new()
@@ -311,14 +311,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Describe rápidamente las propiedades de contacto del modelo
-        ///     actual.
+        /// Describe rápidamente las propiedades de contacto del modelo
+        /// actual.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo a describir.
+        /// Modelo a describir.
         /// </typeparam>
         /// <param name="descriptor">
-        ///     Instancia del descriptor de modelos.
+        /// Instancia del descriptor de modelos.
         /// </param>
         [Sugar]
         public static void DescribeContact<T>(this CrudDescriptor<T> descriptor) where T : ModelBase, IContact, new()
@@ -339,14 +339,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Describe rápidamente las propiedades de información de equipo
-        ///     del modelo actual.
+        /// Describe rápidamente las propiedades de información de equipo
+        /// del modelo actual.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo a describir.
+        /// Modelo a describir.
         /// </typeparam>
         /// <param name="descriptor">
-        ///     Instancia del descriptor de modelos.
+        /// Instancia del descriptor de modelos.
         /// </param>
         [Sugar]
         public static void DescribeEstacion<T>(this CrudDescriptor<T> descriptor) where T : EstacionBase, new()
@@ -356,14 +356,14 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
-        ///     Describe una entidad que ofrece representaciones de valores 
-        ///     absolutos o relativos.
+        /// Describe una entidad que ofrece representaciones de valores 
+        /// absolutos o relativos.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo a describir.
+        /// Modelo a describir.
         /// </typeparam>
         /// <param name="descriptor">
-        ///     Instancia del descriptor de modelos.
+        /// Instancia del descriptor de modelos.
         /// </param>
         [Sugar]
         public static void DescribeValuable<T>(this CrudDescriptor<T> descriptor) where T: ModelBase, IValuable, new()
@@ -386,14 +386,14 @@ namespace TheXDS.Proteus.Crud.Base
         #region Validaciones personalizadas
 
         /// <summary>
-        ///     Valida una dirección.
+        /// Valida una dirección.
         /// </summary>
         /// <param name="entity">Entidad a validar.</param>
         /// <param name="prop">Referencia a la propiedad a validar.</param>
         /// <returns>
-        ///     Una colección de errores de validación si existen problemas, o
-        ///     una colección vacía si la entidad ha superado todas las
-        ///     validaciones.
+        /// Una colección de errores de validación si existen problemas, o
+        /// una colección vacía si la entidad ha superado todas las
+        /// validaciones.
         /// </returns>
         public static IEnumerable<ValidationError> CheckAddress(ModelBase entity, PropertyInfo prop)
         {
@@ -408,9 +408,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <param name="entity">Entidad a validar.</param>
         /// <param name="prop">Referencia a la propiedad a validar.</param>
         /// <returns>
-        ///     Una colección de errores de validación si existen problemas, o
-        ///     una colección vacía si la entidad ha superado todas las
-        ///     validaciones.
+        /// Una colección de errores de validación si existen problemas, o
+        /// una colección vacía si la entidad ha superado todas las
+        /// validaciones.
         /// </returns>
         public static IEnumerable<ValidationError> CheckNotEmpty(ModelBase entity, PropertyInfo prop)
         {
@@ -423,9 +423,9 @@ namespace TheXDS.Proteus.Crud.Base
         /// <param name="entity">Entidad a validar.</param>
         /// <param name="prop">Referencia a la propiedad a validar.</param>
         /// <returns>
-        ///     Una colección de errores de validación si existen problemas, o
-        ///     una colección vacía si la entidad ha superado todas las
-        ///     validaciones.
+        /// Una colección de errores de validación si existen problemas, o
+        /// una colección vacía si la entidad ha superado todas las
+        /// validaciones.
         /// </returns>
         public static IEnumerable<ValidationError> CheckListNotEmpty(ModelBase entity, PropertyInfo prop)
         {

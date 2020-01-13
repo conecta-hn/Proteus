@@ -13,82 +13,82 @@ namespace TheXDS.Proteus.Protocols
     public enum Response : byte
     {
         /// <summary>
-        ///     Recibido/aceptado. Ninguna acción a proceder.
+        /// Recibido/aceptado. Ninguna acción a proceder.
         /// </summary>
         Acknowledged,
 
         /// <summary>
-        ///     Operación fallida. Ninguna acción a proceder.
+        /// Operación fallida. Ninguna acción a proceder.
         /// </summary>
         [ErrorResponse] Failure,
 
         /// <summary>
-        ///     Operación restringida. Ninguna acción a proceder.
+        /// Operación restringida. Ninguna acción a proceder.
         /// </summary>
         Forbidden,
 
         /// <summary>
-        ///     Solicita una identificación.
+        /// Solicita una identificación.
         /// </summary>
         Identify,
 
         /// <summary>
-        ///     Solicita al cliente que cierre la sesión del usuario.
+        /// Solicita al cliente que cierre la sesión del usuario.
         /// </summary>
         EndSession,
 
         /// <summary>
-        ///     Solicita el refresco de un ViewModel
+        /// Solicita el refresco de un ViewModel
         /// </summary>
         ViewModelRefresh,
 
         /// <summary>
-        ///     Solicita que un servicio se refresque.
+        /// Solicita que un servicio se refresque.
         /// </summary>
         ServiceRefresh,
 
         /// <summary>
-        ///     Solicita que una de sus páginas se refresque.
+        /// Solicita que una de sus páginas se refresque.
         /// </summary>
         PageRefresh,
 
         /// <summary>
-        ///     Solicita que se muestre una alerta.
+        /// Solicita que se muestre una alerta.
         /// </summary>
         Alert,
 
         /// <summary>
-        ///     Solicita que se muestre una alerta importante.
+        /// Solicita que se muestre una alerta importante.
         /// </summary>
         ImportantAlert,
 
         /// <summary>
-        ///     Query de datos de los usuarios.
+        /// Query de datos de los usuarios.
         /// </summary>
         ClientQuery,
 
         /// <summary>
-        ///     Query de la sesión.
+        /// Query de la sesión.
         /// </summary>
         SessionQuery,
 
         /// <summary>
-        ///     Notificar de un recurso libre.
+        /// Notificar de un recurso libre.
         /// </summary>
         Notify,
 
         /// <summary>
-        ///     Reenvía el timestamp enviado por el servidor.
+        /// Reenvía el timestamp enviado por el servidor.
         /// </summary>
         Probe,
 
         /// <summary>
-        ///     Obtiene un listado de objetos abiertos para edición.
+        /// Obtiene un listado de objetos abiertos para edición.
         /// </summary>
         QueryLocks,
 
         /// <summary>
-        ///     Indica que hay más bytes de respuesta extendida.
+        /// Indica que hay más bytes de respuesta extendida.
         /// </summary>
         Extension = byte.MaxValue
     }

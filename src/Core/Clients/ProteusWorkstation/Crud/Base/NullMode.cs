@@ -9,25 +9,25 @@ namespace TheXDS.Proteus.Crud.Base
 {
 
     /// <summary>
-    ///     Enumera los distintos modos de nulidad de los campos.
+    /// Enumera los distintos modos de nulidad de los campos.
     /// </summary>
     public enum NullMode
     {
         /// <summary>
-        ///     Inferir, basado en la prescencia del atributo
-        ///     <see cref="RequiredAttribute"/> del campo a configurar.
+        /// Inferir, basado en la prescencia del atributo
+        /// <see cref="RequiredAttribute"/> del campo a configurar.
         /// </summary>
         Infer,
         /// <summary>
-        ///     Campo requerido.
+        /// Campo requerido.
         /// </summary>
         Required,
         /// <summary>
-        ///     Campo opcional desactivable.
+        /// Campo opcional desactivable.
         /// </summary>
         Nullable,
         /// <summary>
-        ///     Campo opcional seleccionable con RadioButton.
+        /// Campo opcional seleccionable con RadioButton.
         /// </summary>
         Radio
     }

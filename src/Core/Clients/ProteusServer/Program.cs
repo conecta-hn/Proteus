@@ -16,25 +16,25 @@ using TheXDS.MCART.Networking.Server;
 namespace TheXDS.Proteus
 {
     /// <summary>
-    ///     Clase principal de ProteusServer.
+    /// Clase principal de ProteusServer.
     /// </summary>
     public static class Program
     {
         /// <summary>
-        ///     Enumera a todos los servidores corriendo en el Host.
+        /// Enumera a todos los servidores corriendo en el Host.
         /// </summary>
         public static IEnumerable<Server> Servers => _service.RunningServers;
 
         internal static readonly ProteusService _service = new ProteusService();
 
         /// <summary>
-        ///     Obtiene un servidor que ejecute el protocolo especificado.
+        /// Obtiene un servidor que ejecute el protocolo especificado.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo del protocolo en ejecución del servidor que se desea obtener.
+        /// Tipo del protocolo en ejecución del servidor que se desea obtener.
         /// </typeparam>
         /// <returns>
-        ///     Un <see cref="Server"/> que esté ejecutando el protocolo especificado.
+        /// Un <see cref="Server"/> que esté ejecutando el protocolo especificado.
         /// </returns>
         public static T ServerOf<T>() where T : class, IProtocol
         {
@@ -42,10 +42,10 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Punto de entrada de la aplicación.
+        /// Punto de entrada de la aplicación.
         /// </summary>
         /// <param name="args">
-        ///     Argumentos de línea de comandos.
+        /// Argumentos de línea de comandos.
         /// </param>
         public static async Task Main(string[] args)
         {
@@ -73,7 +73,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Detiene el servicio por completo.
+        /// Detiene el servicio por completo.
         /// </summary>
         public static void Exit()
         {

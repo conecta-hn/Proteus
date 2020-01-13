@@ -28,8 +28,8 @@ using static TheXDS.MCART.Types.Extensions.StringExtensions;
 namespace TheXDS.Proteus.ViewModels
 {
     /// <summary>
-    ///     ViewModel que gestiona el comportamiento de la página de inicio de
-    ///     la aplicación.
+    /// ViewModel que gestiona el comportamiento de la página de inicio de
+    /// la aplicación.
     /// </summary>
     [DebuggerStepThrough]
     public class HomeViewModel : PageViewModel, IAlertTarget

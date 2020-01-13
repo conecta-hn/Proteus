@@ -33,7 +33,7 @@ using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
 namespace TheXDS.Proteus
 {
     /// <summary>
-    ///     Lógica de interacción para App.xaml
+    /// Lógica de interacción para App.xaml
     /// </summary>
     public partial class App
     {
@@ -44,10 +44,10 @@ namespace TheXDS.Proteus
         private static readonly IKickStarter _fallbackKickStarter = FindFirstObject<IKickStarter>()!;
 
         /// <summary>
-        ///     Carga los plugins de la aplicación de forma asíncrona.
+        /// Carga los plugins de la aplicación de forma asíncrona.
         /// </summary>
         /// <returns>
-        ///     Una tarea que puede utilizarse para monitorear la operación.
+        /// Una tarea que puede utilizarse para monitorear la operación.
         /// </returns>
         public static async Task LoadPlugins()
         {
@@ -62,7 +62,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Invoca una operación en el mismo hilo de la UI.
+        /// Invoca una operación en el mismo hilo de la UI.
         /// </summary>
         /// <param name="action">Acción a ejecutar.</param>
         public static void UiInvoke(Action action)
@@ -71,10 +71,10 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Invoca una operación en el mismo hilo de la UI.
+        /// Invoca una operación en el mismo hilo de la UI.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de valor devuelto por la función.
+        /// Tipo de valor devuelto por la función.
         /// </typeparam>
         /// <param name="action">Función a ejecutar.</param>
         /// <returns>El resultado de la función.</returns>
@@ -84,7 +84,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Obtiene el <see cref="IKickStarter"/> predeterminado de la aplicación.
+        /// Obtiene el <see cref="IKickStarter"/> predeterminado de la aplicación.
         /// </summary>
         public static IKickStarter KickStarter
         {
@@ -99,16 +99,16 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Obtiene una página desde un <see cref="IKickStarter"/> válido.
+        /// Obtiene una página desde un <see cref="IKickStarter"/> válido.
         /// </summary>
         /// <typeparam name="TPage">
-        ///     Tipo de página a obtener.
+        /// Tipo de página a obtener.
         /// </typeparam>
         /// <param name="selector">Función de selección de página.</param>
         /// <returns>
-        ///     Una página obtenida desde un <see cref="IKickStarter"/> que no
-        ///     haya devuelto <see langword="null"/>, o la página solicitada
-        ///     integrada de la aplicación.
+        /// Una página obtenida desde un <see cref="IKickStarter"/> que no
+        /// haya devuelto <see langword="null"/>, o la página solicitada
+        /// integrada de la aplicación.
         /// </returns>
         public static TPage FromKickStarter<TPage>(Func<IKickStarter,TPage> selector) where TPage : IPage
         {
@@ -120,32 +120,32 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Enumera las herramientas cargadas de la aplicación.
+        /// Enumera las herramientas cargadas de la aplicación.
         /// </summary>
         public static IEnumerable<Tool> Tools => _tools;
 
         /// <summary>
-        ///     Enumera los módulos cargados de la aplicación.
+        /// Enumera los módulos cargados de la aplicación.
         /// </summary>
         public static IEnumerable<UiModule> Modules => _modules;
 
         /// <summary>
-        ///     Obtiene un módulo específico.
+        /// Obtiene un módulo específico.
         /// </summary>
         /// <typeparam name="T">Tipo de módulo a obtener.</typeparam>
         /// <returns>
-        ///     Una instancia activa del módulo del tipo especificado.
+        /// Una instancia activa del módulo del tipo especificado.
         /// </returns>
         public static T? Module<T>() where T : UiModule, new() => Modules.FirstOrDefault(p => p.GetType() == typeof(T)) as T;
 
         /// <summary>
-        ///     Enumera los parches cargados de la aplicación.
+        /// Enumera los parches cargados de la aplicación.
         /// </summary>
         public static IEnumerable<Patch> Patches => _patches;
 
         /// <summary>
-        ///     Obtiene una lista de objetos que pueden ser utilizados para
-        ///     arrancar la aplicación.
+        /// Obtiene una lista de objetos que pueden ser utilizados para
+        /// arrancar la aplicación.
         /// </summary>
         public static IEnumerable<IKickStarter> KickStarters => _kickStarters;
 
@@ -168,13 +168,13 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Obtiene el objeto registrado como huésped raíz de páginas para
-        ///     la aplicación.
+        /// Obtiene el objeto registrado como huésped raíz de páginas para
+        /// la aplicación.
         /// </summary>
         public static IRootPageHost RootHost { get; internal set; } = null!;
 
         /// <summary>
-        ///     Aplica los parches pertinentes a un objeto.
+        /// Aplica los parches pertinentes a un objeto.
         /// </summary>
         /// <param name="o"></param>
         public static void ApplyPatches(object o)
@@ -187,7 +187,7 @@ namespace TheXDS.Proteus
         }
 
         /// <summary>
-        ///     Expone información básica sobre la aplicación.
+        /// Expone información básica sobre la aplicación.
         /// </summary>
         public static IExposeInfo Info { get; } = new AssemblyInfo(typeof(App).Assembly);
     }

@@ -3,7 +3,7 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-// Los archivos .settings tienen problemas de conpatibilidad con C# 8 y las anotaciones de tipos de referencia nulables.
+// Los archivos .settings tienen problemas de compatibilidad con C# 8 y las anotaciones de tipos de referencia nulables.
 #nullable disable
 
 using TheXDS.Proteus.Api;
@@ -24,13 +24,6 @@ using TheXDS.MCART.Dialogs;
 
 namespace TheXDS.Proteus.Config
 {
-    public enum UiMode : byte
-    {
-        Simple,
-        Flat,
-        Minimal,
-        Logging
-    }
 
     internal sealed partial class Settings : IPageViewModel, ISettings, INotifyPropertyChanged
     {
@@ -78,7 +71,7 @@ namespace TheXDS.Proteus.Config
         }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción AboutMCART.
+        /// Obtiene el comando relacionado a la acción AboutMCART.
         /// </summary>
         /// <returns>El comando AboutMCART.</returns>
         public SimpleCommand AboutMCARTCommand { get; } = new SimpleCommand(OnAboutMCART);
@@ -89,7 +82,7 @@ namespace TheXDS.Proteus.Config
         }
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción PluginInfo.
+        /// Obtiene el comando relacionado a la acción PluginInfo.
         /// </summary>
         /// <returns>El comando PluginInfo.</returns>
         public SimpleCommand PluginInfoCommand { get; } = new SimpleCommand(OnPluginInfo);

@@ -29,7 +29,7 @@ using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <summary>
-    ///     Clase base para un ViewModel que implemente funcionalidad Crud.
+    /// Clase base para un ViewModel que implemente funcionalidad Crud.
     /// </summary>
     public abstract class CrudViewModelBase: ProteusViewModel, ICrudViewModel
     {
@@ -37,20 +37,20 @@ namespace TheXDS.Proteus.ViewModels.Base
         private Type? _selection;
 
         /// <summary>
-        ///     Obtiene una referencia al servicio a utilizar para las
-        ///     operaciones CRUD de este ViewModel.
+        /// Obtiene una referencia al servicio a utilizar para las
+        /// operaciones CRUD de este ViewModel.
         /// </summary>
         protected Service? Service => Proteus.Infer(SelectedElement?.Model);
 
         /// <summary>
-        ///     Colección que describe las diferentes presentaciones
-        ///     disponibles de este <see cref="CrudViewModel{TService}"/>
-        ///     basado en el tipo de entidad seleccionada.
+        /// Colección que describe las diferentes presentaciones
+        /// disponibles de este <see cref="CrudViewModel{TService}"/>
+        /// basado en el tipo de entidad seleccionada.
         /// </summary>
         protected IEnumerable<CrudElement> Elements { get; }
 
         /// <summary>
-        ///     Obtiene o establece al elemento seleccionado.
+        /// Obtiene o establece al elemento seleccionado.
         /// </summary>
         public object? Selection
         {
@@ -98,9 +98,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Abstrae las comprobaciones complejas de tipos de modelos,
-        ///     tomando en cuenta si son modelos estáticos o Proxies compilados
-        ///     de Entity Framework.
+        /// Abstrae las comprobaciones complejas de tipos de modelos,
+        /// tomando en cuenta si son modelos estáticos o Proxies compilados
+        /// de Entity Framework.
         /// </summary>
         /// <param name="j"></param>
         /// <returns></returns>
@@ -115,12 +115,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudCollectionViewModelBase"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="elements">
-        ///     Arreglo de <see cref="CrudElement"/> que serán utilizados para
-        ///     editar entidades dentro de esta instancia.
+        /// Arreglo de <see cref="CrudElement"/> que serán utilizados para
+        /// editar entidades dentro de esta instancia.
         /// </param>
         protected CrudViewModelBase(params CrudElement[] elements)
         {
@@ -157,8 +157,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudCollectionViewModelBase"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="models">Modelos asociados de datos.</param>
         protected CrudViewModelBase(params Type[] models) : this(models.Select(p => new CrudElement(p)).ToArray())
@@ -166,19 +166,19 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene el editor a utlizar para editar a la entidad seleccionada.
+        /// Obtiene el editor a utlizar para editar a la entidad seleccionada.
         /// </summary>
         public FrameworkElement? SelectedEditor => SelectedElement?.Editor;
 
         /// <summary>
-        ///     Obtiene la ventana de detalles de la entidad seleccionada.
+        /// Obtiene la ventana de detalles de la entidad seleccionada.
         /// </summary>
         public FrameworkElement? SelectedDetails => SelectedElement?.Details;
 
         /// <summary>
-        ///     Obtiene un <see cref="CrudElement"/> con información sobre los
-        ///     componentes relacionados al modelo de datos de la entidad
-        ///     seleccionada.
+        /// Obtiene un <see cref="CrudElement"/> con información sobre los
+        /// componentes relacionados al modelo de datos de la entidad
+        /// seleccionada.
         /// </summary>
         public CrudElement SelectedElement => Elements.FirstOrDefault(IsForType) ?? Elements.FirstOrDefault(Implements);
 
@@ -201,19 +201,19 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene, de ser posible, a la entidad padre de la que se
-        ///     encuentra actualmente seleccionada.
+        /// Obtiene, de ser posible, a la entidad padre de la que se
+        /// encuentra actualmente seleccionada.
         /// </summary>
         /// <returns>
-        ///     La entidad padre de la actualmente seleccionasa, o 
-        ///     <see langword="null"/> si la entidad seleccionada no puede
-        ///     tener información sobre su padre en este contexto.
+        /// La entidad padre de la actualmente seleccionasa, o 
+        /// <see langword="null"/> si la entidad seleccionada no puede
+        /// tener información sobre su padre en este contexto.
         /// </returns>
         protected abstract ModelBase? GetParent();
 
         /// <summary>
-        ///     Ejecuta una acción a realizar justo después de guardar la
-        ///     información en la base de datos.
+        /// Ejecuta una acción a realizar justo después de guardar la
+        /// información en la base de datos.
         /// </summary>
         protected abstract void AfterSave();
 
@@ -297,20 +297,20 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Implementa la operación de guardado según lo requerido por la
-        ///     clase base de este <see cref="CrudCollectionViewModelBase"/>.
+        /// Implementa la operación de guardado según lo requerido por la
+        /// clase base de este <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="entity">
-        ///     Entidad a guardar.
+        /// Entidad a guardar.
         /// </param>
         /// <returns>
-        ///     UN objeto que representa el resultado de la operación.
+        /// UN objeto que representa el resultado de la operación.
         /// </returns>
         protected abstract Task<DetailedResult> PerformSave(ModelBase entity);
 
         /// <summary>
-        ///     Obtiene un valor que indica si el editor se ha abierto para
-        ///     crear una nueva entidad.
+        /// Obtiene un valor que indica si el editor se ha abierto para
+        /// crear una nueva entidad.
         /// </summary>
         protected bool NewMode { get; private set; } = false;
         private void OnCreate(Type? t)
@@ -332,75 +332,75 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Determina si es posible ejecutar el comando para la creación de
-        ///     nuevas entidades.
+        /// Determina si es posible ejecutar el comando para la creación de
+        /// nuevas entidades.
         /// </summary>
         /// <param name="t">
-        ///     Tipo de modelo.
+        /// Tipo de modelo.
         /// </param>
         /// <returns>
-        ///     En su implementación predeterminada, este método siempre
-        ///     devuelve <see langword="true"/>.
+        /// En su implementación predeterminada, este método siempre
+        /// devuelve <see langword="true"/>.
         /// </returns>
         public virtual bool CanCreate(Type? t) => true;
 
         /// <summary>
-        ///     Determina si es posible editar a la entidad seleccionada.
+        /// Determina si es posible editar a la entidad seleccionada.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>
-        ///     <see langword="true"/> si es posible editar la entidad
-        ///     seleccionada, <see langword="false"/> en caso contrario.
+        /// <see langword="true"/> si es posible editar la entidad
+        /// seleccionada, <see langword="false"/> en caso contrario.
         /// </returns>
         public virtual bool CanEdit(ModelBase? entity) => !(entity is null);
 
         /// <summary>
-        ///     Determina si es posible eliminar a la entidad seleccionada.
+        /// Determina si es posible eliminar a la entidad seleccionada.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>
-        ///     <see langword="true"/> si es posible eliminar la entidad
-        ///     seleccionada, <see langword="false"/> en caso contrario.
+        /// <see langword="true"/> si es posible eliminar la entidad
+        /// seleccionada, <see langword="false"/> en caso contrario.
         /// </returns>
         public virtual bool CanDelete(ModelBase? entity) => !(entity is null) && (SelectedElement?.Description?.CanDelete?.Invoke(entity) ?? true);
 
         /// <summary>
-        ///     Comando para la creación de nuevas entidades.
+        /// Comando para la creación de nuevas entidades.
         /// </summary>
         public ICommand CreateNew { get; }
 
         /// <summary>
-        ///     Comando para la edición de la entidad actualmente seleccionada.
+        /// Comando para la edición de la entidad actualmente seleccionada.
         /// </summary>
         public ICommand EditCurrent { get; }
         /// <summary>
-        ///     Comando para la eliminación de la entidad actualmente
-        ///     seleccionada.
+        /// Comando para la eliminación de la entidad actualmente
+        /// seleccionada.
         /// </summary>
         public ICommand DeleteCurrent { get; }
 
         /// <summary>
-        ///     Comando de guardado de entidades, tanto nuevas como editadas.
+        /// Comando de guardado de entidades, tanto nuevas como editadas.
         /// </summary>
         public ICommand SaveCommand { get; }
 
         /// <summary>
-        ///     Comando que cancela la creación o edición de una entidad.
+        /// Comando que cancela la creación o edición de una entidad.
         /// </summary>
         public ICommand CancelCommand { get; }
 
         /// <summary>
-        ///     Enumeración de comandos para la creación de entidades cuando
-        ///     este ViewModel administra dos o más modelos de datos.
+        /// Enumeración de comandos para la creación de entidades cuando
+        /// este ViewModel administra dos o más modelos de datos.
         /// </summary>
         public IEnumerable<Launcher>? CreateCommands { get; }
 
         /// <summary>
-        ///     Ejecuta una operación de eliminación de información de la
-        ///     colección activa.
+        /// Ejecuta una operación de eliminación de información de la
+        /// colección activa.
         /// </summary>
         /// <param name="o">
-        ///     Elemento a eliminar.
+        /// Elemento a eliminar.
         /// </param>
         protected abstract void OnDelete(object? o);
 
@@ -424,8 +424,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         [Sugar] private bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
 
         /// <summary>
-        ///     Ejecuta una operación colocando a este 
-        ///     <see cref="ICrudEditingViewModel"/> en estado de ocupado.
+        /// Ejecuta una operación colocando a este 
+        /// <see cref="ICrudEditingViewModel"/> en estado de ocupado.
         /// </summary>
         /// <param name="action">Tarea a ejecutar.</param>
         public async void BusyDo(Task action)
@@ -436,26 +436,26 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene un valor de visibilidad aplicable mientras el ViewModel se encuentre ocupado.
+        /// Obtiene un valor de visibilidad aplicable mientras el ViewModel se encuentre ocupado.
         /// </summary>
         public Visibility BusyV => IsBusy ? Visibility.Visible : Visibility.Collapsed;
         /// <summary>
-        ///     Obtiene un valor de visibilidad aplicable mientras el ViewModel no se encuentre ovupado.
+        /// Obtiene un valor de visibilidad aplicable mientras el ViewModel no se encuentre ovupado.
         /// </summary>
         public Visibility NotBusyV => !IsBusy ? Visibility.Visible : Visibility.Collapsed;
 
         /// <summary>
-        ///     Obtiene un valor de visibilidad aplicable cuando el ViewModel administre la creación de múltiples modelos.
+        /// Obtiene un valor de visibilidad aplicable cuando el ViewModel administre la creación de múltiples modelos.
         /// </summary>
         public Visibility MultiModel { get; }
 
         /// <summary>
-        ///     Obtiene un valor de visibilidad aplicacble cuando el ViewModel administre la creación de un único modelo.
+        /// Obtiene un valor de visibilidad aplicacble cuando el ViewModel administre la creación de un único modelo.
         /// </summary>
         public Visibility UniModel { get; }
 
         /// <summary>
-        ///     Obtiene un valor que indica si el ViewModel se encuentra actualmente en modo de edición.
+        /// Obtiene un valor que indica si el ViewModel se encuentra actualmente en modo de edición.
         /// </summary>
         public bool EditMode
         {
@@ -464,22 +464,22 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si el ViewModel no se encuentra actualmente en modo de edición.
+        /// Obtiene un valor que indica si el ViewModel no se encuentra actualmente en modo de edición.
         /// </summary>
         public bool NotEditMode => !EditMode;
 
         /// <summary>
-        ///     Obtiene un valor que indica si el ViewModel no está ocupado.
+        /// Obtiene un valor que indica si el ViewModel no está ocupado.
         /// </summary>
         public bool NotBusy => !IsBusy;
 
         /// <summary>
-        ///     Obtiene un valor de visibilidad aplicable cuando el ViewModel se encuentre en modo de edición.
+        /// Obtiene un valor de visibilidad aplicable cuando el ViewModel se encuentre en modo de edición.
         /// </summary>
         public Visibility EditVis => EditMode ? Visibility.Visible : Visibility.Collapsed;
 
         /// <summary>
-        ///     Obtiene un valor de visibilidad aplicable cuando el ViewModel no se encuentre en modo de edición.
+        /// Obtiene un valor de visibilidad aplicable cuando el ViewModel no se encuentre en modo de edición.
         /// </summary>
         public Visibility NotEditVis => NotEditMode ? Visibility.Visible : Visibility.Collapsed;
     }

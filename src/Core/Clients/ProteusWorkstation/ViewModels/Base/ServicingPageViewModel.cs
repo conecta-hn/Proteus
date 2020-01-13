@@ -19,28 +19,28 @@ using System.Linq.Expressions;
 namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <summary>
-    ///     ViewModel que ofrece servicios de gestión y de actualización 
-    ///     automática de colecciones enlazadas a datos.
+    /// ViewModel que ofrece servicios de gestión y de actualización 
+    /// automática de colecciones enlazadas a datos.
     /// </summary>
     /// <typeparam name="TService">
-    ///     Tipo de servicio principal a exponer.
+    /// Tipo de servicio principal a exponer.
     /// </typeparam>
     public abstract class ServicingPageViewModel<TService> : PageViewModel, IAsyncRefreshable where TService : Service, new()
     {
         private readonly HashSet<Func<Task>> _observables = new HashSet<Func<Task>>();
 
         /// <summary>
-        ///     Obtiene una referencia al servicio utilizado por este
-        ///     ViewModel.
+        /// Obtiene una referencia al servicio utilizado por este
+        /// ViewModel.
         /// </summary>
         protected TService Service { get; } = Proteus.Service<TService>();
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ServicingPageViewModel{TService}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ServicingPageViewModel{TService}"/>.
         /// </summary>
         /// <param name="host">
-        ///     Página Host de este ViewModel.
+        /// Página Host de este ViewModel.
         /// </param>
         protected ServicingPageViewModel(ICloseable host) : base(host)
         {
@@ -48,15 +48,15 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ServicingPageViewModel{TService}"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ServicingPageViewModel{TService}"/>.
         /// </summary>
         /// <param name="host">
-        ///     Página Host de este ViewModel.
+        /// Página Host de este ViewModel.
         /// </param>
         /// <param name="closeable">
-        ///     Valorq ue indica si la ventana controlada por este ViewModel
-        ///     puede ser cerrada.
+        /// Valorq ue indica si la ventana controlada por este ViewModel
+        /// puede ser cerrada.
         /// </param>
         protected ServicingPageViewModel(ICloseable host, bool closeable) : base(host, closeable)
         {
@@ -64,17 +64,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta una serie de operaciones de inicialización asíncrona.
+        /// Ejecuta una serie de operaciones de inicialización asíncrona.
         /// </summary>
         /// <returns>
-        ///     Una tarea que puede utilziarse para monitorear la operación 
-        ///     asíncrona.
+        /// Una tarea que puede utilziarse para monitorear la operación 
+        /// asíncrona.
         /// </returns>
         protected abstract Task OnStartup();
 
         /// <summary>
-        ///     Ejecuta las operaciones de inicialización asíncrona de este
-        ///     ViewModel.
+        /// Ejecuta las operaciones de inicialización asíncrona de este
+        /// ViewModel.
         /// </summary>
         protected void RunStartup()
         {
@@ -84,15 +84,15 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene una nueva colección observable del modelo especificado,
-        ///     registrándola en el subsistema de actualización automática.
+        /// Obtiene una nueva colección observable del modelo especificado,
+        /// registrándola en el subsistema de actualización automática.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo de la lista observable.
+        /// Modelo de la lista observable.
         /// </typeparam>
         /// <returns>
-        ///     Una lista observable que puede ser utilizada con total
-        ///     normalidad como una colección de datos.
+        /// Una lista observable que puede ser utilizada con total
+        /// normalidad como una colección de datos.
         /// </returns>
         protected async Task<ObservableListWrap<T>> GetObservableAsync<T>() where T : ModelBase
         {
@@ -106,21 +106,21 @@ namespace TheXDS.Proteus.ViewModels.Base
 
 
         /// <summary>
-        ///     Obtiene una nueva colección observable del modelo especificado,
-        ///     registrándola en el subsistema de actualización automática.
+        /// Obtiene una nueva colección observable del modelo especificado,
+        /// registrándola en el subsistema de actualización automática.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo de la lista observable.
+        /// Modelo de la lista observable.
         /// </typeparam>
         /// <param name="target">
-        ///     Objetivo de notificación de cambio en la colección.
+        /// Objetivo de notificación de cambio en la colección.
         /// </param>
         /// <param name="props">
-        ///     Propiedades a notificar al ocurrir un cambio en la colección.
+        /// Propiedades a notificar al ocurrir un cambio en la colección.
         /// </param>
         /// <returns>
-        ///     Una lista observable que puede ser utilizada con total
-        ///     normalidad como una colección de datos.
+        /// Una lista observable que puede ser utilizada con total
+        /// normalidad como una colección de datos.
         /// </returns>
         protected async Task<ObservableListWrap<T>> GetObservableAsync<T>(NotifyPropertyChangeBase target, params string[] props) where T : ModelBase
         {
@@ -131,15 +131,15 @@ namespace TheXDS.Proteus.ViewModels.Base
 
 
         /// <summary>
-        ///     Obtiene una nueva colección observable del modelo especificado,
-        ///     registrándola en el subsistema de actualización automática.
+        /// Obtiene una nueva colección observable del modelo especificado,
+        /// registrándola en el subsistema de actualización automática.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo de la lista observable.
+        /// Modelo de la lista observable.
         /// </typeparam>
         /// <returns>
-        ///     Una lista observable que puede ser utilizada con total
-        ///     normalidad como una colección de datos.
+        /// Una lista observable que puede ser utilizada con total
+        /// normalidad como una colección de datos.
         /// </returns>
         protected ObservableListWrap<T> GetObservable<T>() where T : ModelBase
         {
@@ -147,16 +147,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Obtiene una nueva colección observable del modelo especificado
-        ///     desde un servicio externo, registrándola en el subsistema de
-        ///     actualización automática.
+        /// Obtiene una nueva colección observable del modelo especificado
+        /// desde un servicio externo, registrándola en el subsistema de
+        /// actualización automática.
         /// </summary>
         /// <typeparam name="T">
-        ///     Modelo de la lista observable.
+        /// Modelo de la lista observable.
         /// </typeparam>
         /// <returns>
-        ///     Una lista observable que puede ser utilizada con total
-        ///     normalidad como una colección de datos.
+        /// Una lista observable que puede ser utilizada con total
+        /// normalidad como una colección de datos.
         /// </returns>
         protected async Task<ObservableListWrap<T>> GetExternalObservableAsync<T>() where T : ModelBase
         {
@@ -165,7 +165,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Actualiza el estado de este ViewModel.
+        /// Actualiza el estado de este ViewModel.
         /// </summary>
         public override void Refresh()
         {
@@ -173,11 +173,11 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Actualiza el estado de este ViewModel de forma asíncrona.
+        /// Actualiza el estado de este ViewModel de forma asíncrona.
         /// </summary>
         /// <returns>
-        ///     Una tarea que puede utilziarse para monitorear la operación 
-        ///     asíncrona.
+        /// Una tarea que puede utilziarse para monitorear la operación 
+        /// asíncrona.
         /// </returns>
         public async Task RefreshAsync()
         {

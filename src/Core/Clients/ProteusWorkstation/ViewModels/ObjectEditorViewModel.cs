@@ -27,8 +27,8 @@ using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 namespace TheXDS.Proteus.ViewModels
 {
     /// <summary>
-    ///     ViewModel que controla el Widget de edición y selección de 
-    ///     entidades a partir de una lista.
+    /// ViewModel que controla el Widget de edición y selección de 
+    /// entidades a partir de una lista.
     /// </summary>
     public class ObjectEditorViewModel : CrudViewModelBase
     {
@@ -44,12 +44,12 @@ namespace TheXDS.Proteus.ViewModels
         private ICollectionView? _results;
 
         /// <summary>
-        ///     Enumera los modelos disponibles para seleccionar en la búsqueda.
+        /// Enumera los modelos disponibles para seleccionar en la búsqueda.
         /// </summary>
         public IList<Type> Models { get; }
 
         /// <summary>
-        ///     Obtiene o establece el valor ActiveModel.
+        /// Obtiene o establece el valor ActiveModel.
         /// </summary>
         /// <value>El valor de ActiveModel.</value>
         public Type? ActiveModel
@@ -63,7 +63,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor SearchQuery.
+        /// Obtiene o establece el valor SearchQuery.
         /// </summary>
         /// <value>El valor de SearchQuery.</value>
         public string? SearchQuery
@@ -77,13 +77,13 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si es posible cambiar el modelo 
-        ///     seleccionado.
+        /// Obtiene un valor que indica si es posible cambiar el modelo 
+        /// seleccionado.
         /// </summary>
         public bool CanChangeModel => Models.Count > 1;
 
         /// <summary>
-        ///     Obtiene la vista columnar a utilizar para mostrar objetos en la lista de resultados.
+        /// Obtiene la vista columnar a utilizar para mostrar objetos en la lista de resultados.
         /// </summary>
         public ViewBase? ColumnsView
         {
@@ -101,7 +101,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene una colección con los resultados de la búsqueda.
+        /// Obtiene una colección con los resultados de la búsqueda.
         /// </summary>
         public ICollectionView? Results
         {
@@ -110,9 +110,9 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si al ejecutar
-        ///     <see cref="SearchCommand"/> se hará una búsqueda o se limpiará
-        ///     la búsqueda actual.
+        /// Obtiene un valor que indica si al ejecutar
+        /// <see cref="SearchCommand"/> se hará una búsqueda o se limpiará
+        /// la búsqueda actual.
         /// </summary>
         public bool WillSearch
         {
@@ -121,31 +121,31 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene la etiqueta a utilizar para mostrar sobre el botón de
-        ///     búsqueda.
+        /// Obtiene la etiqueta a utilizar para mostrar sobre el botón de
+        /// búsqueda.
         /// </summary>
         public string SearchLabel => WillSearch ? "❌" : "🔍";
 
         /// <summary>
-        ///     Obtiene el comando relacionado a la acción Search.
+        /// Obtiene el comando relacionado a la acción Search.
         /// </summary>
         /// <returns>El comando Search.</returns>
         public ObservingCommand SearchCommand { get; }
 
         /// <summary>
-        ///     Obtiene la etiqueta del modelo para el cual se ha construido 
-        ///     este control.
+        /// Obtiene la etiqueta del modelo para el cual se ha construido 
+        /// este control.
         /// </summary>
         public string ModelLabel { get; }
 
         /// <summary>
-        ///     Obtiene el origen de selección de este <see cref="ListEditorViewModel"/>.
+        /// Obtiene el origen de selección de este <see cref="ListEditorViewModel"/>.
         /// </summary>
         public ICollection<ModelBase>? SelectionSource { get; }
 
         /// <summary>
-        ///     Obtiene el comando que agrega elementos desde la lista de
-        ///     origen de selección a la colección del modelo de datos.
+        /// Obtiene el comando que agrega elementos desde la lista de
+        /// origen de selección a la colección del modelo de datos.
         /// </summary>
         public SimpleCommand SelectCommand { get; }
 
@@ -155,15 +155,15 @@ namespace TheXDS.Proteus.ViewModels
         public ICommand OkSelectCommand { get; }
 
         /// <summary>
-        ///     Obtiene el comando que cancela la adición de elementos
-        ///     seleccionados desde una lista.
+        /// Obtiene el comando que cancela la adición de elementos
+        /// seleccionados desde una lista.
         /// </summary>
         public ICommand CancelSelectCommand { get; }
 
         /// <summary>
-        ///     Obtiene o establece un valor que configura este
-        ///     <see cref="ListEditorViewModel"/> para agregar elementos desde
-        ///     una lista.
+        /// Obtiene o establece un valor que configura este
+        /// <see cref="ListEditorViewModel"/> para agregar elementos desde
+        /// una lista.
         /// </summary>
         public bool SelectMode
         {
@@ -172,8 +172,8 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor de selección temporal de la lista
-        ///     de búsqueda.
+        /// Obtiene o establece el valor de selección temporal de la lista
+        /// de búsqueda.
         /// </summary>
         public object? TempSelection
         { 
@@ -182,14 +182,14 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ObjectEditorViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ObjectEditorViewModel"/>.
         /// </summary>
         /// <param name="description">
-        ///     Descripción de propiedad con la cual generar el control.
+        /// Descripción de propiedad con la cual generar el control.
         /// </param>
         /// <param name="models">
-        ///     Modelos aceptados por el valor de la propiedad.
+        /// Modelos aceptados por el valor de la propiedad.
         /// </param>
         public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), description, models) { }
 
@@ -208,17 +208,17 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ObjectEditorViewModel"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ObjectEditorViewModel"/>.
         /// </summary>
         /// <param name="selectionSource">
-        ///     Origen de datos para la lista de selección.
+        /// Origen de datos para la lista de selección.
         /// </param>
         /// <param name="description">
-        ///     Descripción de propiedad con la cual generar el control.
+        /// Descripción de propiedad con la cual generar el control.
         /// </param>
         /// <param name="models">
-        ///     Modelos aceptados por el valor de la propiedad.
+        /// Modelos aceptados por el valor de la propiedad.
         /// </param>
         public ObjectEditorViewModel(ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
         {
@@ -255,9 +255,9 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor que indica si este
-        ///     <see cref="ListEditorViewModel"/> permite adicionar elementos
-        ///     existentes a la colección del modelo de datos.
+        /// Obtiene un valor que indica si este
+        /// <see cref="ListEditorViewModel"/> permite adicionar elementos
+        /// existentes a la colección del modelo de datos.
         /// </summary>
         public bool CanSelect
         {
@@ -270,10 +270,10 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Elimina el objeto de la selección.
+        /// Elimina el objeto de la selección.
         /// </summary>
         /// <param name="o">
-        ///     Valor a eliminar.
+        /// Valor a eliminar.
         /// </param>
         protected override void OnDelete(object? o)
         {
@@ -281,14 +281,14 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Ejecuta una operación de guardado de la entidad actualmente en 
-        ///     edición.
+        /// Ejecuta una operación de guardado de la entidad actualmente en 
+        /// edición.
         /// </summary>
         /// <param name="entity">
-        ///     Entidad en edición.
+        /// Entidad en edición.
         /// </param>
         /// <returns>
-        ///     Este método siempre devuelve <see cref="DetailedResult.Ok"/>.
+        /// Este método siempre devuelve <see cref="DetailedResult.Ok"/>.
         /// </returns>
         protected override Task<DetailedResult> PerformSave(ModelBase entity)
         {
@@ -296,10 +296,10 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene al pariente de la entidad actualmente seleccionada.
+        /// Obtiene al pariente de la entidad actualmente seleccionada.
         /// </summary>
         /// <returns>
-        ///     Este método siempre devuelve <see langword="null"/>.
+        /// Este método siempre devuelve <see langword="null"/>.
         /// </returns>
         protected override ModelBase? GetParent()
         {
@@ -307,16 +307,16 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Ejecuta operaciones adicionales posteriores al guardado de una
-        ///     entidad.
+        /// Ejecuta operaciones adicionales posteriores al guardado de una
+        /// entidad.
         /// </summary>
         protected override void AfterSave()
         {
         }
 
         /// <summary>
-        ///     Obtiene el ícono configurado para mostrar del campo
-        ///     correspondiente a la colección subyacente del modelo de datos.
+        /// Obtiene el ícono configurado para mostrar del campo
+        /// correspondiente a la colección subyacente del modelo de datos.
         /// </summary>
         public string FieldIcon
         {
@@ -325,13 +325,13 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene un valor amigable para mostrar en la UI de la aplicación.
+        /// Obtiene un valor amigable para mostrar en la UI de la aplicación.
         /// </summary>
         public string DisplayValue => Selection?.ToString() ?? "-";
 
         /// <summary>
-        ///     Obtiene el nombre configurado para mostrar del campo
-        ///     correspondiente a la colección subyacente del modelo de datos.
+        /// Obtiene el nombre configurado para mostrar del campo
+        /// correspondiente a la colección subyacente del modelo de datos.
         /// </summary>
         public string FieldName
         {
@@ -340,7 +340,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Limpia los resultados de la búsqueda.
+        /// Limpia los resultados de la búsqueda.
         /// </summary>
         public void ClearSearch()
         {
@@ -349,7 +349,7 @@ namespace TheXDS.Proteus.ViewModels
         }
 
         /// <summary>
-        ///     Obtiene o establece el valor IsSearching.
+        /// Obtiene o establece el valor IsSearching.
         /// </summary>
         /// <value>El valor de IsSearching.</value>
         public bool IsSearching

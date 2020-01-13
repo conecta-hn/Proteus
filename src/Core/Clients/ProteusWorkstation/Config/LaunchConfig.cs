@@ -11,33 +11,33 @@ using TheXDS.Proteus.Widgets;
 namespace TheXDS.Proteus.Config
 {
     /// <summary>
-    ///     Contiene la configuración predeterminada de Proteus.
+    /// Contiene la configuración predeterminada de Proteus.
     /// </summary>
     public class LaunchConfig : IKickStarter
     {
         internal static bool _interactiveLogin = false;
 
         /// <summary>
-        ///     Cambia el comportamiento de inicio de sesión de Proteus.
+        /// Cambia el comportamiento de inicio de sesión de Proteus.
         /// </summary>
         /// <value>
-        ///     <see langword="true"/> activa el sistem de usuarios de Proteus.
-        ///     <see langword="false"/> lo deshabilita y permite accesar a toda
-        ///     la funcionalidad sin requerir el inicio de sesión.
+        /// <see langword="true"/> activa el sistem de usuarios de Proteus.
+        /// <see langword="false"/> lo deshabilita y permite accesar a toda
+        /// la funcionalidad sin requerir el inicio de sesión.
         /// </value>
         public bool RequiresInteractiveLogin => _interactiveLogin;
 
         /// <summary>
-        ///     Indica si es posible usar o no este <see cref="IKickStarter"/>.
+        /// Indica si es posible usar o no este <see cref="IKickStarter"/>.
         /// </summary>
         public bool Usable => true;
 
         /// <summary>
-        ///     Obtiene la página de inicio de sesión para este
-        ///     <see cref="IKickStarter"/>.
+        /// Obtiene la página de inicio de sesión para este
+        /// <see cref="IKickStarter"/>.
         /// </summary>
         /// <returns>
-        ///     Una página de inicio de sesión válida para la aplicación.
+        /// Una página de inicio de sesión válida para la aplicación.
         /// </returns>
         public ILoginPage GetLoginPage()
         {
@@ -45,11 +45,11 @@ namespace TheXDS.Proteus.Config
         }
 
         /// <summary>
-        ///     Obtiene la página prinicpal de la aplicaicón.
+        /// Obtiene la página prinicpal de la aplicaicón.
         /// </summary>
         /// <returns>
-        ///     Una pagina a utilizar como la página principal de la 
-        ///     aplicación.
+        /// Una pagina a utilizar como la página principal de la 
+        /// aplicación.
         /// </returns>
         public IPage GetMainPage()
         {
@@ -57,11 +57,11 @@ namespace TheXDS.Proteus.Config
         }
 
         /// <summary>
-        ///     Obtiene la página de configuración de la aplicación.
+        /// Obtiene la página de configuración de la aplicación.
         /// </summary>
         /// <returns>
-        ///     Una página a utilizar como la página de configuración de la
-        ///     aplicación.
+        /// Una página a utilizar como la página de configuración de la
+        /// aplicación.
         /// </returns>
         public IPage GetSettingsPage()
         {

@@ -21,26 +21,26 @@ namespace TheXDS.Proteus.ViewModels.Base
 {
 
     /// <summary>
-    ///     ViewModel que administra las operaciones de Crud con elementos de UI autogenerados.
+    /// ViewModel que administra las operaciones de Crud con elementos de UI autogenerados.
     /// </summary>
     public abstract class CrudCollectionViewModelBase : CrudViewModelBase, ICrudCollectionViewModel
     {
         private ObservableCollectionWrap<ModelBase> _source = null!;
 
         /// <summary>
-        ///     Contiene una lista personalizada de columnas a mostrar.
+        /// Contiene una lista personalizada de columnas a mostrar.
         /// </summary>
         protected List<Column> CustomColumns { get; } = new List<Column>();
 
         /// <summary>
-        ///     Obtiene al elemento selector de la ventana.
+        /// Obtiene al elemento selector de la ventana.
         /// </summary>
         public ItemsControl Selector { get; }
 
         /// <summary>
-        ///     Obtiene un <see cref="ViewBase"/> que define la apariencia de
-        ///     un selector <see cref="ListView"/> cuando esta ventana de CRUD
-        ///     controla únicamente un modelo de datos.
+        /// Obtiene un <see cref="ViewBase"/> que define la apariencia de
+        /// un selector <see cref="ListView"/> cuando esta ventana de CRUD
+        /// controla únicamente un modelo de datos.
         /// </summary>
         public ViewBase ColumnsView
         {
@@ -56,8 +56,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudCollectionViewModelBase"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
@@ -90,8 +90,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudCollectionViewModelBase"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
         /// <param name="source">Origen de datos a utilizar.</param>
         /// <param name="models">Modelos asociados de datos.</param>
@@ -106,7 +106,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Enumera el orígen de datos establecido para este Crud.
+        /// Enumera el orígen de datos establecido para este Crud.
         /// </summary>
         public ObservableCollectionWrap<ModelBase> Source
         {
@@ -117,12 +117,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         ICollection<ModelBase> ICrudCollectionViewModel.Source => Source;
 
         /// <summary>
-        ///     Obtiene a la entidad padre de la entidad actualmente
-        ///     seleccionada.
+        /// Obtiene a la entidad padre de la entidad actualmente
+        /// seleccionada.
         /// </summary>
         /// <returns>
-        ///     El padre de la entidad seleccionada, o <see langword="null"/>
-        ///     si no es posible determinar a un padre en este contexto.
+        /// El padre de la entidad seleccionada, o <see langword="null"/>
+        /// si no es posible determinar a un padre en este contexto.
         /// </returns>
         protected override ModelBase? GetParent()
         {
@@ -130,7 +130,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        ///     Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
+        /// Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
         /// </summary>
         protected override void AfterSave()
         {

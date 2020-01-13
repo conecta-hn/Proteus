@@ -9,13 +9,13 @@ using TheXDS.Proteus.Models.Base;
 namespace TheXDS.Proteus.Models
 {
     /// <summary>
-    ///     Modelo que describe un aviso general.
+    /// Modelo que describe un aviso general.
     /// </summary>
     public class Aviso : TitledText<int>, ITimestamp
     {
         /// <summary>
-        ///     Obtiene o establece la marca de tiempo de creación de este
-        ///     aviso.
+        /// Obtiene o establece la marca de tiempo de creación de este
+        /// aviso.
         /// </summary>
         public DateTime Timestamp { get ; set; }
     }

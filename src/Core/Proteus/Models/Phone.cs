@@ -11,7 +11,7 @@ namespace TheXDS.Proteus.Models
     public class Phone : ModelBase<long>
     {
         /// <summary>
-        ///     Determina el tipo de teléfono.
+        /// Determina el tipo de teléfono.
         /// </summary>
         public enum PhoneTypes
         {
@@ -43,21 +43,21 @@ namespace TheXDS.Proteus.Models
         }
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="string"/> en un
-        ///     <see cref="Email"/>.
+        /// Convierte implícitamente un <see cref="string"/> en un
+        /// <see cref="Email"/>.
         /// </summary>
         /// <param name="number">
-        ///     Cadena a convertir.
+        /// Cadena a convertir.
         /// </param>
         public static implicit operator Phone(string number) => new Phone(number);
 
         /// <summary>
-        ///     Convierte implícitamente un <see cref="Email"/> en un
-        ///     <see cref="string"/>.
+        /// Convierte implícitamente un <see cref="Email"/> en un
+        /// <see cref="string"/>.
         /// </summary>
         /// <param name="email">
-        ///     <see cref="Email"/> desde el cual obtener la dirección de
-        ///     correo electrónico.
+        /// <see cref="Email"/> desde el cual obtener la dirección de
+        /// correo electrónico.
         /// </param>
         public static implicit operator string(Phone email) => email.Number;
 

@@ -11,17 +11,17 @@ using Xceed.Wpf.Toolkit;
 namespace XceedPatches
 {
     /// <summary>
-    ///     Aplica parches a controles DateTime de Xceed Wpf Toolkit 3.5.0
+    /// Aplica parches a controles DateTime de Xceed Wpf Toolkit 3.5.0
     /// </summary>
     [Description("Aplica parches a controles DateTime de Xceed Wpf Toolkit 3.5.0")]
     public class DateTimeControlsPatch : Patch<DateTimeUpDown>
     {
         /// <summary>
-        ///     Aplica un parche personalizado a un control 
-        ///     <see cref="DateTimeUpDown"/>.
+        /// Aplica un parche personalizado a un control 
+        /// <see cref="DateTimeUpDown"/>.
         /// </summary>
         /// <param name="d">
-        ///     Control al cual aplicar el parche.
+        /// Control al cual aplicar el parche.
         /// </param>
         public override void Apply(DateTimeUpDown d)
         {

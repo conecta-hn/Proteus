@@ -19,23 +19,23 @@ using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 namespace TheXDS.Proteus.Crud
 {
     /// <summary>
-    ///     Describe una propiedad y su respectivo control de edición dentro de
-    ///     un editor de Crud.
+    /// Describe una propiedad y su respectivo control de edición dentro de
+    /// un editor de Crud.
     /// </summary>
     public class CrudElement
     {
         private static readonly HashSet<ICrudDescription> _descriptions = new HashSet<ICrudDescription>();
 
         /// <summary>
-        ///     Obtiene un <see cref="CrudElement"/> para el modelo
-        ///     especificado.
+        /// Obtiene un <see cref="CrudElement"/> para el modelo
+        /// especificado.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo de modelo para el cual obtener un 
-        ///     <see cref="CrudElement"/>.
+        /// Tipo de modelo para el cual obtener un 
+        /// <see cref="CrudElement"/>.
         /// </typeparam>
         /// <returns>
-        ///     Un <see cref="CrudElement"/> para el modelo especificado.
+        /// Un <see cref="CrudElement"/> para el modelo especificado.
         /// </returns>
         public static CrudElement ForModel<T>() where T : ModelBase, new()
         {
@@ -43,51 +43,51 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Referencia al modelo a partir de cual se ha construido este
-        ///     <see cref="CrudElement"/>.
+        /// Referencia al modelo a partir de cual se ha construido este
+        /// <see cref="CrudElement"/>.
         /// </summary>
         public Type Model { get; }
 
         /// <summary>
-        ///     Elemento visual que contiene al editor generado para modificar
-        ///     a una entidad del modelo para el cual se ha construido este
-        ///     <see cref="CrudElement"/>.
+        /// Elemento visual que contiene al editor generado para modificar
+        /// a una entidad del modelo para el cual se ha construido este
+        /// <see cref="CrudElement"/>.
         /// </summary>
         public FrameworkElement Editor { get; }
 
         /// <summary>
-        ///     Elemento visual que contiene una vista de detalles para una 
-        ///     entidad del modelo para el cual se ha construido este
-        ///     <see cref="CrudElement"/>.
+        /// Elemento visual que contiene una vista de detalles para una 
+        /// entidad del modelo para el cual se ha construido este
+        /// <see cref="CrudElement"/>.
         /// </summary>
         public FrameworkElement Details { get; }
 
         /// <summary>
-        ///     ViewModel que controla la edición de las propiedades del modelo
-        ///     para el cual se ha construido este <see cref="CrudElement"/>.
+        /// ViewModel que controla la edición de las propiedades del modelo
+        /// para el cual se ha construido este <see cref="CrudElement"/>.
         /// </summary>
         public IDynamicViewModel ViewModel { get; }
 
         /// <summary>
-        ///     Descripción bajo la cual se han generado el editor y la vista
-        ///     de detalles de este <see cref="CrudElement"/>.
+        /// Descripción bajo la cual se han generado el editor y la vista
+        /// de detalles de este <see cref="CrudElement"/>.
         /// </summary>
         internal ICrudDescription Description { get; }
 
         /// <summary>
-        ///     Enumera los controles de edición asociados a este
-        ///     <see cref="CrudElement"/>.
+        /// Enumera los controles de edición asociados a este
+        /// <see cref="CrudElement"/>.
         /// </summary>
         public IEnumerable<IPropertyMapping> EditControls { get; }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudElement"/>, construyendo una vista de editor y
-        ///     de detalles para el modelo especificado.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudElement"/>, construyendo una vista de editor y
+        /// de detalles para el modelo especificado.
         /// </summary>
         /// <param name="model">
-        ///     Modelo para el cual generar las vistas del editor y de
-        ///     detalles.
+        /// Modelo para el cual generar las vistas del editor y de
+        /// detalles.
         /// </param>
         public CrudElement(Type model)
             :this(GetDescription(model.ResolveCollectionType().ResolveToDefinedType()), model)
@@ -95,16 +95,16 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudElement"/>, construyendo una vista de editor y
-        ///     de detalles para el modelo especificado.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudElement"/>, construyendo una vista de editor y
+        /// de detalles para el modelo especificado.
         /// </summary>
         /// <param name="description">
-        ///     Descripción de modelo a utilizar.
+        /// Descripción de modelo a utilizar.
         /// </param>
         /// <param name="model">
-        ///     Modelo para el cual generar las vistas del editor y de
-        ///     detalles.
+        /// Modelo para el cual generar las vistas del editor y de
+        /// detalles.
         /// </param>
         public CrudElement(ICrudDescription description, Type model = null)
         {
@@ -133,12 +133,12 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Crea una nueva instancia del modelo controlado por este
-        ///     <see cref="CrudElement"/>.
+        /// Crea una nueva instancia del modelo controlado por este
+        /// <see cref="CrudElement"/>.
         /// </summary>
         /// <returns>
-        ///     Una nueva instancia del modelo controlado por este
-        ///     <see cref="CrudElement"/>.
+        /// Una nueva instancia del modelo controlado por este
+        /// <see cref="CrudElement"/>.
         /// </returns>
         public ModelBase New()
         {
@@ -157,15 +157,15 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Crea una nueva instancia del modelo controlado por este
-        ///     <see cref="CrudElement"/>.
+        /// Crea una nueva instancia del modelo controlado por este
+        /// <see cref="CrudElement"/>.
         /// </summary>
         /// <typeparam name="T">
-        ///     Tipo al cual castear el modelo luego de instanciarlo.
+        /// Tipo al cual castear el modelo luego de instanciarlo.
         /// </typeparam>
         /// <returns>
-        ///     Una nueva instancia de tipo <typeparamref name="T"/> del modelo
-        ///     controlado por este <see cref="CrudElement"/>.
+        /// Una nueva instancia de tipo <typeparamref name="T"/> del modelo
+        /// controlado por este <see cref="CrudElement"/>.
         /// </returns>
         public ModelBase New<T>() where T : ModelBase, new()
         {
@@ -173,16 +173,16 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="CrudElement"/>, construyendo una vista de editor 
-        ///     para el modelo especificado.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="CrudElement"/>, construyendo una vista de editor 
+        /// para el modelo especificado.
         /// </summary>
         /// <param name="model">
-        ///     Modelo para el cual generar la vista del editor.
+        /// Modelo para el cual generar la vista del editor.
         /// </param>
         /// <param name="details">
-        ///     Vista personalizada de detalles a asociar a este
-        ///     <see cref="CrudElement"/>.
+        /// Vista personalizada de detalles a asociar a este
+        /// <see cref="CrudElement"/>.
         /// </param>
         public CrudElement(Type model, FrameworkElement details)
         {
@@ -211,7 +211,7 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Escribe los cambios realizados en el editor sobre la entidad especificada.
+        /// Escribe los cambios realizados en el editor sobre la entidad especificada.
         /// </summary>
         public void Commit()
         {
@@ -223,13 +223,13 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Obtiene una descripción de Crud para el modelo especificado.
+        /// Obtiene una descripción de Crud para el modelo especificado.
         /// </summary>
         /// <param name="model">
-        ///     Tipo del modelo del cual obtener la descripción.
+        /// Tipo del modelo del cual obtener la descripción.
         /// </param>
         /// <returns>
-        ///     Una descripción del modelo de datos.
+        /// Una descripción del modelo de datos.
         /// </returns>
         public static ICrudDescription GetDescription(Type model)
         {
@@ -243,8 +243,8 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Carga prematuramente todas las descripciones de modelos dentro
-        ///     del dominio de la aplicación.
+        /// Carga prematuramente todas las descripciones de modelos dentro
+        /// del dominio de la aplicación.
         /// </summary>
         public static void Preload()
         {
@@ -256,7 +256,7 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Limpia el estado de todos los controles de edición.
+        /// Limpia el estado de todos los controles de edición.
         /// </summary>
         public void ClearAll()
         {
@@ -268,7 +268,7 @@ namespace TheXDS.Proteus.Crud
         }
 
         /// <summary>
-        ///     Convierte este objeto en su representación como una cadena.
+        /// Convierte este objeto en su representación como una cadena.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

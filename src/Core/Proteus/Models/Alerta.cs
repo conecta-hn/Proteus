@@ -27,27 +27,27 @@ namespace TheXDS.Proteus.Models
         }
 
         /// <summary>
-        ///     Instante de creación de la alerta.
+        /// Instante de creación de la alerta.
         /// </summary>
         public DateTime Timestamp { get; } = DateTime.Now;
 
         /// <summary>
-        ///     Contenido textual extendido de la alerta.
+        /// Contenido textual extendido de la alerta.
         /// </summary>
         public string Body { get; set; }
 
         /// <summary>
-        ///     Encabezado textual de la alerta.
+        /// Encabezado textual de la alerta.
         /// </summary>
         public string Header { get; set; }
 
         /// <summary>
-        ///     Datos especiales a incluir en la alerta.
+        /// Datos especiales a incluir en la alerta.
         /// </summary>
         public object MorInfo { get; }
 
         /// <summary>
-        ///     Acción a ejecutar en la alerta.
+        /// Acción a ejecutar en la alerta.
         /// </summary>
         public Action<Alerta> Action { get; }
 

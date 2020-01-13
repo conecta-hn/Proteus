@@ -10,17 +10,17 @@ using System.Data.Entity.Infrastructure;
 namespace TheXDS.Proteus.Component
 {
     /// <summary>
-    ///     Genera conexiones de base de datos hacia un servidor de SQL Server
-    ///     dentro del dominio.
+    /// Genera conexiones de base de datos hacia un servidor de SQL Server
+    /// dentro del dominio.
     /// </summary>
     public class DomainProviderFactory : IDbConnectionFactory
     {
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="DomainProviderFactory"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="DomainProviderFactory"/>.
         /// </summary>
         /// <param name="server">
-        ///     Servidor de SQL Server al cual conectarse dentro del dominio.
+        /// Servidor de SQL Server al cual conectarse dentro del dominio.
         /// </param>
         public DomainProviderFactory(string server)
         {
@@ -28,19 +28,19 @@ namespace TheXDS.Proteus.Component
             Server = server;
         }
         /// <summary>
-        ///     Servidor de SQL Server al cual conectarse dentro del dominio.
+        /// Servidor de SQL Server al cual conectarse dentro del dominio.
         /// </summary>
         public string Server { get; }
         /// <summary>
-        ///     Crea una nueva conexión de datos hacia el servidor de SQL
-        ///     Server especificado dentro del dominio.
+        /// Crea una nueva conexión de datos hacia el servidor de SQL
+        /// Server especificado dentro del dominio.
         /// </summary>
         /// <param name="nameOrConnectionString">
-        ///     Nombre o cadena de conexión a pasar al crear la conexión.
+        /// Nombre o cadena de conexión a pasar al crear la conexión.
         /// </param>
         /// <returns>
-        ///     Una conexión de base de datos hacia el servidor de SQL Server
-        ///     especificado dentro del dominio.
+        /// Una conexión de base de datos hacia el servidor de SQL Server
+        /// especificado dentro del dominio.
         /// </returns>
         public DbConnection CreateConnection(string nameOrConnectionString)
         {

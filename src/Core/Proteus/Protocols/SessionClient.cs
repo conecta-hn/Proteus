@@ -21,7 +21,7 @@ using TheXDS.MCART.Types.Extensions;
 namespace TheXDS.Proteus.Protocols
 {
     /// <summary>
-    ///     Servicio de red que controla la sesión activa de Proteus.
+    /// Servicio de red que controla la sesión activa de Proteus.
     /// </summary>
     [Port(51200), Name("Cliente de arbitraje de sesión")]
     public class SessionClient :  ManagedCommandClient<Command, Response>
@@ -32,7 +32,7 @@ namespace TheXDS.Proteus.Protocols
         #region Constructores
 
         /// <summary>
-        ///     Inicializa la clase <see cref="SessionClient"/>.
+        /// Inicializa la clase <see cref="SessionClient"/>.
         /// </summary>
         static SessionClient()
         {
@@ -40,8 +40,8 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="SessionClient"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="SessionClient"/>.
         /// </summary>
         public SessionClient()
         {
@@ -198,15 +198,15 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Delegado que dedvuelve únicamente la respuesta de un diálogo
-        ///     con el servidor.
+        /// Delegado que dedvuelve únicamente la respuesta de un diálogo
+        /// con el servidor.
         /// </summary>
         /// <param name="arg1">Respuesta enviada por el servidor.</param>
         /// <param name="_">
-        ///     Lector de valores que acompañan a la respuesta.
+        /// Lector de valores que acompañan a la respuesta.
         /// </param>
         /// <returns>
-        ///     El valor de la respuesta enviada por el servidor.
+        /// El valor de la respuesta enviada por el servidor.
         /// </returns>
         protected Response? ReturnResponse(Response arg1, BinaryReader _) => arg1;
 
@@ -215,11 +215,11 @@ namespace TheXDS.Proteus.Protocols
         #region Funcionalidad
 
         /// <summary>
-        ///     Intenta hacer inicio de sesión en el servidor de control de red.
+        /// Intenta hacer inicio de sesión en el servidor de control de red.
         /// </summary>
         /// <param name="credential">Credencial de inicio de sesión.</param>
         /// <returns>
-        ///     La respuesta enviada por el servidor.
+        /// La respuesta enviada por el servidor.
         /// </returns>
         public Response TryLogin(IProteusCredential credential)
         {
@@ -239,7 +239,7 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Ejecuta una operación de cierre de sesión en el servidor.
+        /// Ejecuta una operación de cierre de sesión en el servidor.
         /// </summary>
         internal void Logout()
         {
@@ -253,8 +253,8 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Envía un comando para actualizar el ViewModel especificado en
-        ///     los demás clientes de red.
+        /// Envía un comando para actualizar el ViewModel especificado en
+        /// los demás clientes de red.
         /// </summary>
         /// <typeparam name="T">Tipo del ViewModel a actualizar.</typeparam>
         public void RefreshViewModel<T>()
@@ -267,10 +267,10 @@ namespace TheXDS.Proteus.Protocols
         ///  Envía un comando extendido al servidor.
         /// </summary>
         /// <param name="command">
-        ///     Comando extendio a enviar.
+        /// Comando extendio a enviar.
         /// </param>
         /// <returns>
-        ///     la respuesta enviada por el servidor.
+        /// la respuesta enviada por el servidor.
         /// </returns>
         public Response SendExtended(short command)
         {
@@ -282,13 +282,13 @@ namespace TheXDS.Proteus.Protocols
         ///  Envía un comando extendido al servidor.
         /// </summary>
         /// <param name="command">
-        ///     Comando extendio a enviar.
+        /// Comando extendio a enviar.
         /// </param>
         /// <param name="data">
-        ///     Datos adicionales que forman parte del comando.
+        /// Datos adicionales que forman parte del comando.
         /// </param>
         /// <returns>
-        ///     la respuesta enviada por el servidor.
+        /// la respuesta enviada por el servidor.
         /// </returns>
         public Response SendExtended(short command, IEnumerable<byte> data)
         {
@@ -300,13 +300,13 @@ namespace TheXDS.Proteus.Protocols
         ///  Envía un comando extendido al servidor.
         /// </summary>
         /// <param name="command">
-        ///     Comando extendio a enviar.
+        /// Comando extendio a enviar.
         /// </param>
         /// <param name="data">
-        ///     Datos adicionales que forman parte del comando.
+        /// Datos adicionales que forman parte del comando.
         /// </param>
         /// <returns>
-        ///     la respuesta enviada por el servidor.
+        /// la respuesta enviada por el servidor.
         /// </returns>
         public Response SendExtended(short command, MemoryStream data)
         {
@@ -318,13 +318,13 @@ namespace TheXDS.Proteus.Protocols
         ///  Envía un comando extendido al servidor.
         /// </summary>
         /// <param name="command">
-        ///     Comando extendio a enviar.
+        /// Comando extendio a enviar.
         /// </param>
         /// <param name="data">
-        ///     Datos adicionales que forman parte del comando.
+        /// Datos adicionales que forman parte del comando.
         /// </param>
         /// <returns>
-        ///     la respuesta enviada por el servidor.
+        /// la respuesta enviada por el servidor.
         /// </returns>
         public Response SendExtended(short command, string data)
         {
@@ -340,13 +340,13 @@ namespace TheXDS.Proteus.Protocols
         ///  Envía un comando extendido al servidor.
         /// </summary>
         /// <param name="command">
-        ///     Comando extendio a enviar.
+        /// Comando extendio a enviar.
         /// </param>
         /// <param name="data">
-        ///     Datos adicionales que forman parte del comando.
+        /// Datos adicionales que forman parte del comando.
         /// </param>
         /// <returns>
-        ///     la respuesta enviada por el servidor.
+        /// la respuesta enviada por el servidor.
         /// </returns>
         public Response SendExtended(short command, IEnumerable<string> data)
         {
@@ -363,14 +363,14 @@ namespace TheXDS.Proteus.Protocols
         #region Configuración
 
         /// <summary>
-        ///     Configura un comando extendido para atenderse por medio de este
-        ///     cliente de red.
+        /// Configura un comando extendido para atenderse por medio de este
+        /// cliente de red.
         /// </summary>
         /// <param name="response">
-        ///     Respuesta a atender.
+        /// Respuesta a atender.
         /// </param>
         /// <param name="callback">
-        ///     Método de atención.
+        /// Método de atención.
         /// </param>
         [Thunk]
         public void Wire(Response response, ResponseCallback callback)
@@ -379,14 +379,14 @@ namespace TheXDS.Proteus.Protocols
         }
 
         /// <summary>
-        ///     Configura un comando extendido para atenderse por medio de este
-        ///     cliente de red.
+        /// Configura un comando extendido para atenderse por medio de este
+        /// cliente de red.
         /// </summary>
         /// <param name="response">
-        ///     Respuesta a atender.
+        /// Respuesta a atender.
         /// </param>
         /// <param name="callback">
-        ///     Método de atención.
+        /// Método de atención.
         /// </param>
         public void Extend(short response, ResponseCallback callback)
         {

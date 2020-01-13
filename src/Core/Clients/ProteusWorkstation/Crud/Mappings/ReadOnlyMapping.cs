@@ -15,21 +15,21 @@ using static TheXDS.MCART.Types.Extensions.StringExtensions;
 namespace TheXDS.Proteus.Crud.Mappings
 {
     /// <summary>
-    ///     Mapeo de propiedades a mostrar en una página auto-generada de CRUD
-    ///     que son de sólo lectura.
+    /// Mapeo de propiedades a mostrar en una página auto-generada de CRUD
+    /// que son de sólo lectura.
     /// </summary>
     public sealed class ReadOnlyMapping : IPropertyMapping
     {
         /// <summary>
-        ///     Crea un control equivalente al generado por este mapping, útil
-        ///     para mostrar propiedades en la UI aún cuando un mapping falla.
+        /// Crea un control equivalente al generado por este mapping, útil
+        /// para mostrar propiedades en la UI aún cuando un mapping falla.
         /// </summary>
         /// <param name="property">
-        ///     Objeto que describe la propiedad a mapear.
+        /// Objeto que describe la propiedad a mapear.
         /// </param>
         /// <returns>
-        ///     Un <see cref="TextBlock"/> con contenido equivalente al
-        ///     generado por este <see cref="IPropertyMapping"/>.
+        /// Un <see cref="TextBlock"/> con contenido equivalente al
+        /// generado por este <see cref="IPropertyMapping"/>.
         /// </returns>
         public static FrameworkElement CreateReadOnlyControl(IPropertyDescription property)
         {
@@ -69,11 +69,11 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Inicializa una nueva instancia de la clase
-        ///     <see cref="ReadOnlyMapping"/>.
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ReadOnlyMapping"/>.
         /// </summary>
         /// <param name="property">
-        ///     Objeto que describe la propiedad a mapear.
+        /// Objeto que describe la propiedad a mapear.
         /// </param>
         public ReadOnlyMapping(IPropertyDescription property)
         {
@@ -100,13 +100,13 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Obtiene la descripción utilizada para construir este
-        ///     <see cref="IPropertyMapping"/>.
+        /// Obtiene la descripción utilizada para construir este
+        /// <see cref="IPropertyMapping"/>.
         /// </summary>
         public IPropertyDescription Description { get; }
 
         /// <summary>
-        ///     Obtiene o establece el valor del control de forma manual.
+        /// Obtiene o establece el valor del control de forma manual.
         /// </summary>
         public object ControlValue
         {
@@ -122,35 +122,35 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Propiedad controlada por esta instancia de
-        ///     <see cref="IPropertyMapping"/>.
+        /// Propiedad controlada por esta instancia de
+        /// <see cref="IPropertyMapping"/>.
         /// </summary>
         public PropertyInfo Property { get; }
 
         /// <summary>
-        ///     Control de edición asociado a esta instancia de
-        ///     <see cref="IPropertyMapping"/>.
+        /// Control de edición asociado a esta instancia de
+        /// <see cref="IPropertyMapping"/>.
         /// </summary>
         public FrameworkElement Control { get; }
 
         /// <summary>
-        ///     Obtiene al control contenedor del control generado por este
-        ///     <see cref="IPropertyMapping"/>, o al mismo.
+        /// Obtiene al control contenedor del control generado por este
+        /// <see cref="IPropertyMapping"/>, o al mismo.
         /// </summary>
         public FrameworkElement ContainingControl => Control;
 
         /// <summary>
-        ///     Limpia el valor del control e edición asociado a este
-        ///     <see cref="IPropertyMapping"/>.
+        /// Limpia el valor del control e edición asociado a este
+        /// <see cref="IPropertyMapping"/>.
         /// </summary>
         public void ClearControlValue()
         {
         }
 
         /// <summary>
-        ///     Obtiene el valor de la propiedad asociada a este
-        ///     <see cref="IPropertyMapping"/> desde la instancia de objet
-        ///     especificada.
+        /// Obtiene el valor de la propiedad asociada a este
+        /// <see cref="IPropertyMapping"/> desde la instancia de objet
+        /// especificada.
         /// </summary>
         /// <param name="instance"></param>
         public void GetValue(object instance)
@@ -159,12 +159,12 @@ namespace TheXDS.Proteus.Crud.Mappings
         }
 
         /// <summary>
-        ///     Establece el valor de la propiedad de la instancia especificada
-        ///     utilizando el valor obtenido desde el control asociado a este
-        ///     <see cref="IPropertyMapping"/>.
+        /// Establece el valor de la propiedad de la instancia especificada
+        /// utilizando el valor obtenido desde el control asociado a este
+        /// <see cref="IPropertyMapping"/>.
         /// </summary>
         /// <param name="instance">
-        ///     Instancia de destino para el valor obtenido desde el control.
+        /// Instancia de destino para el valor obtenido desde el control.
         /// </param>
         public void SetValue(object instance)
         {
