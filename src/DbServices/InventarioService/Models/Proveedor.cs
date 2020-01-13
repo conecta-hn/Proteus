@@ -7,6 +7,7 @@ using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Conecta.Context;
 using TheXDS.Proteus.Conecta.Models;
+using TheXDS.Proteus.Context;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Conecta
@@ -86,8 +87,7 @@ namespace TheXDS.Proteus.Conecta
 
     namespace Context
     {
-        [DbConfigurationType(typeof(DbConfig))]
-        public class ConectaContext : DbContext
+        public class ConectaContext : ProteusContext
         {
             public DbSet<Item> Items { get; set; }
             public DbSet<Lote> Lotes { get; set; }

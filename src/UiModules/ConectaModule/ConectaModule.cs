@@ -146,7 +146,7 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
-jh¡        public class ItemPictureDescriptor : CrudDescriptor<ItemPicture>
+        public class ItemPictureDescriptor : CrudDescriptor<ItemPicture>
         {
             protected override void DescribeModel()
             {
