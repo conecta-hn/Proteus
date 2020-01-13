@@ -82,6 +82,11 @@ namespace TheXDS.Proteus.Conecta
             public virtual List<Item> Items { get; set; } = new List<Item>();
             public decimal Total { get; set; }
             public virtual List<Pago> Pagos { get; set; } = new List<Pago>();
+
+            public override string ToString()
+            {
+                return $"La tiene {Vendedor?.Name ?? "N/A"}";
+            }
         }
     }
 
