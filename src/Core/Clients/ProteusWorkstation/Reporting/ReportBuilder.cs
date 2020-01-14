@@ -99,7 +99,7 @@ namespace TheXDS.Proteus.Reporting
                 ColumnWidth = 700,
                 IsColumnWidthFlexible = true
             }
-                .Title(Settings.Default.BussinessName, 3)
+                .Title(Settings.Default.BusinessName, 3)
                 .Title(title)
                 .Text($"Reporte generado el {DateTime.Now}");
         }

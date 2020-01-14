@@ -397,7 +397,7 @@ namespace TheXDS.Proteus.Config {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
         public int RowLimit {
             get {
                 return ((int)(this["RowLimit"]));
@@ -410,12 +410,12 @@ namespace TheXDS.Proteus.Config {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Acme, Ltd.")]
-        public string BussinessName {
+        public string BusinessName {
             get {
-                return ((string)(this["BussinessName"]));
+                return ((string)(this["BusinessName"]));
             }
             set {
-                this["BussinessName"] = value;
+                this["BusinessName"] = value;
             }
         }
     }
