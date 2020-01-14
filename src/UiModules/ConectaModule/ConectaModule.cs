@@ -101,7 +101,7 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
-        public class LoteDescriptor : CrudDescriptor<Lote>
+        public class LoteDescriptor : CrudDescriptor<Lote, LoteViewModel>
         {
             protected override void DescribeModel()
             {
@@ -112,6 +112,9 @@ namespace TheXDS.Proteus.Conecta
                 ObjectProperty(p => p.Proveedor).Selectable().Nullable();
                 ListProperty(p => p.Inversion).Creatable().Label("Inversiones");
                 TextProperty(p => p.Description).Big().Label("Detalles");
+                VmProperty(p => p.ExistenciasCount).Label("Existencias").OnlyInDetails();
+                VmProperty(p => p.VendidosCount).Label("Créditos abiertos").OnlyInDetails();
+                VmProperty(p => p.VendidosCount).Label("Artículos vendidos").OnlyInDetails();
                 ListProperty(p => p.Items).Creatable().Label("Ítems");
                 ListProperty(p => p.Pictures).Creatable().Label("Fotografías");
                 DateProperty(p => p.Timestamp).WithTime().Label("Fecha/hora de ingreso").Default(DateTime.Now);
@@ -268,6 +271,58 @@ namespace TheXDS.Proteus.Conecta
             }
             public string LastPagoWhen => (Entity?.IsNew ?? true) ? "sin datos." : $"Hace {(int)(DateTime.Now - (LastPago?.Timestamp ?? Entity.Timestamp)).TotalDays} días";
             public decimal? LastPagoHowMuch => LastPago?.Abono;
+        }
+        public abstract class LoteViewModel : DynamicViewModel<Lote>
+        {
+            public int VendidosCount
+            {
+                get
+                {
+                    if (!(Entity?.Items is { } i)) return 0;
+                    var c = 0;
+                    foreach (IPagable j in i.Select(p => p.MenudeoParent).NotNull())
+                    {
+                        if (j.Debe == 0m) c++;
+                    }
+                    return c;
+                }
+            }
+            public int CreditosCount
+            {
+                get
+                {
+                    if (!(Entity?.Items is { } i)) return 0;
+                    var c = 0;
+                    foreach (IPagable j in i.Select(p => p.MenudeoParent).NotNull())
+                    {
+                        if (j.Debe > 0m) c++;
+                    }
+                    return c;
+                }
+            }
+
+            public int ExistenciasCount
+            {
+                get
+                {
+                    if (!(Entity?.Items is { } i)) return 0;
+                    var c = 0;
+                    foreach (var j in i)
+                    {
+                        if (j.MenudeoParent is null) c++;
+                    }
+                    return c;
+                }
+            }
+
+            public LoteViewModel()
+            {
+                RegisterPropertyChangeBroadcast(
+                    nameof(Lote.Items),
+                    nameof(VendidosCount),
+                    nameof(CreditosCount),
+                    nameof(ExistenciasCount));
+            }
         }
     }
 
@@ -457,10 +512,11 @@ namespace TheXDS.Proteus.Conecta
                 var tbl = fd.AddTable(new[]
 {
                     new KeyValuePair<string, GridLength>("Fecha", new GridLength(2, GridUnitType.Star)),
-                    new KeyValuePair<string, GridLength>("Cliente", new GridLength(4, GridUnitType.Star)),
-                    new KeyValuePair<string, GridLength>("Total", new GridLength(2, GridUnitType.Star)),
-                    new KeyValuePair<string, GridLength>("Pagado", new GridLength(2, GridUnitType.Star)),
-                    new KeyValuePair<string, GridLength>("Pendiente", new GridLength(2, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Cliente", new GridLength(2, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Artículos", new GridLength(3, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Total", new GridLength(1, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Pagado", new GridLength(1, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Pendiente", new GridLength(1, GridUnitType.Star)),
                     new KeyValuePair<string, GridLength>("Último pago", new GridLength(2, GridUnitType.Star)),
 
                 });
@@ -478,6 +534,7 @@ namespace TheXDS.Proteus.Conecta
                     {
                         j.Timestamp.ToString(),
                         j.Vendedor.Name,
+                        string.Join(Environment.NewLine,j.Items.Select(p=>p.ToString())),
                         j.Total.ToString("C"),
                         pagado.ToString("C"),
                         (j.Total - pagado).ToString("C"),

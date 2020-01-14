@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
@@ -22,10 +23,17 @@ namespace TheXDS.Proteus.Conecta
             public string? Name { get; set; }
             public string? Description { get; set; }
             public decimal? Descuento { get; set; }
-
             public override string ToString()
             {
-                return $"{Parent?.Name.OrNull("{0} ")}{Name.OrNull("({0})") ?? Id.ToString()}";
+                var sb = new StringBuilder();
+                sb.Append($"{Parent?.Name.OrNull("{0} ")}{Name.OrNull("({0})") ?? StringId}");
+                if (MenudeoParent is IPagable m)
+                {
+                    sb.Append(m.Debe == 0 ? " (vendido)" : $" (crédito a {MenudeoParent.Vendedor})");
+                }
+
+
+                return sb.ToString();
             }
             public string? Info => Parent?.Name;
         }
