@@ -96,9 +96,9 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="RowLimit" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">500</Value>
     </Setting>
-    <Setting Name="BussinessName" Type="System.String" Scope="User">
+    <Setting Name="BusinessName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Acme, Ltd.</Value>
     </Setting>
   </Settings>

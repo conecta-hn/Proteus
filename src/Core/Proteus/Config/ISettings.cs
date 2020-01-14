@@ -12,6 +12,11 @@ namespace TheXDS.Proteus.Config
     public interface ISettings
     {
         /// <summary>
+        /// Obtiene el nombre de la empresa registrada a utilizar el sistema.
+        /// </summary>
+        string BusinessName { get; }
+
+        /// <summary>
         /// Indica si se debe utilizar un servidor de datos de dominio.
         /// </summary>
         bool UseDomainProvider { get; }
@@ -89,5 +94,11 @@ namespace TheXDS.Proteus.Config
         /// para recuperar la conectividad cuando esta se pierda.
         /// </summary>
         bool EnableAnnounce { get; }
+
+        /// <summary>
+        /// Obtiene un límite de selección de columnas para las funciones que
+        /// lo soporten.
+        /// </summary>
+        int RowLimit { get; }
     }
 }
