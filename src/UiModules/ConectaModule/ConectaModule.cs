@@ -97,7 +97,7 @@ namespace TheXDS.Proteus.Conecta
                 Property(p => p.Name).Nullable().Important("Número de serie");
                 TextProperty(p => p.Description).Big().Nullable().Important("Detalles");
                 NumericProperty(p => p.Descuento).Nullable().Important("Descuento");
-                ObjectProperty(p => p.MenudeoParent).Creatable().Important("En menudeo").Nullable();
+                ObjectProperty(p => p.MenudeoParent).Creatable().Important("Vendido a").Nullable();
             }
         }
 
@@ -218,9 +218,11 @@ namespace TheXDS.Proteus.Conecta
             {
                 OnModuleMenu(Essential | AdminTool);
 
-                Property(p => p.Name).AsName("Nombre del vendedor");
+                FriendlyName("Cliente");
+
+                Property(p => p.Name).AsName("Nombre del cliente");
                 this.DescribeContact();
-                ListProperty(p => p.Items).Creatable().Label("Artículos en menudeo");
+                ListProperty(p => p.Items).Creatable().Label("Artículos comprados");
 
                 ShowAllInDetails();
             }
@@ -233,8 +235,10 @@ namespace TheXDS.Proteus.Conecta
             {
                 OnModuleMenu(Essential | Operation);
 
-                ObjectProperty(p => p.Vendedor).Selectable().Important().Required();
-                ListProperty(p => p.Items).Selectable().Important("Artículos en menudeo");
+                FriendlyName("Venta");
+
+                ObjectProperty(p => p.Vendedor).Selectable().Important("Cliente").Required();
+                ListProperty(p => p.Items).Selectable().Important("Artículos comprados");
                 NumericProperty(p => p.Total).Label("Total a pagar a favor");
                 ListProperty(p => p.Pagos).Creatable().Important("Abonos realizados");
 
@@ -278,13 +282,29 @@ namespace TheXDS.Proteus.Conecta
                 await MakeListProducts(query);
             }
 
-            [InteractionItem, InteractionType(Reports), Name("Lista agrupada de productos")]
+            [InteractionItem, InteractionType(Reports | Essential), Name("Lista agrupada de productos")]
             public async void GroupProducts(object? sender, EventArgs e) 
             {
                 if (!InputSplash.GetNew("Ingrese una búsqueda ", out string query)) return;
                 await MakeGroupProducts(query);
             }
 
+            [InteractionItem, InteractionType(Reports | Essential), Name("Lista de cuentas por cobrar")]
+            public async void GroupNosDebenReport(object? sender, EventArgs e)
+            {
+                if (!InputSplash.GetNew("Ingrese a un deudor", out string query)) return;
+                await MakeNosDebenReport(query);
+            }
+
+            private static bool NoPagado(Item item)
+            {
+                if (item.MenudeoParent is { } m)
+                {
+                    var t = m.Pagos.Any() ? m.Pagos.Sum(p=>p.Abono) : 0m;
+                    return t != m.Total;
+                }
+                return true;
+            }
             private async Task MakeListProducts(string query)
             {
                 Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
@@ -293,11 +313,11 @@ namespace TheXDS.Proteus.Conecta
                 List<Item> l;
                 if (query.IsEmpty())
                 {
-                    l = await QE.ToListAsync(Service.All<Item>().Where(p => p.MenudeoParent == null));
+                    l = (await QE.ToListAsync(Service.All<Item>())).Where(NoPagado).ToList();
                 }
                 else
                 {
-                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).Where(p => p.MenudeoParent is null).ToList();
+                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).Where(NoPagado).ToList();
                 }
 
                 fd.Text($"Total de artículos: {l.Count}");
@@ -314,7 +334,6 @@ namespace TheXDS.Proteus.Conecta
 
                 var flag = false;
 
-                
                 foreach (var j in l)
                 {
                     if (j.Parent is null) continue;
@@ -331,7 +350,6 @@ namespace TheXDS.Proteus.Conecta
                         row.Background = Brushes.LightGray;
                     }
                     else { flag = true; }
-
                 }
                 try
                 {
@@ -364,7 +382,7 @@ namespace TheXDS.Proteus.Conecta
 
                 foreach (var j in l.NotNull())
                 {
-                    var itms = j.Items.Where(p => p.MenudeoParent is null).ToList();
+                    var itms = j.Items.Where(NoPagado).ToList();
                     if (itms.Count == 0) continue;
                     fd.Title(j.Name, 3);
                     fd.Text(string.Join(Environment.NewLine, new[] {
@@ -404,6 +422,78 @@ namespace TheXDS.Proteus.Conecta
                 try
                 {
                     fd.Print("Lista agrupada de productos - Proteus");
+                }
+                catch
+                {
+                    Proteus.MessageTarget?.Stop("Hubo un problema al imprimir el reporte.");
+                }
+                Proteus.CommonReporter?.Done();
+            }
+            private async Task MakeNosDebenReport(string query)
+            {
+                Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
+                var fd = Reporting.ReportBuilder.MakeReport("Cuentas por cobrar");
+
+                List<Menudeo> l;
+                if (query.IsEmpty())
+                {
+                    l = await QE.ToListAsync(Service.All<Menudeo>());
+                }
+                else
+                {
+                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Menudeo)))).Cast<Menudeo>().ToList();
+                }
+
+                fd.Text($"Total de ventas registradas: {l.Count}");
+
+                l = l.Where(m=>
+                {
+                    var t = m.Pagos.Any() ? m.Pagos.Sum(p => p.Abono) : 0m;
+                    return t != m.Total;
+                }).ToList();
+
+                fd.Text($"Total de ventas con cuenta pendiente: {l.Count}");
+
+                var tbl = fd.AddTable(new[]
+{
+                    new KeyValuePair<string, GridLength>("Fecha", new GridLength(2, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Cliente", new GridLength(4, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Total", new GridLength(2, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Pagado", new GridLength(2, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Pendiente", new GridLength(2, GridUnitType.Star)),
+                    new KeyValuePair<string, GridLength>("Último pago", new GridLength(2, GridUnitType.Star)),
+
+                });
+
+                tbl.BorderBrush = Brushes.Black;
+                tbl.BorderThickness = new Thickness(3);
+
+                var flag = false;
+
+
+                foreach (var j in l)
+                {
+                    var pagado = j.Pagos.Any() ? j.Pagos.Sum(p => p.Abono) : 0m;
+                    var row = AddR(tbl, new string[]
+                    {
+                        j.Timestamp.ToString(),
+                        j.Vendedor.Name,
+                        j.Total.ToString("C"),
+                        pagado.ToString("C"),
+                        (j.Total - pagado).ToString("C"),
+                        j.Pagos.LastOrDefault()?.Timestamp.ToString() ?? "N/A"
+                    });
+
+                    if (flag)
+                    {
+                        flag = false;
+                        row.Background = Brushes.LightGray;
+                    }
+                    else { flag = true; }
+                }
+                try
+                {
+                    fd.Print("Cuentas por cobrar - Proteus");
                 }
                 catch
                 {

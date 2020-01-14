@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
@@ -52,7 +53,8 @@ namespace TheXDS.Proteus.Conecta
 
             public override string ToString()
             {
-                return $"{Inversor} con {Total:C}";
+                var pagado = ((IPagable)this).Pagado;
+                return $"{Inversor?.Name ?? "N/A"} con {Total:C}{(pagado < Total ? $", se le debe {Total - pagado:C}" : null)}";
             }
         }
         public class Pago : TimestampModel<long>
@@ -82,10 +84,10 @@ namespace TheXDS.Proteus.Conecta
             public virtual List<Item> Items { get; set; } = new List<Item>();
             public decimal Total { get; set; }
             public virtual List<Pago> Pagos { get; set; } = new List<Pago>();
-
             public override string ToString()
             {
-                return $"La tiene {Vendedor?.Name ?? "N/A"}";
+                var pagado = ((IPagable)this).Pagado;
+                return $"{Vendedor?.Name ?? "N/A"} por {Total:C}{(pagado < Total ? $", debe {Total - pagado:C}" : null)}";
             }
         }
     }
