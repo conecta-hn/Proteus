@@ -113,7 +113,7 @@ namespace TheXDS.Proteus.Conecta
                 ListProperty(p => p.Inversion).Creatable().Label("Inversiones");
                 TextProperty(p => p.Description).Big().Label("Detalles");
                 VmProperty(p => p.ExistenciasCount).Label("Existencias").OnlyInDetails();
-                VmProperty(p => p.VendidosCount).Label("Créditos abiertos").OnlyInDetails();
+                VmProperty(p => p.CreditosCount).Label("Créditos abiertos").OnlyInDetails();
                 VmProperty(p => p.VendidosCount).Label("Artículos vendidos").OnlyInDetails();
                 ListProperty(p => p.Items).Creatable().Label("Ítems");
                 ListProperty(p => p.Pictures).Creatable().Label("Fotografías");
