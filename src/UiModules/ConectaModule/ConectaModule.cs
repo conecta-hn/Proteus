@@ -271,6 +271,19 @@ namespace TheXDS.Proteus.Conecta
             }
             public string LastPagoWhen => (Entity?.IsNew ?? true) ? "sin datos." : $"Hace {(int)(DateTime.Now - (LastPago?.Timestamp ?? Entity.Timestamp)).TotalDays} días";
             public decimal? LastPagoHowMuch => LastPago?.Abono;
+
+            public PagoViewModel()
+            {
+                RegisterPropertyChangeBroadcast(
+                    nameof(Entity.Total),
+                    nameof(Pendiente));
+                RegisterPropertyChangeBroadcast(
+                    nameof(Entity.Pagos),
+                    nameof(Abonado),
+                    nameof(LastPago),
+                    nameof(LastPagoWhen),
+                    nameof(LastPagoHowMuch));
+            }
         }
         public abstract class LoteViewModel : DynamicViewModel<Lote>
         {
