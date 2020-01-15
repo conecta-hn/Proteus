@@ -3,7 +3,7 @@
     <Description>Módulo de UI para Conect@</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="4.5.3.2" />
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DbServices\InventarioService\InventarioService.csproj" />

@@ -318,10 +318,10 @@ namespace TheXDS.Proteus.Conecta
                 switch (into)
                 {
                     case ReportInto.Print:
-                        await MakeListProductsPrint(l);
+                        MakeListProductsPrint(l);
                         break;
                     case ReportInto.Excel:
-                        await MakeListProductsExcel(l);
+                        MakeListProductsExcel(l);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -330,19 +330,21 @@ namespace TheXDS.Proteus.Conecta
                 Proteus.CommonReporter?.Done();               
             }
 
-            [InteractionItem, InteractionType(Reports), Essential, Name("Lista agrupada de productos")]
+            [InteractionItem, InteractionType(Reports), Name("Productos agrupados")]
             public async void GroupProducts(object? sender, EventArgs e) 
             {
                 if (!InputSplash.GetNew("Ingrese una búsqueda ", out string query)) return;
                 await MakeGroupProducts(query);
             }
 
-            [InteractionItem, InteractionType(Reports), Essential, Name("Lista de cuentas por cobrar")]
+            [InteractionItem, InteractionType(Reports), Essential, Name("Cuentas por cobrar")]
             public async void NosDebenReport(object? sender, EventArgs e)
             {
                 if (!InputSplash.GetNew("Ingrese a un deudor", out string query)) return;
                 await MakeNosDebenReport(query);
             }
+
+
 
             private static bool NoPagado(Item item)
             {
@@ -353,8 +355,7 @@ namespace TheXDS.Proteus.Conecta
                 }
                 return true;
             }
-
-            private async Task MakeListProductsExcel(List<Item> l)
+            private void MakeListProductsExcel(List<Item> l)
             {
                 var sfd = new SaveFileDialog() { Filter = "Archivo de Excel|*.xlsx" };
                 if (!(sfd.ShowDialog() ?? false)) return;
@@ -370,14 +371,18 @@ namespace TheXDS.Proteus.Conecta
 
                     ws.Cells[row, 1].Value = j.Parent.Name;
                     ws.Cells[row, 2].Value = string.Join(Environment.NewLine, new string?[] { j.Parent.Description, j.Description }.NotNull()).OrNull() ?? "-";
-                    ws.Cells[row, 3].Value = CalcPrecio(j);                    
+                    ws.Cells[row, 3].Value = CalcPrecio(j);
+                    ws.Row(row).Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+                    ws.Cells[row, 2].Style.WrapText = true;
                     row++;
                 }
-                
+
+                ws.Column(1).AutoFit();                
+                ws.Column(2).AutoFit();
+                ws.Column(3).AutoFit();
                 doc.SaveAs(f);
             }
-
-            private async Task MakeListProductsPrint(List<Item> l)
+            private void MakeListProductsPrint(List<Item> l)
             {
                 var fd = MkRprt();
                 fd.Text($"Total de artículos: {l.Count}");
@@ -413,7 +418,6 @@ namespace TheXDS.Proteus.Conecta
                 }
                 Prnt(fd);
             }
-
             private static void Prnt(FlowDocument fd, string? title = null)
             {
                 try
@@ -599,7 +603,6 @@ namespace TheXDS.Proteus.Conecta
 
                 return row;
             }
-
             private static ExcelWorksheet PrepareListProducts(ExcelPackage xl, string title, out int firstRow)
             {
                 var ws = xl.Workbook.Worksheets.Add(title);
@@ -608,7 +611,7 @@ namespace TheXDS.Proteus.Conecta
                 {
                     foreach (var j in indexes)
                     {
-                        ws.Column(j).Width = 16.43;
+                        ws.Column(j).Width = 26.43;
                         ws.Column(j).StyleName = "Currency";
                     }
                 }
@@ -616,22 +619,21 @@ namespace TheXDS.Proteus.Conecta
                 {
                     foreach (var j in indexes)
                     {
+                        ws.Cells[j, 1, j, sze].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid; 
                         ws.Cells[j,1,j,sze].Style.Fill.BackgroundColor.SetColor(new TheXDS.MCART.Types.Color(0x3c, 0xc2, 0xe7));
                         ws.Cells[j, 1, j, sze].Style.Font.Color.SetColor(TheXDS.MCART.Resources.Colors.White);
                     }
                 }
 
-                ws.Cells[1, 1].Value = Proteus.Settings.BusinessName;
+                ws.Cells[1, 1].Value = Proteus.Settings!.BusinessName;
                 ws.Cells[2, 1].Value = title;
                 ws.Cells[2, 1].Style.Font.Size *= 1.5f;
-                SetRowsFormat(3, 1, 2);
+                SetRowsFormat(3, 1, 2, 3);
                 SetColsCurrency(3);
                 ws.Cells[3, 1].Value = "Ítem";
                 ws.Cells[3, 2].Value = "Descripción";
                 ws.Cells[3, 3].Value = "Precio";
-                ws.Column(2).Width = 36.43;
-                
-
+                ws.Column(2).Width = 270;
                 firstRow = 4;
                 return ws;
             }
