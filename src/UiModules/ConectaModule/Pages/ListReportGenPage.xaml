@@ -1,0 +1,34 @@
+﻿<page:ProteusPage
+    xmlns:page="http://schemas.thexds.com/2019/Proteus/page"
+    x:Class="TheXDS.Proteus.ConectaModule.Pages.ListReportGenPage"
+    xmlns:widgets="http://schemas.thexds.com/2019/Proteus/widgets"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800">
+    <controls:BusyContainer IsBusy="{Binding IsBusy, Mode=OneWay}">        
+        <DockPanel>
+            <StackPanel Style="{StaticResource BotoneraBase}" VerticalAlignment="Center" MinWidth="150">
+                <TextBox
+                    Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                    widgets:ProteusProp.Watermark="Búsqueda" />
+
+                <CheckBox IsChecked="{Binding WithCost}">Incluir costos</CheckBox>
+                <CheckBox IsChecked="{Binding WithPrice}">Incluir precios</CheckBox>
+                <CheckBox IsChecked="{Binding Grouped}">Agrupar artículos</CheckBox>
+                <ComboBox 
+                    ItemsSource="{Binding IntoOptions, Mode=OneWay}"
+                    SelectedValue="{Binding Into}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Value"/>
+                <Button Command="{Binding GenerateCommand, Mode=OneWay}">Generar</Button>
+                <Button Command="{Binding PrintCommand, Mode=OneWay}">Imprimir</Button>
+            </StackPanel>
+            <FlowDocumentScrollViewer Document="{Binding Generated}"/>
+        </DockPanel>
+    </controls:BusyContainer>
+</page:ProteusPage>
