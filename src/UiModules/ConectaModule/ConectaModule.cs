@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.ViewModel;
@@ -18,73 +19,17 @@ using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
+using OfficeOpenXml;
 using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
 using static TheXDS.MCART.Types.Extensions.FlowDocumentExtensions;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.Proteus.Annotations.InteractionType;
 using QE = System.Data.Entity.QueryableExtensions;
+using System.IO;
+using Microsoft.Win32;
 
 namespace TheXDS.Proteus.Conecta
 {
-    namespace Tools
-    {
-        //public class ExportTool : Tool
-        //{
-        //    [InteractionItem, Name("Importar datos")]
-        //    public async void ExportAsync(object? sender, EventArgs e)
-        //    {
-        //        var fd = new OpenFileDialog();
-        //        if (!(fd.ShowDialog() ?? false)) return;
-        //        var svc = Proteus.Service<ConectaService>();
-
-        //        using var fs = new FileStream(fd.FileName, FileMode.Open);
-        //        using var bw = new BinaryReader(fs);
-
-        //        var c = bw.ReadInt32();
-        //        for(var j = 0; j < c; j++)
-        //        {
-        //            _ = bw.ReadInt32();
-        //            _ = bw.ReadString();
-        //        }
-
-        //        c = bw.ReadInt32();
-        //        for (var j = 0; j < c; j++)
-        //        {
-        //            _ = bw.ReadInt32();
-        //            _ = bw.ReadString();
-        //        }
-        //        c = bw.ReadInt32();
-
-        //        for (var j = 0; j < c; j++)
-        //        {
-        //            _ = bw.ReadInt64();
-
-        //            var l = new Lote
-        //            {
-        //                Name = bw.ReadString()
-        //            };
-        //            var ns = bw.ReadString();
-        //            if (!ns.IsEmpty())
-        //            {
-        //                l.Items.Add(new Item { Name = ns });
-        //            }
-        //            _ = bw.ReadInt32();
-        //            l.Description = bw.ReadString();
-        //            l.Timestamp = DateTime.FromBinary(bw.ReadInt64());
-        //            var cc = bw.ReadInt32();
-        //            while (l.Items.Count < cc)
-        //            {
-        //                l.Items.Add(new Item());
-        //            }
-        //            _ = bw.ReadDecimal();
-        //            _ = bw.ReadDecimal();
-
-        //            await svc.AddAsync(l);
-        //        }
-        //    }
-        //}
-    }
-
     namespace Crud
     {
         public class ItemDescriptor : CrudDescriptor<Item>
@@ -341,24 +286,59 @@ namespace TheXDS.Proteus.Conecta
 
     namespace Modules
     {
+        public enum ReportInto : byte
+        {
+            [Name("Reporte impreso")] Print,
+            [Name("Reporte a Excel")] Excel
+        }
+
         public class ConectaModule : UiModule<ConectaService>
         {
+            
+
             [InteractionItem, InteractionType(Reports), Name("Lista de productos")]
             public async void ListProducts(object? sender, EventArgs e)
             {
                 if (!InputSplash.GetNew("Ingrese una búsqueda ", out string query)) return;
-                await MakeListProducts(query);
+                if (!InputSplash.GetNew<ReportInto>("Cómo desea que salga el reporte?", out var into)) return;
+
+                Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
+
+                List<Item> l;
+                
+                if (query.IsEmpty())
+                {
+                    l = (await QE.ToListAsync(Service.All<Item>())).Where(NoPagado).ToList();
+                }
+                else
+                {
+                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).Where(NoPagado).ToList();
+                }
+
+                switch (into)
+                {
+                    case ReportInto.Print:
+                        await MakeListProductsPrint(l);
+                        break;
+                    case ReportInto.Excel:
+                        await MakeListProductsExcel(l);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+
+                Proteus.CommonReporter?.Done();               
             }
 
-            [InteractionItem, InteractionType(Reports | Essential), Name("Lista agrupada de productos")]
+            [InteractionItem, InteractionType(Reports), Essential, Name("Lista agrupada de productos")]
             public async void GroupProducts(object? sender, EventArgs e) 
             {
                 if (!InputSplash.GetNew("Ingrese una búsqueda ", out string query)) return;
                 await MakeGroupProducts(query);
             }
 
-            [InteractionItem, InteractionType(Reports | Essential), Name("Lista de cuentas por cobrar")]
-            public async void GroupNosDebenReport(object? sender, EventArgs e)
+            [InteractionItem, InteractionType(Reports), Essential, Name("Lista de cuentas por cobrar")]
+            public async void NosDebenReport(object? sender, EventArgs e)
             {
                 if (!InputSplash.GetNew("Ingrese a un deudor", out string query)) return;
                 await MakeNosDebenReport(query);
@@ -373,21 +353,33 @@ namespace TheXDS.Proteus.Conecta
                 }
                 return true;
             }
-            private async Task MakeListProducts(string query)
+
+            private async Task MakeListProductsExcel(List<Item> l)
             {
-                Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
-                var fd = Reporting.ReportBuilder.MakeReport("Lista de productos");
+                var sfd = new SaveFileDialog() { Filter = "Archivo de Excel|*.xlsx" };
+                if (!(sfd.ShowDialog() ?? false)) return;
+                var f = new FileInfo(sfd.FileName);
 
-                List<Item> l;
-                if (query.IsEmpty())
-                {
-                    l = (await QE.ToListAsync(Service.All<Item>())).Where(NoPagado).ToList();
-                }
-                else
-                {
-                    l = (await QE.ToListAsync(Internal.Query(query, typeof(Lote)))).Cast<Lote>().SelectMany(p=>p.Items).Where(NoPagado).ToList();
-                }
+                var title = RprtName(1);
+                using var doc = new ExcelPackage();
+                var ws = PrepareListProducts(doc, title, out var row);
 
+                foreach (var j in l)
+                {
+                    if (j.Parent is null) continue;
+
+                    ws.Cells[row, 1].Value = j.Parent.Name;
+                    ws.Cells[row, 2].Value = string.Join(Environment.NewLine, new string?[] { j.Parent.Description, j.Description }.NotNull()).OrNull() ?? "-";
+                    ws.Cells[row, 3].Value = CalcPrecio(j);                    
+                    row++;
+                }
+                
+                doc.SaveAs(f);
+            }
+
+            private async Task MakeListProductsPrint(List<Item> l)
+            {
+                var fd = MkRprt();
                 fd.Text($"Total de artículos: {l.Count}");
 
                 var tbl = fd.AddTable(new[] 
@@ -419,15 +411,27 @@ namespace TheXDS.Proteus.Conecta
                     }
                     else { flag = true; }
                 }
+                Prnt(fd);
+            }
+
+            private static void Prnt(FlowDocument fd, string? title = null)
+            {
                 try
                 {
-                    fd.Print("Lista de productos - Proteus");
+                    fd.Print($"{title ?? RprtName()} - Proteus");
                 }
                 catch
                 {
                     Proteus.MessageTarget?.Stop("Hubo un problema al imprimir el reporte.");
                 }
-                Proteus.CommonReporter?.Done();
+            }
+            private static FlowDocument MkRprt(string? title = null)
+            {
+                return Reporting.ReportBuilder.MakeReport(title ?? RprtName());
+            }
+            private static string RprtName(int lvl = 2)
+            {
+                return $"{ReflectionHelpers.GetCallingMethod(lvl)?.GetAttr<NameAttribute>()?.Value ?? "Reporte"}";
             }
             private async Task MakeGroupProducts(string query)
             {
@@ -594,6 +598,42 @@ namespace TheXDS.Proteus.Conecta
                 tbl.RowGroups.Add(rg);
 
                 return row;
+            }
+
+            private static ExcelWorksheet PrepareListProducts(ExcelPackage xl, string title, out int firstRow)
+            {
+                var ws = xl.Workbook.Worksheets.Add(title);
+
+                void SetColsCurrency(params int[] indexes)
+                {
+                    foreach (var j in indexes)
+                    {
+                        ws.Column(j).Width = 16.43;
+                        ws.Column(j).StyleName = "Currency";
+                    }
+                }
+                void SetRowsFormat(int sze, params int[] indexes)
+                {
+                    foreach (var j in indexes)
+                    {
+                        ws.Cells[j,1,j,sze].Style.Fill.BackgroundColor.SetColor(new TheXDS.MCART.Types.Color(0x3c, 0xc2, 0xe7));
+                        ws.Cells[j, 1, j, sze].Style.Font.Color.SetColor(TheXDS.MCART.Resources.Colors.White);
+                    }
+                }
+
+                ws.Cells[1, 1].Value = Proteus.Settings.BusinessName;
+                ws.Cells[2, 1].Value = title;
+                ws.Cells[2, 1].Style.Font.Size *= 1.5f;
+                SetRowsFormat(3, 1, 2);
+                SetColsCurrency(3);
+                ws.Cells[3, 1].Value = "Ítem";
+                ws.Cells[3, 2].Value = "Descripción";
+                ws.Cells[3, 3].Value = "Precio";
+                ws.Column(2).Width = 36.43;
+                
+
+                firstRow = 4;
+                return ws;
             }
         }
     }
