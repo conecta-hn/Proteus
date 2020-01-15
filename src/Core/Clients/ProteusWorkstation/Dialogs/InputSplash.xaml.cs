@@ -26,16 +26,16 @@ namespace TheXDS.Proteus.Dialogs
 
         public static bool GetNew<T>(string prompt, out T value)
         {
-            value = default;
+            value = default!;
             return Get(prompt, ref value);
         }
+
         public static bool Get<T>(string prompt, ref T value)
         {
             var descr = new InputSplashDescription
             {
                 Label = prompt,
-                Property = typeof(InputSplashViewModel<T>)
-                    .GetProperty(nameof(InputSplashViewModel<T>.InputValue))
+                Property = typeof(InputSplashViewModel<T>).GetProperty(nameof(InputSplashViewModel<T>.InputValue))!
             };
             var dialog = new InputSplash();
             var vm = new InputSplashViewModel<T>(dialog, descr)
@@ -52,6 +52,8 @@ namespace TheXDS.Proteus.Dialogs
     public class InputSplashViewModel<T> : IDynamicViewModel
     {
         private readonly ICloseable _host;
+        private T _inputValue;
+
         public bool Cancel { get; private set; }
 
         public InputSplashViewModel(ICloseable host, IPropertyDescription description)
@@ -92,7 +94,7 @@ namespace TheXDS.Proteus.Dialogs
         private void OnClose()
         {
             Cancel = true;
-            InputValue = default;
+            InputValue = default!;
             _host.Close();
         }
 
@@ -105,7 +107,12 @@ namespace TheXDS.Proteus.Dialogs
         {
         }
 
-        public T InputValue { get; set; }
+        public T InputValue
+        {
+            get => _inputValue;
+            set => _inputValue = value;
+        }
+
         object IDynamicViewModel.Entity
         {
             get => this;
