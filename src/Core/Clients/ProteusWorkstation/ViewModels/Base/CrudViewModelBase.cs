@@ -49,7 +49,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         protected ICollection<CrudElement> Elements { get; } = new List<CrudElement>();
 
-        protected IEnumerable<Type> Models { get; }
+        /// <summary>
+        /// Enumera los modelos controlados por este <see cref="CrudViewModelBase"/>.
+        /// </summary>
+        public IEnumerable<Type> Models { get; }
 
         /// <summary>
         /// Obtiene o establece al elemento seleccionado.
@@ -104,7 +107,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 }
                 else
                 {
-                    if (!(j.ViewModel is null)) j.ViewModel.Entity = null;
+                    if (!(j.ViewModel is null)) j.ViewModel.Entity = null!;
                 }
                 j.ViewModel?.Refresh();
             }

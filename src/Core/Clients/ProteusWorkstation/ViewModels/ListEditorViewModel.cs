@@ -17,6 +17,10 @@ using System.Collections;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using System.ComponentModel;
+using System.Windows.Data;
+using TheXDS.Proteus.Misc;
+using System.Data.Entity;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -295,5 +299,119 @@ namespace TheXDS.Proteus.ViewModels
         /// Ocurre cuando no hay nada seleccionado.
         /// </summary>
         public event EventHandler Unselected;
+
+
+
+
+
+
+
+        private bool _willSearch = true;
+        private string? _searchQuery;
+        private bool _isSearching;
+        private ICollectionView? _results;
+        private Type? _activeModel;
+
+        /// <summary>
+        /// Obtiene o establece el valor SearchQuery.
+        /// </summary>
+        /// <value>El valor de SearchQuery.</value>
+        public string? SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                if (!Change(ref _searchQuery, value)) return;
+                WillSearch = true;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene una colección con los resultados de la búsqueda.
+        /// </summary>
+        public ICollectionView? Results
+        {
+            get => _results;
+            private set
+            {
+                if (Change(ref _results, value)) _results?.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// Obtiene un valor que indica si al ejecutar
+        /// <see cref="SearchCommand"/> se hará una búsqueda o se limpiará
+        /// la búsqueda actual.
+        /// </summary>
+        public bool WillSearch
+        {
+            get => _willSearch;
+            private set => Change(ref _willSearch, value);
+        }
+
+        /// <summary>
+        /// Obtiene el comando relacionado a la acción Search.
+        /// </summary>
+        /// <returns>El comando Search.</returns>
+        public ObservingCommand SearchCommand { get; private set; } = null!;
+
+        /// <summary>
+        /// Obtiene la etiqueta a utilizar para mostrar sobre el botón de
+        /// búsqueda.
+        /// </summary>
+        public string SearchLabel => _willSearch ? "🔍" : "❌";
+
+        /// <summary>
+        /// Limpia los resultados de la búsqueda.
+        /// </summary>
+        public void ClearSearch()
+        {
+            Results = Source.Count() <= Proteus.Settings?.RowLimit ? CollectionViewSource.GetDefaultView(Source) : null;
+            SearchQuery = null;
+        }
+
+        /// <summary>
+        /// Obtiene una cadena que describe la cantidad de resultados encontrados.
+        /// </summary>
+        public string ResultsDetails => Results is null ? $"Hay más de {Proteus.Settings?.RowLimit} elementos. Inicie una búsqueda para continuar." : WillSearch ? $"{Source.Count()} elementos{(Source.Count() > Proteus.Settings?.RowLimit ? $" (limitado a los últimos {Proteus.Settings?.RowLimit})" : null)}" : $"{Results!.Count()} elementos, {Source.Count()} en total";
+
+        /// <summary>
+        /// Obtiene o establece el valor IsSearching.
+        /// </summary>
+        /// <value>El valor de IsSearching.</value>
+        public bool IsSearching
+        {
+            get => _isSearching;
+            set => Change(ref _isSearching, value);
+        }
+
+        private async void OnSearch()
+        {
+            if (WillSearch && !SearchQuery.IsEmpty()) await PerformSearch();
+            else ClearSearch();
+            Notify(nameof(ResultsDetails));
+        }
+
+        private async Task PerformSearch()
+        {
+            IsSearching = true;
+            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync());
+            IsSearching = false;
+            WillSearch = false;
+        }
+        /// <summary>
+        /// Obtiene o establece el valor ActiveModel.
+        /// </summary>
+        /// <value>El valor de ActiveModel.</value>
+        public Type? ActiveModel
+        {
+            get => _activeModel;
+            set
+            {
+                if (!Change(ref _activeModel, value)) return;
+                ClearSearch();
+            }
+        }
+
     }
 }
