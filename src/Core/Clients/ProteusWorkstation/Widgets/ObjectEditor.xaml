@@ -101,7 +101,7 @@
                         SelectedItem="{Binding TempSelection}"
                         Grid.Row="2"
                         Grid.ColumnSpan="2"/>
-                    <mcart:StretchyWrapPanel>
+                    <mcart:StretchyWrapPanel Grid.Row="3">
                         <Button Command="{Binding OkSelectCommand, Mode=OneWay}">
                             Seleccionar
                         </Button>

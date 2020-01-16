@@ -124,7 +124,7 @@ namespace TheXDS.Proteus.ViewModels
         /// Obtiene la etiqueta a utilizar para mostrar sobre el botón de
         /// búsqueda.
         /// </summary>
-        public string SearchLabel => WillSearch ? "❌" : "🔍";
+        public string SearchLabel => WillSearch ? "🔍" : "❌";
 
         /// <summary>
         /// Obtiene el comando relacionado a la acción Search.
