@@ -81,6 +81,8 @@ namespace TheXDS.Proteus.Conecta
         public class Inversor : Contact<int>
         {
             public virtual List<Inversion> Inversion { get; set; } = new List<Inversion>();
+
+            public decimal InvTotal => Inversion.Any() ? Inversion.Sum(p => p.Total) : 0m;
         }
         public class Vendedor : Contact<int>
         {

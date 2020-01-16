@@ -147,7 +147,7 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
-        public class InversorDescriptor : CrudDescriptor<Inversor>
+        public class InversorDescriptor : CrudDescriptor<Inversor, InversorViewModel>
         {
             protected override void DescribeModel()
             {
@@ -155,11 +155,16 @@ namespace TheXDS.Proteus.Conecta
 
                 Property(p => p.Name).AsName("Nombre del inversor");
                 this.DescribeContact();
+
+                Property(p => p.InvTotal).Label("Inversión total adeudada").Format("C").OnlyInDetails();
                 ListProperty(p => p.Inversion).Creatable().Label("Inversiones");
 
                 ShowAllInDetails();
             }
         }
+
+
+
 
         public class VendedorDescriptor : CrudDescriptor<Vendedor>
         {
@@ -201,89 +206,6 @@ namespace TheXDS.Proteus.Conecta
         }
     }
 
-    namespace ViewModels
-    {
-        public abstract class PagoViewModel<T> : DynamicViewModel<T> where T: ModelBase, IPagable, new()
-        {
-            public decimal Pendiente => (Entity?.Total ?? 0m) - Abonado;
-            public decimal Abonado => (Entity?.Pagos.Any() ?? false) ? Entity.Pagos.Sum(p => p.Abono) : 0m;
-            public Pago? LastPago
-            {
-                get
-                {
-                    if (Pendiente == 0m || !Entity!.Pagos.Any()) return null;
-                    return Entity!.Pagos.OrderBy(p => p.Timestamp).Last();
-                }
-            }
-            public string LastPagoWhen => (Entity?.IsNew ?? true) ? "sin datos." : $"Hace {(int)(DateTime.Now - (LastPago?.Timestamp ?? Entity.Timestamp)).TotalDays} días";
-            public decimal? LastPagoHowMuch => LastPago?.Abono;
-
-            public PagoViewModel()
-            {
-                RegisterPropertyChangeBroadcast(
-                    nameof(Entity.Total),
-                    nameof(Pendiente));
-                RegisterPropertyChangeBroadcast(
-                    nameof(Entity.Pagos),
-                    nameof(Abonado),
-                    nameof(LastPago),
-                    nameof(LastPagoWhen),
-                    nameof(LastPagoHowMuch));
-            }
-        }
-        public abstract class LoteViewModel : DynamicViewModel<Lote>
-        {
-            public int VendidosCount
-            {
-                get
-                {
-                    if (!(Entity?.Items is { } i)) return 0;
-                    var c = 0;
-                    foreach (IPagable j in i.Select(p => p.MenudeoParent).NotNull())
-                    {
-                        if (j.Debe == 0m) c++;
-                    }
-                    return c;
-                }
-            }
-            public int CreditosCount
-            {
-                get
-                {
-                    if (!(Entity?.Items is { } i)) return 0;
-                    var c = 0;
-                    foreach (IPagable j in i.Select(p => p.MenudeoParent).NotNull())
-                    {
-                        if (j.Debe > 0m) c++;
-                    }
-                    return c;
-                }
-            }
-
-            public int ExistenciasCount
-            {
-                get
-                {
-                    if (!(Entity?.Items is { } i)) return 0;
-                    var c = 0;
-                    foreach (var j in i)
-                    {
-                        if (j.MenudeoParent is null) c++;
-                    }
-                    return c;
-                }
-            }
-
-            public LoteViewModel()
-            {
-                RegisterPropertyChangeBroadcast(
-                    nameof(Lote.Items),
-                    nameof(VendidosCount),
-                    nameof(CreditosCount),
-                    nameof(ExistenciasCount));
-            }
-        }
-    }
 
     namespace Modules
     {
