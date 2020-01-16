@@ -82,7 +82,7 @@
                     <ComboBox
                         Visibility="{Binding CanChangeModel, Converter={StaticResource BooleanToVisibilityConverter}}"
                         IsEnabled="{Binding CanChangeModel, Mode=OneWay}"
-                        ItemsSource="{Binding Models, Mode=OneWay}"
+                        ItemsSource="{Binding SelectableModels, Mode=OneWay}"
                         SelectedItem="{Binding ActiveModel}" 
                         Grid.ColumnSpan="2"/>
                     <TextBox

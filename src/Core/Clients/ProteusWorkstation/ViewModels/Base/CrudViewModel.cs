@@ -21,7 +21,6 @@ using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Reporting;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base

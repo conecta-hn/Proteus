@@ -46,7 +46,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Enumera los modelos disponibles para seleccionar en la búsqueda.
         /// </summary>
-        public IList<Type> Models { get; }
+        public IList<Type> SelectableModels { get; }
 
         /// <summary>
         /// Obtiene o establece el valor ActiveModel.
@@ -80,7 +80,7 @@ namespace TheXDS.Proteus.ViewModels
         /// Obtiene un valor que indica si es posible cambiar el modelo 
         /// seleccionado.
         /// </summary>
-        public bool CanChangeModel => Models.Count > 1;
+        public bool CanChangeModel => SelectableModels.Count > 1;
 
         /// <summary>
         /// Obtiene la vista columnar a utilizar para mostrar objetos en la lista de resultados.
@@ -235,12 +235,12 @@ namespace TheXDS.Proteus.ViewModels
             RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
             RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));            
 
-            Models = description.ChildModels?.ToList()
+            SelectableModels = description.ChildModels?.ToList()
                 ?? description.PropertyType.Derivates().Select(p => p.ResolveToDefinedType()!).Distinct().Where(TypeExtensions.IsInstantiable).OrNull()?.ToList()
                 ?? new[] { description.PropertyType }.ToList();
 
             ModelLabel = description.Label;
-            ActiveModel = Models.FirstOrDefault();
+            ActiveModel = SelectableModels.FirstOrDefault();
             SearchCommand = new ObservingCommand(this, OnSearch);
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
