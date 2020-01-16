@@ -38,7 +38,7 @@ namespace TheXDS.Proteus.Conecta
         {
             protected override void DescribeModel()
             {
-                OnModuleMenu(Essential | Catalog);
+                OnModuleMenu(Catalog);
                 FriendlyName("Artículo");                
                 Property(p => p.Info).Label("Descripción").AsListColumn().ShowInDetails().ReadOnly();
                 Property(p => p.Name).Nullable().Important("Número de serie");
@@ -133,7 +133,7 @@ namespace TheXDS.Proteus.Conecta
         {
             protected override void DescribeModel()
             {
-                OnModuleMenu(Essential | AdminTool);
+                OnModuleMenu(AdminTool);
 
                 Property(p => p.Name).AsName("Nombre del proveedor");
                 this.DescribeContact();
@@ -146,7 +146,7 @@ namespace TheXDS.Proteus.Conecta
         {
             protected override void DescribeModel()
             {
-                OnModuleMenu(Essential | AdminTool);
+                OnModuleMenu(AdminTool);
 
                 Property(p => p.Name).AsName("Nombre del inversor");
                 this.DescribeContact();
@@ -157,7 +157,7 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-        public class VendedorDescriptor : CrudDescriptor<Vendedor>
+        public class ClienteDescriptor : CrudDescriptor<Vendedor>
         {
             protected override void DescribeModel()
             {
@@ -180,7 +180,7 @@ namespace TheXDS.Proteus.Conecta
 
                 FriendlyName("Venta");
 
-                ObjectProperty(p => p.Vendedor).Selectable().Important("Cliente").Required();
+                ObjectProperty(p => p.Vendedor).Selectable().Creatable().Important("Cliente").Required();
                 ListProperty(p => p.Items).Selectable().Important("Artículos comprados");
                 NumericProperty(p => p.Total).Label("Total a pagar a favor");
                 ListProperty(p => p.Pagos).Creatable().Important("Abonos realizados");
@@ -196,7 +196,6 @@ namespace TheXDS.Proteus.Conecta
 
 
         // Actividades
-
         /// <summary>
         /// Describe las propiedades Crud para el modelo
         /// <see cref="Actividad"/>.
@@ -262,7 +261,6 @@ namespace TheXDS.Proteus.Conecta
             }
         }
 
-
         /// <summary>
         /// Describe las propiedades Crud para el modelo
         /// <see cref="Asistencia"/>.
@@ -294,7 +292,6 @@ namespace TheXDS.Proteus.Conecta
                     .Important();
             }
         }
-
 
         /// <summary>
         /// Describe las propiedades Crud para el modelo
