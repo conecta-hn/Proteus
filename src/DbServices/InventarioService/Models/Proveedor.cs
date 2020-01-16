@@ -16,6 +16,7 @@ namespace TheXDS.Proteus.Conecta
 {
     namespace Models
     {
+        // Inventario
         public class Item : Nameable<long>
         {
             public virtual Lote Parent { get; set; }
@@ -100,6 +101,29 @@ namespace TheXDS.Proteus.Conecta
                 return $"{Vendedor?.Name ?? "N/A"} por {Total:C}{(pagado < Total ? $", debe {Total - pagado:C}" : null)}";
             }
         }
+
+
+        // Gestión de actividades
+        public class Actividad : TimestampModel<int>, INameable, IDescriptible, IVoidable
+        {
+            public DateTime? Void { get; set; }
+            public string Name { get; set; }
+            public virtual List<ActividadItem> Items { get; set; } = new List<ActividadItem>();
+            public string? Description { get; set; }
+        }
+        public class ActividadItem : Nameable<int>, IDescriptible
+        {
+            public decimal RawValue { get; set; }
+            public string? Description { get; set; }
+        }
+        public class Asistencia : TimestampModel<int>, IVoidable
+        {
+            public virtual Empleado Empleado { get; set; }
+            public DateTime? Void { get; set; }
+        }
+        public class Empleado : Contact<int>
+        {
+        }
     }
 
     namespace Context
@@ -116,11 +140,21 @@ namespace TheXDS.Proteus.Conecta
             public DbSet<Menudeo> Menudeos { get; set; }
             public DbSet<Vendedor> Vendedores { get; set; }
         }
+        public class ActividadContext : ProteusContext
+        {
+            public DbSet<Actividad> Actividades { get; set; }
+            public DbSet<ActividadItem> ActividadItems { get; set; }
+            public DbSet<Asistencia> Asistencias { get; set; }
+            public DbSet<Empleado> Empleados { get; set; }
+        }
     }
 
     namespace Api
     {
         public class ConectaService : Service<ConectaContext>
+        {
+        }
+        public class ConectaActService : Service<ActividadContext>
         {
         }
     }

@@ -33,6 +33,7 @@ namespace TheXDS.Proteus.Conecta
 {
     namespace Crud
     {
+        // Inventario
         public class ItemDescriptor : CrudDescriptor<Item>
         {
             protected override void DescribeModel()
@@ -46,7 +47,6 @@ namespace TheXDS.Proteus.Conecta
                 ObjectProperty(p => p.MenudeoParent).Creatable().Important("Vendido a").Nullable();
             }
         }
-
         public class LoteDescriptor : CrudDescriptor<Lote, LoteViewModel>
         {
             protected override void DescribeModel()
@@ -94,7 +94,6 @@ namespace TheXDS.Proteus.Conecta
                 }
             }
         }
-
         public class ItemPictureDescriptor : CrudDescriptor<ItemPicture>
         {
             protected override void DescribeModel()
@@ -105,7 +104,6 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-
         public class InversionDescriptor  : CrudDescriptor<Inversion, PagoViewModel<Inversion>> 
         {
             protected override void DescribeModel()
@@ -122,7 +120,6 @@ namespace TheXDS.Proteus.Conecta
                 VmProperty(p => p.LastPagoHowMuch).ShowInDetails().AsListColumn().Label("Último pago").ReadOnly();
             }
         }
-
         public class Pagodescriptor : CrudDescriptor<Pago>
         {
             protected override void DescribeModel()
@@ -132,7 +129,6 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-
         public class ProveedorDescriptor : CrudDescriptor<Proveedor>
         {
             protected override void DescribeModel()
@@ -146,7 +142,6 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-
         public class InversorDescriptor : CrudDescriptor<Inversor, InversorViewModel>
         {
             protected override void DescribeModel()
@@ -162,10 +157,6 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-
-
-
-
         public class VendedorDescriptor : CrudDescriptor<Vendedor>
         {
             protected override void DescribeModel()
@@ -181,8 +172,6 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-
-
         public class CompraDescriptor : CrudDescriptor<Menudeo, PagoViewModel<Menudeo>>
         {
             protected override void DescribeModel()
@@ -204,12 +193,132 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
+
+
+        // Actividades
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Actividad"/>.
+        /// </summary>
+        public class ActividadDescriptor : CrudDescriptor<Actividad>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Actividad"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(AdminTool | Essential);
+
+                DateProperty(p => p.Timestamp)
+                    .WithTime()
+                    .Important("Fecha / hora de inicio");
+
+                DateProperty(p => p.Void)
+                    .WithTime()
+                    .Nullable()
+                    .ShowInDetails()
+                    .AsListColumn()
+                    .Label("Fecha / hora de final");
+
+                Property(p => p.Name).AsName("Descripción de la actividad");
+
+                ListProperty(p => p.Items)
+                    .Creatable()
+                    .Required()
+                    .Label("Puntos de actividad")
+                    .ShowInDetails();
+
+                TextProperty(p => p.Description)
+                    .Big()
+                    .Required()
+                    .NotEmpty()
+                    .Label("Notas")
+                    .ShowInDetails();
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="ActividadItem"/>.
+        /// </summary>
+        public class ActividadItemDescriptor : CrudDescriptor<ActividadItem>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="ActividadItem"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                Property(p => p.Name).AsName();
+                Property(p => p.RawValue).Important("Ingreso / gasto");
+                TextProperty(p => p.Description)
+                    .Big()
+                    .Required()
+                    .NotEmpty()
+                    .Label("Notas")
+                    .ShowInDetails();
+            }
+        }
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Asistencia"/>.
+        /// </summary>
+        public class AsistenciaDescriptor : CrudDescriptor<Asistencia>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Asistencia"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(AdminTool | Essential);
+                DateProperty(p => p.Timestamp)
+                    .WithTime()
+                    .Important("Fecha / hora de entrada");
+
+                DateProperty(p => p.Void)
+                    .WithTime()
+                    .Nullable()
+                    .Default(null!)
+                    .ShowInDetails()
+                    .AsListColumn()
+                    .Label("Fecha / hora de salida");
+
+                ObjectProperty(p => p.Empleado)
+                    .Selectable()
+                    .Required()
+                    .Important();
+            }
+        }
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Empleado"/>.
+        /// </summary>
+        public class EmpleadoDescriptor : CrudDescriptor<Empleado>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Empleado"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(AdminTool | Essential);
+                Property(p => p.Name).AsName("Nombre del empleado");
+                this.DescribeContact();
+            }
+        }
     }
 
 
     namespace Modules
     {
-
+        [Name("Inventario")]
         public class ConectaModule : UiModule<ConectaService>
         {
             
@@ -316,6 +425,11 @@ namespace TheXDS.Proteus.Conecta
 
                 return row;
             }
+        }
+
+        [Name("Actividades")]
+        public class ConectaActModule : UiModule<ConectaActService>
+        {
         }
     }
 }
