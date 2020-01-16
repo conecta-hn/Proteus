@@ -79,6 +79,7 @@
                         Grid.Row="1"
                         Grid.Column="1"/>
                     <ListView
+                        x:Name="LstSelection"
                         ItemsSource="{Binding Results, Mode=OneWay}"
                         View="{Binding ColumnsView, Mode=OneWay}"
                         SelectedItem="{Binding TempSelection}"
