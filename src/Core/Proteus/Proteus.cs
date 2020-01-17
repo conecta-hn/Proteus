@@ -281,7 +281,15 @@ namespace TheXDS.Proteus
                     break;
             }
             await Task.WhenAll(Services.Select(j => j.AfterInit()));
-            NwClient?.SetupListener();
+
+            try
+            {
+                if (Settings.UseNetworkServer) NwClient?.SetupListener();
+            }
+            catch
+            {
+                AlertTarget?.Alert($"No se pudo iniciar el escucha de red: El puerto UDP {Settings.NetworkServerPort} ya está en uso por otra aplicación.");
+            }
         }
 
         /// <summary>
