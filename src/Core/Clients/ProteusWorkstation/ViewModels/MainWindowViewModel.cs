@@ -100,7 +100,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private void EarlySetup()
         {
-            ViewModelFactory.AttributeExclusionList.Add(typeof(ExcludeFromVmFactoryAttribute));
+            //ViewModelFactory.AttributeExclusionList.Add(typeof(ExcludeFromVmFactoryAttribute));
             Proteus.MessageTarget = new MessageSplashTarget();
             Proteus.CommonReporter = this;
             App.RootHost = this;

@@ -29,7 +29,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
             var _control = sender as FrameworkElement;
 
             var m = Description.PropertySource == PropertyLocation.Model 
-                ? (_control.DataContext as IDynamicViewModel)?.Entity 
+                ? (_control.DataContext as IEntityViewModel)?.Entity 
                 : _control.DataContext;
 
             if (m is null) return;

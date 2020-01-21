@@ -45,7 +45,7 @@ namespace TheXDS.Proteus.Crud
             {
                 addwp = true;
                 var b = new Button { Content = j.Key };
-                b.Click += (sender, e) => j.Value((stckpnl.DataContext as IDynamicViewModel)?.Entity as ModelBase, stckpnl.DataContext as NotifyPropertyChangeBase);
+                b.Click += (sender, e) => j.Value((stckpnl.DataContext as IEntityViewModel)?.Entity as ModelBase, stckpnl.DataContext as NotifyPropertyChangeBase);
                 wp.Children.Add(b);
             }
             if (addwp) stckpnl.Children.Add(wp);
@@ -61,7 +61,7 @@ namespace TheXDS.Proteus.Crud
 
             if (model.Implements<INameable>())
             {
-                tb.SetBinding(TextBlock.TextProperty, new Binding(nameof(INameable.Name)));
+                tb.SetBinding(TextBlock.TextProperty, new Binding($"Entity.{nameof(INameable.Name)}"));
             }
             else
             {

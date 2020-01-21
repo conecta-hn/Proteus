@@ -256,7 +256,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             IsBusy = false;
         }
 
-        private Dictionary<SimpleCommand,bool> SaveStates(IEnumerable<SimpleCommand> commands)
+        private Dictionary<SimpleCommand, bool> SaveStates(IEnumerable<SimpleCommand> commands)
         {
             var states = new Dictionary<SimpleCommand, bool>();
             foreach (var j in commands)

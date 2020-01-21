@@ -49,27 +49,23 @@ namespace TheXDS.Proteus.Dialogs
         }
     }
 
-    public class InputSplashViewModel<T> : IDynamicViewModel
+    public class InputSplashViewModel<T> : NotifyPropertyChanged
     {
-        private readonly ICloseable _host;
-        public bool Cancel { get; private set; }
-
-        public InputSplashViewModel(ICloseable host, IPropertyDescription description)
-        {
-            _host = host;
-            CloseCommand = new SimpleCommand(OnClose);
-            GoCommand = new SimpleCommand(OnGo);
-            InputControl = PropertyMapper.GetMapping(description)?.Control;
-            Prompt = description.Label;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly ICloseable _host;
+        private T _inputValue;
 
         /// <summary>
         /// Obtiene o establece el valor Title.
         /// </summary>
         /// <value>El valor de Title.</value>
         public string Prompt { get; }
+
+        /// <summary>
+        /// Obtiene un valor que indica si la obtención de un valor ha sido cancelada.
+        /// </summary>
+        public bool Cancel { get; private set; }
 
         /// <summary>
         /// Obtiene el control de edición a utilizar para obtener el valor
@@ -89,6 +85,16 @@ namespace TheXDS.Proteus.Dialogs
         /// <returns>El comando Go.</returns>
         public SimpleCommand GoCommand { get; }
 
+
+        public InputSplashViewModel(ICloseable host, IPropertyDescription description)
+        {
+            _host = host;
+            CloseCommand = new SimpleCommand(OnClose);
+            GoCommand = new SimpleCommand(OnGo);
+            InputControl = PropertyMapper.GetMapping(description)?.Control;
+            Prompt = description.Label;
+        }
+
         private void OnClose()
         {
             Cancel = true;
@@ -101,17 +107,10 @@ namespace TheXDS.Proteus.Dialogs
             _host.Close();
         }
 
-        void IRefreshable.Refresh()
+        public T InputValue
         {
-        }
-
-        public T InputValue { get; set; }
-        object IDynamicViewModel.Entity
-        {
-            get => this;
-            set
-            {
-            }
+            get => _inputValue; 
+            set => Change(ref _inputValue, value);
         }
     }
 }

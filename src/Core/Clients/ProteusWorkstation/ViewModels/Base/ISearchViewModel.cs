@@ -10,11 +10,11 @@ namespace TheXDS.Proteus.ViewModels.Base
 {
     public interface ISearchViewModel
     {
-        ICollectionView Results { get; }
+        ICollectionView? Results { get; }
         string ResultsDetails { get; }
         ObservingCommand SearchCommand { get; }
         string SearchLabel { get; }
-        string SearchQuery { get; set; }
+        string? SearchQuery { get; set; }
         bool WillSearch { get; }
     }
 }

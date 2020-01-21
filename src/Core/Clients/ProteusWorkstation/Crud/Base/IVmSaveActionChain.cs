@@ -20,7 +20,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// Tipo de ViewModel a pasar como parámetro a las funciones de
     /// guardado.
     /// </typeparam>
-    public interface IVmSaveActionChain<TModel, TViewModel> : ICallSaveAction where TModel : ModelBase, new() where TViewModel : class, IDynamicViewModel<TModel>
+    public interface IVmSaveActionChain<TModel, TViewModel> : ICallSaveAction where TModel : ModelBase, new() where TViewModel : class, IEntityViewModel<TModel>
     {
         /// <summary>
         /// Concatena una acción de guardado.

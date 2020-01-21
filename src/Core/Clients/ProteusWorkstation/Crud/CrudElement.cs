@@ -18,6 +18,8 @@ using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
 namespace TheXDS.Proteus.Crud
 {
+    public class ProteusEntityViewModel<T> : ViewModel<T> { }
+
     /// <summary>
     /// Describe una propiedad y su respectivo control de edición dentro de
     /// un editor de Crud.
@@ -66,7 +68,7 @@ namespace TheXDS.Proteus.Crud
         /// ViewModel que controla la edición de las propiedades del modelo
         /// para el cual se ha construido este <see cref="CrudElement"/>.
         /// </summary>
-        public IDynamicViewModel ViewModel { get; }
+        public IEntityViewModel ViewModel { get; }
 
         /// <summary>
         /// Descripción bajo la cual se han generado el editor y la vista
@@ -108,12 +110,12 @@ namespace TheXDS.Proteus.Crud
         /// </param>
         public CrudElement(ICrudDescription description, Type model = null)
         {
-            Model = model?.ResolveCollectionType()?.ResolveToDefinedType() ?? description?.DescribedModel;
+            Model = model?.ResolveCollectionType().ResolveToDefinedType() ?? description?.DescribedModel;
             Description = description;
 
             ViewModel = Description?.BaseViewModelType is null
-                ? ViewModelFactory.BuildViewModel(Model).New<IDynamicViewModel>()
-                : ViewModelFactory.BuildViewModel(Description.BaseViewModelType, Model).New<IDynamicViewModel>();
+                ? typeof(ProteusEntityViewModel<>).MakeGenericType(Model).New<IEntityViewModel>()
+                : Description.BaseViewModelType.New<IEntityViewModel>();
 
             if (!(Description is null))
             {
@@ -189,9 +191,9 @@ namespace TheXDS.Proteus.Crud
             Model = model;
             Description = GetDescription(model);
 
-            ViewModel = Description?.BaseViewModelType is null 
-                ? ViewModelFactory.BuildViewModel(model).New<IDynamicViewModel>()
-                : ViewModelFactory.BuildViewModel(Description.BaseViewModelType, model).New<IDynamicViewModel>();
+            ViewModel = Description?.BaseViewModelType is null
+                ? typeof(ProteusEntityViewModel<>).MakeGenericType(model).New<IEntityViewModel>()
+                : Description.BaseViewModelType.New<IEntityViewModel>();
 
             if (!(Description is null))
             {
