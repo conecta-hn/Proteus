@@ -124,6 +124,61 @@ namespace TheXDS.Proteus.Conecta
         public class Empleado : Contact<int>
         {
         }
+
+
+        // TrackHN?
+
+
+
+        public class Network : ModelBase<int>
+        {
+            public virtual List<Endpoint> Endpoints { get; set; } = new List<Endpoint>();
+        }
+        public class Endpoint : Nameable<int>
+        {
+            public virtual Router Router { get; set; }
+            public virtual Network Network { get; set; }
+
+        }
+
+        public class Router : Nameable<int>
+        {
+            public virtual List<Endpoint> Endpoints { get; set; } = new List<Endpoint>();
+            public virtual List<RouteTable> Routes { get; set; } = new List<RouteTable>();
+        }
+
+        public class RouteTable : ModelBase<int>
+        {
+            public Network? Target { get; set; }
+            public Endpoint Via { get; set; }
+        }
+
+
+
+        public class PackageKind : Nameable<int>
+        {
+            public Guid? PreAutomator { get; set; }
+            public Guid? PostAutomator { get; set; }
+
+            public virtual List<Package> Packages { get; set; } = new List<Package>();
+        }
+
+        public abstract class Transportable : ModelBase<string>
+        {
+
+        }
+
+        public class Package : Transportable
+        {
+            public PackageKind Kind { get; set; }
+
+        }
+
+        public class Transit : ModelBase<long>
+        {
+
+        }
+
     }
 
     namespace Context

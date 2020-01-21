@@ -3,31 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
-using TheXDS.MCART.ViewModel;
+using TheXDS.MCART.Types;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Conecta.Api;
 using TheXDS.Proteus.Conecta.Models;
 using TheXDS.Proteus.Conecta.ViewModels;
+using TheXDS.Proteus.ConectaModule.Pages;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Misc;
-using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
-using OfficeOpenXml;
-using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
 using static TheXDS.MCART.Types.Extensions.FlowDocumentExtensions;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.Proteus.Annotations.InteractionType;
 using QE = System.Data.Entity.QueryableExtensions;
-using System.IO;
-using Microsoft.Win32;
-using TheXDS.Proteus.ConectaModule.Pages;
 
 namespace TheXDS.Proteus.Conecta
 {
@@ -330,10 +323,44 @@ namespace TheXDS.Proteus.Conecta
             public async void NosDebenReport(object? sender, EventArgs e)
             {
                 if (!InputSplash.GetNew("Ingrese a un deudor", out string query)) return;
-                await MakeNosDebenReport(query);
+                await ConectaReports.MakeNosDebenReport(query);
             }
 
-            private async Task MakeNosDebenReport(string query)
+        }
+
+        public static class ConectaReports
+        {
+            private static readonly ConectaService _service = Proteus.Service<ConectaService>();
+
+
+            public static async Task MakeUtilidadesReport()
+            {
+                if (!InputSplash.GetNew<Range<DateTime>>("Seleccione un rango de fecha para generar el reporte", out var fecha)) return;
+                
+                Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
+                var fd = Reporting.ReportBuilder.MakeReport($"Utilidades del {fecha.Minimum} al {fecha.Maximum}");
+                
+                var l = await QE.ToListAsync(_service.All<Menudeo>().Where(p=>p.Vendedor != null));
+
+
+
+
+
+
+
+                try
+                {
+                    fd.Print("Utilidades - Proteus");
+                }
+                catch
+                {
+                    Proteus.MessageTarget?.Stop("Hubo un problema al imprimir el reporte.");
+                }
+
+                Proteus.CommonReporter?.Done();
+            }
+
+            public static async Task MakeNosDebenReport(string query)
             {
                 Proteus.CommonReporter?.UpdateStatus("Generando reporte...");
                 var fd = Reporting.ReportBuilder.MakeReport("Cuentas por cobrar");
@@ -341,7 +368,7 @@ namespace TheXDS.Proteus.Conecta
                 List<Menudeo> l;
                 if (query.IsEmpty())
                 {
-                    l = await QE.ToListAsync(Service.All<Menudeo>());
+                    l = await QE.ToListAsync(_service.All<Menudeo>());
                 }
                 else
                 {

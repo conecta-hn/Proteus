@@ -138,7 +138,7 @@ namespace TheXDS.Proteus.ConectaModule.ViewModels
         {
             Title = "Generar reporte de listado de productos";
             GenerateCommand = new SimpleCommand(OnGenerate);
-            PrintCommand = new SimpleCommand(OnPrint);//new ObservingCommand(this, OnPrint, () => !(Generated is null), nameof(Generated));
+            PrintCommand = new SimpleCommand(OnPrint);
         }
 
         private void OnPrint()
