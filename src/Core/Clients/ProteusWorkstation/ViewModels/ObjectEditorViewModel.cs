@@ -312,6 +312,7 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         protected override void AfterSave()
         {
+            Notify(nameof(DisplayValue));
         }
 
         /// <summary>
