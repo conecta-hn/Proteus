@@ -21,7 +21,6 @@ using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Reporting;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -185,23 +184,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Inicializa una nueva instancia de la clase
         /// <see cref="CrudViewModel{TService}"/>.
         /// </summary>
-        /// <param name="host">
-        /// Host visual de la ventana asociada a este ViewModel.
-        /// </param>
-        /// <param name="element">
-        /// <see cref="CrudElement"/> a incorporar como editor.
-        /// </param>
-        public CrudViewModel(ICloseable host, CrudElement element) : base(host)
-        {
-            _model = element.Model;
-            Implementation = new DbBoundCrudViewModel(element);
-            Init();
-        }
-
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase
-        /// <see cref="CrudViewModel{TService}"/>.
-        /// </summary>
         /// <param name="host">Host visual de la ventana asociada a este ViewModel.</param>
         /// <param name="source">Origen de datos a utilizar.</param>
         /// <param name="models">Modelos asociados de datos.</param>
@@ -209,20 +191,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
-            Init();
-        }
-
-        /// <summary>
-        /// Inicializa una nueva intstancia de la clase
-        /// <see cref="CrudViewModel{TService}"/>.
-        /// </summary>
-        /// <param name="host">Host visual de la ventana asociada a este ViewModel.</param>
-        /// <param name="source">Origen de datos a utilizar.</param>
-        /// <param name="elements">Elementos de crud a incorporar.</param>
-        public CrudViewModel(ICloseable host, IQueryable<ModelBase> source, params CrudElement[] elements) : base(host, true)
-        {
-            _model = elements.First().Model;
-            Implementation = new DbBoundCrudViewModel(source, elements);
             Init();
         }
 

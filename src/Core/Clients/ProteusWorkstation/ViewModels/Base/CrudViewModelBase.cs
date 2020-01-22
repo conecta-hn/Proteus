@@ -47,7 +47,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// disponibles de este <see cref="CrudViewModel{TService}"/>
         /// basado en el tipo de entidad seleccionada.
         /// </summary>
-        protected IEnumerable<CrudElement> Elements { get; }
+        protected ICollection<CrudElement> Elements { get; } = new List<CrudElement>();
+
+        /// <summary>
+        /// Enumera los modelos controlados por este <see cref="CrudViewModelBase"/>.
+        /// </summary>
+        public IEnumerable<Type> Models { get; }
 
         /// <summary>
         /// Obtiene o establece al elemento seleccionado.
@@ -59,13 +64,25 @@ namespace TheXDS.Proteus.ViewModels.Base
             {
                 _selection = value?.GetType().ResolveToDefinedType();
 
+                if (_selection is { } t)
+                {
+                    if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
+                    {
+                        Elements.Add(new CrudElement(t));
+                    }
+                }
+
                 if (!PerformSelection(IsForType, value))
                     PerformSelection(Implements,value);
 
                 OnPropertyChanged();
 
                 // HACK: Bruteforce a notification ¯\_(ツ)_/¯
-                SelectedElement?.Commit();
+                if (SelectedElement is { } se)
+                foreach (var j in se.EditControls)
+                {
+                    (se.ViewModel as INotifyPropertyChangeBase)?.Notify(j.Property.Name);
+                }
             }
         }
 
@@ -90,7 +107,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 }
                 else
                 {
-                    if (!(j.ViewModel is null)) j.ViewModel.Entity = null;
+                    if (!(j.ViewModel is null)) j.ViewModel.Entity = null!;
                 }
                 j.ViewModel?.Refresh();
             }
@@ -104,14 +121,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="j"></param>
         /// <returns></returns>
-        private bool IsForType(CrudElement j)
-        {
-            return j.Model.ResolveToDefinedType() == _selection?.ResolveToDefinedType();
-        }
+        private bool IsForType(CrudElement j) => IsForType(j, _selection);
 
-        private bool Implements(CrudElement j)
+        private bool IsForType(CrudElement j, Type? model)
         {
-            return _selection!.Implements(j.Model.ResolveToDefinedType()!);
+            return j.Model.ResolveToDefinedType() == model?.ResolveToDefinedType();
+        }
+        private bool Implements(CrudElement j) => Implements(j, _selection!);
+
+        private bool Implements(CrudElement j, Type model)
+        {
+            return model.Implements(j.Model.ResolveToDefinedType()!);
         }
 
         /// <summary>
@@ -122,14 +142,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Arreglo de <see cref="CrudElement"/> que serán utilizados para
         /// editar entidades dentro de esta instancia.
         /// </param>
-        protected CrudViewModelBase(params CrudElement[] elements)
+        protected CrudViewModelBase(params Type[] elements)
         {
             if (!elements.Any()) throw new ArgumentException("Se necesita al menos un tipo administrado por este ViewModel.", new EmptyCollectionException(elements));
-            Elements = elements.ToList();
-            foreach (var j in Elements)
-            {
-                j.Description?.SetCurrentEditor(this);
-            }
+
+            Models = elements.Select(p=>p.ResolveCollectionType()!.ResolveToDefinedType()!).ToList();
+
             CreateNew = new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement));
             EditCurrent = new ObservingCommand(this, OnEdit, CanEdit, nameof(SelectedElement));
             DeleteCurrent = new ObservingCommand(this, o => BusyOp(() => OnDelete(o)), CanDelete, nameof(SelectedElement));
@@ -145,8 +163,10 @@ namespace TheXDS.Proteus.ViewModels.Base
                 MultiModel = Visibility.Visible;
                 UniModel = Visibility.Collapsed;
                 CreateCommands = new HashSet<Launcher>(
-                    elements.Select(p => new Launcher(p.Description.FriendlyName, null, ((Action<object>)OnCreate).Method.FullName(),
-                        new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement)), p.Model)));
+                    //elements.Select(p => new Launcher(p.Description.FriendlyName, null, ((Action<object>)OnCreate).Method.FullName(),
+                    //    new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement)), p.Model)));
+                    elements.Select(p => new Launcher(p.Name, null, ((Action<object>)OnCreate).Method.FullName(),
+                        new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement)), p)));
             }
             RegisterPropertyChangeBroadcast(nameof(IsBusy),
                 nameof(BusyV), nameof(NotBusyV));
@@ -154,15 +174,6 @@ namespace TheXDS.Proteus.ViewModels.Base
                 nameof(NotEditMode), nameof(EditVis), nameof(NotEditVis));
             RegisterPropertyChangeBroadcast(nameof(Selection),
                 nameof(SelectedEditor), nameof(SelectedElement), nameof(SelectedDetails));
-        }
-
-        /// <summary>
-        /// Inicializa una nueva instancia de la clase
-        /// <see cref="CrudCollectionViewModelBase"/>.
-        /// </summary>
-        /// <param name="models">Modelos asociados de datos.</param>
-        protected CrudViewModelBase(params Type[] models) : this(models.Select(p => new CrudElement(p)).ToArray())
-        {
         }
 
         /// <summary>
@@ -315,9 +326,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         protected bool NewMode { get; private set; } = false;
         private void OnCreate(Type? t)
         {
+            t ??= Models.First();
+            if (!Elements.Any(p=>IsForType(p,t)) || !Elements.Any(p=>Implements(p,t!)))
+            {
+                Elements.Add(new CrudElement(t));
+            }
+
             NewMode = true;
             var entity = (t ?? Elements.First().Model).New();
             Selection = entity;
+
             foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
             {
                 if (k.Description.UseDefault && k.Property.CanWrite)

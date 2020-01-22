@@ -45,13 +45,13 @@ namespace TheXDS.Proteus.Pages.Base
             return p;
         }
 
-        public static CrudPage New<TService>(CrudElement crud) where TService : Service, new()
-        {
-            var p = new CrudPage();
-            var vm = new CrudViewModel<TService>(p, crud);
-            p.ViewModel = vm;
-            return p;
-        }
+        //public static CrudPage New<TService>(CrudElement crud) where TService : Service, new()
+        //{
+        //    var p = new CrudPage();
+        //    var vm = new CrudViewModel<TService>(p, crud);
+        //    p.ViewModel = vm;
+        //    return p;
+        //}
 
         /// <summary>
         /// Crea una nueva página de CRUD para el modelo especificado.
@@ -125,15 +125,15 @@ namespace TheXDS.Proteus.Pages.Base
             return p;
         }
 
-        public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<CrudElement> cruds) where T : Service, new()
-        {
-            var p = new CrudPage();
-            p.ViewModel = new CrudViewModel<T>(p, source, cruds.ToArray())
-            {
-                Title = title
-            };
-            return p;
-        }
+        //public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<CrudElement> cruds) where T : Service, new()
+        //{
+        //    var p = new CrudPage();
+        //    p.ViewModel = new CrudViewModel<T>(p, source, cruds.ToArray())
+        //    {
+        //        Title = title
+        //    };
+        //    return p;
+        //}
 
         public static CrudPage FromDescription<T>() where T:ICrudDescription, new()
         {

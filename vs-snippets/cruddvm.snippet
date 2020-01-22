@@ -2,9 +2,9 @@
 <CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <CodeSnippet Format="1.0.0">
     <Header>
-      <Title>Descriptor de Crud</Title>
-      <Shortcut>crudd</Shortcut>
-      <Description>Fragmento de código para agregar un nuevo descriptor de Crud.</Description>
+      <Title>Descriptor de Crud con ViewModel</Title>
+      <Shortcut>cruddvm</Shortcut>
+      <Description>Fragmento de código para agregar un nuevo descriptor de Crud junto con un ViewModel dinámico.</Description>
       <Author>César Andrés Morgan</Author>
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
@@ -22,13 +22,16 @@
         <Import>
           <Namespace>TheXDS.Proteus.Crud.Base</Namespace>
         </Import>
+        <Import>
+          <Namespace>TheXDS.MCART.ViewModel</Namespace>
+        </Import>
       </Imports>
       <Code Language="csharp" Kind="class decl"><![CDATA[
 /// <summary>
 /// Describe las propiedades Crud para el modelo
 /// <see cref="$model$"/>.
 /// </summary>
-public class $model$Descriptor : CrudDescriptor<$model$>
+public class $model$Descriptor : CrudDescriptor<$model$, $model$ViewModel>
 {
     /// <summary>
     /// Describe las propiedades Crud para el modelo
@@ -37,6 +40,25 @@ public class $model$Descriptor : CrudDescriptor<$model$>
     protected override void DescribeModel()
     {
         $end$
+    }
+}
+
+/// <summary>
+/// Clase base personalizada para el ViewModel recompilado que se utilizará
+/// dentro del Crud generado para el modelo
+/// <see cref="$model$"/>.
+/// </summary>
+public abstract class $model$ViewModel : DynamicViewModel<$model$>
+{
+    // TODO: Agregar propiedades del ViewModel.
+
+    /// <summary>
+    /// Inicializa una nueva instancia de la clase
+    /// <see cref="$model$ViewModel"/>.
+    /// </summary>
+    protected $model$ViewModel()
+    {
+        // TODO: Registrar propiedades enlazadas con los métodos RegisterPropertyChangeBroadcast() o RegisterPropertyChangeTrigger().
     }
 }
 ]]></Code>
