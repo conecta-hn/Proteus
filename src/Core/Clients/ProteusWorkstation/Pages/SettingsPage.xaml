@@ -58,7 +58,7 @@
                             widgets:ProteusProp.Watermark="Nombre de la empresa"
                             widgets:ProteusProp.WatermarkAlwaysVisible="True"
                             widgets:ProteusProp.Icon="🏢"
-                            Text="{Binding BussinessName}"/>
+                            Text="{Binding BusinessName}"/>
                         <DockPanel>
                             <TextBlock VerticalAlignment="Center" Text="Modo de inicialización"/>
                             <ComboBox
