@@ -1244,12 +1244,12 @@ namespace TheXDS.Proteus.Api
         /// Una tarea que puede utilizarse para monitorear la operación
         /// asíncrona.
         /// </returns>
-        protected virtual Task AfterInitialization(IStatusReporter reporter) => Task.CompletedTask;
+        protected virtual Task AfterInitialization(IStatusReporter? reporter) => Task.CompletedTask;
 
         internal async Task AfterInit()
         {
             await AfterInitialization(Reporter);
-            if (!(_reporter is null)) _reporter?.Done();
+            _reporter?.Done();
         }
 
         /// <summary>

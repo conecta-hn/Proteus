@@ -37,7 +37,7 @@ namespace TheXDS.Proteus.Pages.Base
         /// Una página de Proteus con funcionalidad CRUD para el modelo
         /// especificado.
         /// </returns>
-        public static CrudPage New<TService,TModel>() where TService:Service,new() where TModel : ModelBase, new()
+        public static CrudPage New<TService, TModel>() where TService:Service,new() where TModel : ModelBase, new()
         {
             var p = new CrudPage();
             var vm = new CrudViewModel<TService>(p, typeof(TModel));

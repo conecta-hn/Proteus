@@ -498,7 +498,7 @@ namespace TheXDS.Proteus
         /// Una instancia del servicio solicitado, o <see langword="null"/>
         /// si dicho servicio no pudo ser cargado.
         /// </returns>
-        public static T Service<T>() where T : Service => Services.OfType<T>().SingleOrDefault();
+        public static T? Service<T>() where T : Service => Services?.OfType<T>().SingleOrDefault();
 
         /// <summary>
         /// Infiere un servicio que pueda manejar entidades del tipo

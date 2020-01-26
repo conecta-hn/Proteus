@@ -74,6 +74,12 @@ namespace TheXDS.Proteus.ViewModels.Base
                 // HACK: TreeView es una perra
                 var bg = ((Brush)Application.Current.TryFindResource("SystemAltHighColorBrush")).Clone();
                 bg.Opacity = 0.5;
+
+                foreach (var j in elements)
+                {
+                    Elements.Add(new CrudElement(j));
+                }
+
                 Selector = new TreeView()
                 {
                     Background = bg,
@@ -82,7 +88,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 ((TreeView)Selector).SelectedItemChanged += TreeViewSelector_SelectionChanged;
             }
             Source = new ObservableCollectionWrap<ModelBase>(source);
-            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(csource)// nameof(Source))
+            Selector.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(csource)
             {
                 Mode = BindingMode.OneWay
             });

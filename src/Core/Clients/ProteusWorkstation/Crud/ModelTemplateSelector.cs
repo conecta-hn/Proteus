@@ -19,9 +19,10 @@ namespace TheXDS.Proteus.Crud
         {
             _descriptions = descriptions.ToList();
         }
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
-            return _descriptions.FirstOrDefault(p => p.DescribedModel == item.GetType().ResolveToDefinedType())?.TreeViewTemplate;
+            var desc = _descriptions.FirstOrDefault(p => p.DescribedModel == item.GetType().ResolveToDefinedType());
+            return desc?.TreeViewTemplate;
         }
     }
 }

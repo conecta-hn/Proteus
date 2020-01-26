@@ -23,7 +23,7 @@ namespace TheXDS.Proteus.Models.Base
 
         public override string ToString()
         {
-            return Proteus.LogonService.Get<User>(UserId)?.Name;
+            return Proteus.LogonService?.Get<User>(UserId)?.Name;
         }
     }
 }
