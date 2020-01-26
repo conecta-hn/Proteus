@@ -3,16 +3,16 @@
   <Profiles />
   <Settings>
     <Setting Name="UseLocalDbProvider" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UseDomainProvider" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="UseCustomProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DomainProvider" Type="System.String" Scope="User">
-      <Value Profile="(Default)">SRV-SQL-LM</Value>
+      <Value Profile="(Default)">localhost</Value>
     </Setting>
     <Setting Name="CustomProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -36,7 +36,13 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="NetworkServerAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">SRV-PROY-LM</Value>
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="BusinessName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Acme, inc.</Value>
+    </Setting>
+    <Setting Name="RowLimit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
     </Setting>
   </Settings>
 </SettingsFile>

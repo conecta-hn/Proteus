@@ -12,7 +12,7 @@ namespace TheXDS.Proteus.Config {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.Config {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseLocalDbProvider {
             get {
                 return ((bool)(this["UseLocalDbProvider"]));
@@ -37,7 +37,7 @@ namespace TheXDS.Proteus.Config {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseDomainProvider {
             get {
                 return ((bool)(this["UseDomainProvider"]));
@@ -61,7 +61,7 @@ namespace TheXDS.Proteus.Config {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SRV-SQL-LM")]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
         public string DomainProvider {
             get {
                 return ((string)(this["DomainProvider"]));
@@ -157,13 +157,37 @@ namespace TheXDS.Proteus.Config {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SRV-PROY-LM")]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
         public string NetworkServerAddress {
             get {
                 return ((string)(this["NetworkServerAddress"]));
             }
             set {
                 this["NetworkServerAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Acme, inc.")]
+        public string BusinessName {
+            get {
+                return ((string)(this["BusinessName"]));
+            }
+            set {
+                this["BusinessName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int RowLimit {
+            get {
+                return ((int)(this["RowLimit"]));
+            }
+            set {
+                this["RowLimit"] = value;
             }
         }
     }

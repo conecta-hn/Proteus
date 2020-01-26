@@ -7,23 +7,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{07AC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{854CECC9-A0FA-49E6-8121-F38825B686F5}"
 	ProjectSection(SolutionItems) = preProject
-		..\Directory.Build.props = ..\Directory.Build.props
-		..\Directory.Build.targets = ..\Directory.Build.targets
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{E7EACAD7-3CBC-42E3-BE62-814F7FE03DA2}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\targets\BuildPaths.props = ..\..\targets\BuildPaths.props
-		..\..\targets\bundle.ps1 = ..\..\targets\bundle.ps1
-		..\..\targets\Bundle.targets = ..\..\targets\Bundle.targets
-		..\..\targets\CompileOptions.targets = ..\..\targets\CompileOptions.targets
-		..\..\targets\Frameworks.props = ..\..\targets\Frameworks.props
-		..\..\targets\GlobalDirectives.targets = ..\..\targets\GlobalDirectives.targets
-		..\..\targets\Mcart.targets = ..\..\targets\Mcart.targets
-		..\..\targets\PackageInfo.props = ..\..\targets\PackageInfo.props
-		..\..\targets\Packages.targets = ..\..\targets\Packages.targets
-		..\..\targets\PackageVersion.props = ..\..\targets\PackageVersion.props
-		..\..\targets\Shared.targets = ..\..\targets\Shared.targets
+		..\targets\BuildPaths.props = ..\targets\BuildPaths.props
+		..\targets\bundle.ps1 = ..\targets\bundle.ps1
+		..\targets\Bundle.targets = ..\targets\Bundle.targets
+		..\targets\CompileOptions.targets = ..\targets\CompileOptions.targets
+		..\targets\Frameworks.props = ..\targets\Frameworks.props
+		..\targets\GlobalDirectives.targets = ..\targets\GlobalDirectives.targets
+		..\targets\Mcart.targets = ..\targets\Mcart.targets
+		..\targets\PackageInfo.props = ..\targets\PackageInfo.props
+		..\targets\Packages.targets = ..\targets\Packages.targets
+		..\targets\PackageVersion.props = ..\targets\PackageVersion.props
+		..\targets\Shared.targets = ..\targets\Shared.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proteus", "Proteus\Proteus.csproj", "{BD6DF2A2-BCCA-4725-B0C9-C458D5E78DDA}"
@@ -34,40 +34,40 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusWorkstation", "Clien
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbServices", "DbServices", "{EA21D5E1-04B8-4D62-8F72-51C9ACD8CA9B}"
 	ProjectSection(SolutionItems) = preProject
-		..\DbServices\Directory.Build.targets = ..\DbServices\Directory.Build.targets
+		DbServices\Directory.Build.targets = DbServices\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NwServices", "NwServices", "{3B887A3C-972D-4804-9B01-D4E8BAEBA839}"
 	ProjectSection(SolutionItems) = preProject
-		..\NwServices\Directory.Build.targets = ..\NwServices\Directory.Build.targets
+		NwServices\Directory.Build.targets = NwServices\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{5924F70B-155B-431A-A121-71FCAF2CB561}"
 	ProjectSection(SolutionItems) = preProject
-		..\Plugins\Directory.Build.targets = ..\Plugins\Directory.Build.targets
+		Plugins\Directory.Build.targets = Plugins\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{91519C93-419B-4853-A099-0074211DAF45}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UiModules", "UiModules", "{4241CB00-D102-4F3C-9BF6-3214771DF20D}"
 	ProjectSection(SolutionItems) = preProject
-		..\UiModules\Directory.Build.targets = ..\UiModules\Directory.Build.targets
+		UiModules\Directory.Build.targets = UiModules\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebServices", "WebServices", "{86FA367C-C00B-4F10-A4CD-FB5E1981D8DE}"
 	ProjectSection(SolutionItems) = preProject
-		..\WebServices\Directory.Build.targets = ..\WebServices\Directory.Build.targets
+		WebServices\Directory.Build.targets = WebServices\Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CmdLineArgs", "..\Shared\CmdLineArgs\CmdLineArgs.shproj", "{7DF0886C-11CD-4ABC-9135-31EF4B7FF44C}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CmdLineArgs", "Shared\CmdLineArgs\CmdLineArgs.shproj", "{7DF0886C-11CD-4ABC-9135-31EF4B7FF44C}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "License", "..\Shared\License\License.shproj", "{34BA68CC-9822-4656-84F1-81ED63433EA6}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "License", "Shared\License\License.shproj", "{34BA68CC-9822-4656-84F1-81ED63433EA6}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TerminalApps", "..\Shared\TerminalApps\TerminalApps.shproj", "{23237288-77A7-45C0-B479-720769CC2DBD}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TerminalApps", "Shared\TerminalApps\TerminalApps.shproj", "{23237288-77A7-45C0-B479-720769CC2DBD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XceedPatches", "..\UiModules\XceedPatches\XceedPatches.csproj", "{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XceedPatches", "UiModules\XceedPatches\XceedPatches.csproj", "{1307F4D7-50C2-4242-8883-9C1DEA8C18F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExDumper", "..\UiModules\ExDumper\ExDumper.csproj", "{34F302A2-E5AA-4B5E-98EC-822D2C3756CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExDumper", "UiModules\ExDumper\ExDumper.csproj", "{34F302A2-E5AA-4B5E-98EC-822D2C3756CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusWebApi", "Clients\ProteusWebApi\ProteusWebApi.csproj", "{168DCBD5-0830-4B7D-8440-D3BA28037493}"
 EndProject
@@ -76,11 +76,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{5809CE07-C0DB-42D6-A880-DD8B55E820AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusDevel", "Utils\ProteusDevel\ProteusDevel.csproj", "{0FE33DF1-CCBB-400B-9464-9C2389DFA411}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusServerRemote", "Utils\ProteusServerRemote\ProteusServerRemote.csproj", "{8298614D-2934-4484-AC9C-9D4C5732EDFF}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
-		..\Shared\License\License.projitems*{34ba68cc-9822-4656-84f1-81ed63433ea6}*SharedItemsImports = 13
-		..\Shared\CmdLineArgs\CmdLineArgs.projitems*{7df0886c-11cd-4abc-9135-31ef4b7ff44c}*SharedItemsImports = 13
+		Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
+		Shared\License\License.projitems*{34ba68cc-9822-4656-84f1-81ed63433ea6}*SharedItemsImports = 13
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{7df0886c-11cd-4abc-9135-31ef4b7ff44c}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +143,22 @@ Global
 		{168DCBD5-0830-4B7D-8440-D3BA28037493}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
 		{168DCBD5-0830-4B7D-8440-D3BA28037493}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{168DCBD5-0830-4B7D-8440-D3BA28037493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +173,8 @@ Global
 		{1307F4D7-50C2-4242-8883-9C1DEA8C18F0} = {4241CB00-D102-4F3C-9BF6-3214771DF20D}
 		{34F302A2-E5AA-4B5E-98EC-822D2C3756CF} = {4241CB00-D102-4F3C-9BF6-3214771DF20D}
 		{168DCBD5-0830-4B7D-8440-D3BA28037493} = {07AC0145-3794-4E17-9CE6-03F7CD241582}
+		{0FE33DF1-CCBB-400B-9464-9C2389DFA411} = {5809CE07-C0DB-42D6-A880-DD8B55E820AF}
+		{8298614D-2934-4484-AC9C-9D4C5732EDFF} = {5809CE07-C0DB-42D6-A880-DD8B55E820AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A790D96A-1B15-4B2C-8213-B331EDE835E1}

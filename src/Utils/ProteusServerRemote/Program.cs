@@ -92,9 +92,9 @@ namespace TheXDS.Proteus.Remote
             }
 
             var c = new RemoteTerminalClient(MessageTarget);
-            if (!c.Connect(a.Value<Server>() ?? "SRV-PROY-LM", int.TryParse(a.Value<Port>(), out var prt) ? prt : 51201))
+            if (!c.Connect(a.Value<Server>() ?? "localhost", int.TryParse(a.Value<Port>(), out var prt) ? prt : 51201))
             {
-                MessageTarget.Error($"No fue posible conectarse al servidor {a.Value<Server>() ?? "SRV-PROY-LM"}:{prt}.");
+                MessageTarget.Error($"No fue posible conectarse al servidor {a.Value<Server>() ?? "localhost"}:{prt}.");
                 return;
             }
             else

@@ -8,16 +8,10 @@
     <Description>Proteus Workstation Client</Description>    
   </PropertyGroup>
   <ItemGroup>
-    <Page Remove="Resources\Images\Logo.xaml" />
-    <Page Remove="Resources\Images\Plugin.xaml" />
-    <Page Remove="Resources\Images\Proteus.xaml" />
-    <Page Remove="Resources\Images\Warning.xaml" />
+    <Page Remove="Resources\Images\*.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Images\Logo.xaml" />
-    <EmbeddedResource Include="Resources\Images\Plugin.xaml" />
-    <EmbeddedResource Include="Resources\Images\Proteus.xaml" />
-    <EmbeddedResource Include="Resources\Images\Warning.xaml" />
+    <EmbeddedResource Include="Resources\Images\*.xaml" />
   </ItemGroup>  
   <ItemGroup>
     <PackageReference Include="BarcodeLib" Version="2.2.3" />
@@ -38,11 +32,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  
-    <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties properties_4launchsettings_1json__JsonSchema="" />
-    </VisualStudio>
-  </ProjectExtensions>
+
   <Import Project="$(SharedDir)CmdLineArgs\CmdLineArgs.projitems" Label="Shared" />
 </Project>

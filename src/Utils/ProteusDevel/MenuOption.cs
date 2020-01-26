@@ -6,10 +6,11 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.PluginSupport.Legacy;
 
 namespace TheXDS.Proteus.Devel
 {
-    public abstract class MenuOption : TheXDS.MCART.PluginSupport.Plugin
+    public abstract class MenuOption : Plugin
     {
         protected AdminSessionClient Client => ProteusDevel.NwClient;
         public abstract string Summary { get; }

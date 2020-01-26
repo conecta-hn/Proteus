@@ -41,7 +41,7 @@ namespace TheXDS.Proteus.Devel
                 case DumpResponse.Stop:
                     _target.Stop(br.ReadString()); break;
                 case DumpResponse.Report:
-                    _target.UpdateStatus(br.ReadDouble(),br.ReadString()); break;
+                    _target.UpdateStatus(br.ReadDouble(), br.ReadString()); break;
                 case DumpResponse.Warning:
                     _target.Warning(br.ReadString()); break;
             }

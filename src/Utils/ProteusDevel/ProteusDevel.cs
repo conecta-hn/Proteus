@@ -15,17 +15,18 @@ namespace TheXDS.Proteus.Devel
 {
     public static class ProteusDevel
     {
-        internal static AdminSessionClient NwClient => (AdminSessionClient)ProteusLib.NwClient;
+        internal static AdminSessionClient NwClient => (AdminSessionClient)Proteus.NwClient;
         internal static bool _appActive = true;
         private static readonly IList<MenuOption> _options = FindAllObjects<MenuOption>().ToList();
+
         public static async Task Main(string[] args)
         {
-            ProteusLib.ReplaceClient<AdminSessionClient>();
+            Proteus.ReplaceClient<AdminSessionClient>();
             await KickStart.Run();
 
             NwClient.ConnectionLost += (_, e) =>
             {
-                ProteusLib.MessageTarget?.Stop("Se ha perdido la conectividad con el servidor.");
+                Proteus.MessageTarget?.Stop("Se ha perdido la conectividad con el servidor.");
                 _appActive = false;
             };
 
@@ -60,19 +61,19 @@ namespace TheXDS.Proteus.Devel
             } while (rpw);
             Console.WriteLine();
 
-            ProteusLib.Interactive = true;
-            var r = await ProteusLib.Login(user, pw);
+            Proteus.Interactive = true;
+            var r = await Proteus.Login(user, pw);
             if (r.Success)
             {
                 while (_appActive)
                 {
                     Menu();
                 }
-                ProteusLib.Logout();
+                Proteus.Logout();
             }
             else
             {
-                ProteusLib.MessageTarget?.Stop(r.Message);
+                Proteus.MessageTarget?.Stop(r.Message);
             }
         }
         private static void Menu()

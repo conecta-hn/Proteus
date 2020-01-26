@@ -38,9 +38,9 @@ namespace TheXDS.Proteus.Devel
                 _termClient.CloseConnection();
                 return;
             }
-            var s = ProteusLib.Settings.NetworkServerAddress;
-            ProteusLib.CommonReporter?.UpdateStatus($"Conectando a {s}");
-            ProteusLib.CommonReporter?.Done(_termClient.Connect(s, 51201)
+            var s = Proteus.Settings.NetworkServerAddress;
+            Proteus.CommonReporter?.UpdateStatus($"Conectando a {s}");
+            Proteus.CommonReporter?.Done(_termClient.Connect(s, 51201)
                 ? "Conexión realizada exitosamente."
                 : "No fue posible conectar la terminal remota.");
         }
@@ -52,10 +52,10 @@ namespace TheXDS.Proteus.Devel
 
         internal override void Run()
         {
-            var u = ProteusLib.LogonService.Get<User>(Input("Usuario a auditar (Intro=usuario actual)").OrNull() ?? ProteusLib.Session.Id);
+            var u = Proteus.LogonService.Get<User>(Input("Usuario a auditar (Intro=usuario actual)").OrNull() ?? Proteus.Session.Id);
             if (u is null)
             {
-                ProteusLib.MessageTarget?.Stop("Usuario desconocido.");
+                Proteus.MessageTarget?.Stop("Usuario desconocido.");
                 return;
             }
             Audit(u);
@@ -67,7 +67,7 @@ namespace TheXDS.Proteus.Devel
         {
             Console.WriteLine($"Auditoría de permisos para {credential.Name}");
 
-            foreach (var j in ProteusLib.Services)
+            foreach (var j in Proteus.Services)
             {
                 Console.WriteLine($"\n{j}\n---------------------------");
                 foreach (var k in j.Audit(credential))
@@ -105,7 +105,7 @@ namespace TheXDS.Proteus.Devel
         {
             Console.WriteLine($"Auditoría local de permisos para {credential.Name}");
 
-            foreach (var j in ProteusLib.Services)
+            foreach (var j in Proteus.Services)
             {
                 Console.WriteLine($"\n{j}\n---------------------------");
                 foreach (var k in j.ShallowAudit(credential))
@@ -126,9 +126,9 @@ namespace TheXDS.Proteus.Devel
             Separator();
             Helpers.About(TheXDS.MCART.Resources.RtInfo.CoreRtAssembly);
             Separator();
-            Helpers.About(typeof(ProteusLib).Assembly);
+            Helpers.About(typeof(Proteus).Assembly);
             Separator();
-            foreach (var j in ProteusLib.Services)
+            foreach (var j in Proteus.Services)
             {
                 Helpers.About((IExposeInfo)j);
                 Separator();
@@ -144,11 +144,11 @@ namespace TheXDS.Proteus.Devel
         {
             if (Client.SendHeartbeat())
             {
-                ProteusLib.MessageTarget?.Info("El servidor ha respondido al comando Heartbeat.");
+                Proteus.MessageTarget?.Info("El servidor ha respondido al comando Heartbeat.");
             }
             else
             {
-                ProteusLib.MessageTarget?.Error("El servidor NO ha respondido al comando Heartbeat.");
+                Proteus.MessageTarget?.Error("El servidor NO ha respondido al comando Heartbeat.");
             }
         }
     }

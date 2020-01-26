@@ -8,9 +8,9 @@ namespace TheXDS.Proteus.Config {
     {
         public bool UseNetworkServer => true;
 
-        public ProteusLib.InitMode InitMode
+        public Proteus.InitMode InitMode
         {
-            get => (ProteusLib.InitMode)ProteusInitMode;
+            get => (Proteus.InitMode)ProteusInitMode;
             set => ProteusInitMode = (byte)value;
         }
 
