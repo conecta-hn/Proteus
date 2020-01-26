@@ -5,6 +5,9 @@
   <ItemGroup>
     <None Remove="Resources\Art\FullLogo.png.base64.deflate" />
     <EmbeddedResource Include="Resources\Art\FullLogo.png.base64.deflate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>  
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.0" />

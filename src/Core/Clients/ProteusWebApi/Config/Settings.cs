@@ -12,9 +12,9 @@ namespace TheXDS.Proteus.Config
         internal IConfigurationSection settings { get; set; }
         public byte ProteusInitMode { get; set; }
 
-        public ProteusLib.InitMode InitMode
+        public Proteus.InitMode InitMode
         {
-            get => (ProteusLib.InitMode)ProteusInitMode;
+            get => (Proteus.InitMode)ProteusInitMode;
             set => ProteusInitMode = (byte)value;
         }
 
@@ -35,6 +35,11 @@ namespace TheXDS.Proteus.Config
         public int NetworkServerPort { get; set; }
 
         public string PluginsDir { get; set; }
+
+        /// <summary>
+        /// Contiene la ruta al directorio de almacenamiento local del host. El
+        /// directorio debería tener permisos de escritura habilitados.
+        /// </summary>
         public string DataDir { get; set; }
 
         public string WebPluginsDir { get; set; }
@@ -47,5 +52,9 @@ namespace TheXDS.Proteus.Config
         public string ServiceApiToken { get; set; }
 
         public bool EnableAnnounce { get; set; }
+
+        public string BusinessName { get; set; }
+
+        public int RowLimit { get; set; }
     }
 }

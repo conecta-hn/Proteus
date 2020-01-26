@@ -11,32 +11,49 @@ using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Controllers
 {
+    /// <summary>
+    /// Controlador raíz de la aplicación. Provee de datos de telemetría
+    /// básicos y estado de salud del servicio Web y diversos componentes de
+    /// Proteus.
+    /// </summary>
     [Route("v1")]
     public class RootController : ProteusWebController
     {
+        /// <summary>
+        /// Obtiene información básica de telemetría del servicio de API Web.
+        /// </summary>
+        /// <returns>
+        /// La información básica de telemetría del servicio de API Web.
+        /// </returns>
         [HttpGet]
         public ActionResult Index()
         {
             return StatusCode(200, new {
-                healthy = !ProteusLib.Settings.RequireNetworkServerSuccess || ProteusLib.NwClient.IsAlive,
-                nwServerAlive = ProteusLib.NwClient.IsAlive,
-                interactive = ProteusLib.Interactive,
-                launch_config = ProteusLib.Settings,
-                session = ProteusLib.Session is null ? null : new {
-                    name = ProteusLib.Session.Name,
-                    granted = ProteusLib.Session.DefaultGranted.ToString(),
-                    revoked = ProteusLib.Session.DefaultRevoked.ToString(),
-                    interactive = ProteusLib.Session.Interactive,
-                    allow_multi_login = ProteusLib.Session.AllowMultiLogin
+                healthy = !Proteus.Settings?.RequireNetworkServerSuccess ?? false || Proteus.NwClient.IsAlive,
+                nwServerAlive = Proteus.NwClient.IsAlive,
+                interactive = Proteus.Interactive,
+                launch_config = Proteus.Settings,
+                session = Proteus.Session is null ? null : new {
+                    name = Proteus.Session.Name,
+                    granted = Proteus.Session.DefaultGranted.ToString(),
+                    revoked = Proteus.Session.DefaultRevoked.ToString(),
+                    interactive = Proteus.Session.Interactive,
+                    allow_multi_login = Proteus.Session.AllowMultiLogin
                 },
-                info = new AssemblyInfo(typeof(ProteusLib).Assembly),
             });
         }
 
+        /// <summary>
+        /// Obtiene información sobre los servicios cargados.
+        /// </summary>
+        /// <returns>
+        /// Un <see cref="ActionResult"/> que obtiene una bloque de datos en
+        /// formato JSON.
+        /// </returns>
         [HttpGet("Services")]
         public ActionResult Services()
         {
-            var s = ProteusLib.Services;
+            var s = Proteus.Services;
             if (!s.Any()) return StatusCode(503);
 
             return StatusCode(200, s.Select(p => new
@@ -50,6 +67,13 @@ namespace TheXDS.Proteus.Controllers
             }));
         }
 
+        /// <summary>
+        /// Obtiene información sobre los módulos web cargados.
+        /// </summary>
+        /// <returns>
+        /// Un <see cref="ActionResult"/> que obtiene una bloque de datos en
+        /// formato JSON.
+        /// </returns>
         [HttpGet("Modules")]
         public ActionResult Modules()
         {
@@ -63,10 +87,17 @@ namespace TheXDS.Proteus.Controllers
             }));
         }
 
+        /// <summary>
+        /// Obtiene una copia de los mensajes generados por Proteus.
+        /// </summary>
+        /// <returns>
+        /// Un <see cref="ActionResult"/> que obtiene una bloque de datos en
+        /// formato JSON.
+        /// </returns>
         [HttpGet("Logcat")]
         public ActionResult Logcat()
         {
-            return !(ProteusLib.MessageTarget is LogcatMessageTarget m) 
+            return !(Proteus.MessageTarget is LogcatMessageTarget m) 
                 ? StatusCode(503) 
                 : (ActionResult)StatusCode(200, m.Entries.ToArray());
         }

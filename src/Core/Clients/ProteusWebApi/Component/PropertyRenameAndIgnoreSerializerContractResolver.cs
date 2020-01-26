@@ -17,6 +17,10 @@ namespace TheXDS.Proteus.Component
         private readonly Dictionary<Type, HashSet<string>> _ignores;
         private readonly Dictionary<Type, Dictionary<string, string>> _renames;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="PropertyRenameAndIgnoreSerializerContractResolver"/>.
+        /// </summary>
         public PropertyRenameAndIgnoreSerializerContractResolver()
         {
             _ignores = new Dictionary<Type, HashSet<string>>();
@@ -40,6 +44,7 @@ namespace TheXDS.Proteus.Component
             _renames[type][propertyName] = newJsonPropertyName;
         }
 
+        /// <inheritdoc/>
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
@@ -64,11 +69,10 @@ namespace TheXDS.Proteus.Component
             return _ignores[type].Contains(jsonPropertyName);
         }
 
-        private bool IsRenamed(Type type, string jsonPropertyName, out string newJsonPropertyName)
+        private bool IsRenamed(Type type, string jsonPropertyName, out string? newJsonPropertyName)
         {
-            Dictionary<string, string> renames;
 
-            if (!_renames.TryGetValue(type, out renames) || !renames.TryGetValue(jsonPropertyName, out newJsonPropertyName))
+            if (!_renames.TryGetValue(type, out var renames) || !renames.TryGetValue(jsonPropertyName, out newJsonPropertyName))
             {
                 newJsonPropertyName = null;
                 return false;
@@ -77,5 +81,4 @@ namespace TheXDS.Proteus.Component
             return true;
         }
     }
-
 }
