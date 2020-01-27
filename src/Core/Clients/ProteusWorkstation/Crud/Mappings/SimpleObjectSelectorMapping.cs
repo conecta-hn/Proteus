@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             {
                 _cmb.ItemsSource = p.Source.ToList();                
             }
-            _cmb.SetBinding(Selector.SelectedItemProperty, new Binding(property.Property.Name));
+            _cmb.SetBinding(Selector.SelectedItemProperty, new Binding(property.GetBindingString()));
         }
 
         public override object ControlValue

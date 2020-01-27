@@ -14,10 +14,4 @@ namespace TheXDS.Proteus.Crud.Mappings
         {
         }
     }
-    public class ShortUpDownRangeMapping : XceedNumericRangeMapping<ShortUpDown, short>
-    {
-        public ShortUpDownRangeMapping(IPropertyDescription property) : base(property)
-        {
-        }
-    }
 }

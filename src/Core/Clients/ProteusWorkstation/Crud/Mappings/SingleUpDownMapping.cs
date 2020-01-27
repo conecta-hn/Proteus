@@ -14,10 +14,4 @@ namespace TheXDS.Proteus.Crud.Mappings
         {
         }
     }
-    public class SingleUpDownRangeMapping : XceedNumericRangeMapping<SingleUpDown, float>
-    {
-        public SingleUpDownRangeMapping(IPropertyDescription property) : base(property)
-        {
-        }
-    }
 }

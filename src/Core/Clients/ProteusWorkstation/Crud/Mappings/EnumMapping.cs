@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.Crud.Mappings
                 SelectedValuePath = "Value",
                 DisplayMemberPath = "Name"
             };
-            c.SetBinding(Selector.SelectedValueProperty, property.Property.Name);
+            c.SetBinding(Selector.SelectedValueProperty, property.GetBindingString());
             return c;
         }
         public EnumMapping(IPropertyDescription property) : base(property, MkComboBox(property))

@@ -54,7 +54,7 @@ namespace TheXDS.Proteus.Crud.Mappings
                 rop._linkResolutionType = link.Model;
             }
 
-            var b = new Binding(property.Property.Name)
+            var b = new Binding(property.GetBindingString())
             {
                 Mode = BindingMode.OneWay,
                 StringFormat = property.ReadOnlyFormat,
@@ -84,7 +84,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             {
                 var i = new Image();
 
-                i.SetBinding(Image.SourceProperty, new Binding(property.Property.Name)
+                i.SetBinding(Image.SourceProperty, new Binding(property.GetBindingString())
                 {
                     Mode = BindingMode.OneWay,
                     Converter = new ImageLoader()
@@ -108,7 +108,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         /// <summary>
         /// Obtiene o establece el valor del control de forma manual.
         /// </summary>
-        public object ControlValue
+        public object? ControlValue
         {
             get
             {

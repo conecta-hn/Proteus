@@ -33,5 +33,10 @@ namespace TheXDS.Proteus.Crud.Base
         IDictionary<DependencyProperty, BindingBase> CustomBindings { get; }
         bool IsListColumn { get; }
         bool UseDefault { get; }
+
+        string GetBindingString()
+        {
+            return $"{(PropertySource == PropertyLocation.Model ? "Entity." : null)}{Property.Name}";
+        }
     }
 }

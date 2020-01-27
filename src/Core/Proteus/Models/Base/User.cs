@@ -21,9 +21,20 @@ namespace TheXDS.Proteus.Models.Base
         /// </summary>
         public string UserId { get; set; }
 
+        /// <summary>
+        /// Convierte esta entidad a su representación como una cadena.
+        /// </summary>
+        /// <returns>
+        /// El nombre a mostrar del usuario.
+        /// </returns>
         public override string ToString()
         {
-            return Proteus.LogonService.Get<User>(UserId)?.Name;
+            return Proteus.LogonService?.Get<User>(UserId)?.Name!;
         }
+
+        /// <summary>
+        /// Resuelve el usuario elnazado por esta entidad.
+        /// </summary>
+        public User? UserEntity => Proteus.ResolveLink<User>(UserId);
     }
 }

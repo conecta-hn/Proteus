@@ -14,10 +14,4 @@ namespace TheXDS.Proteus.Crud.Mappings
         {
         }
     }
-    public class DoubleUpDownRangeMapping : XceedNumericRangeMapping<DoubleUpDown, double>
-    {
-        public DoubleUpDownRangeMapping(IPropertyDescription property) : base(property)
-        {
-        }
-    }
 }

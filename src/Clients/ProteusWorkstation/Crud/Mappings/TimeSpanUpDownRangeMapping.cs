@@ -10,9 +10,9 @@ using Xceed.Wpf.Toolkit;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
-    public class TimeSpanUpDownMapping : XceedUpDownMapping<TimeSpanUpDown, TimeSpan>
+    public class TimeSpanUpDownRangeMapping : XceedUpDownRangeMapping<TimeSpanUpDown, TimeSpan>
     {
-        public TimeSpanUpDownMapping(IPropertyDescription property) : base(property)
+        public TimeSpanUpDownRangeMapping(IPropertyDescription property) : base(property)
         {
         }
     }

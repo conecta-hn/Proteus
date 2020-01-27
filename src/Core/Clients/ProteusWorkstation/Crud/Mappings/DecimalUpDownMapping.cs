@@ -14,10 +14,4 @@ namespace TheXDS.Proteus.Crud.Mappings
         {            
         }
     }
-    public class DecimalUpDownRangeMapping : XceedNumericRangeMapping<DecimalUpDown, decimal>
-    {
-        public DecimalUpDownRangeMapping(IPropertyDescription property) : base(property)
-        {
-        }
-    }
 }

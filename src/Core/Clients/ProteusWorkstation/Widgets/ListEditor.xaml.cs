@@ -24,9 +24,9 @@ namespace TheXDS.Proteus.Widgets
             InitializeComponent();
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
-            Vm.AddSelections = (sender as ListView).SelectedItems;
+            Vm.AddSelections = ((ListView)sender!).SelectedItems;
         }
         internal void ClearSelection(object sender, EventArgs e)
         {

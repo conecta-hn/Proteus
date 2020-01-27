@@ -41,7 +41,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             {
                 return _changed
                     ? MCART.Security.Password.PasswordStorage.CreateHash(_pwdBox.SecurePassword)
-                    : Description.Property.GetMethod.Invoke(_instance, System.Array.Empty<object>());
+                    : (byte[])Description.Property.GetMethod!.Invoke(_instance, System.Array.Empty<object>())!;
             }
             set
             {

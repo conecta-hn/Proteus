@@ -16,7 +16,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         {
             _control = Control;
             _prop = bindableProperty;
-            _control.SetBinding(_prop, new Binding(p.Property.Name));
+            _binding = _control.SetBinding(_prop, new Binding(p.GetBindingString()));
         }
         public new T Control => (T)base.Control;
         private readonly T _control;

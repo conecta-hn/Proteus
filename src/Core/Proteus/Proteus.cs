@@ -106,7 +106,7 @@ namespace TheXDS.Proteus
             /// Cargar servicios, y realizar una comprobación de base de
             /// datos.
             /// </summary>
-            [Name("Cargar y comprobar")] Check,
+            [Name("Comprobar modelo de datos")] Check,
             /// <summary>
             /// Cargar servicios, y ejecutar semillas para las bases de
             /// datos.
@@ -116,6 +116,10 @@ namespace TheXDS.Proteus
             /// Cargar servicios, y ejecutar sanidad sobre las bases de datos.
             /// </summary>
             [Name("Cargar y ejecutar sanidad")] Sanitize = 4,
+            /// <summary>
+            /// Cargar y ejecutar  funciones de verificación integradas.
+            /// </summary>
+            [Name("Cargar y ejecutar funciones de verificación integradas")] Verify = 8,
             /// <summary>
             /// Inicialización completa, incluyendo carga, comprobación y
             /// ejecución de semillas.

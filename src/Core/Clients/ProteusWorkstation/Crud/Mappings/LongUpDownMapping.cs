@@ -14,10 +14,4 @@ namespace TheXDS.Proteus.Crud.Mappings
         {
         }
     }
-    public class LongUpDownRangeMapping : XceedNumericRangeMapping<LongUpDown, long>
-    {
-        public LongUpDownRangeMapping(IPropertyDescription property) : base(property)
-        {
-        }
-    }
 }
