@@ -330,6 +330,7 @@ namespace TheXDS.Proteus.Crud.Base
         private Control? _details;
         private DataTemplate? _trvTemplate;
         private InteractionType? _onModuleMenu;
+        private Func<bool>? _preCondition;
         private protected readonly HashSet<IPropertyDescription> _properties = new HashSet<IPropertyDescription>();
         private protected readonly Dictionary<string, Action<ModelBase, NotifyPropertyChangeBase>> _customActions = new Dictionary<string, Action<ModelBase, NotifyPropertyChangeBase>>();
         private readonly HashSet<Column> _listColumns = new HashSet<Column>();
@@ -424,6 +425,8 @@ namespace TheXDS.Proteus.Crud.Base
 
         InteractionType? ICrudDescription.OnModuleMenu => _onModuleMenu;
 
+        Func<bool>? ICrudDescription.LaunchPreCondition => _preCondition;
+
         #endregion
 
         #region Métodos de descripción
@@ -438,8 +441,15 @@ namespace TheXDS.Proteus.Crud.Base
         [DebuggerStepThrough]
         public void OnModuleMenu(InteractionType type)
         {
+            OnModuleMenu(type, () => true);
+        }
+
+        [DebuggerStepThrough]
+        public void OnModuleMenu(InteractionType type, Func<bool> preCondition)
+        {
             if (_onModuleMenu.HasValue) throw new InvalidOperationException("La entrada autogenerada de menú ya ha sido configurada.");
             _onModuleMenu = type;
+            _preCondition = preCondition;
         }
 
         /// <summary>
@@ -721,7 +731,6 @@ namespace TheXDS.Proteus.Crud.Base
         public IPropertyDateDescriptor DateProperty(Expression<Func<T, DateTime>> propertySelector)
         {
             var p = Prop<DatePropertyDescriptor, DateTime, T>(propertySelector);
-            p.Default(DateTime.Now);
             return p;
         }
 
@@ -743,7 +752,6 @@ namespace TheXDS.Proteus.Crud.Base
         public IPropertyDateDescriptor DateProperty(Expression<Func<T, DateTime?>> propertySelector)
         {
             var p = Prop<DatePropertyDescriptor, DateTime, T>(propertySelector);
-            p.Default(DateTime.Now);
             return p;
         }
 

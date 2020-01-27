@@ -31,8 +31,8 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         private readonly TControl _control;
         public new TControl Control => (TControl)base.Control;
 
-        public override void ClearControlValue() => ControlValue = Description.Default ?? Property.PropertyType.Default();
-        public override object ControlValue
+        public override void ClearControlValue() => ControlValue = Description.UseDefault ? Description.Default : Property.PropertyType.Default();
+        public override object? ControlValue
         {
             get => Get(_control);
             set => Set(_control, value);

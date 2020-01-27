@@ -66,7 +66,7 @@ namespace TheXDS.Proteus.Crud
             else
             {
                 var r = new Run();
-                r.SetBinding(Run.TextProperty, new Binding("Id"));
+                r.SetBinding(Run.TextProperty, new Binding("Entity.Id"));
                 tb.Inlines.Add($"{d.FriendlyName} #");
                 tb.Inlines.Add(r);
             }

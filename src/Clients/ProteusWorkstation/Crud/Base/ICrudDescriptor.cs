@@ -102,6 +102,11 @@ namespace TheXDS.Proteus.Crud.Base
         /// entidad.
         /// </summary>
         Func<ModelBase, bool> CanEdit { get; }
+        
+        /// <summary>
+        /// FUnción a ejecutar que comprueba una condición al abrir un Launcher.
+        /// </summary>
+        Func<bool>? LaunchPreCondition { get; }
 
         internal void SetCurrentEditor(ICrudEditingViewModel vm);
     }

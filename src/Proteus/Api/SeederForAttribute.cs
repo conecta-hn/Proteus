@@ -5,6 +5,8 @@ Licenciado para uso interno solamente.
 
 using System;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Api
 {
@@ -22,6 +24,7 @@ namespace TheXDS.Proteus.Api
         /// <param name="type">Valor de este atributo.</param>
         public SeederForAttribute(Type type) : base(type)
         {
+            if (!type.Implements<Service>()) throw new InvalidTypeException(type);
         }
     }
 }

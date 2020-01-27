@@ -41,7 +41,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// <summary>
         /// Obtiene o establece manualmente el valor de este control.
         /// </summary>
-        object ControlValue { get; set; }
+        object? ControlValue { get; set; }
 
         /// <summary>
         /// Limpia el valor del control.

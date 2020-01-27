@@ -33,11 +33,4 @@ namespace TheXDS.Proteus.Crud.Mappings
             }
         }
     }
-
-    public class DateMapping : ControlBindMapping<DatePicker>
-    {
-        public DateMapping(IPropertyDescription property) : base(property, DatePicker.SelectedDateProperty)
-        {
-        }
-    }
 }

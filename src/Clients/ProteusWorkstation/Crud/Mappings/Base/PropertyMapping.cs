@@ -26,7 +26,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
     /// </summary>
     public abstract class PropertyMapping : IPropertyMapping
     {
-        private readonly FrameworkElement _containingControl;
+        private readonly FrameworkElement? _containingControl;
 
         /// <summary>
         /// Obtiene al control contenedor del control generado por este
@@ -50,7 +50,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         /// <param name="control">
         /// Control a asociar a este <see cref="PropertyMapping"/>.
         /// </param>
-        public PropertyMapping(IPropertyDescription property, FrameworkElement control)
+        protected PropertyMapping(IPropertyDescription property, FrameworkElement control)
         {
             App.ApplyPatches(control);
             Description = property;
@@ -154,7 +154,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         /// <summary>
         /// Obtiene o establece el valor del control de forma manual.
         /// </summary>
-        public abstract object ControlValue { get; set; }
+        public abstract object? ControlValue { get; set; }
 
         /// <summary>
         /// Limpia el valor del control e edición asociado a este
@@ -170,7 +170,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         /// <param name="instance"></param>
         public virtual void GetValue(object instance)
         {
-            ControlValue = Property.GetMethod.Invoke(instance, System.Array.Empty<object>());
+            ControlValue = Property.GetMethod!.Invoke(instance, System.Array.Empty<object>());
             if (Control.Parent is ToggleButton tb)
             {
                 tb.IsChecked = !(ControlValue is null);
@@ -189,7 +189,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
         {
             if (ControlValue is IEnumerable<Models.Base.ModelBase> v)
             {
-                if (!(Property.GetMethod.Invoke(instance, System.Array.Empty<object>()) is IList c))
+                if (!(Property.GetMethod!.Invoke(instance, System.Array.Empty<object>()) is IList c))
                 {
                     c = Property.PropertyType.New<IList>();
                     Property.SetMethod?.Invoke(instance, new[] { c });
@@ -199,7 +199,6 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
             }
             else
             {
-
                 Property.SetMethod?.Invoke(instance, new[] { ControlValue });
             }
         }

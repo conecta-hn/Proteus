@@ -1915,9 +1915,9 @@ namespace TheXDS.Proteus.Api
         /// trabajo representada en la base de datos, o
         /// <see langword="null"/> si este equipo no ha sido registrado.
         /// </returns>
-        protected static TEstacion GetStation<TEstacion>(Service instance) where TEstacion : EstacionBase, new()
+        protected static TEstacion? GetStation<TEstacion>(Service? instance) where TEstacion : EstacionBase, new()
         {
-            return instance.Get<TEstacion>(Environment.MachineName);
+            return instance?.Get<TEstacion>(Environment.MachineName);
         }
 
         /// <summary>
@@ -1935,7 +1935,7 @@ namespace TheXDS.Proteus.Api
         /// trabajo representada en la base de datos, o
         /// <see langword="null"/> si este equipo no ha sido registrado.
         /// </returns>
-        protected static TEstacion GetStation<TEstacion, TService>() where TEstacion : EstacionBase, new() where TService : Service, new()
+        protected static TEstacion? GetStation<TEstacion, TService>() where TEstacion : EstacionBase, new() where TService : Service, new()
         {
             return GetStation<TEstacion>(Proteus.Service<TService>());
         }
@@ -1952,7 +1952,7 @@ namespace TheXDS.Proteus.Api
         /// trabajo representada en la base de datos, o
         /// <see langword="null"/> si este equipo no ha sido registrado.
         /// </returns>
-        protected static TEstacion GetStation<TEstacion>() where TEstacion : EstacionBase, new()
+        protected static TEstacion? GetStation<TEstacion>() where TEstacion : EstacionBase, new()
         {
             return GetStation<TEstacion>(Proteus.Infer(typeof(TEstacion)) 
                 ?? throw new InvalidOperationException(
@@ -1971,7 +1971,7 @@ namespace TheXDS.Proteus.Api
         /// específico representado en la base de datos, o
         /// <see langword="null"/> si el usuario no ha sido registrado.
         /// </returns>
-        protected static TUser GetUser<TUser>() where TUser : ModelBase, IUserBase, new()
+        protected static TUser? GetUser<TUser>() where TUser : ModelBase, IUserBase, new()
         {
             return GetUser<TUser>(Proteus.Infer(typeof(TUser))
                 ?? throw new InvalidOperationException(
@@ -1993,7 +1993,7 @@ namespace TheXDS.Proteus.Api
         /// específico representado en la base de datos, o
         /// <see langword="null"/> si el usuario no ha sido registrado.
         /// </returns>
-        protected static TUser GetUser<TUser, TService>() where TUser : ModelBase, IUserBase, new() where TService : Service, new()
+        protected static TUser? GetUser<TUser, TService>() where TUser : ModelBase, IUserBase, new() where TService : Service, new()
         {
             return GetUser<TUser>(Proteus.Service<TService>());
         }
@@ -2013,9 +2013,9 @@ namespace TheXDS.Proteus.Api
         /// específico representado en la base de datos, o
         /// <see langword="null"/> si el usuario no ha sido registrado.
         /// </returns>
-        protected static TUser GetUser<TUser>(Service instance) where TUser : ModelBase, IUserBase, new()
+        protected static TUser? GetUser<TUser>(Service? instance) where TUser : ModelBase, IUserBase, new()
         {
-            return instance.FirstOrDefault<TUser>(p => p.UserId == Proteus.Session.Id);
+            return instance?.FirstOrDefault<TUser>(p => p.UserId == Proteus.Session.Id);
         }        
     }
 

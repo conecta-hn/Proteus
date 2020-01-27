@@ -21,7 +21,7 @@ namespace TheXDS.Proteus.Crud.Base
         private string _label;
         private string _icon;
         private bool _hidden;
-        private object _default;
+        private object? _default;
         private NullMode _nullability;
         private int? _order;
         private bool _readOnly;
