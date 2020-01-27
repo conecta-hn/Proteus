@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Descriptor de Crud</Title>
+      <Shortcut>seeder</Shortcut>
+      <Description>Fragmento de código para agregar un nuevo descriptor de Crud.</Description>
+      <Author>César Andrés Morgan</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>			
+      <Declarations>
+        <Literal>
+          <ID>model</ID>
+          <ToolTip>Modelo a describir.</ToolTip>
+          <Default>MyModel</Default>
+        </Literal>
+        <Literal>
+          <ID>service</ID>
+          <ToolTip>Servicio para el cual crear el Seeder.</ToolTip>
+          <Default>MyService</Default>
+        </Literal>
+      </Declarations>
+      <Imports>
+        <Import>
+          <Namespace>System.Collections.Generic</Namespace>
+        </Import>
+        <Import>
+          <Namespace>TheXDS.Proteus.Api</Namespace>
+        </Import>
+        <Import>
+          <Namespace>TheXDS.Proteus.Models</Namespace>
+        </Import>
+      </Imports>
+      <Code Language="csharp" Kind="class decl"><![CDATA[
+/// <summary>
+/// Define una función de semilla de inicialización para el modelo
+/// <see cref="$model$"/>.
+/// </summary>
+[SeederFor(typeof($service$))]
+public class $model$Seeder : AsyncDbSeeder<$model$>
+{
+    /// <summary>
+    /// Obtiene una colección de entidades a insertar como parte de los
+    /// datos iniciales de la tabla del modelo <see cref="$model$"/>.
+    /// </summary>
+    /// <returns>
+    /// Una enumeración con entidades nuevas a insertar como parte de los
+    /// datos iniciales de la tabla del modelo <see cref="$model$"/>.
+    /// </returns>
+    protected override IEnumerable<$model$> GenerateEntities()
+    {
+        $end$
+    }
+}
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
