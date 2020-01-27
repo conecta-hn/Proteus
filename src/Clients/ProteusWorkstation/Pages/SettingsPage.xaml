@@ -1,0 +1,423 @@
+﻿<!--<page:ProteusPage-->
+<page:ProteusPage
+    xmlns:page="clr-namespace:TheXDS.Proteus.Pages.Base"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:res="clr-namespace:TheXDS.Proteus.Resources"
+    xmlns:cnf="clr-namespace:TheXDS.Proteus.Config"
+    xmlns:lib="clr-namespace:TheXDS.Proteus;assembly=Proteus"
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:app="clr-namespace:TheXDS.Proteus"
+    x:Class="TheXDS.Proteus.Pages.SettingsPage"
+    mc:Ignorable="d"    
+    d:DataContext="{d:DesignInstance {x:Type cnf:Settings}}"
+    d:DesignWidth="600" d:DesignHeight="400">
+    <DockPanel Style="{StaticResource BotoneraBase}" fw:PointerTracker.Enabled="True">
+        <controls:StretchyWrapPanel
+            Visibility="{Binding UnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}"
+            HorizontalAlignment="Center"
+            DockPanel.Dock="Bottom" Style="{StaticResource TBotonera}">
+            <Button Command="{Binding SaveCommand}" Click="BtnSave_OnClick" Content="Guardar"/>
+            <Button Command="{Binding CancelCommand}" Content="Cancelar"/>
+        </controls:StretchyWrapPanel>
+        <TabControl TabStripPlacement="Left" BorderThickness="1,0,0,0" BorderBrush="Gray">
+            <TabItem Header="Acerca de">
+                <Grid>
+                    <ScrollViewer>
+                        <controls:StretchyWrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+                            <Viewbox Child="{x:Static res:Images.Logo}" MaxHeight="200" Margin="30" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Title}" TextAlignment="Center">
+                                    <Run Text="{Binding Name, Mode=OneWay}" />
+                                    v<Run Text="{Binding ShortVersion, Mode=OneWay}"/></TextBlock>
+                                <TextBlock>
+                                    Parte del sistema Proteus - Versión
+                                    <Run Text="{Binding InfVersion, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock Text="{Binding Description}" />
+                                <TextBlock Text="{Binding Copyright}" />
+                                <controls:StretchyWrapPanel IsEnabled="{Binding IsAdmin, Mode=OneWay}">
+                                    <Button Command="{Binding PluginInfoCommand, Mode=OneWay}" Content="Información de plugins..."/>
+                                    <Button Command="{Binding AboutMCARTCommand, Mode=OneWay}" Content="Acerca de MCART..."/>
+                                </controls:StretchyWrapPanel>
+                            </StackPanel>
+                        </controls:StretchyWrapPanel>
+                    </ScrollViewer>
+                    <TextBlock VerticalAlignment="Bottom" Foreground="Gray" FontSize="9"><Run Text="Powered by MCART"/></TextBlock>
+                </Grid>
+            </TabItem>
+            <TabItem Header="General" IsEnabled="{Binding IsAdmin, Mode=OneWay}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBox 
+                            widgets:ProteusProp.Watermark="Nombre de la empresa"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="🏢"
+                            Text="{Binding BusinessName}"/>
+                        <DockPanel>
+                            <TextBlock VerticalAlignment="Center" Text="Modo de inicialización"/>
+                            <ComboBox
+                                ItemsSource="{Binding InitModes}"
+                                SelectedValuePath="Value"
+                                DisplayMemberPath="Name"
+                                SelectedValue="{Binding InitMode}"/>
+                        </DockPanel>
+                        <TextBox 
+                            widgets:ProteusProp.Watermark="Directorio de plugins de servicios"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="📁"
+                            Text="{Binding PluginsDir}"/>
+                        <TextBox 
+                            widgets:ProteusProp.Watermark="Directorio de plugins de Proteus Workstation"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="📁"
+                            Text="{Binding WsPluginsDir}"/>
+                        <GroupBox IsEnabled="{x:Static lib:Proteus.Interactive}">
+                            <GroupBox.Header>
+                                <CheckBox Content="Recordar último usuario en la ventana de inicio de sesión" IsChecked="{Binding RememberLastLogin}" IsThreeState="False"/>
+                            </GroupBox.Header>
+                            <StackPanel>
+                                <CheckBox IsEnabled="{Binding RememberLastLogin, Mode=OneWay}" Content="Recordar contraseña" IsChecked="{Binding RememberPassword}" IsThreeState="False"/>                                
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox>
+                            <GroupBox.Header>
+                                <CheckBox IsChecked="{Binding UseAltLauncher}" IsThreeState="False">
+                                    Utilizar gestor de arranque de aplicacion alternativo
+                                </CheckBox>
+                            </GroupBox.Header>
+                            <ComboBox
+                                SelectedItem="{Binding SelectedKickStarter}"
+                                ItemsSource="{Binding KickStarters, Mode=OneWay}"
+                                IsEnabled="{Binding UseAltLauncher, Mode=OneWay}"/>
+                        </GroupBox>
+                        <CheckBox IsChecked="{Binding ConfirmExit}" IsThreeState="False">
+                            Confirmar la salida de la aplicación
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding ResartRequired}" IsThreeState="False">
+                            Requerir el reinicio de la aplicación para aplicar la configuración
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding EarlyLoadMappings}" IsThreeState="False">
+                            Habilitar carga prematura de mapeos de modelos (experimental)
+                        </CheckBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Aspecto">
+                <ScrollViewer>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.Resources>
+                                <Style BasedOn="{StaticResource {x:Type Slider}}" TargetType="Slider">
+                                    <Setter Property="Grid.Column" Value="1"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>                            
+                            <TextBlock VerticalAlignment="Center">Opacidad de la ventana</TextBlock>
+                            <Slider
+                                Value="{Binding UiOpacity}"
+                                Minimum="0"
+                                Maximum="1"
+                                TickFrequency="0.1"
+                                TickPlacement="BottomRight"
+                                SmallChange="0.1" LargeChange="0.2"/>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center">Efecto Frost</TextBlock>
+                            <Slider
+                                Grid.Row="1"
+                                Value="{Binding NoiseUI}"
+                                Minimum="0"
+                                Maximum="0.05"
+                                TickFrequency="0.01"
+                                TickPlacement="BottomRight"
+                                SmallChange="0.01" LargeChange="0.02"/>
+                            <TextBlock Grid.Row="2" VerticalAlignment="Center">Ancho de módulos</TextBlock>
+                            <Slider
+                                Grid.Row="2"
+                                Value="{Binding UiModulesWidth}"
+                                Minimum="120"
+                                Maximum="360"
+                                TickFrequency="60"
+                                TickPlacement="BottomRight"
+                                SmallChange="15" LargeChange="60"/>
+                            <TextBlock Grid.Row="3" VerticalAlignment="Center">Alto de módulos</TextBlock>
+                            <Slider
+                                Grid.Row="3"
+                                Value="{Binding UiModulesHeight}"
+                                Minimum="32"
+                                Maximum="320"
+                                TickFrequency="50"
+                                TickPlacement="BottomRight"
+                                SmallChange="25" LargeChange="50"/>
+                        </Grid>
+                        <ComboBox
+                            widgets:ProteusProp.Watermark="Presentación de estado ocupado"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="⏳"
+                            ItemsSource="{Binding UiModes}"
+                            SelectedValuePath="Value"
+                            DisplayMemberPath="Name"
+                            SelectedValue="{Binding WindowUiMode}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Base de datos" IsEnabled="{Binding IsAdmin, Mode=OneWay}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <GroupBox Header="General">
+                            <StackPanel>
+                                <CheckBox
+                                    IsChecked="{Binding CheckExists}"
+                                    Content="Comprobar IDs a nivel de cliente antes de guardar"/>
+                                <xctk:IntegerUpDown 
+                                    widgets:ProteusProp.Icon="⌛"
+                                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                    widgets:ProteusProp.Watermark="Tiempo de espera máximo de conexión" 
+                                    Value="{Binding ServerTimeout}"/>
+                                <xctk:IntegerUpDown 
+                                    widgets:ProteusProp.Icon="📚"
+                                    widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                    widgets:ProteusProp.Watermark="Límite de carga de filas" 
+                                    Value="{Binding RowLimit}"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Conexión">
+                            <StackPanel>
+                                <RadioButton IsChecked="{Binding UseDomainProvider}" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock VerticalAlignment="Center"><Run Text="Servidor de SQL conectado a un dominio"/></TextBlock>
+                                        <TextBox 
+                                        IsEnabled="{Binding UseDomainProvider, Mode=OneWay}"
+                                        widgets:ProteusProp.Watermark="Nombre del servidor"
+                                        widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                                        widgets:ProteusProp.Icon="🖥"
+                                        Text="{Binding DomainProvider}"/>
+                                    </DockPanel>
+                                </RadioButton>
+                                <RadioButton IsChecked="{Binding UseCustomProvider}" HorizontalContentAlignment="Stretch">
+                                    <DockPanel>
+                                        <TextBlock VerticalAlignment="Center"><Run Text="Conexión personalizada"/></TextBlock>
+                                        <TextBox 
+                                        IsEnabled="{Binding UseCustomProvider, Mode=OneWay}"
+                                        widgets:ProteusProp.Watermark="Cadena de conexión"
+                                        widgets:ProteusProp.Icon="@"
+                                        Text="{Binding CustomProvider}"/>
+                                    </DockPanel>
+                                </RadioButton>
+                                <RadioButton 
+                                    IsChecked="{Binding UseLocalDbProvider}"
+                                    Content="Servidor de LocalDb (Sistemas aislados y desarrollo)"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Servicios de red" IsEnabled="{Binding IsAdmin, Mode=OneWay}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <CheckBox IsChecked="{Binding UseNetworkServer}" Content="Habilitar servicios de red"/>
+                        <TextBox 
+                            IsEnabled="{Binding UseNetworkServer, Mode=OneWay}"
+                            widgets:ProteusProp.Watermark="Dirección del servidor"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="\\"
+                            Text="{Binding NetworkServerAddress}"/>
+                        <xctk:IntegerUpDown
+                            IsEnabled="{Binding UseNetworkServer, Mode=OneWay}"
+                            widgets:ProteusProp.Watermark="Puerto del servidor"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            Value="{Binding NetworkServerPort}"
+                            Minimum="1" Maximum="65535" />
+                        <CheckBox
+                            IsChecked="{Binding RequireNetworkServerSuccess}"
+                            IsEnabled="{Binding UseNetworkServer, Mode=OneWay}"
+                            Content="Requerir conexión exitosa"/>
+                        <CheckBox
+                            IsChecked="{Binding EnableAnnounce}"
+                            IsEnabled="{Binding UseNetworkServer, Mode=OneWay}"
+                            Content="Habilitar escucha para restablecer comunicación en caso de caída del servicio"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Avanzado" IsEnabled="{Binding IsAdmin, Mode=OneWay}">                
+                <DockPanel>
+                    <ComboBox 
+                        ItemsSource="{Binding Repos}"
+                        SelectedItem="{Binding SelectedRepo}"
+                        DisplayMemberPath="Name"
+                        DockPanel.Dock="Top"
+                        widgets:ProteusProp.Watermark="Repositorio de configuración"
+                        widgets:ProteusProp.WatermarkAlwaysVisible="True"/>
+                    <ListView ItemsSource="{Binding SelectedRepo.Settings}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn
+                                    Header="Configuración"
+                                    DisplayMemberBinding="{Binding Id, Mode=OneWay}"/>
+                                <GridViewColumn Header="Valor">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Value}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Componentes" IsEnabled="{Binding IsAdmin, Mode=OneWay}">
+                <TabItem.Resources>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="Control.MouseDoubleClick" Handler="LstPlugins_DblClick"/>
+                    </Style>
+                </TabItem.Resources>
+                <TabControl>
+                    <TabItem Header="Estado de Proteus">
+                        <ScrollViewer>
+                            <DockPanel>
+                            <StackPanel DockPanel.Dock="Top">
+                                    <CheckBox IsEnabled="False" IsChecked="{x:Static lib:Proteus.Initialized}">Proteus inicializado</CheckBox>
+                                <CheckBox IsEnabled="False" IsChecked="{x:Static lib:Proteus.IsNwClientAlive}">Conexión con el servidor de gestión de sesión activa</CheckBox>
+                                    <CheckBox IsEnabled="False" IsChecked="{x:Static lib:Proteus.Interactive}">Modo interactivo</CheckBox>
+                                <DockPanel>
+                                    <TextBlock>
+                                        Motor de elevación de permisos:
+                                    </TextBlock>
+                                    <ContentControl Content="{x:Static lib:Proteus.Elevator}"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock>
+                                        Objetivo de mensajes:
+                                    </TextBlock>
+                                    <ContentControl Content="{x:Static lib:Proteus.MessageTarget}"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock>
+                                        Objetivo de alertas:
+                                    </TextBlock>
+                                    <ContentControl Content="{x:Static lib:Proteus.AlertTarget}"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock>
+                                        Objetivo de progreso:
+                                    </TextBlock>
+                                    <ContentControl Content="{x:Static lib:Proteus.CommonReporter}"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock>
+                                        Controlador de bitácora:
+                                    </TextBlock>
+                                    <ContentControl Content="{x:Static lib:Proteus.Logger}"/>
+                                </DockPanel>
+                                <TextBlock Margin="0,10,0,0">Orígenes de inicio de sesión:</TextBlock>
+                            </StackPanel>
+                            <ListView ItemsSource="{x:Static lib:Proteus.LoginSources}"/>
+                        </DockPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Módulos">
+                        <ListView ItemsSource="{x:Static app:App.Modules}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Módulo" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Header="Versión" DisplayMemberBinding="{Binding InformationalVersion}"/>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource SmallBtn}" Content="..." Click="BtnTypeInfo_Click"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+                    <TabItem Header="Herramientas">
+                        <ListView ItemsSource="{x:Static app:App.Tools}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Módulo" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Header="Versión" DisplayMemberBinding="{Binding InformationalVersion}"/>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource SmallBtn}" Content="..." Click="BtnTypeInfo_Click"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+                    <TabItem Header="Servicios">
+                        <ListView ItemsSource="{Binding Services}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Servicio" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Header="Versión" DisplayMemberBinding="{Binding InformationalVersion}"/>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource SmallBtn}" Content="..." Click="BtnTypeInfo_Click"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+                    <TabItem Header="Semillas">
+                        <ListView ItemsSource="{x:Static lib:Proteus.Seeders}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Seeder" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Header="Versión" DisplayMemberBinding="{Binding InformationalVersion}"/>
+                                    <GridViewColumn Header="Descripción" DisplayMemberBinding="{Binding Description}"/>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource SmallBtn}" Content="..." Click="BtnTypeInfo_Click"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+                    <TabItem Header="Parches">
+                        <ListView ItemsSource="{x:Static app:App.Patches}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Parche" DisplayMemberBinding="{Binding Name}"/>
+                                    <GridViewColumn Header="Versión" DisplayMemberBinding="{Binding InformationalVersion}"/>
+                                    <GridViewColumn Header="Descripción" DisplayMemberBinding="{Binding Description}"/>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource SmallBtn}" Content="..." Click="BtnTypeInfo_Click"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</page:ProteusPage>
