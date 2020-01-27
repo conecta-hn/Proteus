@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Descriptor de Crud</Title>
+      <Shortcut>crudd</Shortcut>
+      <Description>Fragmento de código para agregar un nuevo descriptor de Crud.</Description>
+      <Author>César Andrés Morgan</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>			
+      <Declarations>
+        <Literal>
+          <ID>model</ID>
+          <ToolTip>Modelo a describir.</ToolTip>
+          <Default>MyModel</Default>
+        </Literal>
+      </Declarations>
+      <Imports>
+        <Import>
+          <Namespace>TheXDS.Proteus.Crud.Base</Namespace>
+        </Import>
+      </Imports>
+      <Code Language="csharp" Kind="class decl"><![CDATA[
+/// <summary>
+/// Describe las propiedades Crud para el modelo
+/// <see cref="$model$"/>.
+/// </summary>
+public class $model$Descriptor : CrudDescriptor<$model$>
+{
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="$model$"/>.
+    /// </summary>
+    protected override void DescribeModel()
+    {
+        $end$
+    }
+}
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

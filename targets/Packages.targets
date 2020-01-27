@@ -9,7 +9,7 @@
     <PackageReference Include="TheXDS.MCART.UI" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.Windows" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.WPF" Version="$(McartVersion)" />
-    <PackageReference Include="TheXDS.MCART.Ext.ViewModelFactory" Version="$(McartVersion)" />
+    <!--<PackageReference Include="TheXDS.MCART.Ext.ViewModelFactory" Version="$(McartVersion)" />-->
     <ProjectReference Include="$(SOlutionDir)Proteus\Proteus.csproj" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="mscorlib" />
