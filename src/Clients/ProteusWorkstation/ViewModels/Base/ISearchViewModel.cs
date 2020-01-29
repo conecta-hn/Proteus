@@ -16,5 +16,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         string SearchLabel { get; }
         string? SearchQuery { get; set; }
         bool WillSearch { get; }
+
+        void ClearSearch();
     }
 }

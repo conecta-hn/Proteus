@@ -14,6 +14,7 @@ using System.Linq;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace TheXDS.Proteus.Pages.Base
 {
@@ -184,12 +185,22 @@ namespace TheXDS.Proteus.Pages.Base
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if ((e.Key == Key.Enter || e.Key == Key.Return) && Keyboard.Modifiers == ModifierKeys.None)
+            if (Keyboard.Modifiers != ModifierKeys.None) return;
+            var vm = (ISearchViewModel)ViewModel;
+
+            switch (e.Key)
             {
-                e.Handled = true;
-                var vm = ((ISearchViewModel)ViewModel).SearchCommand;
-                if (vm.CanExecute(null)) vm.Execute(null);
+                case Key.Enter:
+                    vm.SearchCommand.TryExecute();
+                    ((TextBox)sender).SelectAll();
+                    break;
+                case Key.Escape:
+                    vm.ClearSearch();
+                    break;
+                default:
+                    return;
             }
+            e.Handled = true;
         }
     }
 }
