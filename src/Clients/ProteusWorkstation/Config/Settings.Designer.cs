@@ -418,5 +418,17 @@ namespace TheXDS.Proteus.Config {
                 this["BusinessName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ConfirmLogout {
+            get {
+                return ((bool)(this["ConfirmLogout"]));
+            }
+            set {
+                this["ConfirmLogout"] = value;
+            }
+        }
     }
 }

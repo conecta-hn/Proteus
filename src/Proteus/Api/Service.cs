@@ -871,7 +871,7 @@ namespace TheXDS.Proteus.Api
         /// coincide.
         /// </returns>
         [MethodKind(SecurityFlags.Search)]
-        public Task<TEntity> GetAsync<TEntity, TKey>(TKey id) where TEntity : ModelBase<TKey>, new()
+        public Task<TEntity?> GetAsync<TEntity, TKey>(TKey id) where TEntity : ModelBase<TKey>, new()
             where TKey : IComparable<TKey>
         {
             //return FirstOrDefaultAsync<TEntity>(p => p.Id.Equals(id));
@@ -1246,7 +1246,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         protected virtual Task AfterInitialization(IStatusReporter? reporter) => Task.CompletedTask;
 
-        internal async Task AfterInit()
+        internal async Task AfterInitAsync()
         {
             await AfterInitialization(Reporter);
             _reporter?.Done();
@@ -1879,10 +1879,10 @@ namespace TheXDS.Proteus.Api
         }
         internal Task<Result> RunSeeders(bool runRegardless)
         {
-            return RunSeeders(Task.FromResult(runRegardless));
+            return RunSeedersAsync(Task.FromResult(runRegardless));
         }
 
-        internal async Task<Result> RunSeeders(Task<bool> runRegardless)
+        internal async Task<Result> RunSeedersAsync(Task<bool> runRegardless)
         {
             foreach (var j in
                 GetType().GetAttrs<SeederAttribute>()
@@ -2104,7 +2104,7 @@ namespace TheXDS.Proteus.Api
         /// <param name="service"></param>
         /// <param name="reporter"></param>
         /// <returns></returns>
-        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter reporter)
+        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter)
         {
             return SettingsRepo.SeedAsync(service, reporter);
         }
@@ -2115,7 +2115,7 @@ namespace TheXDS.Proteus.Api
         /// <param name="service"></param>
         /// <param name="reporter"></param>
         /// <returns></returns>
-        public Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter reporter)
+        public Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
         {
             return SettingsRepo.ShouldRunAsync(service, reporter);
         }

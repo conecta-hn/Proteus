@@ -42,7 +42,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// un selector <see cref="ListView"/> cuando esta ventana de CRUD
         /// controla únicamente un modelo de datos.
         /// </summary>
-        public ViewBase ColumnsView
+        public virtual ViewBase? ColumnsView
         {
             get
             {
@@ -61,6 +61,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
+        /// <param name="csource">
+        /// Propiedad de origen a utilizar para el selector de entidades.
+        /// </param>
         protected CrudCollectionViewModelBase(ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
         {
             if (elements.Count() == 1)
