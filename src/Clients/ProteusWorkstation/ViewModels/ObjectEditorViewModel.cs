@@ -383,7 +383,7 @@ namespace TheXDS.Proteus.ViewModels
         private async Task PerformSearch()
         {
             IsSearching = true;
-            var l = await Internal.Query(SearchQuery!, ActiveModel!).Cast<ModelBase>().ToListAsync();
+            var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
             foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
             {
                 l = j.Filter(l, SearchQuery!);

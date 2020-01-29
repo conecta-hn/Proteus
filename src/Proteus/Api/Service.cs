@@ -1144,6 +1144,7 @@ namespace TheXDS.Proteus.Api
 
         public static bool? CanRunService(string id, SecurityFlags flags, IProteusCredential credential)
         {
+            if (credential is null) return null;
             foreach (var j in credential.Descriptors.OfType<IServiceSecurityDescriptor>())
             {
                 if (j.Id != id) continue;

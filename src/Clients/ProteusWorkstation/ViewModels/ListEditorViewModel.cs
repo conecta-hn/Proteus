@@ -108,7 +108,7 @@ namespace TheXDS.Proteus.ViewModels
         public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
-            CanSelect = description.Selectable;
+            if (CanSelect = description.Selectable) ClearSearch();
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CustomColumns.AddRange(description.Columns);
@@ -440,7 +440,7 @@ namespace TheXDS.Proteus.ViewModels
         private async Task PerformSearch()
         {
             IsSearching = true;
-            var l = await Internal.Query(SearchQuery!, ActiveModel!).Cast<ModelBase>().ToListAsync();
+            var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
             foreach(var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
             {
                 l = j.Filter(l, SearchQuery!);
