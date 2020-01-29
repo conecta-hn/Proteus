@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using TheXDS.Proteus.ViewModels;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace TheXDS.Proteus.Widgets
 {
@@ -32,5 +33,24 @@ namespace TheXDS.Proteus.Widgets
         {
             LstSelection.UnselectAll();
         }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.None) return;
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    Vm.SearchCommand.TryExecute();
+                    ((TextBox)sender).SelectAll();
+                    break;
+                case Key.Escape:
+                    Vm.ClearSearch();
+                    break;
+                default:
+                    return;
+            }
+            e.Handled = true;
+        }
+
     }
 }

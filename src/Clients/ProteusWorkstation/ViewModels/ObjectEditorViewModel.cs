@@ -9,12 +9,14 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Misc;
@@ -30,7 +32,7 @@ namespace TheXDS.Proteus.ViewModels
     /// ViewModel que controla el Widget de edición y selección de 
     /// entidades a partir de una lista.
     /// </summary>
-    public class ObjectEditorViewModel : CrudViewModelBase
+    public class ObjectEditorViewModel : CrudViewModelBase, ISearchViewModel
     {
         private string _fieldIcon = null!;
         private string _fieldName = null!;
@@ -39,9 +41,15 @@ namespace TheXDS.Proteus.ViewModels
         private object? _tempSelection;
         private Type? _activeModel;
         private string? _searchQuery;
-        private bool _canSearch;
+        private bool _canSearch = true;
         private bool _isSearching;
         private ICollectionView? _results;
+
+        /// <summary>
+        /// Obtiene un valor que determina si se habilita los controles de
+        /// edición del widget.
+        /// </summary>
+        public bool ShowEditControls { get; }
 
         /// <summary>
         /// Enumera los modelos disponibles para seleccionar en la búsqueda.
@@ -90,7 +98,7 @@ namespace TheXDS.Proteus.ViewModels
             get
             {
                 if (ActiveModel is null) return null;
-                if (!(CrudElement.GetDescription(ActiveModel).ListColumns is { } c)) return null;
+                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns is { } c)) return null;
                 var v = new GridView();
                 foreach (var j in c)
                 {
@@ -150,7 +158,7 @@ namespace TheXDS.Proteus.ViewModels
         public SimpleCommand SelectCommand { get; }
 
         /// <summary>
-        /// 
+        /// Obtiene el comando que acepta la selección.
         /// </summary>
         public ICommand OkSelectCommand { get; }
 
@@ -225,6 +233,7 @@ namespace TheXDS.Proteus.ViewModels
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;
+            ShowEditControls = description.Creatable;
 
             SelectionSource = selectionSource;
             SelectCommand = new SimpleCommand(OnSelect);
@@ -343,9 +352,10 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Limpia los resultados de la búsqueda.
         /// </summary>
-        public void ClearSearch()
+        public async void ClearSearch()
         {
-            Results = null;
+            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
+            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
             SearchQuery = null;
         }
 
@@ -358,6 +368,8 @@ namespace TheXDS.Proteus.ViewModels
             get => _isSearching;
             set => Change(ref _isSearching, value);
         }
+
+        public string ResultsDetails => string.Empty;
 
         private async void OnSearch()
         {
