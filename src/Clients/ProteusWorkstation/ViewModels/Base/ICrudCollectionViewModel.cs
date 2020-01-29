@@ -33,6 +33,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// un selector <see cref="ListView"/> cuando esta ventana de CRUD
         /// controla únicamente un modelo de datos.
         /// </summary>
-        ViewBase ColumnsView { get; }
+        ViewBase? ColumnsView { get; }
     }
 }

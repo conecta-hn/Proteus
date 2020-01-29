@@ -4,7 +4,6 @@ Licenciado para uso interno solamente.
 */
 
 using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -21,9 +20,9 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </summary>
     public class DbBoundCrudViewModel : CrudCollectionViewModelBase
     {
-        private readonly IQueryable<ModelBase> _source;
+        private readonly IQueryable<ModelBase>? _source;
 
-        private static IQueryable<ModelBase> Infer(Type model)
+        private static IQueryable<ModelBase>? Infer(Type model)
         {
             return Proteus.InferService(model)?.All(model) ?? Proteus.InferBaseService(model)?.AllBase(model);
         }
@@ -33,7 +32,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <see cref="DbBoundCrudViewModel"/>.
         /// </summary>
         /// <param name="model">Modelo único de datos.</param>
-        public DbBoundCrudViewModel(Type model) : base(TryGet(model),new[] { model })
+        public DbBoundCrudViewModel(Type model) : base(TryGet(model), new[] { model })
         {
             _source = Infer(model);
         }
@@ -54,20 +53,6 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
         }
 
-
-        ///// <summary>
-        ///// Inicializa una nueva instancia de la clase
-        ///// <see cref="DbBoundCrudViewModel"/>.
-        ///// </summary>
-        ///// <param name="element">
-        ///// <see cref="CrudElement"/>a utilizar para gestionar a una
-        ///// entidad dentro de esta instancia.
-        ///// </param>
-        //public DbBoundCrudViewModel(CrudElement element) : base(TryGet(element.Model), new[] { element })
-        //{
-        //    _source = Infer(element.Model);
-        //}
-
         /// <summary>
         /// Inicializa una nueva instancia de la clase
         /// <see cref="DbBoundCrudViewModel"/>.
@@ -78,20 +63,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _source = source;
         }
-
-        ///// <summary>
-        ///// Inicializa una nueva instancia de la clase
-        ///// <see cref="DbBoundCrudViewModel"/>.
-        ///// </summary>
-        ///// <param name="source">Origen de datos a utilizar.</param>
-        ///// <param name="elements">
-        ///// Arreglo de <see cref="CrudElement"/> a utilizar para gestionar
-        ///// a una entidad dentro de esta instancia.
-        ///// </param>
-        //public DbBoundCrudViewModel(IQueryable<ModelBase> source, params CrudElement[] elements) : base(source.ToList(), elements)
-        //{
-        //    _source = source;
-        //}
 
         /// <summary>
         /// Ejecuta la operación de guardado sobre la base de datos.
@@ -126,6 +97,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             var t = await PerformAsync(() => Service!.PurgeAsync(m));
             if (t.Result == Result.Ok) Source.Substitute(await Query());
         }
+
         private async Task<List<ModelBase>> Query()
         {
             if (_source is IDbAsyncEnumerable<ModelBase>)
@@ -136,7 +108,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             else
             {
                 return _source.ToList();
-            }
+            }            
         }
     }
 }
