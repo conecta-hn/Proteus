@@ -5,7 +5,7 @@ using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
 
 namespace TheXDS.Proteus.Conecta.ViewModels
 {
-    public abstract class LoteViewModel : DynamicViewModel<Lote>
+    public class LoteViewModel : ViewModel<Lote>
     {
         public int VendidosCount
         {

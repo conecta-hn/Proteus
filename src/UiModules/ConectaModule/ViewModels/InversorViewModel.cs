@@ -8,7 +8,7 @@ namespace TheXDS.Proteus.Conecta.ViewModels
     /// dentro del Crud generado para el modelo
     /// <see cref="Inversor"/>.
     /// </summary>
-    public abstract class InversorViewModel : DynamicViewModel<Inversor>
+    public class InversorViewModel : ViewModel<Inversor>
     {
         /// <summary>
         /// Inicializa una nueva instancia de la clase

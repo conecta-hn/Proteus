@@ -6,7 +6,7 @@ using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Conecta.ViewModels
 {
-    public abstract class PagoViewModel<T> : DynamicViewModel<T> where T: ModelBase, IPagable, new()
+    public class PagoViewModel<T> : ViewModel<T> where T: ModelBase, IPagable, new()
     {
         public decimal Pendiente => (Entity?.Total ?? 0m) - Abonado;
         
