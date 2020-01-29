@@ -46,4 +46,6 @@ namespace TheXDS.Proteus.Component
         /// </returns>
         bool UsableFor(Type model);
     }
+
+
 }

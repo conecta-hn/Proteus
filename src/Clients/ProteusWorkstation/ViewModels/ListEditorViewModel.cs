@@ -67,11 +67,11 @@ namespace TheXDS.Proteus.ViewModels
             RegisterPropertyChangeBroadcast(nameof(CanSelect), nameof(CanAddAndSelect));
             RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
             RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+            
             SearchCommand = new ObservingCommand(this, OnSearch);
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
             SearchCommand.SetCanExecute(() => !SearchQuery.IsEmpty() && ActiveModel != null);
-
             ActiveModel = Models.FirstOrDefault();
         }
 
@@ -451,8 +451,7 @@ namespace TheXDS.Proteus.ViewModels
             get => _activeModel;
             set
             {
-                if (!Change(ref _activeModel, value)) return;
-                ClearSearch();
+                if (Change(ref _activeModel, value) && CanSelect) ClearSearch();
             }
         }
 

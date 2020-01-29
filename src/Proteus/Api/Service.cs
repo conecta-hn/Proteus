@@ -1231,6 +1231,24 @@ namespace TheXDS.Proteus.Api
             return CanRunService(id, flags, credential.Parent);
         }
 
+        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Proteus.Session);
+
+        public bool? CanRunService(SecurityFlags flags, IProteusHierachicalCredential? cred)
+        {
+            if (cred is null) return null;
+            foreach (var j in cred.Descriptors.OfType<ServiceSecurityDescriptor>())
+            {
+                if (j.Id == GetType().FullName)
+                {
+                    if ((j.Revoked & flags) != SecurityFlags.None) return false;
+                    if (j.Granted.HasFlag(flags)) return true;
+                }
+            }
+            if ((cred.DefaultRevoked & flags) != SecurityFlags.None) return false;
+            if (cred.DefaultGranted.HasFlag(flags)) return true;
+            return CanRunService(flags, cred.Parent);
+        }
+
         #endregion
 
         /// <summary>
