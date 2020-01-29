@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -363,7 +364,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         private async Task PerformSearch()
         {
             IsSearching = true;
-            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, _model).ToListAsync());
+            var l = (await Internal.Query(SearchQuery!, _model).ToListAsync()).Cast<ModelBase>().ToList();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            {
+                l = j.Filter(l, SearchQuery!);
+            }
+            Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;
         }

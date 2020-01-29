@@ -96,6 +96,9 @@
                                 ItemsSource="{Binding KickStarters, Mode=OneWay}"
                                 IsEnabled="{Binding UseAltLauncher, Mode=OneWay}"/>
                         </GroupBox>
+                        <CheckBox IsChecked="{Binding ConfirmLogout}" IsThreeState="False">
+                            Confirmar el cierre de sesión
+                        </CheckBox>
                         <CheckBox IsChecked="{Binding ConfirmExit}" IsThreeState="False">
                             Confirmar la salida de la aplicación
                         </CheckBox>

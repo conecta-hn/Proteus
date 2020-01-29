@@ -21,6 +21,7 @@ using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Objects;
+using System.Net.Sockets;
 
 [assembly: Name("Proteus Core Library")]
 [assembly: LicenseFile("License.txt")]
@@ -267,33 +268,50 @@ namespace TheXDS.Proteus
                 ?? throw new MissingTypeException(typeof(UserService));
 
             if (!Services.Contains(LogonService)) Services.Add(LogonService);
-
-            switch (settings.InitMode)
-            {
-                case InitMode.Check:
-                    await Task.WhenAll(Services.Select(j => j.InitializeDatabaseAsync()));
-                    break;
-                case InitMode.Seed:
-                    await Task.WhenAll(Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Select(j => j.RunSeeders(j.InitializeDatabaseAsync())));
-                    break;
-                case InitMode.Sanitize:
-                    await Task.WhenAll(Services.Select(j => j.Sanitize()));
-                    break;
-                case InitMode.Full:
-                    await Task.WhenAll(Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Select(j => j.RunSeeders(j.InitializeDatabaseAsync())));
-                    await Task.WhenAll(Services.Select(j => j.Sanitize()));
-                    break;
-            }
-            await Task.WhenAll(Services.Select(j => j.AfterInit()));
-
+            await ServicesInitialization(settings.InitMode);
             try
             {
                 if (Settings.UseNetworkServer) NwClient?.SetupListener();
             }
-            catch
+            catch (SocketException)
             {
-                AlertTarget?.Alert($"No se pudo iniciar el escucha de red: El puerto UDP {Settings.NetworkServerPort} ya está en uso por otra aplicación.");
+                AlertTarget?.Alert("No se pudo iniciar el escucha de red", $"El puerto UDP {Settings.NetworkServerPort} ya está en uso por otra aplicación.");
             }
+            catch (Exception ex)
+            {
+                AlertTarget?.Alert("No se pudo iniciar el escucha de red", ex.Message);
+            }
+        }
+
+        private static async Task ServicesInitialization(InitMode mode)
+        {
+            bool[] seedRequired = await MkTask<bool>(mode, InitMode.Check, p => p.InitializeDatabaseAsync);
+
+            if (mode.HasFlag(InitMode.Seed))
+            {
+                var l = new List<Task<Result>>();
+                foreach (var (svc, seed) in Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Zip(seedRequired))
+                {
+                    l.Add(svc.RunSeeders(seed));
+                }
+                if ((await Task.WhenAll(l)).Where(p => p != Result.Ok).Any())
+                {
+                    return;
+                }
+            }
+
+            await MkTask(mode, InitMode.Sanitize, p => p.SanitizeAsync);
+            await MkTask(mode, InitMode.Verify, p => p.VerifyAsync);
+            await Task.WhenAll(Services.Select(j => j.AfterInitAsync()));
+        }
+
+        private static Task<T[]> MkTask<T>(InitMode mode, InitMode flag, Func<Service, Func<Task<T>>> action)
+        {
+            return mode.HasFlag(flag) ? Task.WhenAll(Services.Select(p => action(p).Invoke())) : Task.FromResult(new T[Services!.Count]);
+        }
+        private static Task MkTask(InitMode mode, InitMode flag, Func<Service, Func<Task>> action)
+        {
+            return mode.HasFlag(flag) ? Task.WhenAll(Services.Select(p => action(p).Invoke())) : Task.CompletedTask;
         }
 
         /// <summary>
@@ -315,8 +333,10 @@ namespace TheXDS.Proteus
             Services = new HashSet<Service>(new[] { LogonService });
             try
             {
-                await LogonService.RunSeeders(LogonService.InitializeDatabaseAsync()).Throwable();
-                await LogonService.AfterInit();
+                await LogonService.RunSeedersAsync(LogonService.InitializeDatabaseAsync()).Throwable();
+                await LogonService.SanitizeAsync().Throwable();
+                await LogonService.VerifyAsync().Throwable();
+                await LogonService.AfterInitAsync();
             }
             catch
             {
@@ -324,7 +344,10 @@ namespace TheXDS.Proteus
                 {
                     if (DbConfig._forceLocalDb) throw;
                     DbConfig._forceLocalDb = true;
-                    await SafeInit(settings).Throwable();
+                    await LogonService.RunSeedersAsync(LogonService.InitializeDatabaseAsync()).Throwable();
+                    await LogonService.SanitizeAsync().Throwable();
+                    await LogonService.VerifyAsync().Throwable();
+                    await LogonService.AfterInitAsync();
                 }
                 catch
                 {

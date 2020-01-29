@@ -102,9 +102,16 @@ namespace TheXDS.Proteus.ViewModels
             AutoHook();
             _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)) ?? Array.Empty<ModulePage>());
             Settings.Default.PropertyChanged += Default_PropertyChanged;
-            LogoutCommand = new SimpleCommand(Proteus.Logout);
+            LogoutCommand = new SimpleCommand(OnLogout);
             PostOpen();
         }
+
+        private void OnLogout()
+        {
+            if (!Settings.Default.ConfirmLogout || Dialogs.MessageSplash.Ask("Cerrar sesión", "Está seguro que desea cerrar sesión?"))
+                Proteus.Logout();
+        }
+
         private async void PostOpen()
         {
             _avisos = await (await Task.Run(()=>UserService.AllAvisos)).ToListAsync();
@@ -160,8 +167,11 @@ namespace TheXDS.Proteus.ViewModels
         
         public override void Close()
         {
-            base.Close();
-            Proteus.Logout();
+            if (!Settings.Default.ConfirmLogout || Dialogs.MessageSplash.Ask("Cerrar sesión", "Está seguro que desea cerrar sesión?"))
+            {
+                base.Close();
+                Proteus.Logout();
+            }
         }
 
         public double UiModulesHeight => Settings.Default.UiModulesHeight;

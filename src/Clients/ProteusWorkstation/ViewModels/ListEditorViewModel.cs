@@ -21,6 +21,10 @@ using System.ComponentModel;
 using System.Windows.Data;
 using TheXDS.Proteus.Misc;
 using System.Data.Entity;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Config;
+using TheXDS.MCART;
+using TheXDS.Proteus.Component;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -60,9 +64,35 @@ namespace TheXDS.Proteus.ViewModels
             RemoveCommand = new SimpleCommand(OnRemove);
             OkAddCommand = new SimpleCommand(OnOkAdd);
             CancelAddCommand = new SimpleCommand(OnCancelAdd);
+
             RegisterPropertyChangeBroadcast(nameof(CanAdd), nameof(CanAddAndSelect));
-            RegisterPropertyChangeBroadcast(nameof(CanSelect), nameof(CanAddAndSelect));            
+            RegisterPropertyChangeBroadcast(nameof(CanSelect), nameof(CanAddAndSelect));
+            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
+            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+            
+            SearchCommand = new ObservingCommand(this, OnSearch);
+            SearchCommand.ListensToProperty(() => SearchQuery!);
+            SearchCommand.ListensToProperty(() => ActiveModel);
+            SearchCommand.SetCanExecute(() => !SearchQuery.IsEmpty() && ActiveModel != null);
+            ActiveModel = Models.FirstOrDefault();
         }
+
+        /// <summary>
+        /// Obtiene un valor que indica si es posible cambiar el modelo 
+        /// seleccionado.
+        /// </summary>
+        public bool CanChangeModel => Models.Count() > 1;
+
+        /// <summary>
+        /// Obtiene el comando que acepta la selección.
+        /// </summary>
+        public ICommand OkSelectCommand { get; }
+
+        /// <summary>
+        /// Obtiene el comando que cancela la adición de elementos
+        /// seleccionados desde una lista.
+        /// </summary>
+        public ICommand CancelSelectCommand { get; }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -78,7 +108,7 @@ namespace TheXDS.Proteus.ViewModels
         public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
-            CanSelect = description.Selectable;
+            if (CanSelect = description.Selectable) ClearSearch();
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CustomColumns.AddRange(description.Columns);
@@ -87,6 +117,26 @@ namespace TheXDS.Proteus.ViewModels
                 lv.SelectionChanged += ListViewSelector_SelectionChanged;
             }
         }
+
+        /// <summary>
+        /// Obtiene la vista columnar a utilizar para mostrar objetos en la lista de resultados.
+        /// </summary>
+        public override ViewBase? ColumnsView
+        {
+            get
+            {
+                if (ActiveModel is null) return null;
+                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns is { } c)) return null;
+                var v = new GridView();
+                foreach (var j in c)
+                {
+                    v.Columns.Add(j);
+                }
+                return v;
+            }
+        }
+
+
         private void ListViewSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(Selector is ListView lv)) return;
@@ -300,12 +350,6 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         public event EventHandler Unselected;
 
-
-
-
-
-
-
         private bool _willSearch = true;
         private string? _searchQuery;
         private bool _isSearching;
@@ -364,9 +408,10 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Limpia los resultados de la búsqueda.
         /// </summary>
-        public void ClearSearch()
+        public async void ClearSearch()
         {
-            Results = Source.Count() <= Proteus.Settings?.RowLimit ? CollectionViewSource.GetDefaultView(Source) : null;
+            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
+            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
             SearchQuery = null;
         }
 
@@ -395,7 +440,12 @@ namespace TheXDS.Proteus.ViewModels
         private async Task PerformSearch()
         {
             IsSearching = true;
-            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync());
+            var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
+            foreach(var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            {
+                l = j.Filter(l, SearchQuery!);
+            }
+            Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;
         }
@@ -408,8 +458,7 @@ namespace TheXDS.Proteus.ViewModels
             get => _activeModel;
             set
             {
-                if (!Change(ref _activeModel, value)) return;
-                ClearSearch();
+                if (Change(ref _activeModel, value) && CanSelect) ClearSearch();
             }
         }
 

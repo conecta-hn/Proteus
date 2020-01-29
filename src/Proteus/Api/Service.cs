@@ -871,7 +871,7 @@ namespace TheXDS.Proteus.Api
         /// coincide.
         /// </returns>
         [MethodKind(SecurityFlags.Search)]
-        public Task<TEntity> GetAsync<TEntity, TKey>(TKey id) where TEntity : ModelBase<TKey>, new()
+        public Task<TEntity?> GetAsync<TEntity, TKey>(TKey id) where TEntity : ModelBase<TKey>, new()
             where TKey : IComparable<TKey>
         {
             //return FirstOrDefaultAsync<TEntity>(p => p.Id.Equals(id));
@@ -1144,6 +1144,7 @@ namespace TheXDS.Proteus.Api
 
         public static bool? CanRunService(string id, SecurityFlags flags, IProteusCredential credential)
         {
+            if (credential is null) return null;
             foreach (var j in credential.Descriptors.OfType<IServiceSecurityDescriptor>())
             {
                 if (j.Id != id) continue;
@@ -1231,6 +1232,24 @@ namespace TheXDS.Proteus.Api
             return CanRunService(id, flags, credential.Parent);
         }
 
+        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Proteus.Session);
+
+        public bool? CanRunService(SecurityFlags flags, IProteusHierachicalCredential? cred)
+        {
+            if (cred is null) return null;
+            foreach (var j in cred.Descriptors.OfType<ServiceSecurityDescriptor>())
+            {
+                if (j.Id == GetType().FullName)
+                {
+                    if ((j.Revoked & flags) != SecurityFlags.None) return false;
+                    if (j.Granted.HasFlag(flags)) return true;
+                }
+            }
+            if ((cred.DefaultRevoked & flags) != SecurityFlags.None) return false;
+            if (cred.DefaultGranted.HasFlag(flags)) return true;
+            return CanRunService(flags, cred.Parent);
+        }
+
         #endregion
 
         /// <summary>
@@ -1246,7 +1265,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         protected virtual Task AfterInitialization(IStatusReporter? reporter) => Task.CompletedTask;
 
-        internal async Task AfterInit()
+        internal async Task AfterInitAsync()
         {
             await AfterInitialization(Reporter);
             _reporter?.Done();
@@ -1783,17 +1802,30 @@ namespace TheXDS.Proteus.Api
         /// el servidor de dase de datos.
         /// </returns>
         [MethodKind(SecurityFlags.Root)]
-        public Task<DetailedResult> Sanitize()
+        public Task<DetailedResult> SanitizeAsync()
         {
             return Op(() =>
             {
                 CommonReporter?.UpdateStatus($"Sanitizando la base de datos de {FriendlyName}...");
                 foreach (var j in Context.GetType().GetProperties()
                     .Where(p => typeof(DbSet<ISoftDeletable>).IsAssignableFrom(p.PropertyType))
-                    .Select(q => q.GetMethod.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
+                    .Select(q => q.GetMethod!.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
                     j?.RemoveRange(j.Where(p => p.IsDeleted));
             });
         }
+
+        /// <summary>
+        /// Ejecuta una comprobación de la base de datos.
+        /// </summary>
+        /// <returns>
+        /// <see cref="Result.Ok"/> si la operación fue exitosa,
+        /// <see cref="Result.Fail"/> si la operación falla,
+        /// <see cref="Result.Forbidden"/> si no se han concedido los
+        /// permisos necesarios para realizar la operación, y
+        /// <see cref="Result.Unreachable"/> si no es posible contactar con
+        /// el servidor de dase de datos.
+        /// </returns>
+        public virtual Task<DetailedResult> VerifyAsync() => Task.FromResult(DetailedResult.Ok);
 
         /// <summary>
         /// Comprueba la salud del servicio, comprobando si la base de
@@ -1864,8 +1896,12 @@ namespace TheXDS.Proteus.Api
                 return false;
             }
         }
+        internal Task<Result> RunSeeders(bool runRegardless)
+        {
+            return RunSeedersAsync(Task.FromResult(runRegardless));
+        }
 
-        internal async Task<Result> RunSeeders(Task<bool> runRegardless)
+        internal async Task<Result> RunSeedersAsync(Task<bool> runRegardless)
         {
             foreach (var j in
                 GetType().GetAttrs<SeederAttribute>()
@@ -1881,7 +1917,7 @@ namespace TheXDS.Proteus.Api
                     var r = await s.SeedAsync(this, Reporter);
                     if (r.Result != Result.Ok)
                     {
-                        MessageTarget?.Error($"Error al inicializar la base de datos de {FriendlyName}: {r.Message}");
+                        AlertTarget?.Alert($"Error al inicializar la base de datos de {FriendlyName}", r.Message);
                         return r.Result;
                     }
                 }
@@ -2087,7 +2123,7 @@ namespace TheXDS.Proteus.Api
         /// <param name="service"></param>
         /// <param name="reporter"></param>
         /// <returns></returns>
-        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter reporter)
+        public Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter)
         {
             return SettingsRepo.SeedAsync(service, reporter);
         }
@@ -2098,7 +2134,7 @@ namespace TheXDS.Proteus.Api
         /// <param name="service"></param>
         /// <param name="reporter"></param>
         /// <returns></returns>
-        public Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter reporter)
+        public Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter)
         {
             return SettingsRepo.ShouldRunAsync(service, reporter);
         }

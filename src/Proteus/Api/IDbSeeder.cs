@@ -27,7 +27,7 @@ namespace TheXDS.Proteus.Api
         /// Una tarea que puede utilizarse para monitorear la operación
         /// asíncrona.
         /// </returns>
-        Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter reporter);
+        Task<DetailedResult> SeedAsync(IFullService service, IStatusReporter? reporter);
 
         /// <summary>
         /// Determina si es necesario ejecutar este semillador.
@@ -42,6 +42,6 @@ namespace TheXDS.Proteus.Api
         /// <see langword="true"/> si es necesari ejecutar el semillador,
         /// <see langword="false"/> en caso contrario.
         /// </returns>
-        Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter reporter);
+        Task<bool> ShouldRunAsync(IReadAsyncService service, IStatusReporter? reporter);
     }
 }
