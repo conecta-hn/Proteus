@@ -9,7 +9,8 @@
     xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
     xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    mc:Ignorable="d" 
+    mc:Ignorable="d"
+    MinHeight="120"
     d:DataContext="{d:DesignInstance vm:ListEditorViewModel}"
     d:DesignWidth="350">
     <Grid>
@@ -28,19 +29,18 @@
         <ContentControl Content="{Binding Selector, Mode=OneWay}" Grid.Row="1"/>
         <StackPanel Grid.Column="1" IsEnabled="{Binding NotBusy, Mode=OneWay}" Grid.Row="1">
             <StackPanel Visibility="{Binding CanSelect, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button ToolTip="Agregar..." Command="{Binding AddCommand, Mode=OneWay}">+</Button>
+                <Button ToolTip="Agregar..." Command="{Binding AddCommand, Mode=OneWay}">👆</Button>
                 <Button ToolTip="Quitar" Command="{Binding RemoveCommand, Mode=OneWay}">-</Button>
             </StackPanel>
-            <Separator Visibility="{Binding CanAddAndSelect, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <StackPanel Visibility="{Binding CanAdd, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button ToolTip="Nuevo..." Visibility="{Binding UniModel}" Command="{Binding CreateNew, Mode=OneWay}">+✎</Button>
+                <Button ToolTip="Nuevo..." Visibility="{Binding UniModel}" Command="{Binding CreateNew, Mode=OneWay}">+</Button>
                 <xctk:DropDownButton Visibility="{Binding MultiModel}">
                     <xctk:DropDownButton.DropDownContent>
                         <ListView 
                             ItemsSource="{Binding CreateCommands, Mode=OneWay}"
                             Style="{StaticResource LauncherList}"/>
                     </xctk:DropDownButton.DropDownContent>
-                    +✎
+                    +
                 </xctk:DropDownButton>
                 <Button ToolTip="Editar..."  Command="{Binding EditCurrent, Mode=OneWay}">✎</Button>
                 <Button ToolTip="Eliminar"  Command="{Binding DeleteCurrent, Mode=OneWay}">🗑</Button>
@@ -51,7 +51,7 @@
             IsOpen="{Binding AddMode, Mode=OneWay}"
             Placement="Relative">
             <mcart:BusyContainer IsBusy="{Binding IsSearching, Mode=OneWay}">
-                <Grid MinWidth="200" MaxWidth="350" MinHeight="150">
+                <Grid MinWidth="200" MaxWidth="550">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
@@ -69,7 +69,8 @@
                         SelectedItem="{Binding ActiveModel}" 
                         Grid.ColumnSpan="2"/>
                     <TextBox
-                        Text="{Binding SearchQuery}"
+                        KeyUp="TextBox_KeyUp"
+                        Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                         Grid.Row="1"
                         local:ProteusProp.Watermark="Buscar..."
                         local:ProteusProp.Icon="🔍" />
@@ -82,14 +83,16 @@
                         x:Name="LstSelection"
                         ItemsSource="{Binding Results, Mode=OneWay}"
                         View="{Binding ColumnsView, Mode=OneWay}"
-                        SelectedItem="{Binding TempSelection}"
+                        SelectionChanged="ListView_SelectionChanged"
                         Grid.Row="2"
+                        MinHeight="150"
+                        MaxHeight="400"
                         Grid.ColumnSpan="2"/>
-                    <mcart:StretchyWrapPanel Grid.Row="3">
-                        <Button Command="{Binding OkSelectCommand, Mode=OneWay}">
+                    <mcart:StretchyWrapPanel Grid.Row="3" HorizontalAlignment="Center">
+                        <Button Command="{Binding OkAddCommand, Mode=OneWay}">
                             Seleccionar
                         </Button>
-                        <Button Command="{Binding CancelSelectCommand, Mode=OneWay}">
+                        <Button Command="{Binding CancelAddCommand, Mode=OneWay}">
                             Cancelar
                         </Button>
                     </mcart:StretchyWrapPanel>

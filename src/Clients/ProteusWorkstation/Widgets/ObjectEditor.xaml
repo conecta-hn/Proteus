@@ -13,25 +13,15 @@
         <StackPanel
             Orientation="Horizontal"
             DockPanel.Dock="Right"
-            IsEnabled="{Binding CanCreate, Mode=OneWay}"
-            Visibility="{Binding CanCreate, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
-            <Button ToolTip="Nuevo..." Visibility="{Binding UniModel}" Command="{Binding CreateNew, Mode=OneWay}">
-                <TextBlock>
-                    +
-                    <Run Text="{Binding FieldIcon, Mode=OneWay}"/>
-                </TextBlock>
-            </Button>
+            IsEnabled="{Binding ShowEditControls, Mode=OneWay}"
+            Visibility="{Binding ShowEditControls, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            <Button ToolTip="Nuevo..." Visibility="{Binding UniModel}" Command="{Binding CreateNew, Mode=OneWay}">+</Button>
             <xctk:DropDownButton Visibility="{Binding MultiModel}">
                 <xctk:DropDownButton.DropDownContent>
                     <ListView 
                         ItemsSource="{Binding CreateCommands, Mode=OneWay}"
                         Style="{StaticResource LauncherList}"/>
-                </xctk:DropDownButton.DropDownContent>
-                <TextBlock>
-                    +
-                    <Run Text="{Binding FieldIcon, Mode=OneWay}"/>
-                </TextBlock>
-            </xctk:DropDownButton>
+                </xctk:DropDownButton.DropDownContent>+</xctk:DropDownButton>
             <Button ToolTip="Editar..."  Command="{Binding EditCurrent, Mode=OneWay}">✎</Button>
             <Button ToolTip="Eliminar"  Command="{Binding DeleteCurrent, Mode=OneWay}">🗑</Button>
         </StackPanel>
@@ -39,7 +29,7 @@
             ToolTip="Seleccionar..." DockPanel.Dock="Right"
             IsEnabled="{Binding CanSelect, Mode=OneWay}"
             Visibility="{Binding CanSelect, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
-            Command="{Binding SelectCommand, Mode=OneWay}">+🔍</Button>
+            Command="{Binding SelectCommand, Mode=OneWay}">👆</Button>
         <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="100">
             <Run Foreground="{StaticResource CorpColor}" Text="{Binding FieldIcon, Mode=OneWay}"/>
             <Run FontStyle="Italic" Foreground="Gray" Text="{Binding FieldName, Mode=OneWay}"/>
@@ -68,7 +58,7 @@
             IsOpen="{Binding SelectMode, Mode=OneWay}"
             Placement="Relative">
             <mcart:BusyContainer IsBusy="{Binding IsSearching, Mode=OneWay}">
-                <Grid MinWidth="200" MaxWidth="350" MinHeight="150">
+                <Grid MinWidth="250" MaxWidth="550" MinHeight="150">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
@@ -86,7 +76,8 @@
                         SelectedItem="{Binding ActiveModel}" 
                         Grid.ColumnSpan="2"/>
                     <TextBox
-                        Text="{Binding SearchQuery}"
+                        KeyUp="TextBox_KeyUp"
+                        Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                         Grid.Row="1"
                         local:ProteusProp.Watermark="Buscar..."
                         local:ProteusProp.Icon="🔍" />
@@ -100,8 +91,10 @@
                         View="{Binding ColumnsView, Mode=OneWay}"
                         SelectedItem="{Binding TempSelection}"
                         Grid.Row="2"
+                        MinHeight="150"
+                        MaxHeight="400"
                         Grid.ColumnSpan="2"/>
-                    <mcart:StretchyWrapPanel Grid.Row="3">
+                    <mcart:StretchyWrapPanel Grid.Row="3" HorizontalAlignment="Center">
                         <Button Command="{Binding OkSelectCommand, Mode=OneWay}">
                             Seleccionar
                         </Button>

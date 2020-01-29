@@ -146,7 +146,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             if (!elements.Any()) throw new ArgumentException("Se necesita al menos un tipo administrado por este ViewModel.", new EmptyCollectionException(elements));
 
-            Models = elements.Select(p=>p.ResolveCollectionType()!.ResolveToDefinedType()!).ToList();
+            Models = elements.Select(p => p.ResolveCollectionType()!.ResolveToDefinedType()!).ToList();
 
             CreateNew = new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement));
             EditCurrent = new ObservingCommand(this, OnEdit, CanEdit, nameof(SelectedElement));
@@ -163,9 +163,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                 MultiModel = Visibility.Visible;
                 UniModel = Visibility.Collapsed;
                 CreateCommands = new HashSet<Launcher>(
-                    //elements.Select(p => new Launcher(p.Description.FriendlyName, null, ((Action<object>)OnCreate).Method.FullName(),
-                    //    new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement)), p.Model)));
-                    elements.Select(p => new Launcher(p.Name, null, ((Action<object>)OnCreate).Method.FullName(),
+                    elements.Select(p => new Launcher(CrudElement.GetDescription(p)?.FriendlyName ?? p.Name, null, ((Action<object>)OnCreate).Method.FullName(),
                         new ObservingCommand(this, OnCreate, CanCreate, nameof(SelectedElement)), p)));
             }
             RegisterPropertyChangeBroadcast(nameof(IsBusy),
