@@ -1783,17 +1783,30 @@ namespace TheXDS.Proteus.Api
         /// el servidor de dase de datos.
         /// </returns>
         [MethodKind(SecurityFlags.Root)]
-        public Task<DetailedResult> Sanitize()
+        public Task<DetailedResult> SanitizeAsync()
         {
             return Op(() =>
             {
                 CommonReporter?.UpdateStatus($"Sanitizando la base de datos de {FriendlyName}...");
                 foreach (var j in Context.GetType().GetProperties()
                     .Where(p => typeof(DbSet<ISoftDeletable>).IsAssignableFrom(p.PropertyType))
-                    .Select(q => q.GetMethod.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
+                    .Select(q => q.GetMethod!.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
                     j?.RemoveRange(j.Where(p => p.IsDeleted));
             });
         }
+
+        /// <summary>
+        /// Ejecuta una comprobación de la base de datos.
+        /// </summary>
+        /// <returns>
+        /// <see cref="Result.Ok"/> si la operación fue exitosa,
+        /// <see cref="Result.Fail"/> si la operación falla,
+        /// <see cref="Result.Forbidden"/> si no se han concedido los
+        /// permisos necesarios para realizar la operación, y
+        /// <see cref="Result.Unreachable"/> si no es posible contactar con
+        /// el servidor de dase de datos.
+        /// </returns>
+        public virtual Task<DetailedResult> VerifyAsync() => Task.FromResult(DetailedResult.Ok);
 
         /// <summary>
         /// Comprueba la salud del servicio, comprobando si la base de
@@ -1864,6 +1877,10 @@ namespace TheXDS.Proteus.Api
                 return false;
             }
         }
+        internal Task<Result> RunSeeders(bool runRegardless)
+        {
+            return RunSeeders(Task.FromResult(runRegardless));
+        }
 
         internal async Task<Result> RunSeeders(Task<bool> runRegardless)
         {
@@ -1881,7 +1898,7 @@ namespace TheXDS.Proteus.Api
                     var r = await s.SeedAsync(this, Reporter);
                     if (r.Result != Result.Ok)
                     {
-                        MessageTarget?.Error($"Error al inicializar la base de datos de {FriendlyName}: {r.Message}");
+                        AlertTarget?.Alert($"Error al inicializar la base de datos de {FriendlyName}", r.Message);
                         return r.Result;
                     }
                 }

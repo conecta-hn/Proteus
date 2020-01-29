@@ -268,23 +268,25 @@ namespace TheXDS.Proteus
 
             if (!Services.Contains(LogonService)) Services.Add(LogonService);
 
-            switch (settings.InitMode)
-            {
-                case InitMode.Check:
-                    await Task.WhenAll(Services.Select(j => j.InitializeDatabaseAsync()));
-                    break;
-                case InitMode.Seed:
-                    await Task.WhenAll(Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Select(j => j.RunSeeders(j.InitializeDatabaseAsync())));
-                    break;
-                case InitMode.Sanitize:
-                    await Task.WhenAll(Services.Select(j => j.Sanitize()));
-                    break;
-                case InitMode.Full:
-                    await Task.WhenAll(Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Select(j => j.RunSeeders(j.InitializeDatabaseAsync())));
-                    await Task.WhenAll(Services.Select(j => j.Sanitize()));
-                    break;
-            }
-            await Task.WhenAll(Services.Select(j => j.AfterInit()));
+            await ServicesInitialization(settings.InitMode);
+
+            //switch (settings.InitMode)
+            //{
+            //    case InitMode.Check:
+            //        await Task.WhenAll(Services.Select(j => j.InitializeDatabaseAsync()));
+            //        break;
+            //    case InitMode.Seed:
+            //        await Task.WhenAll(Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Select(j => j.RunSeeders(j.InitializeDatabaseAsync())));
+            //        break;
+            //    case InitMode.Sanitize:
+            //        await Task.WhenAll(Services.Select(j => j.Sanitize()));
+            //        break;
+            //    case InitMode.Full:
+            //        await Task.WhenAll(Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Select(j => j.RunSeeders(j.InitializeDatabaseAsync())));
+            //        await Task.WhenAll(Services.Select(j => j.Sanitize()));
+            //        break;
+            //}
+            //await Task.WhenAll(Services.Select(j => j.AfterInit()));
 
             try
             {
@@ -294,6 +296,37 @@ namespace TheXDS.Proteus
             {
                 AlertTarget?.Alert($"No se pudo iniciar el escucha de red: El puerto UDP {Settings.NetworkServerPort} ya está en uso por otra aplicación.");
             }
+        }
+
+        private static async Task ServicesInitialization(InitMode mode)
+        {
+            bool[] seedRequired = await MkTask<bool>(mode, InitMode.Check, p => p.InitializeDatabaseAsync);
+
+            if (mode.HasFlag(InitMode.Seed))
+            {
+                var l = new List<Task<Result>>();
+                foreach (var (svc, seed) in Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Zip(seedRequired))
+                {
+                    l.Add(svc.RunSeeders(seed));
+                }
+                if ((await Task.WhenAll(l)).Where(p => p != Result.Ok).Any())
+                {
+                    return;
+                }
+            }
+
+            await MkTask(mode, InitMode.Sanitize, p => p.SanitizeAsync);
+            await MkTask(mode, InitMode.Verify, p => p.VerifyAsync);
+            await Task.WhenAll(Services.Select(j => j.AfterInit()));
+        }
+
+        private static Task<T[]> MkTask<T>(InitMode mode, InitMode flag, Func<Service, Func<Task<T>>> action)
+        {
+            return mode.HasFlag(flag) ? Task.WhenAll(Services.Select(p => action(p).Invoke())) : Task.FromResult(new T[Services!.Count]);
+        }
+        private static Task MkTask(InitMode mode, InitMode flag, Func<Service, Func<Task>> action)
+        {
+            return mode.HasFlag(flag) ? Task.WhenAll(Services.Select(p => action(p).Invoke())) : Task.CompletedTask;
         }
 
         /// <summary>
