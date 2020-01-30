@@ -134,6 +134,19 @@ namespace TheXDS.Proteus.Plugins
         }
 
         /// <summary>
+        /// Registra un <see cref="Launcher"/> en el grupo especificado.
+        /// </summary>
+        /// <param name="launcher"><see cref="Launcher"/> a registrar.</param>
+        /// <param name="type">
+        /// Tipo de interacción en la cual registrar el 
+        /// <paramref name="launcher"/>.
+        /// </param>
+        public void RegisterLauncher(Launcher launcher, InteractionType type)
+        {
+            RegisterLauncher(launcher, type.NameOf());
+        }
+
+        /// <summary>
         /// Registra automáticamente todos los modelos de datos en los que la
         /// descripción de los mismos contenga una llamada al método
         /// <see cref="Crud.Base.CrudDescriptor{T}.OnModuleMenu()"/> o de una 

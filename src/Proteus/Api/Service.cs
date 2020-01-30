@@ -1708,7 +1708,7 @@ namespace TheXDS.Proteus.Api
                 cs = null;
                 if (_saveCallbacks.Any())
                 {
-                    foreach (var j in affectedEntities.Select(p=>p.Entity as ModelBase))
+                    foreach (var j in affectedEntities.Select(p => p.Entity as ModelBase).NotNull())
                     {
                         foreach(var k in _saveCallbacks.Where(p => p.IsFor(j.GetType())))
                         {
@@ -1774,7 +1774,7 @@ namespace TheXDS.Proteus.Api
         {
             if (!Elevate())
             {
-                result = default;
+                result = default!;
                 return false;
             }
             try
@@ -2050,6 +2050,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         protected static TUser? GetUser<TUser>(Service? instance) where TUser : ModelBase, IUserBase, new()
         {
+            if (Proteus.Session is null) return null;
             return instance?.FirstOrDefault<TUser>(p => p.UserId == Proteus.Session.Id);
         }        
     }
