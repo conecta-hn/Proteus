@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Proteus="clr-namespace:TheXDS.Proteus.Widgets">
+    xmlns:Proteus="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF">
     <Style TargetType="ListView">
         <Setter Property="Background" Value="{DynamicResource SystemAltHighColorBrush}"/>
         <Setter Property="BorderBrush" Value="Gray"/>        
@@ -91,7 +92,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="ListView" x:Key="LauncherList">
+    
+    <Style TargetType="ListView" x:Key="LauncherBase">
         <Setter Property="Background" Value="{x:Null}"/>
         <Setter Property="BorderBrush" Value="{x:Null}"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -111,13 +113,6 @@
                 </Style>
             </Setter.Value>
         </Setter>
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <StackPanel HorizontalAlignment="Stretch"/>
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate DataType="widgets:Launcher">
@@ -131,4 +126,32 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="ListView" x:Key="LauncherList" BasedOn="{StaticResource LauncherBase}">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="ListView" x:Key="LauncherBox" BasedOn="{StaticResource LauncherBase}">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <mcart:StretchyWrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="ListView" x:Key="LauncherGrid" BasedOn="{StaticResource LauncherBase}">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <UniformGrid/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

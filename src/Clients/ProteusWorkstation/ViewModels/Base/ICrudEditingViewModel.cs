@@ -3,6 +3,7 @@ Copyright © 2017-2019 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TheXDS.Proteus.Crud;
@@ -14,7 +15,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// accesar a las funciones específicas de un elemento de Crud en modo
     /// de edición.
     /// </summary>
-    public interface ICrudEditingViewModel
+    public interface ICrudEditingViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Comando que cancela la creación o edición de una entidad.

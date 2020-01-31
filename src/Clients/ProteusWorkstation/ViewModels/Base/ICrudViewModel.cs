@@ -11,7 +11,7 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
-{
+{    
     /// <summary>
     /// Define una serie de miembros a implementar por una clase que
     /// administre las operaciones de Crud con elementos de UI
@@ -76,6 +76,11 @@ namespace TheXDS.Proteus.ViewModels.Base
         bool NotEditMode { get; }
 
         /// <summary>
+        /// Obtiene un valor que indica si el ViewModel está ocupado realizando alguna operación.
+        /// </summary>
+        bool IsBusy { get; }
+
+        /// <summary>
         /// Obtiene un valor que indica si el ViewModel no está ocupado.
         /// </summary>
         bool NotBusy { get; }
@@ -129,5 +134,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </returns>
         bool CanDelete(ModelBase entity);
 
+        /// <summary>
+        /// Ejecuta una operación de creación de datos.
+        /// </summary>
+        /// <param name="t"></param>
+        void OnCreate(Type? t);
     }
 }

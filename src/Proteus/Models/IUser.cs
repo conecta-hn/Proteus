@@ -27,7 +27,7 @@ namespace TheXDS.Proteus.Models.Base
         /// <summary>
         /// Obtiene una referencia al Hash de la contraseña del usuario.
         /// </summary>
-        byte[] PasswordHash { get; }
+        byte[] PasswordHash { get; set; }
 
         /// <summary>
         /// Obtiene un valor que indica si el usuario tiene pendiente una 
