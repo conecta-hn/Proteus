@@ -91,7 +91,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="o">
         /// Elemento a eliminar.
         /// </param>
-        protected override async void OnDelete(object? o)
+        public override async void OnDelete(object? o)
         {
             if (!(o is ModelBase m)) return;
             var t = await PerformAsync(() => Service!.PurgeAsync(m));

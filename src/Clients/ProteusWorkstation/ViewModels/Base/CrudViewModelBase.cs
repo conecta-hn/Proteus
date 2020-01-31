@@ -322,7 +322,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// crear una nueva entidad.
         /// </summary>
         protected bool NewMode { get; private set; } = false;
-        private void OnCreate(Type? t)
+
+        /// <summary>
+        /// Ejecuta una acción que Crea una nueva entidad.
+        /// </summary>
+        /// <param name="t">Modelo de datos a crear.</param>
+        public void OnCreate(Type? t)
         {
             t ??= Models.First();
             if (!Elements.Any(p=>IsForType(p,t)) || !Elements.Any(p=>Implements(p,t!)))
@@ -418,9 +423,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="o">
         /// Elemento a eliminar.
         /// </param>
-        protected abstract void OnDelete(object? o);
+        public abstract void OnDelete(object? o);
 
-        private protected void OnEdit(object? o)
+        /// <summary>
+        /// Ejecuta una operación de edición de información de la
+        /// colección activa.
+        /// </summary>
+        /// <param name="o">
+        /// Elemento a eliminar.
+        /// </param>
+        public void OnEdit(object? o)
         {
             EditMode = true;
 

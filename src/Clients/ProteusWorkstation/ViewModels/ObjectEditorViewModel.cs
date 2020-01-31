@@ -286,7 +286,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="o">
         /// Valor a eliminar.
         /// </param>
-        protected override void OnDelete(object? o)
+        public override void OnDelete(object? o)
         {
             Selection = null;
         }
@@ -371,6 +371,9 @@ namespace TheXDS.Proteus.ViewModels
             set => Change(ref _isSearching, value);
         }
 
+        /// <summary>
+        /// Obtiene una cadena que describe los detalles de la búsqueda.
+        /// </summary>
         public string ResultsDetails => string.Empty;
 
         private async void OnSearch()
