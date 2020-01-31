@@ -22,6 +22,7 @@ using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -34,6 +35,13 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel, IEditingCrudViewModel where TService : Service, new()
     {
+        private static readonly IEnumerable<CrudTool> _tools = Objects.FindAllObjects<CrudTool>();
+
+        private IEnumerable<Launcher> GetLaunchers(CrudToolVisibility flags)
+        {
+            return _tools.SelectMany(p => p.GetLaunchers(_model));
+        }
+
         private readonly Type _model;
         private bool _willSearch = true;
         private string? _searchQuery;

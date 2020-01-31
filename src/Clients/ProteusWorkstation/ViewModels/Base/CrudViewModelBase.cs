@@ -434,10 +434,10 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
         }
 
-        [Sugar] private void OnCreate(object? o) => OnCreate(o as Type);
-        [Sugar] private bool CanCreate(object? o) => CanCreate(o as Type);
-        [Sugar] private bool CanEdit(object? o) => CanEdit(Selection as ModelBase);
-        [Sugar] private bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
+        [Sugar] internal void OnCreate(object? o) => OnCreate(o as Type);
+        [Sugar] internal bool CanCreate(object? o) => CanCreate(o as Type);
+        [Sugar] internal bool CanEdit(object? o) => CanEdit(Selection as ModelBase);
+        [Sugar] internal bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
 
         /// <summary>
         /// Ejecuta una operación colocando a este 

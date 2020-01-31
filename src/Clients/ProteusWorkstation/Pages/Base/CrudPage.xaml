@@ -111,7 +111,7 @@
                     <xctk:DropDownButton Visibility="{Binding MultiModel}">
                         <xctk:DropDownButton.DropDownContent>
                             <ListView
-                                Style="{StaticResource LauncherList}"
+                                Style="{StaticResource LauncherGrid}"
                                 ItemsSource="{Binding CreateCommands}"/>
                         </xctk:DropDownButton.DropDownContent>+</xctk:DropDownButton>
                     <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}">+</Button>
