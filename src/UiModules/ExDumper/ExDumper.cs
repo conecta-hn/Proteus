@@ -18,6 +18,10 @@ using static TheXDS.MCART.Objects;
 
 namespace TheXDS.Proteus.Tools
 {
+    /// <summary>
+    /// Herramienta que permite capturar, loggear y generar intencionalmente
+    /// excepciones en el sistema.
+    /// </summary>
     public class ExDumper : Tool
     {
         private const string _totalFail = "Error cerrando la aplicación. Para prevenir daños a la información o al equipo, detenga la ejecución de este programa inmediatamente.";
@@ -39,6 +43,11 @@ Captura de excepciones {(_enabled ? "activada" : "desactivada")}
 Cierre forzoso {(_shutdown ? "activado" : "desactivado")}");
         }
 
+        /// <summary>
+        /// Genera una excepción de manera intencional.
+        /// </summary>
+        /// <param name="sender">Objeto que ha generado el evento.</param>
+        /// <param name="e">Argumentos del evento.</param>
         [InteractionItem, Name("💣"), Description("Genera una excepción de manera intencional.")]
         public void IntentionallyCrash(object sender, EventArgs e)
         {
@@ -51,6 +60,12 @@ Cierre forzoso {(_shutdown ? "activado" : "desactivado")}");
             throw GetTypes<Exception>(true).Pick().New<Exception>();
         }
 
+        /// <summary>
+        /// Simula una excepción en el sistema y muestra una ventana de error
+        /// crítico.
+        /// </summary>
+        /// <param name="sender">Objeto que ha generado el evento.</param>
+        /// <param name="e">Argumentos del evento.</param>
         [InteractionItem, Name("💣😉"), Description("Simula una excepción en el sistema y muestra una ventana de error crítico.")]
         public void IntentionallyPick(object sender, EventArgs e)
         {
@@ -66,6 +81,11 @@ Cierre forzoso {(_shutdown ? "activado" : "desactivado")}");
             Proteus.MessageTarget?.Critical(ex);
         }
 
+        /// <summary>
+        /// Activa/desactiva la captura de excepciones por este plugin.
+        /// </summary>
+        /// <param name="sender">Objeto que ha generado el evento.</param>
+        /// <param name="e">Argumentos del evento.</param>
         [InteractionItem, Name("🕷"), Description("Activa/desactiva la captura de excepciones por este plugin.")]
         public void ToggleCatch(object sender, EventArgs e)
         {
@@ -78,6 +98,12 @@ Cierre forzoso {(_shutdown ? "activado" : "desactivado")}");
                 : "Las excepciones no controladas no serán capturadas.");
         }
 
+        /// <summary>
+        /// Activa/desactiva el cierre forzoso de la aplicación al producirse
+        /// un error crítico.
+        /// </summary>
+        /// <param name="sender">Objeto que ha generado el evento.</param>
+        /// <param name="e">Argumentos del evento.</param>
         [InteractionItem, Name("🕷→❌"), Description("Activa/desactiva el cierre forzoso de la aplicación al producirse un error crítico.")]
         public void ToggleShutdown(object sender, EventArgs e)
         {
