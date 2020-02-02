@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
@@ -80,42 +79,5 @@ namespace TheXDS.Proteus.Models
             c.Items.AddRange(f.Items.Select(p => p.Clone()));
             return c;
         }
-    }
-
-    public class Paquete : Facturable, IVoidable
-    {
-        public virtual List<Facturable> Children { get; set; } = new List<Facturable>();
-        public DateTime ValidFrom { get; set; } = DateTime.Now;
-        public DateTime? Void { get; set; }
-    }
-
-    public class Payment : TimestampModel<long>
-    {
-        public virtual Factura Parent { get; set; }
-        public Guid Source { get; set; }
-        public decimal Amount { get; set; }
-        public override string ToString()
-        {
-            return $"{FacturaService.PaymentSources.FirstOrDefault(p => p.Guid == Source)?.Name}: {Amount:C}";
-        }
-    }
-
-    public class Producto : Facturable
-    {
-    }
-    /// <summary>
-    /// Describe un servicio facturable sin consumo de inventario.
-    /// </summary>
-    public class Servicio : Facturable
-    {
-    }
-    public class TablaPrecio : Nameable<int>
-    {
-        public virtual List<TablaPrecioItem> Items { get; set; } = new List<TablaPrecioItem>();
-        public virtual List<ClienteCategory> AppliedTo { get; set; } = new List<ClienteCategory>();
-    }
-    public class TablaPrecioItem : Valuable<int>
-    {
-        public virtual Facturable Item { get; set; }
     }
 }

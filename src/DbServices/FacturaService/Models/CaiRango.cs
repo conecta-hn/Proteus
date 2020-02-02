@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using TheXDS.MCART;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
@@ -72,6 +74,13 @@ namespace TheXDS.Proteus.Models
         public string FactNum(int correl)
         {
             return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00}-{RangoInicial + correl - 1:00000000}";
+        }
+
+        public List<int> GetFreeCorrels()
+        {
+            var l = Common.Sequence(RangoInicial, RangoFinal).ToList();
+            foreach (var j in Facturas) l.Remove(j.Correlativo);
+            return l;
         }
     }
 }
