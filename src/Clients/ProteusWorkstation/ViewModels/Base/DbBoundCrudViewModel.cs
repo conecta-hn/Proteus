@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -91,7 +91,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="o">
         /// Elemento a eliminar.
         /// </param>
-        protected override async void OnDelete(object? o)
+        public override async void OnDelete(object? o)
         {
             if (!(o is ModelBase m)) return;
             var t = await PerformAsync(() => Service!.PurgeAsync(m));

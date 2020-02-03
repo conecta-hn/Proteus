@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -46,6 +46,17 @@ namespace TheXDS.Proteus.ViewModels
         private bool _canSearch = true;
         private bool _isSearching;
         private ICollectionView? _results;
+        private IEnumerable<ModelBase>? _enumerableResults;
+
+        /// <summary>
+        /// Obtiene o establece el valor EnumerableResults.
+        /// </summary>
+        /// <value>El valor de EnumerableResults.</value>
+        public IEnumerable<ModelBase>? EnumerableResults
+        {
+            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel);
+            private set => Change(ref _enumerableResults, value);
+        }
 
         /// <summary>
         /// Obtiene un valor que determina si se habilita los controles de
@@ -286,7 +297,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="o">
         /// Valor a eliminar.
         /// </param>
-        protected override void OnDelete(object? o)
+        public override void OnDelete(object? o)
         {
             Selection = null;
         }
@@ -358,6 +369,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
             Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            EnumerableResults = null;
             SearchQuery = null;
         }
 
@@ -371,6 +383,9 @@ namespace TheXDS.Proteus.ViewModels
             set => Change(ref _isSearching, value);
         }
 
+        /// <summary>
+        /// Obtiene una cadena que describe los detalles de la búsqueda.
+        /// </summary>
         public string ResultsDetails => string.Empty;
 
         private async void OnSearch()
@@ -388,10 +403,9 @@ namespace TheXDS.Proteus.ViewModels
             {
                 l = j.Filter(l, SearchQuery!);
             }
+            EnumerableResults = l;
             Results = CollectionViewSource.GetDefaultView(l);
-
             Results.Refresh();
-
             IsSearching = false;
             WillSearch = false;
         }

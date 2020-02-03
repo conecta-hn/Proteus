@@ -1,8 +1,19 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Security;
+using System.Threading.Tasks;
+using TheXDS.MCART.Attributes;
+using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.PluginSupport.Legacy;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Config;
@@ -10,18 +21,7 @@ using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Protocols;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Exceptions;
-using TheXDS.MCART.PluginSupport.Legacy;
-using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Objects;
-using System.Net.Sockets;
 
 [assembly: Name("Proteus Core Library")]
 [assembly: LicenseFile("License.txt")]

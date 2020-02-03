@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -131,6 +131,19 @@ namespace TheXDS.Proteus.Plugins
         {
             if (!FullMenu.ContainsKey(group)) FullMenu.Add(group, new ObservableCollectionWrap<Launcher>(new HashSet<Launcher>()));
             FullMenu[group].Add(launcher);
+        }
+
+        /// <summary>
+        /// Registra un <see cref="Launcher"/> en el grupo especificado.
+        /// </summary>
+        /// <param name="launcher"><see cref="Launcher"/> a registrar.</param>
+        /// <param name="type">
+        /// Tipo de interacción en la cual registrar el 
+        /// <paramref name="launcher"/>.
+        /// </param>
+        public void RegisterLauncher(Launcher launcher, InteractionType type)
+        {
+            RegisterLauncher(launcher, type.NameOf());
         }
 
         /// <summary>

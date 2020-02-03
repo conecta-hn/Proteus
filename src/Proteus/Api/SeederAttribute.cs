@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+Copyright © 2017-2020 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
+using System;
 using TheXDS.MCART.Attributes;
 
 namespace TheXDS.Proteus.Api

@@ -32,7 +32,7 @@
                 <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow"/>                
             </ScrollViewer>
         </DockPanel>
-        <mcart:StretchyWrapPanel Grid.Row="1" Style="{StaticResource Botonera}" HorizontalAlignment="Center">
+        <mcart:StretchyWrapPanel Grid.Row="1" Margin="-5,15,-5,0" Style="{StaticResource Botonera}" HorizontalAlignment="Center">
             <Button Command="{Binding CloseCommand, Mode=OneWay}" Content="{Binding CloseLabel, Mode=OneWay}" x:Name="BtnClose"/>
             <Button Command="{Binding OkCommand, Mode=OneWay}" Content="Sí" Visibility="{Binding QuestionVis, Mode=OneWay}"/>
         </mcart:StretchyWrapPanel>
