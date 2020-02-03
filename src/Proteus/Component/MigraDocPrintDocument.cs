@@ -34,15 +34,14 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Drawing;
-using System.Drawing.Printing;
 using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.IO;
 using PdfSharp;
 using PdfSharp.Drawing;
-using MigraDoc.DocumentObjectModel.IO;
+using System;
+using System.Diagnostics;
+using System.Drawing.Printing;
+using System.Runtime.InteropServices;
 
 namespace MigraDoc.Rendering.Printing
 {
@@ -53,7 +52,7 @@ namespace MigraDoc.Rendering.Printing
     public class MigraDocPrintDocument : PrintDocument
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:MigraDoc.Rendering.Printing.MigraDocPrintDocument"/> class. 
+        /// Initializes a new instance of the <see cref="MigraDocPrintDocument"/> class. 
         /// </summary>
         public MigraDocPrintDocument()
         {
@@ -62,27 +61,33 @@ namespace MigraDoc.Rendering.Printing
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:MigraDoc.Rendering.Printing.MigraDocPrintDocument"/> class
-        /// with the specified <see cref="T:MigraDoc.Rendering.DocumentRenderer"/> object.
+        /// Initializes a new instance of the <see cref="MigraDocPrintDocument"/> class
+        /// with the specified <see cref="DocumentRenderer"/> object.
         /// </summary>
         public MigraDocPrintDocument(DocumentRenderer renderer)
         {
-            _renderer = renderer;
+            Renderer = renderer;
             DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
             OriginAtMargins = false;
         }
 
-        public MigraDocPrintDocument(Document document)
-            : this()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MigraDocPrintDocument"/> class
+        /// with the specified <see cref="Document"/> object.
+        /// </summary>
+        public MigraDocPrintDocument(Document document) : this()
         {
-            _renderer = MakeRenderer(document);
+            Renderer = MakeRenderer(document);
         }
 
-        public MigraDocPrintDocument(string ddl)
-            : this()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MigraDocPrintDocument"/> class
+        /// with the specified <see cref="string"/> object.
+        /// </summary>
+        public MigraDocPrintDocument(string ddl) : this()
         {
             var document = DdlReader.DocumentFromString(ddl);
-            _renderer = MakeRenderer(document);
+            Renderer = MakeRenderer(document);
         }
 
         private static DocumentRenderer MakeRenderer(Document document)
@@ -95,12 +100,7 @@ namespace MigraDoc.Rendering.Printing
         /// <summary>
         /// Gets or sets the DocumentRenderer that prints the pages of the document.
         /// </summary>
-        public DocumentRenderer Renderer
-        {
-            get { return _renderer; }
-            set { _renderer = value; }
-        }
-        DocumentRenderer _renderer;
+        public DocumentRenderer? Renderer { get; set; }
 
         /// <summary>
         /// Gets or sets the page number that identifies the selected page. It it used on printing when 
@@ -114,12 +114,12 @@ namespace MigraDoc.Rendering.Printing
         int _selectedPage;
 
         /// <summary>
-        /// Raises the <see cref="E:System.Drawing.Printing.PrintDocument.BeginPrint"/> event. It is called after the <see cref="M:System.Drawing.Printing.PrintDocument.Print"/> method is called and before the first page of the document prints.
+        /// Raises the <see cref="PrintDocument.BeginPrint"/> event. It is called after the <see cref="PrintDocument.Print"/> method is called and before the first page of the document prints.
         /// </summary>
-        /// <param name="e">A <see cref="T:System.Drawing.Printing.PrintEventArgs"/> that contains the event data.</param>
+        /// <param name="e">A <see cref="PrintEventArgs"/> that contains the event data.</param>
         protected override void OnBeginPrint(PrintEventArgs e)
         {
-            Debug.Assert(_renderer != null, "Cannot print without a MigraDoc.Rendering.DocumentRenderer.");
+            Debug.Assert(Renderer != null, "Cannot print without a MigraDoc.Rendering.DocumentRenderer.");
 
             base.OnBeginPrint(e);
             if (!e.Cancel)
@@ -128,7 +128,7 @@ namespace MigraDoc.Rendering.Printing
                 {
                     case PrintRange.AllPages:
                         _pageNumber = 1;
-                        _pageCount = _renderer.FormattedDocument.PageCount;
+                        _pageCount = Renderer.FormattedDocument.PageCount;
                         break;
 
                     case PrintRange.SomePages:
@@ -152,19 +152,19 @@ namespace MigraDoc.Rendering.Printing
         int _pageCount;
 
         /// <summary>
-        /// Raises the <see cref="E:System.Drawing.Printing.PrintDocument.QueryPageSettings"/> event. It is called immediately before each <see cref="E:System.Drawing.Printing.PrintDocument.PrintPage"/> event.
+        /// Raises the <see cref="PrintDocument.QueryPageSettings"/> event. It is called immediately before each <see cref="PrintDocument.PrintPage"/> event.
         /// </summary>
-        /// <param name="e">A <see cref="T:System.Drawing.Printing.QueryPageSettingsEventArgs"/> that contains the event data.</param>
+        /// <param name="e">A <see cref="QueryPageSettingsEventArgs"/> that contains the event data.</param>
         protected override void OnQueryPageSettings(QueryPageSettingsEventArgs e)
         {
             base.OnQueryPageSettings(e);
             if (!e.Cancel)
             {
-                PageSettings settings = e.PageSettings;
-                PageInfo pageInfo = _renderer.FormattedDocument.GetPageInfo(_pageNumber);
+                var settings = e.PageSettings;
+                var pageInfo = Renderer?.FormattedDocument.GetPageInfo(_pageNumber);
 
                 // set portrait/landscape
-                settings.Landscape = pageInfo.Orientation == PageOrientation.Landscape;
+                settings.Landscape = pageInfo?.Orientation == PageOrientation.Landscape;
             }
         }
 
@@ -177,23 +177,22 @@ namespace MigraDoc.Rendering.Printing
             base.OnPrintPage(e);
             if (!e.Cancel)
             {
-                PageSettings settings = e.PageSettings;
                 try
                 {
-                    Graphics graphics = e.Graphics;
-                    IntPtr hdc = graphics.GetHdc();
-                    int xOffset = GetDeviceCaps(hdc, PHYSICALOFFSETX);
-                    int yOffset = GetDeviceCaps(hdc, PHYSICALOFFSETY);
+                    var graphics = e.Graphics;
+                    var hdc = graphics.GetHdc();
+                    var xOffset = GetDeviceCaps(hdc, _physicalOffsetX);
+                    var yOffset = GetDeviceCaps(hdc, _physicalOffsetY);
                     graphics.ReleaseHdc(hdc);
                     graphics.TranslateTransform(-xOffset * 100 / graphics.DpiX, -yOffset * 100 / graphics.DpiY);
                     // Recall: Width and Height are exchanged when settings.Landscape is true.
-                    XSize size = new XSize(e.PageSettings.Bounds.Width / 100.0 * 72, e.PageSettings.Bounds.Height / 100.0 * 72);
+                    var size = new XSize(e.PageSettings.Bounds.Width / 100.0 * 72, e.PageSettings.Bounds.Height / 100.0 * 72);
                     const float scale = 100f / 72f;
                     graphics.ScaleTransform(scale, scale);
                     // draw line A4 portrait
                     //graphics.DrawLine(Pens.Red, 0, 0, 21f / 2.54f * 72, 29.7f / 2.54f * 72);
-                    XGraphics gfx = XGraphics.FromGraphics(graphics, size);
-                    _renderer.RenderPage(gfx, _pageNumber);
+                    var gfx = XGraphics.FromGraphics(graphics, size);
+                    Renderer?.RenderPage(gfx, _pageNumber);
                 }
                 catch
                 {
@@ -217,37 +216,7 @@ namespace MigraDoc.Rendering.Printing
 
         [DllImport("gdi32.dll")]
         static extern int GetDeviceCaps(IntPtr hdc, int capability);
-        // ReSharper disable InconsistentNaming
-        const int PHYSICALOFFSETX = 112; // Physical Printable Area x margin
-        const int PHYSICALOFFSETY = 113; // Physical Printable Area y margin
-        // ReSharper restore InconsistentNaming
+        const int _physicalOffsetX = 112; // Physical Printable Area x margin
+        const int _physicalOffsetY = 113; // Physical Printable Area y margin
     }
-
-    /// <summary>
-    /// MigraDocPrintDocumentEx does not use any MigraDoc classes in the interface.
-    /// This allows consuming the class MigraDocPrintDocumentEx without referencing the GDI build of PDFsharp/MigraDoc.
-    /// This allows assemblies that reference the WPF build or other builds of PDFsharp/MigraDoc to use this class for printing.
-    /// To make this work, we have to pass the MigraDoc document as an MDDDL string.
-    /// </summary>
-    public class MigraDocPrintDocumentEx
-    {
-        public MigraDocPrintDocumentEx(string ddl)
-        {
-            _printDocument = new MigraDocPrintDocument(ddl);
-        }
-
-        public PrinterSettings PrinterSettings
-        {
-            get { return _printDocument.PrinterSettings; }
-            set { _printDocument.PrinterSettings = value; }
-        }
-
-        public void Print()
-        {
-            _printDocument.Print();
-        }
-
-        private readonly MigraDocPrintDocument _printDocument;
-    }
-
 }

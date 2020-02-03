@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -35,7 +35,8 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel, IEditingCrudViewModel where TService : Service, new()
     {
-        private static readonly IEnumerable<CrudTool> _tools = Objects.FindAllObjects<CrudTool>();
+        private static readonly IEnumerable<CrudTool> _allTools = Objects.FindAllObjects<CrudTool>();
+        private readonly IEnumerable<CrudTool> _tools;
 
         private readonly Type _model;
         private bool _willSearch = true;
@@ -199,6 +200,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = model;
             Implementation = new DbBoundCrudViewModel(model);
+            _tools = _allTools.Where(p => p.Available(model));
             Init();
         }
 
@@ -213,6 +215,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
+            _tools = _allTools.Where(p => p.Available(models));
             Init();
         }
 

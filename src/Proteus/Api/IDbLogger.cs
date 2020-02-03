@@ -1,4 +1,9 @@
-﻿using System.Data.Entity.Infrastructure;
+﻿/*
+Copyright © 2017-2020 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
+using System.Data.Entity.Infrastructure;
 using System.Threading.Tasks;
 using TheXDS.Proteus.Models.Base;
 
