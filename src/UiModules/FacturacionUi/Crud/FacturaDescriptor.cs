@@ -60,13 +60,13 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             {
                 FacturaService.AddFactura(obj, true, App.Module<FacturacionModule>().Interactor);
             }
-            CurrentEditor.SaveCommand.Execute(obj);
+            CurrentEditor?.SaveCommand.Execute(obj);
         }
 
         private async void OnNullify(Factura obj)
         {
             obj.Nula = true;
-            CurrentEditor.SaveCommand.Execute(obj);
+            CurrentEditor?.SaveCommand.Execute(obj);
         }
 
         private void SetCajaOp(Factura obj)

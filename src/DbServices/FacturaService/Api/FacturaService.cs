@@ -89,7 +89,7 @@ namespace TheXDS.Proteus.Api
             if (r is null || c is null) return null;
             return $"{r.NumLocal:000}-{r.NumCaja:000}-{r.NumDocumento:00}-{c:00000000}";
         }
-        public static void AddFactura(Factura f, bool register, IFacturaInteractor i)
+        public static void AddFactura(Factura f, bool register, IFacturaInteractor? i)
         {
             if (register)
             {
@@ -97,18 +97,18 @@ namespace TheXDS.Proteus.Api
             }
             GetCajaOp.Facturas.Add(f);
         }
-        public static void RegisterFactura(Factura f, IFacturaInteractor i)
+        public static void RegisterFactura(Factura f, IFacturaInteractor? i)
         {
             f.CaiRangoParent = CurrentRango;
             f.Correlativo = NextCorrel(f.CaiRangoParent) ?? 1;
             PrintFactura(f, i);
         }
 
-        public static void PrintFactura(Factura f, IFacturaInteractor i)
+        public static void PrintFactura(Factura f, IFacturaInteractor? i)
         {
             var doc = DocumentBuilder.CreateDocument();
             var section = AddFacturaHeader(doc, f);
-            AddItemsTable(section, i);
+            AddItemsTable(section, i, f);
 
             using var p = new MigraDocPrintDocument(doc)
             {
@@ -125,37 +125,68 @@ namespace TheXDS.Proteus.Api
             return retVal;
         }
 
-        private static Table AddItemsTable(Section section, IFacturaInteractor i)
+        private static Table AddItemsTable(Section section, IFacturaInteractor i, Factura f)
         {
+            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
+            var ic = 0;
             var c = 0;
             var cols = new[]
             {
-                new FacturaColumn("#", _ => (++c).ToString()),
+                new FacturaColumn("#", _ => (++ic).ToString()),
                 new FacturaColumn("Item", f => f.Item.Name, 4.0),
             }.Concat(i?.ExtraColumns ?? Array.Empty<FacturaColumn>()).Concat(new[]
             {
                 new FacturaColumn("Cant.", f => f.Qty.ToString()),
-                new FacturaColumn("Precio", f => f.StaticPrecio.ToString(), 2.0, true),
-                new FacturaColumn("Descuentos", f => f.StaticDescuento.ToString(), 2.0, true),
-                new FacturaColumn("Sub Total", f => f.SubTFinal.ToString(), 2.0, true),
-
+                new FacturaColumn("Precio", f => f.StaticPrecio.ToString("C", ci), 2.0, true),
+                new FacturaColumn("Descuentos", f => f.StaticDescuento.ToString("C", ci), 2.0, true),
+                new FacturaColumn("Sub Total", f => f.SubTFinal.ToString("C", ci), 2.0, true),
             }).ToList();
             var colsTot = cols.Sum(p => p.RelaSize);
             var tblWidth = 18.5;
-
             var tbl = section.AddTable();
             foreach (var j in cols)
             {
                 tbl.AddColumn(new Unit(j.RelaSize * tblWidth / colsTot, UnitType.Centimeter))
                     .Format.Alignment = j.Currency ? ParagraphAlignment.Right : ParagraphAlignment.Left;
             }
+
+            void AddSubt(string label, decimal value)
+            {
+                var r = tbl.AddRow();
+                r[cols.Count - 2].AddParagraph($"{label}:");
+                r[cols.Count - 1].AddParagraph(value.ToString("C", ci));
+
+            }
+
             var row = tbl.AddRow();
             foreach (var j in cols)
             {
                 row.Cells[c++].AddParagraph(j.Header).Format.Font.Bold = true;
             };
-            c = 0; // la función lambda para la primera columna necesita este valor.
+            row.Borders = new Borders() { Bottom = new Border() { Color = Colors.Black, Width = 1.0f } };
+
+            foreach (var j in f.Items)
+            {
+                row = tbl.AddRow();
+                c = 0;
+                foreach (var k in cols)
+                {
+                    row[c++].AddParagraph(k.Presenter(j));
+                }
+            }
+            row = tbl.AddRow();
+            row.Borders = new Borders() { Bottom = new Border() { Color = Colors.Black, Width = 1.0f } };
+            row[1].AddParagraph("-- Última línea --").Format.Alignment = ParagraphAlignment.Center;
+            
+            AddSubt("Subtotal", f.SubTotal);
+            AddSubt("Impuesto", f.SubTGravable);
+            AddSubt("Subtotal gravado", f.SubTGravado);
+            AddSubt("Subtotal final", f.SubTFinal);
+            AddSubt("Descuentos", f.Descuentos);
+            AddSubt("TOTAL", f.Total);
+
+
             return tbl;
-        }
+        }        
     }
 }
