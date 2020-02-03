@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -23,6 +23,8 @@ using TheXDS.Proteus.Misc;
 using System.Data.Entity;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Config;
+using TheXDS.MCART;
+using TheXDS.Proteus.Component;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -36,7 +38,7 @@ namespace TheXDS.Proteus.ViewModels
         private readonly HashSet<ModelBase> _addedFromSelection = new HashSet<ModelBase>();
         private SelectionMode _selectMode;
         private bool _addMode;
-        private IList _addSelections;
+        private IList? _addSelections;
         private bool _canSelect;
         private string _fieldName;
         private bool _canAdd;
@@ -55,7 +57,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos creables desde este <see cref="ListEditorViewModel"/>.
         /// </param>
-        public ListEditorViewModel(ICollection<ModelBase> selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models, nameof(Source))
+        public ListEditorViewModel(ICollection<ModelBase>? selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models, nameof(Source))
         {
             SelectionSource = selectionSource;
             AddCommand = new SimpleCommand(OnSelect);
@@ -67,11 +69,11 @@ namespace TheXDS.Proteus.ViewModels
             RegisterPropertyChangeBroadcast(nameof(CanSelect), nameof(CanAddAndSelect));
             RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
             RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+            
             SearchCommand = new ObservingCommand(this, OnSearch);
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
             SearchCommand.SetCanExecute(() => !SearchQuery.IsEmpty() && ActiveModel != null);
-
             ActiveModel = Models.FirstOrDefault();
         }
 
@@ -103,10 +105,20 @@ namespace TheXDS.Proteus.ViewModels
         {
         }
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="ListEditorViewModel"/>.
+        /// </summary>
+        /// <param name="description">
+        /// Descripción bajo la cual se debe instanciar este objeto.
+        /// </param>
+        /// <param name="models">
+        /// Modelos de datos para los cuales generar el control.
+        /// </param>
         public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
-            CanSelect = description.Selectable;
+            if (CanSelect = description.Selectable) ClearSearch();
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CustomColumns.AddRange(description.Columns);
@@ -186,7 +198,7 @@ namespace TheXDS.Proteus.ViewModels
         /// tipo <paramref name="t"/>, <see langword="false"/> en caso
         /// contrario.
         /// </returns>
-        public override bool CanCreate(Type t) => CanAdd && base.CanCreate(t);
+        public override bool CanCreate(Type? t) => CanAdd && base.CanCreate(t);
 
         /// <summary>
         /// Obtiene un valor que indica si este
@@ -274,7 +286,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="o">
         /// Elemento a eliminar.
         /// </param>
-        protected override void OnDelete(object o)
+        public override void OnDelete(object? o)
         {
             //if (!(o is ModelBase s)) return;
             //Source.Remove(s);
@@ -332,7 +344,7 @@ namespace TheXDS.Proteus.ViewModels
         /// Obtiene o establece la lista de elementos seleccionados para
         /// agregar a la colección del modelo de datos.
         /// </summary>
-        public IList AddSelections
+        public IList? AddSelections
         {
             get => _addSelections;
             set => Change(ref _addSelections, value);
@@ -341,7 +353,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Obtiene el origen de selección de este <see cref="ListEditorViewModel"/>.
         /// </summary>
-        public ICollection<ModelBase> SelectionSource { get; }
+        public ICollection<ModelBase>? SelectionSource { get; }
 
         /// <summary>
         /// Ocurre cuando no hay nada seleccionado.
@@ -438,7 +450,12 @@ namespace TheXDS.Proteus.ViewModels
         private async Task PerformSearch()
         {
             IsSearching = true;
-            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync());
+            var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
+            foreach(var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            {
+                l = j.Filter(l, SearchQuery!);
+            }
+            Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;
         }
@@ -451,8 +468,7 @@ namespace TheXDS.Proteus.ViewModels
             get => _activeModel;
             set
             {
-                if (!Change(ref _activeModel, value)) return;
-                ClearSearch();
+                if (Change(ref _activeModel, value) && CanSelect) ClearSearch();
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -12,7 +12,7 @@ namespace TheXDS.Proteus.Models
     {
         public virtual User Login { get; set; }
         public DateTime? Void { get; set; }
-        public string ComputerName { get; set; }
+        public string? ComputerName { get; set; }
         public bool OnceOnly { get; set; }
     }
 }

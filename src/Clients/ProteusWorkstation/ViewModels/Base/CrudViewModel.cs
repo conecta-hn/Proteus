@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -21,6 +22,7 @@ using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.ViewModels.Base
@@ -33,11 +35,43 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel, IEditingCrudViewModel where TService : Service, new()
     {
+        private static readonly IEnumerable<CrudTool> _allTools = Objects.FindAllObjects<CrudTool>();
+        private readonly IEnumerable<CrudTool> _tools;
+
         private readonly Type _model;
         private bool _willSearch = true;
         private string? _searchQuery;
         private bool _isSearching;
         private ICollectionView? _results;
+        private IEnumerable<ModelBase>? _enumerableResults;
+
+        /// <summary>
+        /// Obtiene o establece el valor EnumerableResults.
+        /// </summary>
+        /// <value>El valor de EnumerableResults.</value>
+        public IEnumerable<ModelBase>? EnumerableResults
+        {
+            get => _enumerableResults ?? Source;
+            private set => Change(ref _enumerableResults, value);
+        }
+
+        /// <summary>
+        /// Enumera los <see cref="Launcher"/> a presentar para la vista de
+        /// Crud cuando no hay una entidad seleccionada.
+        /// </summary>
+        public IEnumerable<Launcher> UnselectedLaunchers => GetLaunchers(CrudToolVisibility.Unselected);
+
+        /// <summary>
+        /// Enumera los <see cref="Launcher"/> a presentar para la vista de
+        /// Crud cuando hay una entidad seleccionada.
+        /// </summary>
+        public IEnumerable<Launcher> SelectedLaunchers => GetLaunchers(CrudToolVisibility.Selected);
+
+        /// <summary>
+        /// Enumera los <see cref="Launcher"/> a presentar para la vista de
+        /// Crud cuando se está editando una entidad.
+        /// </summary>
+        public IEnumerable<Launcher> EditingLaunchers => GetLaunchers(CrudToolVisibility.Editing);
 
         /// <summary>
         /// Obtiene un valor que indica si este ViewModel se encuentra 
@@ -62,7 +96,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// un selector <see cref="ListView"/> cuando esta ventana de CRUD
         /// controla únicamente un modelo de datos.
         /// </summary>
-        public ViewBase ColumnsView => ((ICrudCollectionViewModel)Implementation).ColumnsView;
+        public ViewBase? ColumnsView => ((ICrudCollectionViewModel)Implementation).ColumnsView;
 
         /// <summary>
         /// Enumera el orígen de datos establecido para este Crud.
@@ -177,6 +211,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = model;
             Implementation = new DbBoundCrudViewModel(model);
+            _tools = _allTools.Where(p => p.Available(model));
             Init();
         }
 
@@ -191,6 +226,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
+            _tools = _allTools.Where(p => p.Available(models));
             Init();
         }
 
@@ -266,6 +302,15 @@ namespace TheXDS.Proteus.ViewModels.Base
         public bool CanDelete(ModelBase entity) => ((ICrudCollectionViewModel)Implementation).CanDelete(entity);
 
         /// <summary>
+        /// Ejecuta una acción que Crea una nueva entidad.
+        /// </summary>
+        /// <param name="t">Modelo de datos a crear.</param>
+        public void OnCreate(Type? t)
+        {
+            ((ICrudCollectionViewModel)Implementation).OnCreate(t);
+        }
+
+        /// <summary>
         /// Ejecuta una operación colocando a este 
         /// <see cref="ICrudEditingViewModel"/> en estado de ocupado.
         /// </summary>
@@ -334,6 +379,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public void ClearSearch()
         {
+            EnumerableResults = null;
             Results = Source.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(Source) : null;
             SearchQuery = null;
         }
@@ -363,9 +409,20 @@ namespace TheXDS.Proteus.ViewModels.Base
         private async Task PerformSearch()
         {
             IsSearching = true;
-            Results = CollectionViewSource.GetDefaultView(await Internal.Query(SearchQuery!, _model).ToListAsync());
+            var l = (await Internal.Query(SearchQuery!, _model).ToListAsync()).Cast<ModelBase>().ToList();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            {
+                l = j.Filter(l, SearchQuery!);
+            }
+            EnumerableResults = l;
+            Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;
+        }
+
+        private IEnumerable<Launcher> GetLaunchers(CrudToolVisibility flags)
+        {
+            return _tools.Where(p => p.Visibility.HasFlag(flags)).SelectMany(p => p.GetLaunchers(_model, this));
         }
     }
 }

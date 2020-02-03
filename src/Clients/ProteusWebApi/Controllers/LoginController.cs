@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -159,6 +159,7 @@ namespace TheXDS.Proteus.Controllers
             return Proteus.LoginSources.Select(p=>p.GetType().Name).ToArray();
         }
 
+#if LoginWithJsonData
         /// <summary>
         /// Ejecuta un inicio de sesión desde un cliente web.
         /// </summary>
@@ -169,12 +170,24 @@ namespace TheXDS.Proteus.Controllers
         /// El resultado de la operación de inicio de sesión.
         /// </returns>
         [HttpPost("/v1/login/")]
-#if LoginWithJsonData
         public async Task<ActionResult> Login([FromBody]CredInput cred)
         {
             var user = cred.user;
             var password = cred.password;
 #else
+        /// <summary>
+        /// Ejecuta un inicio de sesión desde un cliente web.
+        /// </summary>
+        /// <param name="user">
+        /// Nombre de usuario.
+        /// </param>
+        /// <param name="password">
+        /// Contraseña.
+        /// </param>
+        /// <returns>
+        /// El resultado de la operación de inicio de sesión.
+        /// </returns>
+        [HttpPost("/v1/login/")]
         public async Task<ActionResult> Login([FromForm]string user, [FromForm]string password)
         {
 #endif

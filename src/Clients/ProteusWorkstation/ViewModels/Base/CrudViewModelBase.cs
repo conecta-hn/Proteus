@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -322,7 +322,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// crear una nueva entidad.
         /// </summary>
         protected bool NewMode { get; private set; } = false;
-        private void OnCreate(Type? t)
+
+        /// <summary>
+        /// Ejecuta una acción que Crea una nueva entidad.
+        /// </summary>
+        /// <param name="t">Modelo de datos a crear.</param>
+        public void OnCreate(Type? t)
         {
             t ??= Models.First();
             if (!Elements.Any(p=>IsForType(p,t)) || !Elements.Any(p=>Implements(p,t!)))
@@ -418,9 +423,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="o">
         /// Elemento a eliminar.
         /// </param>
-        protected abstract void OnDelete(object? o);
+        public abstract void OnDelete(object? o);
 
-        private protected void OnEdit(object? o)
+        /// <summary>
+        /// Ejecuta una operación de edición de información de la
+        /// colección activa.
+        /// </summary>
+        /// <param name="o">
+        /// Elemento a eliminar.
+        /// </param>
+        public void OnEdit(object? o)
         {
             EditMode = true;
 
@@ -434,10 +446,10 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
         }
 
-        [Sugar] private void OnCreate(object? o) => OnCreate(o as Type);
-        [Sugar] private bool CanCreate(object? o) => CanCreate(o as Type);
-        [Sugar] private bool CanEdit(object? o) => CanEdit(Selection as ModelBase);
-        [Sugar] private bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
+        [Sugar] internal void OnCreate(object? o) => OnCreate(o as Type);
+        [Sugar] internal bool CanCreate(object? o) => CanCreate(o as Type);
+        [Sugar] internal bool CanEdit(object? o) => CanEdit(Selection as ModelBase);
+        [Sugar] internal bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
 
         /// <summary>
         /// Ejecuta una operación colocando a este 

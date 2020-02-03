@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -24,12 +24,12 @@ namespace TheXDS.Proteus.Modules
         {
             Host.OpenPage(CrudPage.New<Aviso>());
         }
-        [InteractionItem, Essential, InteractionType(AdminTool), Name("Administrar grupos")]
+        [InteractionItem, InteractionType(AdminTool), Name("Administrar grupos")]
         public void AdminUserGroups(object sender, EventArgs e)
         {
             Host.OpenPage(CrudPage.New<UserGroup>());
         }
-        [InteractionItem, Essential, InteractionType(AdminTool), Name("Administrar roles")]
+        [InteractionItem, InteractionType(AdminTool), Name("Administrar roles")]
         public void AdminUserRoles(object sender, EventArgs e)
         {
             Host.OpenPage(CrudPage.New<UserRole>());
@@ -45,7 +45,7 @@ namespace TheXDS.Proteus.Modules
             Host.OpenPage<GenericReportPage>();
         }
 
-        [InteractionItem, Essential, InteractionType(InteractionType.Tool), Name("Borrar tokens")]
+        [InteractionItem, InteractionType(InteractionType.Tool), Name("Borrar tokens")]
         [Description("Permite eliminar todos los tokens de inicio de sesión de la base de datos.")]
         public async void PurgeTokens(object sender, EventArgs e)
         {
