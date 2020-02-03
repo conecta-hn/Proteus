@@ -123,7 +123,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <summary>
         /// Calcula el monto gravable de este ítem.
         /// </summary>
-        public decimal MontoGravado => Gravar ? (SubTotal * (decimal)Gravado) : 0;
+        public decimal MontoGravado => Gravar ? (SubTotal * (decimal)Gravado / 100m) : 0;
 
         /// <summary>
         /// Obtiene el subtotal gravado de este ítem.
@@ -178,7 +178,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             Qty = item.Qty;
             Gravar = item.StaticIsv.HasValue;
-            Gravado = item.StaticIsv ?? 0f;
+            Gravado = item.StaticIsv / 100f ?? 0f;
             DescuentosOtorgados = item.StaticDescuento;
         }
 
@@ -225,5 +225,4 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <param name="vm">Objeto a convertir.</param>
         public static implicit operator Facturable(NewFacturaItemViewModel vm) => vm.Item;
     }
-
 }

@@ -38,7 +38,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         /// Tipo del <see cref="IFacturaUIInteractor"/> a instanciar para
         /// establecerlo como el interactor del módulo de facturación.
         /// </param>
-        private void RegisterInteractor(Type t)
+        private void RegisterInteractor(Type? t)
         {
             Interactor = t?.New<IFacturaUIInteractor>();
             var m = new SimpleCommand(async f =>
@@ -142,6 +142,16 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
                 return;
             }
             //error intencional de sintáxis.
+        }
+
+        /// <summary>
+        /// Ejecuta operaciones adicionales de inicialización del módulo luego
+        /// de ser cargado en el sistema.
+        /// </summary>
+        protected override void AfterInitialization()
+        {
+            base.AfterInitialization();
+            RegisterInteractor(null);
         }
     }
 }
