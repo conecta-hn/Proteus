@@ -16,7 +16,7 @@ namespace TheXDS.Proteus.Reporting
         {
             var retVal = doc.AddSection();
             retVal.PageSetup.DifferentFirstPageHeaderFooter = true;
-            retVal.PageSetup.TopMargin = new Unit(3.5, UnitType.Inch);
+            //retVal.PageSetup.TopMargin = new Unit(3.5, UnitType.Inch);
             retVal.PageSetup.PageFormat = PageFormat.Letter;
             AddMainHeader(retVal.Headers.Primary);
             AddMainHeader(retVal.Headers.FirstPage);
@@ -70,7 +70,7 @@ namespace TheXDS.Proteus.Reporting
         }
         private static void AddFooter(HeaderFooter footer)
         {
-            footer.AddParagraph("Test!!!");
+            footer.AddParagraph("Placeholder de footer para documento.");
         }
     }
 }

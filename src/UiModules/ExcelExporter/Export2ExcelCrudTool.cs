@@ -3,6 +3,7 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using Microsoft.Win32;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -63,49 +64,28 @@ namespace TheXDS.Proteus.Plugins
 
 		private void Export(ICrudViewModel vm, Type j)
 		{
-			if (CrudElement.GetDescription(j) is { } d)
+			var sfd = new SaveFileDialog()
+			{ 
+				Filter = "Archivo de Excel (*.xlsx)|*.xlsx|Todos los archivos|*.*"
+			};
+			if (!(CrudElement.GetDescription(j) is { } d)) return;
+			if (!(sfd.ShowDialog() ?? false)) return;
+			var e = BuildWb(d, out var ws, out var row, out var lastCol);
+			foreach (var i in GetQuery(vm, j))
 			{
-				var e = BuildWb(d, out var ws, out var row, out var lastCol);
-				foreach (var i in GetQuery(vm, j))
+				int col = 1;
+				foreach (var l in d.ListColumns)
 				{
-					int col = 1;
-					foreach (var l in d.ListColumns)
-					{
-						
-						var propertyInfo = j.GetProperties().FirstOrDefault((PropertyInfo p) => p.Name == l.Path);
-						var obj = propertyInfo?.GetValue(i);
-						ws.Cells[row, col].Value = GetStringValue(obj, l.Format);
-						col++;
-					}
-					row++;
+					ws.Cells[row, col].Value = l.ToString(i);
+					col++;
 				}
-				for (int k = 1; k <= lastCol; k++)
-				{
-					ws.Column(k).AutoFit();
-				}
-				e.SaveAs(new FileInfo("C:\\Users\\xds_x\\Downloads\\test.xlsx"));
+				row++;
 			}
-		}
-
-		private string? GetStringValue(object? obj, string format)
-		{
-			string? result;
-			if (format.IsEmpty())
+			for (int k = 1; k <= lastCol; k++)
 			{
-				result = obj?.ToString();
+				ws.Column(k).AutoFit();
 			}
-			else
-			{
-				if (obj?.GetType().GetMethod(nameof(ToString), new Type[] { typeof(string) }) is { } i)
-				{
-					result = i.Invoke(obj, new[] { format }) as string;
-				}
-				else
-				{
-					result = string.Format(format, obj);
-				}
-			}
-			return result;
+			e.SaveAs(new FileInfo(sfd.FileName));
 		}
 
 		private IEnumerable<ModelBase> GetQuery(ICrudViewModel vm, Type j)
