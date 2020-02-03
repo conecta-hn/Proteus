@@ -43,6 +43,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         private string? _searchQuery;
         private bool _isSearching;
         private ICollectionView? _results;
+        private IEnumerable<ModelBase>? _enumerableResults;
+
+        /// <summary>
+        /// Obtiene o establece el valor EnumerableResults.
+        /// </summary>
+        /// <value>El valor de EnumerableResults.</value>
+        public IEnumerable<ModelBase>? EnumerableResults
+        {
+            get => _enumerableResults ?? Source;
+            private set => Change(ref _enumerableResults, value);
+        }
 
         /// <summary>
         /// Enumera los <see cref="Launcher"/> a presentar para la vista de
@@ -368,6 +379,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         public void ClearSearch()
         {
+            EnumerableResults = null;
             Results = Source.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(Source) : null;
             SearchQuery = null;
         }
@@ -402,6 +414,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             {
                 l = j.Filter(l, SearchQuery!);
             }
+            EnumerableResults = l;
             Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;
