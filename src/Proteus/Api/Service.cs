@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -14,19 +14,19 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using TheXDS.Proteus.Component;
-using TheXDS.Proteus.Component.Attributes;
-using TheXDS.Proteus.Models;
-using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Component.Attributes;
+using TheXDS.Proteus.Context;
+using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 using static TheXDS.Proteus.Proteus;
 using Timer = System.Timers.Timer;
-using TheXDS.Proteus.Context;
 
 namespace TheXDS.Proteus.Api
 {
@@ -875,7 +875,7 @@ namespace TheXDS.Proteus.Api
             where TKey : IComparable<TKey>
         {
             //return FirstOrDefaultAsync<TEntity>(p => p.Id.Equals(id));
-            return Context.Set<TEntity>().FindAsync(id);
+            return Context.Set<TEntity>().FindAsync(id)!;
         }
 
         /// <summary>
@@ -999,7 +999,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         /// <remarks>
         /// Esta función debe ejecutarse desde el método
-        /// <see cref="IElevator.Elevate(ref IProteusCredential)"/> de una
+        /// <see cref="IElevator.Elevate(ref IProteusUserCredential)"/> de una
         /// clase que implemente <see cref="IElevator"/> para obtener las
         /// banderas requeridas.
         /// </remarks>
@@ -1018,7 +1018,7 @@ namespace TheXDS.Proteus.Api
         /// banderas de seguridad, o <see langword="null"/> si se alcanza
         /// el punto de entrada de la aplicación (el método Main())
         /// </returns>
-        public static MethodInfo InferMethod()
+        public static MethodInfo? InferMethod()
         {
             Infer(out var m, out _);
             return m;
@@ -1034,10 +1034,10 @@ namespace TheXDS.Proteus.Api
         /// <param name="flags">
         /// Parámetro de salida. Banderas de seguridad del método.
         /// </param>
-        public static void Infer(out MethodInfo method, out SecurityFlags flags)
+        public static void Infer(out MethodInfo? method, out SecurityFlags flags)
         {
             var c = 1;
-            MethodKindAttribute mka;
+            MethodKindAttribute? mka;
             do
             {
                 method = ReflectionHelpers.GetCallingMethod(c++) as MethodInfo;
@@ -1047,7 +1047,7 @@ namespace TheXDS.Proteus.Api
                     return;
                 }
             } while (!method.HasAttr(out mka));
-            flags = mka.Value;
+            flags = mka?.Value ?? default;
         }
 
         /// <summary>
@@ -1059,7 +1059,7 @@ namespace TheXDS.Proteus.Api
         /// Una colección con los resultados de la auditoría para cada
         /// función de este servicio.
         /// </returns>
-        public IEnumerable<KeyValuePair<MethodInfo, bool?>> Audit(IProteusHierachicalCredential credential)
+        public IEnumerable<KeyValuePair<MethodInfo, bool?>> Audit(IProteusHierachicalCredential? credential)
         {
             foreach (var j in Functions)
             {
@@ -1104,7 +1104,7 @@ namespace TheXDS.Proteus.Api
         /// <see langword="null"/> si no existe un descriptor que defina la
         /// posibilidad de ejecutar una operación sobre el servicio.
         /// </returns>
-        public static bool? CanRunService() => CanRunService(InferMethod());
+        public static bool? CanRunService() => InferMethod() is { } m ? CanRunService(m) : null;
 
         /// <summary>
         /// Comprueba los permisos de ejecución del servicio bajo el 
@@ -1119,7 +1119,7 @@ namespace TheXDS.Proteus.Api
         /// <see langword="null"/> si no existe un descriptor que defina la
         /// posibilidad de ejecutar una operación sobre el servicio.
         /// </returns>
-        public static bool? CanRunService(MethodInfo method) => CanRunService(method, LogonService.Session);
+        public static bool? CanRunService(MethodInfo method) => CanRunService(method, LogonService?.Session);
 
         /// <summary>
         /// Comprueba los permisos de ejecución del servicio bajo el 
@@ -1137,13 +1137,33 @@ namespace TheXDS.Proteus.Api
         /// <see langword="null"/> si no existe un descriptor que defina la
         /// posibilidad de ejecutar una operación sobre el servicio.
         /// </returns>
-        public static bool? CanRunService(MethodInfo method, IProteusCredential credential)
+        public static bool? CanRunService(MethodInfo method, IProteusCredential? credential)
         {
-            return CanRunService(method.FullName(), method.GetAttr<MethodKindAttribute>().Value, credential);
+            return CanRunService(method.FullName(), method.GetAttr<MethodKindAttribute>()?.Value ?? SecurityFlags.None, credential);
         }
 
-        public static bool? CanRunService(string id, SecurityFlags flags, IProteusCredential credential)
+        /// <summary>
+        /// Comprueba los permisos de ejecución del servicio bajo el 
+        /// contexto actual de funcionamiento.
+        /// </summary>
+        /// <param name="id">
+        /// Id de la acción que se está intentando ejecutar.
+        /// </param>
+        /// <param name="flags">
+        /// Banderas de permisos a comprobar.
+        /// </param>
+        /// <param name="credential">
+        /// Credencial específica contra la cual comprobar.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si la operación tiene permisos de
+        /// ejecución, <see langword="false"/> si no los tiene, y
+        /// <see langword="null"/> si no existe un descriptor que defina la
+        /// posibilidad de ejecutar una operación sobre el servicio.
+        /// </returns>
+        public static bool? CanRunService(string id, SecurityFlags flags, IProteusCredential? credential)
         {
+            if (credential is null) return null;
             foreach (var j in credential.Descriptors.OfType<IServiceSecurityDescriptor>())
             {
                 if (j.Id != id) continue;
@@ -1171,12 +1191,12 @@ namespace TheXDS.Proteus.Api
         /// <see langword="null"/> si no existe un descriptor que defina la
         /// posibilidad de ejecutar una operación sobre el servicio.
         /// </returns>
-        public static bool? CanRunService(MethodInfo method, IProteusHierachicalCredential credential)
+        public static bool? CanRunService(MethodInfo method, IProteusHierachicalCredential? credential)
         {
             return RecursiveCheck(CanRunService, method, credential);
         }
 
-        public static bool? RecursiveCheck(Func<MethodInfo, IProteusCredential, bool?> check, MethodInfo method, IProteusHierachicalCredential credential)
+        public static bool? RecursiveCheck(Func<MethodInfo, IProteusCredential?, bool?> check, MethodInfo method, IProteusHierachicalCredential? credential)
         {
             if (check is null)
                 throw new ArgumentNullException(nameof(check));
@@ -1195,7 +1215,7 @@ namespace TheXDS.Proteus.Api
             return check(method, credential.Parent);
         }
 
-        public static bool? RecursiveCheck(Func<string, SecurityFlags, IProteusCredential, bool?> check, string method, SecurityFlags flags, IProteusHierachicalCredential credential)
+        public static bool? RecursiveCheck(Func<string, SecurityFlags, IProteusCredential, bool?> check, string method, SecurityFlags flags, IProteusHierachicalCredential? credential)
         {
             if (check is null)
                 throw new ArgumentNullException(nameof(check));
@@ -1215,9 +1235,9 @@ namespace TheXDS.Proteus.Api
         }
 
 
-        public static bool? CanRunService(string id, SecurityFlags flags) => CanRunService(id, flags, LogonService.Session);
+        public static bool? CanRunService(string id, SecurityFlags flags) => CanRunService(id, flags, LogonService?.Session);
 
-        public static bool? CanRunService(string id, SecurityFlags flags, IProteusHierachicalCredential credential)
+        public static bool? CanRunService(string id, SecurityFlags flags, IProteusHierachicalCredential? credential)
         {
             if (credential is null) return null;
             bool? r = CanRunService(id, flags, (IProteusCredential)credential);
@@ -1229,6 +1249,24 @@ namespace TheXDS.Proteus.Api
                 if (r.HasValue) return r;
             }
             return CanRunService(id, flags, credential.Parent);
+        }
+
+        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Proteus.Session);
+
+        public bool? CanRunService(SecurityFlags flags, IProteusHierachicalCredential? cred)
+        {
+            if (cred is null) return null;
+            foreach (var j in cred.Descriptors.OfType<ServiceSecurityDescriptor>())
+            {
+                if (j.Id == GetType().FullName)
+                {
+                    if ((j.Revoked & flags) != SecurityFlags.None) return false;
+                    if (j.Granted.HasFlag(flags)) return true;
+                }
+            }
+            if ((cred.DefaultRevoked & flags) != SecurityFlags.None) return false;
+            if (cred.DefaultGranted.HasFlag(flags)) return true;
+            return CanRunService(flags, cred.Parent);
         }
 
         #endregion
@@ -1256,7 +1294,9 @@ namespace TheXDS.Proteus.Api
         /// Vuelve a ejecutar un Query sobre todos los elementos de la base de datos
         /// administrada por este servicio.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// Un objeto que describe detalladamente el resultado de la operación.
+        /// </returns>
         public DetailedResult Reload()
         {
             lock (Context)
@@ -1264,7 +1304,7 @@ namespace TheXDS.Proteus.Api
                 try
                 {
                     return Context.ChangeTracker.Entries()
-                        .Any(j => !j.ReloadAsync().Wait(Settings.ServerTimeout))
+                        .Any(j => !j.ReloadAsync().Wait(Settings!.ServerTimeout))
                         ? Result.Unreachable
                         : Result.Ok;
                 }
@@ -1275,6 +1315,14 @@ namespace TheXDS.Proteus.Api
             }
         }
 
+        /// <summary>
+        /// Vuelve a ejecutar un Query sobre todos los elementos de la base de datos
+        /// administrada por este servicio.
+        /// </summary>
+        /// <param name="data">Tabla de datos a recargar.</param>
+        /// <returns>
+        /// Un objeto que describe detalladamente el resultado de la operación.
+        /// </returns>
         public DetailedResult Reload(IQueryable<ModelBase> data)
         {
             lock (Context)
@@ -1282,7 +1330,7 @@ namespace TheXDS.Proteus.Api
                 try
                 {
                     return data.Select(p=>Context.Entry(p)).NotNull()
-                        .Any(j => !j.ReloadAsync().Wait(Settings.ServerTimeout))
+                        .Any(j => !j.ReloadAsync().Wait(Settings!.ServerTimeout))
                         ? Result.Unreachable
                         : Result.Ok;
                 }
@@ -1298,7 +1346,9 @@ namespace TheXDS.Proteus.Api
         /// especificada.
         /// </summary>
         /// <param name="entity">Entidad a recargar.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Un objeto que describe detalladamente el resultado de la operación.
+        /// </returns>
         public DetailedResult Reload(ModelBase entity)
         {
             lock (Context)
@@ -1308,7 +1358,7 @@ namespace TheXDS.Proteus.Api
                     return
                         Context.ChangeTracker.Entries()
                             .FirstOrDefault(p => p.Entity.Is(entity))?.ReloadAsync()
-                            .Wait(Settings.ServerTimeout) ?? true ? Result.Ok : Result.Unreachable;
+                            .Wait(Settings!.ServerTimeout) ?? true ? Result.Ok : Result.Unreachable;
                 }
                 catch (Exception ex)
                 {
@@ -1337,7 +1387,7 @@ namespace TheXDS.Proteus.Api
         public void RegisterSaveCallback<T>(Action<T> callback) where T : ModelBase
         {
             if (callback == null) throw new ArgumentNullException(nameof(callback));
-            _saveCallbacks.Add(new CallbackRegistryEntry(typeof(T), p => callback(p as T)));
+            _saveCallbacks.Add(new CallbackRegistryEntry(typeof(T), p => callback((T)p)));
         }
 
         /// <summary>
@@ -1394,7 +1444,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         /// <param name="model">Nombre del modelo a comprobar.</param>
         /// <param name="tModel">Parámetro de salida. Modelo de datos encontrado.</param>
-        public bool Hosts(string model, out Type tModel)
+        public bool Hosts(string model, out Type? tModel)
         {
             foreach (var j in Context.GetType().GetProperties())
             {
@@ -1439,7 +1489,7 @@ namespace TheXDS.Proteus.Api
         {
             return Context.GetType().GetProperties()
                 .Where(t => IsTable(t, modelBase))
-                .Select(p => p.GetValue(Context) as IQueryable<ModelBase>);
+                .Select(p => p.GetValue(Context) as IQueryable<ModelBase>).NotNull();
         }
 
         private IQueryable<ModelBase> Set(Type model)
@@ -1533,7 +1583,7 @@ namespace TheXDS.Proteus.Api
         {
             if (entity is null) yield break;
             var e = GetEntry(entity);
-            foreach (var j in entity.GetType().ResolveToDefinedType().GetProperties())
+            foreach (var j in entity.GetType().ResolveToDefinedType()!.GetProperties())
             {
                 if (e.OriginalValues.PropertyNames.Contains(j))
                     yield return new KeyValuePair<PropertyInfo, object>(
@@ -1645,7 +1695,7 @@ namespace TheXDS.Proteus.Api
         {
             foreach (var j in Context.GetType().GetProperties().Where(p => p.CanRead))
             {
-                if (j.GetMethod.Invoke(Context, Array.Empty<object>()) is IQueryable s)
+                if (j.GetMethod!.Invoke(Context, Array.Empty<object>()) is IQueryable s)
                     yield return s.ElementType;
             }
         }
@@ -1690,7 +1740,7 @@ namespace TheXDS.Proteus.Api
                 cs = null;
                 if (_saveCallbacks.Any())
                 {
-                    foreach (var j in affectedEntities.Select(p=>p.Entity as ModelBase))
+                    foreach (var j in affectedEntities.Select(p => p.Entity as ModelBase).NotNull())
                     {
                         foreach(var k in _saveCallbacks.Where(p => p.IsFor(j.GetType())))
                         {
@@ -1756,7 +1806,7 @@ namespace TheXDS.Proteus.Api
         {
             if (!Elevate())
             {
-                result = default;
+                result = default!;
                 return false;
             }
             try
@@ -2032,6 +2082,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         protected static TUser? GetUser<TUser>(Service? instance) where TUser : ModelBase, IUserBase, new()
         {
+            if (Proteus.Session is null) return null;
             return instance?.FirstOrDefault<TUser>(p => p.UserId == Proteus.Session.Id);
         }        
     }

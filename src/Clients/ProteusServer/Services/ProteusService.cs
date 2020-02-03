@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © 2017-2019 César Andrés Morgan
+Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
@@ -23,6 +23,7 @@ using TheXDS.MCART.Networking.Server;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
+using TheXDS.MCART.Exceptions;
 
 namespace TheXDS.Proteus.Services
 {
@@ -57,8 +58,8 @@ namespace TheXDS.Proteus.Services
             {
                 try
                 {
-                    var v = j.GetValue(Settings.Default).ToString();
-                    sb.AppendLine($"  - {j.NameOf()}: {v}");
+                    var v = j.GetValue(Settings.Default)?.ToString();
+                    sb.AppendLine($"  - {j.NameOf()}: {v ?? "<null>"}");
                 }
                 catch { }
             }
@@ -84,7 +85,7 @@ namespace TheXDS.Proteus.Services
                 Proteus.MessageTarget?.Show("Cargando Servicios de datos...");
 
                 if (Proteus.Services.Any())
-                    Proteus.MessageTarget?.Info($"Proteus ha encontrado {Proteus.Services.Count} servicios de datos:\n  - {string.Join("\n  - ", Proteus.Services.Select(p => p.Name))}");
+                    Proteus.MessageTarget?.Info($"Proteus ha encontrado {Proteus.Services!.Count} servicios de datos:\n  - {string.Join("\n  - ", Proteus.Services.Select(p => p.Name))}");
                 else
                     Proteus.MessageTarget?.Warning("Proteus no ha encontrado ningún servicio de datos.");
 
@@ -137,7 +138,7 @@ namespace TheXDS.Proteus.Services
             RunDaemons(null, null);
         }
 
-        public void RunDaemons(object sender, ElapsedEventArgs e)
+        public void RunDaemons(object? sender, ElapsedEventArgs? e)
         {
             Proteus.MessageTarget?.Info("Ejecución programada de daemons");
             foreach(var j in _daemons
@@ -180,36 +181,37 @@ namespace TheXDS.Proteus.Services
             Proteus.MessageTarget?.Show("Servicio detenido correctamente.");
         }
 
-        private void Srv_ClientRejected(object sender, ValueEventArgs<Client> e)
+        private void Srv_ClientRejected(object? sender, ValueEventArgs<Client?> e)
         {
-            var srv = (Server)sender;
-            Proteus.MessageTarget?.Warning($"El cliente {e.Value.EndPoint} ha sido rechazado por '{srv.Protocol.GetType().NameOf()}'.");
+            var srv = sender as Server ?? throw new TamperException();
+            Proteus.MessageTarget?.Warning($"El cliente {e.Value?.EndPoint?.ToString() ?? "desconocido"} ha sido rechazado por '{srv.Protocol.GetType().NameOf()}'.");
         }
-        private void Srv_ClientConnected(object sender, ValueEventArgs<Client> e)
+        private void Srv_ClientConnected(object? sender, ValueEventArgs<Client> e)
         {
-            var srv = (Server)sender;
+            var srv = sender as Server ?? throw new TamperException();
             Proteus.MessageTarget?.Show($"'{srv.Protocol.GetType().NameOf()}': Conexión entrante desde {e.Value.EndPoint}");
         }
-        private void Srv_ServerStopped(object sender, ValueEventArgs<DateTime> e)
+        private void Srv_ServerStopped(object? sender, ValueEventArgs<DateTime> e)
         {
-            var srv = (Server)sender;
+            var srv = sender as Server ?? throw new TamperException();
             Proteus.MessageTarget?.Warning($"'{srv.Protocol.GetType().NameOf()}' se ha detenido.");
         }
-        private void Srv_ServerStarted(object sender, ValueEventArgs<DateTime> e)
+        private void Srv_ServerStarted(object? sender, ValueEventArgs<DateTime> e)
         {
-            var srv = (Server)sender;
+            var srv = sender as Server ?? throw new TamperException();
             (srv.Protocol as IAnnounceAvailability)?.Announce();
             Proteus.MessageTarget?.Show($"'{srv.Protocol.GetType().NameOf()}' iniciado correctamente. Escuchando conexiones en {srv.ListeningEndPoint}");
         }
 
-        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            Proteus.MessageTarget?.Critical(e.Exception);
+            Proteus.MessageTarget?.Critical(e.Exception ?? new AggregateException(new TamperException()));
             e.SetObserved();
         }
+
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Proteus.MessageTarget?.Critical(e.ExceptionObject as Exception);
+            Proteus.MessageTarget?.Critical(e.ExceptionObject as Exception ?? new TamperException());
         }
 
         #region Métodos auxiliares
@@ -302,7 +304,7 @@ namespace TheXDS.Proteus.Services
                     foreach (var j in aex.InnerExceptions) Critical(j);
                     break;
                 case ReflectionTypeLoadException rex:
-                    foreach (var j in rex.LoaderExceptions) Critical(j);
+                    foreach (var j in rex.LoaderExceptions?.NotNull() ?? Array.Empty<Exception>()) Critical(j);
                     break;
             }
         }
