@@ -11,6 +11,7 @@ using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using System.ComponentModel;
 using TheXDS.MCART.Types.Base;
+using TheXDS.MCART;
 
 namespace TheXDS.Proteus.Dialogs
 {
@@ -35,7 +36,7 @@ namespace TheXDS.Proteus.Dialogs
             var descr = new InputSplashDescription
             {
                 Label = prompt,
-                Property = typeof(InputSplashViewModel<T>).GetProperty(nameof(InputSplashViewModel<T>.InputValue))!
+                Property = ReflectionHelpers.GetProperty<InputSplashViewModel<T>>(p => p.InputValue)!,
             };
             var dialog = new InputSplash();
             var vm = new InputSplashViewModel<T>(dialog, descr)

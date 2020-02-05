@@ -286,6 +286,38 @@ namespace TheXDS.Proteus.Crud.Base
             return p.Creatable(GetTypes<T>(true));
         }
 
+        public static IPropertyNumberDescriptor<decimal> Positive(this IPropertyNumberDescriptor<decimal> p)
+        {
+            return p.Range(0.01m, decimal.MaxValue);
+        }
+
+        public static IPropertyNumberDescriptor<short> Positive(this IPropertyNumberDescriptor<short> p)
+        {
+            return p.Range(1, short.MaxValue);
+        }
+        public static IPropertyNumberDescriptor<int> Positive(this IPropertyNumberDescriptor<int> p)
+        {
+            return p.Range(1, int.MaxValue);
+        }
+        public static IPropertyNumberDescriptor<long> Positive(this IPropertyNumberDescriptor<long> p)
+        {
+            return p.Range(1L, long.MaxValue);
+        }
+        public static IPropertyNumberDescriptor<float> Positive(this IPropertyNumberDescriptor<float> p)
+        {
+            return p.Range(float.Epsilon, float.MaxValue);
+        }
+        public static IPropertyNumberDescriptor<double> Positive(this IPropertyNumberDescriptor<double> p)
+        {
+            return p.Range(double.Epsilon, double.MaxValue);
+        }
+
+        public static IPropertyDateDescriptor Timestamp(this IPropertyDateDescriptor p)
+        {
+            p.Default(DateTime.Now).Label("Fecha de creación");
+            return p.WithTime();
+        }
+
         #endregion
 
         #region Bulks de descripción de modelos
