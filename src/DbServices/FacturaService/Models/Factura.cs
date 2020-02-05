@@ -49,7 +49,7 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Obtiene una descripción amigable para la factura.
         /// </summary>
-        public string Description => $"{Id}{FactNum?.OrNull(" ({0})")}";
+        public string Description => FactNum ?? "n/a";//$"{Id}{FactNum?.OrNull(" ({0})")}";
 
         /// <summary>
         /// Obtiene una cadena que representa el número de facturación.

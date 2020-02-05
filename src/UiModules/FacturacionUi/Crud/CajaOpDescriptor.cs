@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Models;
@@ -22,6 +23,10 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         {
             OnModuleMenu(Annotations.InteractionType.AdminTool);
             FriendlyName("Sesión de caja");
+
+            CanEdit(p => p.CloseTimestamp is null);
+            CanDelete(p => p.Facturas.Count == 0);
+            CanCreate(_ => !FacturaService.IsCajaOpOpen);
 
             ObjectProperty(p => p.Estacion).Selectable().AsListColumn().ShowInDetails().Label("Estación");
             ObjectProperty(p => p.Cajero).Selectable().AsListColumn().ShowInDetails();

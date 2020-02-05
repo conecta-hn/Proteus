@@ -22,7 +22,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         {
             OnModuleMenu(InteractionType.AdminTool);
 
-            VmProperty(p => p.FacturaNumber).OnlyInDetails("Número de factura");
+            VmProperty(p => p.FacturaNumber).AsListColumn().OnlyInDetails("Número de factura");
             DateProperty(p => p.Timestamp)
                 .WithTime()
                 .Default(DateTime.Now)
@@ -30,20 +30,48 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .AsListColumn()
                 .ShowInDetails()
                 .ReadOnly();
-            ObjectProperty(p => p.Cliente).Selectable().Important().Required();
+            ObjectProperty(p => p.Cliente).Selectable().Important().AsListColumn()
+                .ShowInDetails()
+                .Required();
             ListProperty(p => p.Items).Creatable();
-            Property(p => p.SubTotal).Label("Sub total").ReadOnly();
-            Property(p => p.SubTGravable).Label("Sub total gravable").ReadOnly();
-            Property(p => p.SubTGravado).Label("Sub total gravado").ReadOnly();
-            Property(p => p.SubTFinal).Label("Sub total final").ReadOnly();
-            NumericProperty(p => p.Descuentos).Range(0m, decimal.MaxValue);
-            NumericProperty(p => p.OtrosCargos).Range(0m, decimal.MaxValue);
-            Property(p => p.Total).Label("Total a pagar").ReadOnly();
+            Property(p => p.SubTotal).AsListColumn()
+                .ShowInDetails()
+                .Label("Sub total")
+                .ReadOnly();
+            Property(p => p.SubTGravable).AsListColumn()
+                .ShowInDetails()
+                .Label("Sub total gravable")
+                .ReadOnly();
+            Property(p => p.SubTGravado)
+                .AsListColumn()
+                .ShowInDetails()
+                .Label("Sub total gravado")
+                .ReadOnly();
+            Property(p => p.SubTFinal)
+                .AsListColumn()
+                .ShowInDetails()
+                .Label("Sub total final")
+                .ReadOnly();
+            NumericProperty(p => p.Descuentos)
+                .Range(0m, decimal.MaxValue)
+                .AsListColumn()
+                .ShowInDetails();
+            NumericProperty(p => p.OtrosCargos)
+                .Range(0m, decimal.MaxValue)
+                .AsListColumn()
+                .ShowInDetails();
+            Property(p => p.Total).Label("Total a pagar")
+                .AsListColumn()
+                .ShowInDetails()
+                .ReadOnly();
             ListProperty(p => p.Payments).Creatable().Label("Pagos");
-            Property(p => p.Paid).ReadOnly();
-            TextProperty(p => p.Notas).Big();
-            Property(p => p.Impresa).Label("Impresa").ShowInDetails().ReadOnly();
-            Property(p => p.Nula).Label("Nula").ShowInDetails().ReadOnly();
+            Property(p => p.Paid)
+                .AsListColumn()
+                .ShowInDetails()
+                .ReadOnly();
+            TextProperty(p => p.Notas).Big().ShowInDetails();
+            Property(p => p.Impresa).Label("Impresa").AsListColumn().ShowInDetails().ReadOnly();
+            Property(p => p.Nula).Label("Nula").AsListColumn().ShowInDetails().ReadOnly();
             CustomAction("Imprimir factura", OnPrint);
             CustomAction("Anular factura", OnNullify);
 
