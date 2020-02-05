@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
@@ -6,6 +7,7 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.FacturacionUi.Component;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages;
@@ -106,7 +108,6 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
                     return;
                 }
 
-
                 var balance = cajero.OptimBalance;
 
                 await Service!.AddAsync(new CajaOp()
@@ -117,6 +118,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
                     Timestamp = DateTime.Now
                 });
                 Proteus.AlertTarget?.Alert("Caja abierta correctamente.", $"{cajero} ha abierto una sesión de caja en la estación {estacion} con un fondo de {balance:C}. No olvide cerrar la caja al terminar.");
+                DefaultFacturaLauncher?.Command.Execute(null!);
             }
             catch (Exception ex)
             {
@@ -134,14 +136,28 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         /// <param name="sender">Objeto que ha producido el evento.</param>
         /// <param name="e">Parámetros del evento.</param>
         [InteractionItem, Essential, InteractionType(InteractionType.Operation), Name("Cerrar caja")]
-        public void CloseCaja(object sender, EventArgs e)
+        public async void CloseCaja(object sender, EventArgs e)
         {
             if (!FacturaService.IsCajaOpOpen)
             {
                 Proteus.MessageTarget?.Stop("La caja ya está cerrada.");
                 return;
             }
-            //error intencional de sintáxis.
+            if (!InputSplash.GetNew<decimal>("Cuente el dinero de la caja, e introduzca el total en efectivo.", out var cierre)) return;
+            var cajaOp = FacturaService.GetCajaOp;
+            var totalEfectivo = cajaOp.Facturas.Sum(p => p.TotalPagadoEfectivo);
+            var cuadre = cajaOp.OpenBalance + totalEfectivo - cierre;
+            if (cuadre != 0)
+            {
+                Proteus.MessageTarget?.Warning($"El cierre de caja no cuadra por {cuadre:C}.");
+                return;
+            }
+            Reporter?.UpdateStatus("Cerrando caja...");
+            cajaOp.CloseBalance = cierre;
+            cajaOp.CloseTimestamp = DateTime.Now;
+            await Service!.SaveAsync();
+            Reporter?.Done();
+            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C}");
         }
 
         /// <summary>

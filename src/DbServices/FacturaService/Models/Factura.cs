@@ -17,6 +17,11 @@ namespace TheXDS.Proteus.Models
         public int Correlativo { get; set; }
 
         /// <summary>
+        /// Número de orden de trabajo relacionada.
+        /// </summary>
+        public int OtNum { get; set; }
+
+        /// <summary>
         /// Rango de facturación al cual esta factura pertenece.
         /// </summary>
         public virtual CaiRango CaiRangoParent { get; set; } = null!;
@@ -61,6 +66,8 @@ namespace TheXDS.Proteus.Models
         /// Obtiene un valor que indica la cantidad de vuelto a favor del cliente.
         /// </summary>
         public decimal Vuelto => Total - Paid;
+
+        public decimal TotalPagadoEfectivo => Payments.Where(p => p.Source.ToString() == "419d06c5-7a47-44d5-824b-bc573811084a").Sum(p => p.Amount) + Vuelto;
 
         /// <summary>
         /// Convierte una instancia de la clase <see cref="Factura"/> en una

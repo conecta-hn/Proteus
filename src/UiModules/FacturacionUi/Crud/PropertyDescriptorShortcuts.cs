@@ -21,7 +21,8 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             descriptor.CanDelete(p => !p.Instances.Any());
             descriptor.Property(p => p.Name).AsName();
             descriptor.NumericProperty(p => p.Isv)
-                .Range(0, 1)
+                .Range(0, 100)
+                .Default(15f)
                 .Nullable()
                 .Label("ISV")
                 .ShowInDetails()

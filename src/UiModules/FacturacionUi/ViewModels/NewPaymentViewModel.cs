@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             {
                 if (Change(ref _source, value))
                 {
-                    Amount = _parent.Total;
+                    if (Amount == 0m) Amount = _parent.Vuelto;
                 }
             }
         }
@@ -36,7 +36,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <value>El valor de Amount.</value>
         public decimal Amount
         {
-            get => Editable ? _amount : _amount * (decimal)Automatic.Value;
+            get => Editable ? _amount : _amount * (decimal)Automatic!.Value;
             set
             {
                 if (Change(ref _amount, value)) _parent.RefreshPayments();
@@ -72,5 +72,4 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         public static implicit operator NewPaymentViewModel(FacturadorViewModel parent) => new NewPaymentViewModel(parent);
     }
-
 }

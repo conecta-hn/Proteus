@@ -5,6 +5,7 @@ using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
 {
@@ -43,6 +44,19 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .ShowInDetails()
                 .AsListColumn();
 
+            ListProperty(p => p.Exoneraciones)
+                .Creatable()
+                .Label("Exoneraciones de ISV autorizadas")
+                .ShowInDetails();
+
+            ListProperty(p => p.Facturas).Creatable().ShowInDetails();
+            ListProperty(p => p.Cotizaciones).Creatable().ShowInDetails();
+
+            ListProperty(p => p.Credits)
+                .Creatable()
+                .Label("Créditos otorgados al cliente")
+                .ShowInDetails();
+
             CustomAction("Generar Carnet de cliente", OnGenerateCard);
         }
 
@@ -72,6 +86,56 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 g.Graphics.DrawImage(img, new Rectangle(leftMargin, rightMargin, printWidth, printHeight));
             };
             pd.Print();
+        }
+    }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="FacturaXCobrar"/>.
+    /// </summary>
+    public class FacturaXCobrarDescriptor : CrudDescriptor<FacturaXCobrar>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="FacturaXCobrar"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {
+            OnModuleMenu(InteractionType.AdminTool);
+            FriendlyName("Cuenta por cobrar");
+            DateProperty(p => p.Timestamp).Timestamp().AsListColumn().ShowInDetails();
+            ObjectProperty(p => p.Cliente).Selectable().Required().AsListColumn().ShowInDetails();
+            ObjectProperty(p => p.Parent).Selectable().Label("Factura a pagar").Required().AsListColumn().ShowInDetails();
+            NumericProperty(p => p.Total).Positive().AsListColumn().ShowInDetails();
+            ListProperty(p => p.Abonos).Creatable();
+            Property(p => p.IsPaid)
+                .Label("Cuenta pagada")
+                .ShowInDetails()
+                .AsListColumn()
+                .Hidden();
+            BeforeSave(SetIsPaid);
+        }
+
+        private void SetIsPaid(FacturaXCobrar arg1, ModelBase arg2)
+        {
+            arg1.IsPaid = arg1.Pending == 0m;
+        }
+    }
+
+    /// <summary>
+    /// Describe las propiedades Crud para el modelo
+    /// <see cref="Abono"/>.
+    /// </summary>
+    public class AbonoDescriptor : CrudDescriptor<Abono>
+    {
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Abono"/>.
+        /// </summary>
+        protected override void DescribeModel()
+        {
+            DateProperty(p => p.Timestamp).Timestamp().AsListColumn().ShowInDetails();
+            NumericProperty(p => p.Amount).Positive().Label("Monto del pago").AsListColumn("C").ShowInDetails();
         }
     }
 }

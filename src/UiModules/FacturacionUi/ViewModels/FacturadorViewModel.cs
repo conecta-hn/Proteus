@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TheXDS.MCART;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
@@ -49,7 +50,10 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         public decimal Descuento
         {
             get => _descuento;
-            set => Change(ref _descuento, value);
+            set
+            {
+                if (Change(ref _descuento, value)) RefreshPayments();
+            }
         }
 
         /// <summary>
@@ -67,7 +71,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// </summary>
         public decimal Total => SubTFinal - Descuento + OtrosCargos;
 
-        public decimal Paid => NewPayments.Sum(p => p.Amount);
+        public decimal Paid => NewPayments.Any() ? NewPayments.Sum(p => p.Amount) : 0m;
         public decimal Vuelto => Total - Paid;
 
         public string VueltoLabel => Vuelto > 0 ? "Restante" : "Cambio";
@@ -219,6 +223,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             OkClienteCommand = new SimpleCommand(OnOkCliente);
             CancelClienteCommand = new SimpleCommand(OnCancelCliente);
             SaveAsCotizCommand = new SimpleCommand(OnSaveAsCotiz);
+            TerceraEdadCommand = new ObservingCommand(this, OnTerceraEdad).ListensToCanExecute(() => CanDescuento);
             Title = "Facturación";
             if (factura is null) NewFactura();
             else SetFactura(factura);
@@ -270,15 +275,38 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 if (Change(ref _newCliente, value))
                 {
                     Notify(nameof(NewClienteBtnLabel));
-                    ClienteEditor.ViewModel.Entity = value;
-                    _interactor?.OnClienteSelected();
-                    //TODO: agregar descuentos
+                    if (!(value is null))
+                    {
+                        ClienteEditor.ViewModel.Entity = value;
+                        if (value.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)))
+                        {
+                            foreach (var j in NewItems)
+                            {
+                                j.Gravar = false;
+                            }
+                        }
+                        else
+                        {
+                            foreach (var j in NewItems)
+                            {
+                                j.Gravar = j.Item.Isv.HasValue;
+                            }
+                        }
+                        RefreshSubtotals();
+                    }
+
+                    _interactor?.OnClienteSelected();                    
                 }
             }
         }
 
         public string NewClienteBtnLabel => NewCliente is null ? "+" : "✎";
 
+        private void OnTerceraEdad()
+        {
+            Descuento = Total * 0.25m;
+        }
+        
         private void OnNewCliente()
         {
             NewCliente ??= new Cliente()
@@ -365,7 +393,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// </summary>
         /// <returns>El comando SaveAsCOtiz.</returns>
         public SimpleCommand SaveAsCotizCommand { get; }
-
+        public ObservingCommand TerceraEdadCommand { get; }
         private async void OnSaveAsCotiz()
         {
             foreach (var j in NewItems)
@@ -412,29 +440,44 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             void Cleanup()
             {
                 IsBusy = false;
-                CurrentFactura.Payments.Clear();
-                CurrentFactura.Items.Clear();
-                CurrentFactura.Cliente = null;
+                if (CurrentFactura.IsNew)
+                {
+                    CurrentFactura.Payments.Clear();
+                    CurrentFactura.Items.Clear();
+                    CurrentFactura.Cliente = null!;
+                }
+                else
+                {
+                    Service.Reload(CurrentFactura);
+                }
             }
 
             if (!CurrentFactura.IsNew) return;
 
-            if (CurrentFactura.Total >= 10000m && (NewCliente?.Rtn?.IsEmpty() ?? true))
+            if ((CurrentFactura.Total >= 10000m || (NewCliente.Category?.RequireRTN ?? false)) && (NewCliente?.Rtn?.IsEmpty() ?? true))
             {
                 Proteus.MessageTarget?.Stop("Esta factura requiere RTN del cliente.");
                 return;
             }
 
             IsBusy = true;
-            foreach (var j in NewItems) CurrentFactura.Items.Add(j);                    
-
-
             CurrentFactura.Cliente = NewCliente;
+            foreach (var j in NewItems) CurrentFactura.Items.Add(j);
+            foreach (var j in NewPayments)
+            {
+                if (!(await j.Source.TryPayment(CurrentFactura, j.Amount) is { } payment))
+                {
+                    Proteus.MessageTarget?.Stop($"El método de pago '{j.Source.Name}' por {j.Amount:C} no funcionó.");
+                    Cleanup();
+                    return;
+                }
+                CurrentFactura.Payments.Add(payment);
+            }
 
             //TODO: proformas
             FacturaService.AddFactura(CurrentFactura, PrintFactura, _interactor);
 
-            await Proteus.Service<FacturaService>().SaveAsync();
+            await Proteus.Service<FacturaService>()!.SaveAsync();
             //await (_interactor?.OnFacturate() ?? Task.CompletedTask);
 
             if (_closeAfterFacturate)

@@ -46,7 +46,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             get => _gravar;
             set
             {
-                if (Change(ref _gravar, value) && !value) Gravado = 0f;
+                if (Change(ref _gravar, value)) Gravado = value ? Item.Isv ?? 0f : 0f;
             }
         }
 

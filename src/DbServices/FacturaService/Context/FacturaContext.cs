@@ -5,6 +5,7 @@ namespace TheXDS.Proteus.Context
 {
     public class FacturaContext : ProteusContext
     {
+        public DbSet<Abono> Abonos { get; set; }
         public DbSet<Cai> Cais { get; set; }
         public DbSet<CaiRango> CaiRangos { get; set; }
         public DbSet<CajaOp> CajaOps { get; set; }
@@ -14,6 +15,8 @@ namespace TheXDS.Proteus.Context
         public DbSet<Cotizacion> Cotizaciones { get; set; }
         public DbSet<Estacion> Estaciones { get; set; }
         public DbSet<Factura> Facturas { get; set; }
+        public DbSet<FacturaXCobrar> FacturasXCobrar { get; set; }
+        public DbSet<IsvExoneracion> IsvExoneraciones { get; set; }
         public DbSet<ItemFactura> ItemFacturas { get; set; }
         public DbSet<Paquete> Paquetes { get; set; }
         public DbSet<Payment> Payments { get; set; }

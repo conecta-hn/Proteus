@@ -217,13 +217,16 @@
                         Subtotal final:
                         <Run Text="{Binding SubTFinal, Mode=OneWay, StringFormat=C}"/>
                     </TextBlock>
-                    <xctk:DecimalUpDown
-                        Margin="0"
-                        widgets:ProteusProp.Watermark="- Otros decuentos"
-                        IsEnabled="{Binding CanDescuento, Mode=OneWay}"
-                        Language="es-HN"
-                        widgets:ProteusProp.WatermarkAlwaysVisible="True"                        
-                        Value="{Binding Descuento,StringFormat=C}"/>
+                    <DockPanel>
+                        <Button Command="{Binding TerceraEdadCommand}" ToolTip="Aplicar descuento de tercera edad">👴</Button>
+                        <xctk:DecimalUpDown
+                            Margin="0"
+                            widgets:ProteusProp.Watermark="- Otros decuentos"
+                            IsEnabled="{Binding CanDescuento, Mode=OneWay}"
+                            Language="es-HN"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"                        
+                            Value="{Binding Descuento,StringFormat=C}"/>
+                        </DockPanel>
                     <xctk:DecimalUpDown
                         Margin="0"
                         widgets:ProteusProp.Watermark="+ Cargos adicionales" 
