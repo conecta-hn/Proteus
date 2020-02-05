@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
@@ -43,5 +44,8 @@ namespace TheXDS.Proteus.Models
         /// Colección de facturas creadas en esta sesión de caja.
         /// </summary>
         public virtual List<Factura> Facturas { get; set; } = new List<Factura>();
+
+        public decimal TotalFacturas => Facturas.Sum(p => p.Total);
+        public decimal TotalEfectivo => Facturas.Sum(p => p.TotalPagadoEfectivo);
     }
 }

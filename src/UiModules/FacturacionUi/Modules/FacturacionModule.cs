@@ -157,7 +157,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             cajaOp.CloseTimestamp = DateTime.Now;
             await Service!.SaveAsync();
             Reporter?.Done();
-            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C}");
+            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance}");
         }
 
         /// <summary>
