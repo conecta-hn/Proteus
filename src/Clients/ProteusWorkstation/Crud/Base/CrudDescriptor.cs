@@ -36,7 +36,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// <typeparam name="TViewModel">
     /// Tipo de ViewModel a describir.
     /// </typeparam>
-    public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : ViewModel<TModel>
+    public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : class, IEntityViewModel<TModel>
     {
         private class SaveActionChain : IVmSaveActionChain<TModel, TViewModel>
         {
@@ -541,6 +541,18 @@ namespace TheXDS.Proteus.Crud.Base
         }
 
         /// <summary>
+        /// Define una acción a ejecutar previamente a guardar una entidad.
+        /// </summary>
+        /// <param name="action">
+        /// Acción a ejecutar.
+        /// </param>
+        protected ISaveActionChain<T> BeforeSave<TParent>(Action<T, TParent?> action) where TParent : ModelBase
+        {
+            return BeforeSave((m, p) => action?.Invoke(m, p as TParent));
+        }
+
+
+        /// <summary>
         /// Define una acción a ejecutar luego de guardar una entidad.
         /// </summary>
         /// <param name="action">
@@ -560,6 +572,17 @@ namespace TheXDS.Proteus.Crud.Base
         public ISaveActionChain<T> AfterSave(Action<T> action)
         {
             return AfterSave((m, _) => action?.Invoke(m));
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="action">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> AfterSave<TParent>(Action<T, TParent> action) where TParent : ModelBase
+        {
+            return AfterSave((m, p) => action?.Invoke(m, (TParent)p));
         }
 
         /// <summary>

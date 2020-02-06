@@ -367,8 +367,15 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         public async void ClearSearch()
         {
-            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
-            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            if (SelectionSource?.Any() ?? false)
+            {
+                Results = CollectionViewSource.GetDefaultView(SelectionSource);
+            }
+            else if (Proteus.Infer(ActiveModel!) is { } svc)
+            {          
+                var q = svc.All(ActiveModel!);
+                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            }
             EnumerableResults = null;
             SearchQuery = null;
         }
@@ -398,7 +405,16 @@ namespace TheXDS.Proteus.ViewModels
         private async Task PerformSearch()
         {
             IsSearching = true;
-            var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
+            List<ModelBase> l;
+            if (SelectionSource.Any())
+            {
+                l = SelectionSource.ToList();
+            }
+            else if (Proteus.Infer(ActiveModel!) is { })
+            {
+                l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
+            }
+            else { return; }
             foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
             {
                 l = j.Filter(l, SearchQuery!);

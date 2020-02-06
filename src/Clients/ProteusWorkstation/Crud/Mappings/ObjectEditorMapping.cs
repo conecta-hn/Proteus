@@ -48,12 +48,13 @@ namespace TheXDS.Proteus.Crud.Mappings
 
         private Type[] GetModels(Type baseModel)
         {
-            return baseModel.Derivates()
-                .Select(p => p.ResolveToDefinedType()!)
-                .Where(p => p.IsInstantiable())
+            return new Type?[1] { baseModel.ResolveToDefinedType()!.IsInstantiable() ? baseModel : null }
+                .Concat(baseModel.Derivates()
+                    .Select(p => p.ResolveToDefinedType()!)
+                    .Where(p => p.IsInstantiable()))
                 .Distinct()
+                .NotNull()
                 .ToArray();
         }
-
     }
 }
