@@ -106,6 +106,38 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de ViewModel que debe actualizarse.
+        /// </typeparam>
+        /// <returns>
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
+        /// </returns>
+        public static Task RefreshVmAsync<T>() where T: ProteusViewModel
+        {
+            return RefreshVmAsync(p => p.GetType().ResolveToDefinedType() == typeof(T));
+        }
+
+        /// <summary>
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de ViewModel que debe actualizarse.
+        /// </typeparam>
+        /// <returns>
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
+        /// </returns>
+        public static Task FullRefreshVmAsync<T>() where T : ProteusViewModel
+        {
+            return Task.WhenAll(
+                RefreshVmAsync(p => p.GetType().ResolveToDefinedType() == typeof(T)),
+                Task.Run(Proteus.NwClient.RefreshViewModel<T>));
+        }
+
+        /// <summary>
         /// Obliga a todos los ViewModel con refresco asíncrono a
         /// actualizarse.
         /// </summary>
