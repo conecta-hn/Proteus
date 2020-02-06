@@ -16,18 +16,22 @@ namespace TheXDS.Proteus.Crud
             Property(u => u.Name).AsName("Nombre");
             Property(u => u.ModuleBehavior)
                 .Label("Seguridad predeterminada de módulo")
+                .ShowInDetails()
                 .Nullable();
             Property(u => u.ButtonBehavior)
                 .Label("Seguridad predeterminada de menús")
+                .ShowInDetails()
                 .Nullable();
             Property(u => u.DefaultGranted)
                 .Label("Acceso predeterminado de servicios")
+                .ShowInDetails()
                 .Default(SecurityFlags.Read);
             Property(u => u.DefaultRevoked)
                 .Label("Bloqueo predeterminado de servicios")
+                .ShowInDetails()
                 .Default(SecurityFlags.None);
 
-            ListProperty(p => p.Descriptors).Creatable().Label("Permisos explícitos");
+            ListProperty(p => p.Descriptors).Creatable().Label("Permisos explícitos").ShowInDetails();
         }
     }
 }

@@ -20,6 +20,7 @@ using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
@@ -55,6 +56,7 @@ namespace TheXDS.Proteus.ViewModels
             {
                 foreach (var j in App.Tools?.SelectMany(p => p.PluginInteractions) ?? Array.Empty<WpfInteractionItem>())
                 {
+                    
                     yield return new Launcher(
                         j.Text.OrNull() ?? "👆",
                         j.Description,
@@ -68,7 +70,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             get
             {
-                foreach (var j in _modules)
+                foreach (var j in _modules.Where(CanShow))
                 {
                     yield return new Launcher(
                         j.Module.Name,
@@ -83,7 +85,21 @@ namespace TheXDS.Proteus.ViewModels
             }
         }
 
-        public IEnumerable<ModulePageViewModel> ModuleMenus => _modules.Where(p => p.Module.HasEssentials).Select(p => p.ViewModel);
+        public IEnumerable<ModulePageViewModel> ModuleMenus => _modules.Where(CanShow).Where(p=>p.Module.HasEssentials).Select(p => p.ViewModel);
+
+        private static bool CanShow(ModulePage module)
+        {
+            if (Proteus.Interactive)
+            {
+                if (Proteus.Session.GetDescriptor<ModuleSecurityDescriptor>(module.Module.GetType().FullName!) is { } d)
+                {
+                    if (!d.Accesible) return false;
+                }
+                return Proteus.Session.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) ?? false;
+            }
+
+            return true;
+        }
 
         public DateTime DayOfCalendar
         {
@@ -114,7 +130,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private async void PostOpen()
         {
-            _avisos = await (await Task.Run(()=>UserService.AllAvisos)).ToListAsync();
+            _avisos = await UserService.AllAvisos.ToListAsync();
         }
 
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)

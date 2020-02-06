@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using MigraDoc.DocumentObjectModel;
+using TheXDS.MCART.Component;
 using TheXDS.Proteus.Resources;
 using C2 = MigraDoc.DocumentObjectModel.Color;
 
@@ -16,7 +17,7 @@ namespace TheXDS.Proteus.Reporting
         {
             var retVal = doc.AddSection();
             retVal.PageSetup.DifferentFirstPageHeaderFooter = true;
-            //retVal.PageSetup.TopMargin = new Unit(3.5, UnitType.Inch);
+            retVal.PageSetup.TopMargin = new Unit(1.5, UnitType.Inch);
             retVal.PageSetup.PageFormat = PageFormat.Letter;
             AddMainHeader(retVal.Headers.Primary);
             AddMainHeader(retVal.Headers.FirstPage);
@@ -46,9 +47,6 @@ namespace TheXDS.Proteus.Reporting
             AddLine(p.Format.Borders);
         }
 
-
-
-
         private static void AddTitle(HeaderFooter header, string title)
         {
             var p = header.AddParagraph(title);
@@ -70,7 +68,9 @@ namespace TheXDS.Proteus.Reporting
         }
         private static void AddFooter(HeaderFooter footer)
         {
-            footer.AddParagraph("Placeholder de footer para documento.");
+            footer.AddParagraph("== Gracias por su compra ==");
+            var i = new AssemblyInfo();
+            footer.AddParagraph($"{i.Name} {i.InformationalVersion}");
         }
     }
 }
