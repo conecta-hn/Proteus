@@ -36,7 +36,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// <typeparam name="TViewModel">
     /// Tipo de ViewModel a describir.
     /// </typeparam>
-    public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : class, IEntityViewModel<TModel>
+    public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : class, IEntityViewModel<TModel>, new()
     {
         private class SaveActionChain : IVmSaveActionChain<TModel, TViewModel>
         {
