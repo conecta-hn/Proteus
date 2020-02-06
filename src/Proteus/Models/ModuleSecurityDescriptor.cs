@@ -12,5 +12,10 @@ namespace TheXDS.Proteus.Models
     {
         public bool Loaded { get; set; }
         public bool Accesible { get; set; }
+
+        public override string ToString()
+        {
+            return $"Descriptor de seguridad de módulo {Id}";
+        }
     }
 }
