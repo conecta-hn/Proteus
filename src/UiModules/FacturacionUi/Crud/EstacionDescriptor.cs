@@ -2,6 +2,12 @@
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
+using System.Linq;
+using TheXDS.MCART.Types.Extensions;
+using System.Collections.Generic;
+using TheXDS.MCART.ViewModel;
+using System;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
 {
@@ -9,7 +15,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
     /// Describe las propiedades Crud para el modelo
     /// <see cref="Estacion"/>.
     /// </summary>
-    public class EstacionDescriptor : CrudDescriptor<Estacion>
+    public class EstacionDescriptor : CrudDescriptor<Estacion, EstacionViewModel>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
@@ -28,6 +34,50 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Label("Rangos de facturación asignados");
             NumericProperty(p => p.SecondScreen).Range(2, 255).Nullable().Label("Pantalla secundaria");
             NumericProperty(p => p.MinFacturasAlert).Range(0, 99999999).Nullable().Label("Nivel de alerta de mínimo de facturas");
+            Property(p => p.Printer).Label("Nombre de impresora").OnlyInDetails();
+            VmObjectProperty(p => p.SelectedPrinter).Selectable().Source(PrinterSource.GetPrinters()).Required().Label("Impresora");
+            VmBeforeSave(SetPrinter);
         }
+
+        private void SetPrinter(EstacionViewModel arg1, ModelBase arg2)
+        {
+            if (arg1.SelectedPrinter?.Printer is { } p)
+            arg1.Entity.Printer = p;
+        }
+    }
+
+    /// <summary>
+    /// Clase base personalizada para el ViewModel recompilado que se utilizará
+    /// dentro del Crud generado para el modelo
+    /// <see cref="Estacion"/>.
+    /// </summary>
+    public class EstacionViewModel : ViewModel<Estacion>
+    {
+        private PrinterSource _selectedPrinter = null!;
+
+        /// <summary>
+        ///     Obtiene o establece el valor SelectedPrinter.
+        /// </summary>
+        /// <value>El valor de SelectedPrinter.</value>
+        public PrinterSource SelectedPrinter
+        {
+            get => _selectedPrinter;
+            set => Change(ref _selectedPrinter, value);
+        }
+    }
+
+    public class PrinterSource : ModelBase<int>
+    {
+        public static IQueryable<PrinterSource> GetPrinters()
+        {
+            var l =new List<PrinterSource>();
+            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
+            {
+                l.Add(new PrinterSource() { Printer = printer });
+            }
+            return l.AsQueryable();
+        }
+
+        public string Printer { get; set; }
     }
 }

@@ -65,7 +65,7 @@ namespace TheXDS.Proteus.Models
 
         public string RangoString()
         {
-            return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00}, de {RangoInicial:00000000} a {RangoFinal:00000000}";
+            return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00} de {RangoInicial:00000000} a {RangoFinal:00000000}";
         }
 
         /// <summary>

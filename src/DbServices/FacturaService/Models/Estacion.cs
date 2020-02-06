@@ -31,5 +31,7 @@ namespace TheXDS.Proteus.Models
         public byte? SecondScreen { get; set; }
 
         public virtual Entidad Entidad { get; set; }
+
+        public string Printer { get; set; }
     }
 }

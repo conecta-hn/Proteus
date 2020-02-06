@@ -474,6 +474,9 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 CurrentFactura.Payments.Add(payment);
             }
 
+            CurrentFactura.Descuentos = Descuento;
+            CurrentFactura.OtrosCargos = OtrosCargos;
+
             //TODO: proformas
             FacturaService.AddFactura(CurrentFactura, PrintFactura, _interactor);
 

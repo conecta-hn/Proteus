@@ -95,6 +95,10 @@ namespace TheXDS.Proteus.Api
         }
         public static void RegisterFactura(Factura f, IFacturaInteractor? i)
         {
+            if (f.Vuelto > 0m)
+            {
+                throw new InvalidOperationException("La factura tiene saldo pendiente.");
+            }
             f.CaiRangoParent = CurrentRango;
             f.Correlativo = NextCorrel(f.CaiRangoParent) ?? 1;
             PrintFactura(f, i);
@@ -103,37 +107,37 @@ namespace TheXDS.Proteus.Api
         public static void PrintFactura(Factura f, IFacturaInteractor? i)
         {
             var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
-            var p = new Printer("Generic / Text Only");
             var e = GetEstation.Entidad;
+            var p = new Printer(GetEstation.Printer);
             void AddSubt(string label, decimal value)
             {
-                p.AlignLeft();
-                p.AppendWithoutLf($"{label}:");
-                p.AlignRight();
-                p.Append(value.ToString("C", ci));
+                p.Append($"{label}:{value.ToString("C", ci)}");
             }
             p.AlignCenter();
             p.Append(e.Name);
             if (!e.Banner.IsEmpty()) p.Append(e.Banner);
             p.Append(e.Address);
             p.Append($"{e.City}, {e.Country}");
+            p.Append($"RTN: {e.Id}");
             p.Separator();
             p.Append("F A C T U R A");
             p.Separator();
             p.AlignLeft();
-            p.Append($"RTN: {e.Id}");
-            p.Append($"C.A.I.:{f.CaiRangoParent.Parent.Id}");
-            p.Append($"Rango autoriz. de facturación: {f.CaiRangoParent.RangoString()}");
-            p.Append($"Fecha límite de emisión: {f.CaiRangoParent.Parent.Void:dd/MMM/yyyy}");
+            p.Append("C.A.I.:");
+            p.Append($"{f.CaiRangoParent.Parent.Id}");
+            p.Append($"Rango autorizado de facturacion:");
+            p.Append($"{f.CaiRangoParent.RangoString()}");
+            p.Append($"Fecha lim. de emision: {f.CaiRangoParent.Parent.Void:dd/MM/yyyy}");
             p.Append($"Factura # {f.FactNum}");
             p.Append($"Cliente: {f.Cliente.Name ?? "Consumidor final"}");
             p.Append($"RTN del cliente: {f.Cliente.Rtn}");
             p.Append("No. Compra exenta:");
-            p.Append($"No. constancia registro exonerado: {f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))}");
+            p.Append("No. constancia registro exonerado:");
+            p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))}");
             p.Append("No. Registro SAG:");
             p.Separator('=');
-            p.Append("Descripción");
-            p.Append("Cantidad        Precio        Subtotal");
+            p.Append("Descripcion");
+            p.Append("Cantidad     Precio      Subtotal");
             p.Separator();
             foreach (var j in f.Items)
             {
@@ -145,6 +149,8 @@ namespace TheXDS.Proteus.Api
                 p.AlignRight();
                 p.Append(j.SubTotal.ToString("C", ci));
             }
+            p.Separator();
+            p.AlignRight();
             AddSubt("Subtotal", f.SubTotal);
             AddSubt("15% ISV", f.SubTGravable);
             AddSubt("Gravado 15%", f.SubTGravado);
@@ -154,10 +160,13 @@ namespace TheXDS.Proteus.Api
             {
                 AddSubt(j.ResolveSource()?.Name ?? "Pago misc.", j.Amount);
             }
-            AddSubt("Cambio", f.Vuelto);
+            AddSubt("Cambio", -f.Vuelto);
             p.Separator('=');
             p.AlignLeft();
-            p.Append("*Gracias por su compra.*");
+            p.Append("Gracias por su compra.");
+            p.Append($"Atendido por: {GetCajero.UserEntity?.Name ?? GetCajero.UserId }");
+            p.Append("Original - Cliente");
+            p.Append("CC - Comercio");
             var nfo = new AssemblyInfo(typeof(Proteus).Assembly);
             p.Append($"{nfo.Name} {nfo.InformationalVersion}");
             p.FullPaperCut();
