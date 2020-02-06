@@ -1,11 +1,17 @@
-﻿using TheXDS.Proteus.Component;
-using TheXDS.Proteus.ViewModels.Base;
+﻿/*
+Copyright © 2017-2020 César Andrés Morgan
+Licenciado para uso interno solamente.
+*/
+
 using System;
 using System.Security;
-using TheXDS.MCART.Security.Password;
-using TheXDS.MCART.ViewModel;
-using TheXDS.MCART.Types.Extensions;
 using System.Threading.Tasks;
+using TheXDS.MCART.Security.Password;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.ViewModels
 {
@@ -156,13 +162,23 @@ namespace TheXDS.Proteus.ViewModels
         {
             var p = Password.Copy();
             var t = Elevation 
-                ? Proteus.LogonService.Login(User, Password) 
+                ? Proteus.LogonService!.Login(User, Password) 
                 : Proteus.Login(User, Password);
             Proteus.CommonReporter?.UpdateStatus("Iniciando sesión...");
             var r = await t;
             Success = r;
             ErrorMessage = r;
-            if (r) LoginSuccess?.Invoke(this, new LoginSuccessEventArgs(new Component.Credential(r.Logon.StringId, p)));
+            if (r)
+            {
+                if (r.Logon.ScheduledPasswordChange)
+                {
+                    if (MCART.Dialogs.PasswordDialog.ConfirmPassword(out var udata))
+                    {
+                        await UserService.ChangePassword(r.Logon, udata.Password);
+                    }
+                }
+                LoginSuccess?.Invoke(this, new LoginSuccessEventArgs(new Component.Credential(r.Logon.StringId, p))); 
+            }
             else LoginFailed?.Invoke(this, EventArgs.Empty);
             Proteus.CommonReporter?.Done();
         }

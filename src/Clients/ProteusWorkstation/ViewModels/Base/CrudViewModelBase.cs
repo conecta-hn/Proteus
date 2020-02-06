@@ -195,7 +195,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             if (Selection is ModelBase s)
             {
-                if (NewMode)
+                if (NewMode || s.IsNew)
                 {
                     Selection = null;
                 }

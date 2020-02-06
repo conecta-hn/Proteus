@@ -12,5 +12,9 @@ namespace TheXDS.Proteus.Models
     {
         public SecurityFlags Granted { get; set; }
         public SecurityFlags Revoked { get; set; }
+        public override string ToString()
+        {
+            return $"Descriptor de seguridad de servicio {Id}";
+        }
     }
 }

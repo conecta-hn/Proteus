@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models.Base;
@@ -124,7 +125,25 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </returns>
         protected override ModelBase? GetParent()
         {
-            return (Selector as TreeView)?.SelectedItem as ModelBase;
+            return Selector switch
+            {
+                TreeView trv => trv.SelectedItem as ModelBase,
+                Control v => WalkUp(v) switch
+                {
+                    ICrudViewModel vm=> vm.Selection,
+                    IEntityViewModel vm => vm.Entity,
+                    _ => null,
+                } as ModelBase
+            };
+        }
+
+        public object? WalkUp(Control v)
+        {
+            var vm = v.DataContext;
+            if (vm is IEntityViewModel) return vm;
+            FrameworkElement? c = v;
+            while (c?.DataContext == vm) c = c.Parent as FrameworkElement;
+            return c?.DataContext;
         }
 
         /// <summary>

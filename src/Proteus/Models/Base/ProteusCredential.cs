@@ -21,7 +21,7 @@ namespace TheXDS.Proteus.Models.Base
         public SecurityFlags DefaultRevoked { get; set; }
         public virtual List<SecurityDescriptor> Descriptors { get; set; } = new List<SecurityDescriptor>();
 
-        IEnumerable<ISecurityDescriptor> IProteusCredential.Descriptors => Descriptors.AsReadOnly();
+        IEnumerable<ISecurityDescriptor> IProteusCredential.Descriptors => Descriptors;//.AsReadOnly();
         ICollection<SecurityDescriptor> IProteusRwCredential.Descriptors => Descriptors;
     }
 }

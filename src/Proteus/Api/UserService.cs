@@ -13,6 +13,7 @@ using TheXDS.MCART.Security.Password;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Context;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Seeders;
 using static TheXDS.Proteus.Proteus;
 
@@ -34,6 +35,13 @@ namespace TheXDS.Proteus.Api
         public UserService()
         {
             RegisterLoginSource(this);
+        }
+
+        public static Task ChangePassword(IUser user, SecureString newPassword)
+        {
+            user.ScheduledPasswordChange = false;
+            user.PasswordHash = PasswordStorage.CreateHash(newPassword);
+            return LogonService!.InternalSaveAsync();
         }
 
         /// <summary>

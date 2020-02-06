@@ -5,15 +5,15 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
-using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.ViewModels.Base;
-using TheXDS.Proteus.Widgets;
-using TheXDS.Proteus.Models.Base;
-using static TheXDS.MCART.ReflectionHelpers;
+using System.Threading.Tasks;
 using TheXDS.MCART;
 using TheXDS.MCART.Dialogs;
 using TheXDS.MCART.Security.Password;
-using System.Threading.Tasks;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels.Base;
+using TheXDS.Proteus.Widgets;
+using static TheXDS.MCART.ReflectionHelpers;
 
 namespace TheXDS.Proteus.Plugins
 {
@@ -49,8 +49,7 @@ namespace TheXDS.Proteus.Plugins
                 "Restablecer contraseña",
                 "Restablece la contraseña del usuario en caso de haberla olvidado o perdido.",
                 GetMethod<PasswordResetCrudTool, Action<ICrudViewModel>>(p => p.ResetPassword).FullName(),
-                new SimpleCommand(u => ResetPassword(vm)),
-                vm.Selection);
+                new SimpleCommand(() => ResetPassword(vm)));
         }
 
         private void ResetPassword(ICrudViewModel vm)
