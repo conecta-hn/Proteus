@@ -29,5 +29,7 @@ namespace TheXDS.Proteus.Models
         /// secundaria de detalles de facturación.
         /// </summary>
         public byte? SecondScreen { get; set; }
+
+        public virtual Entidad Entidad { get; set; }
     }
 }

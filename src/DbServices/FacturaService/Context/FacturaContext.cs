@@ -13,11 +13,13 @@ namespace TheXDS.Proteus.Context
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<ClienteCategory> ClienteCategories { get; set; }
         public DbSet<Cotizacion> Cotizaciones { get; set; }
+        public DbSet<Entidad> Entidades { get; set; }
         public DbSet<Estacion> Estaciones { get; set; }
         public DbSet<Factura> Facturas { get; set; }
+        public DbSet<FacturableCategory> FacturableCategories { get; set; }
         public DbSet<FacturaXCobrar> FacturasXCobrar { get; set; }
         public DbSet<IsvExoneracion> IsvExoneraciones { get; set; }
-        public DbSet<ItemFactura> ItemFacturas { get; set; }
+        public DbSet<ItemFactura> ItemFacturas { get; set; }        
         public DbSet<Paquete> Paquetes { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Producto> Productos { get; set; }

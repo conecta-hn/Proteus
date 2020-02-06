@@ -17,10 +17,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(InteractionType.AdminTool);
+            OnModuleMenu(InteractionType.Settings);
             FriendlyName("Estación de facturación");
 
             this.DescribeEstacion();
+            ObjectProperty(p => p.Entidad).Selectable().Required().Important("Entidad de facturación");
             ListProperty(p => p.RangosAsignados)
                 .Selectable()
                 .Source(FacturaService.UnassignedRangos)

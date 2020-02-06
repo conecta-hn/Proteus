@@ -18,6 +18,8 @@ using MigraDoc.DocumentObjectModel.Tables;
 using TheXDS.Proteus.Component;
 using MigraDoc.Rendering.Printing;
 using System.Drawing.Printing;
+using ESC_POS_USB_NET.Printer;
+using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Api
 {
@@ -51,12 +53,6 @@ namespace TheXDS.Proteus.Api
         public static bool IsThisCajero => !(GetCajero is null);
         public static bool IsCajaOpOpen => !(GetCajaOp is null);
         public static IQueryable<CaiRango> UnassignedRangos => Service<FacturaService>()!.All<CaiRango>().Where(p => p.AssignedTo == null);
-
-
-
-
-
-
 
         public static bool IsRangoOpen(CaiRango rango)
         {
@@ -106,22 +102,82 @@ namespace TheXDS.Proteus.Api
 
         public static void PrintFactura(Factura f, IFacturaInteractor? i)
         {
-            var doc = DocumentBuilder.CreateDocument();
-            var section = AddFacturaHeader(doc, f);
-            AddItemsTable(section, i, f);
-
-            using var p = new MigraDocPrintDocument(doc)
+            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
+            var p = new Printer("Generic / Text Only");
+            var e = GetEstation.Entidad;
+            void AddSubt(string label, decimal value)
             {
-                PrinterSettings = new PrinterSettings()
-            };
-            p.Print();
+                p.AlignLeft();
+                p.AppendWithoutLf($"{label}:");
+                p.AlignRight();
+                p.Append(value.ToString("C", ci));
+            }
+            p.AlignCenter();
+            p.Append(e.Name);
+            if (!e.Banner.IsEmpty()) p.Append(e.Banner);
+            p.Append(e.Address);
+            p.Append($"{e.City}, {e.Country}");
+            p.Separator();
+            p.Append("F A C T U R A");
+            p.Separator();
+            p.AlignLeft();
+            p.Append($"RTN: {e.Id}");
+            p.Append($"C.A.I.:{f.CaiRangoParent.Parent.Id}");
+            p.Append($"Rango autoriz. de facturación: {f.CaiRangoParent.RangoString()}");
+            p.Append($"Fecha límite de emisión: {f.CaiRangoParent.Parent.Void:dd/MMM/yyyy}");
+            p.Append($"Factura # {f.FactNum}");
+            p.Append($"Cliente: {f.Cliente.Name ?? "Consumidor final"}");
+            p.Append($"RTN del cliente: {f.Cliente.Rtn}");
+            p.Append("No. Compra exenta:");
+            p.Append($"No. constancia registro exonerado: {f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))}");
+            p.Append("No. Registro SAG:");
+            p.Separator('=');
+            p.Append("Descripción");
+            p.Append("Cantidad        Precio        Subtotal");
+            p.Separator();
+            foreach (var j in f.Items)
+            {
+                p.Append(j.Item.Name);
+                p.AlignLeft();
+                p.AppendWithoutLf(j.Qty.ToString());
+                p.AlignCenter();
+                p.AppendWithoutLf(j.StaticPrecio.ToString("C", ci));
+                p.AlignRight();
+                p.Append(j.SubTotal.ToString("C", ci));
+            }
+            AddSubt("Subtotal", f.SubTotal);
+            AddSubt("15% ISV", f.SubTGravable);
+            AddSubt("Gravado 15%", f.SubTGravado);
+            AddSubt("Descuentos", f.Descuentos);
+            AddSubt("TOTAL", f.Total);
+            foreach (var j in f.Payments)
+            {
+                AddSubt(j.ResolveSource()?.Name ?? "Pago misc.", j.Amount);
+            }
+            AddSubt("Cambio", f.Vuelto);
+            p.Separator('=');
+            p.AlignLeft();
+            p.Append("*Gracias por su compra.*");
+            var nfo = new AssemblyInfo(typeof(Proteus).Assembly);
+            p.Append($"{nfo.Name} {nfo.InformationalVersion}");
+            p.FullPaperCut();
+            p.PrintDocument();
+
+            //var doc = DocumentBuilder.CreateDocument();
+            //var section = AddFacturaHeader(doc, f);
+            //AddItemsTable(section, i, f);
+
+            //using var p = new MigraDocPrintDocument(doc)
+            //{
+            //    PrinterSettings = new PrinterSettings()
+            //};
+            //p.Print();
             f.Impresa = true;
         }
-
+        
         private static Section AddFacturaHeader(Document doc, Factura f)
         {
-            var retVal = doc.NewSection("FACTURA");
-            retVal.AddParagraph(f.FactNum);
+            var retVal = doc.NewSection("FACTURA");            
             return retVal;
         }
 
@@ -136,7 +192,7 @@ namespace TheXDS.Proteus.Api
                 new FacturaColumn("Item", f => f.Item.Name, 4.0),
             }.Concat(i?.ExtraColumns ?? Array.Empty<FacturaColumn>()).Concat(new[]
             {
-                new FacturaColumn("Cant.", f => f.Qty.ToString()),
+                new FacturaColumn("Cant.", f => f.Qty.ToString(), 0.5),
                 new FacturaColumn("Precio", f => f.StaticPrecio.ToString("C", ci), 2.0, true),
                 new FacturaColumn("Descuentos", f => f.StaticDescuento.ToString("C", ci), 2.0, true),
                 new FacturaColumn("Sub Total", f => f.SubTFinal.ToString("C", ci), 2.0, true),
@@ -179,12 +235,16 @@ namespace TheXDS.Proteus.Api
             row[1].AddParagraph("-- Última línea --").Format.Alignment = ParagraphAlignment.Center;
             
             AddSubt("Subtotal", f.SubTotal);
-            AddSubt("Impuesto", f.SubTGravable);
-            AddSubt("Subtotal gravado", f.SubTGravado);
-            AddSubt("Subtotal final", f.SubTFinal);
+            AddSubt("15% ISV", f.SubTGravable);
+            AddSubt("Gravado 15%", f.SubTGravado);
+            //AddSubt("Subtotal final", f.SubTFinal);
             AddSubt("Descuentos", f.Descuentos);
             AddSubt("TOTAL", f.Total);
-
+            foreach (var j in f.Payments)
+            {
+                AddSubt(j.ResolveSource().Name, j.Amount);
+            }
+            AddSubt("Cambio", -f.Vuelto);
 
             return tbl;
         }        

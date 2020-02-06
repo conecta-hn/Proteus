@@ -33,7 +33,9 @@ namespace TheXDS.Proteus.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{FacturaService.PaymentSources.FirstOrDefault(p => p.Guid == Source)?.Name}: {Amount:C}";
+            return $"{ResolveSource()?.Name}: {Amount:C}";
         }
+
+        public PaymentSource? ResolveSource() => FacturaService.PaymentSources.FirstOrDefault(p => p.Guid == Source);
     }
 }

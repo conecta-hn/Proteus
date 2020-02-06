@@ -20,6 +20,15 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         {
             descriptor.CanDelete(p => !p.Instances.Any());
             descriptor.Property(p => p.Name).AsName();
+            descriptor.ObjectProperty(p => p.Category)
+                .Selectable()
+                .Required()
+                .Important("Categoría de ítem");
+
+            descriptor.NumericProperty(p => p.Precio)
+                .Range(decimal.Zero, decimal.MaxValue)
+                .Important("Precio sin ISV");
+
             descriptor.NumericProperty(p => p.Isv)
                 .Range(0, 100)
                 .Default(15f)
@@ -27,10 +36,6 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Label("ISV")
                 .ShowInDetails()
                 .AsListColumn();
-
-            descriptor.NumericProperty(p => p.Precio)
-                .Range(decimal.Zero, decimal.MaxValue)
-                .Important("Precio de venta");
         }
     }
 }

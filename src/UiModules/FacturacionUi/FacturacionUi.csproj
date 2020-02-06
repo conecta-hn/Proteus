@@ -8,5 +8,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DbServices\FacturaService\FacturaService.csproj" />
   </ItemGroup>
-
 </Project>

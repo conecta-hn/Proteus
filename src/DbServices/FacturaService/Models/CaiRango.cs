@@ -60,7 +60,12 @@ namespace TheXDS.Proteus.Models
         /// </returns>
         public override string ToString()
         {
-            return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00}, de {RangoInicial:00000000} a {RangoFinal:00000000} ({(AssignedTo is null ? "Sin asignar" : $"Asignado a {AssignedTo}")})";
+            return $"{RangoString()} ({(AssignedTo is null ? "Sin asignar" : $"Asignado a {AssignedTo}")})";
+        }
+
+        public string RangoString()
+        {
+            return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00}, de {RangoInicial:00000000} a {RangoFinal:00000000}";
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.FacturacionUi.ViewModels;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
@@ -8,7 +9,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
     /// Describe las propiedades Crud para el modelo
     /// <see cref="Producto"/>.
     /// </summary>
-    public class ProductoDescriptor : CrudDescriptor<Producto>
+    public class ProductoDescriptor : CrudDescriptor<Producto, ProductoCrudViewModel>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
@@ -18,7 +19,9 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         {
             OnModuleMenu(InteractionType.AdminTool);
             this.DescribeFacturable();
-            //ListProperty(p => p.Consumos).Creatable().Label("Consumos de inventario");
+            VmNumericProperty(p => p.PrecioIsv)
+                .Range(decimal.Zero, decimal.MaxValue)
+                .Important("Precio con ISV");
         }
     }
 }
