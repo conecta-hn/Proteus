@@ -40,7 +40,7 @@ namespace TheXDS.Proteus.ViewModels
         private string _fieldName = null!;
         private bool _canSelect;
         private bool _selectMode;
-        private object? _tempSelection;
+        private ModelBase? _tempSelection;
         private Type? _activeModel;
         private string? _searchQuery;
         private bool _canSearch = true;
@@ -196,10 +196,10 @@ namespace TheXDS.Proteus.ViewModels
         /// Obtiene o establece el valor de selección temporal de la lista
         /// de búsqueda.
         /// </summary>
-        public object? TempSelection
+        public ModelBase? TempSelection
         { 
-            get=> _tempSelection; 
-            set=>Change(ref _tempSelection, value);
+            get=> _tempSelection;
+            set => Change(ref _tempSelection, value);
         }
 
         /// <summary>
@@ -332,8 +332,9 @@ namespace TheXDS.Proteus.ViewModels
         /// Ejecuta operaciones adicionales posteriores al guardado de una
         /// entidad.
         /// </summary>
-        protected override void AfterSave()
+        protected override async Task PostSave(ModelBase e)
         {
+            await base.PostSave(e);
             Notify(nameof(DisplayValue));
         }
 

@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Input;
 using TheXDS.MCART;
 using TheXDS.MCART.PluginSupport.Legacy;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -33,11 +34,11 @@ namespace TheXDS.Proteus.ViewModels
     /// la aplicación.
     /// </summary>
     [DebuggerStepThrough]
-    public class HomeViewModel : PageViewModel, IAlertTarget
+    public class HomeViewModel : PageViewModel, IAlertTarget, IAsyncRefreshable
     {
         public string UserGreeting => Proteus.Interactive ? $"Hola, {Proteus.Session?.Name.Split()[0] ?? "usuario"}." : "Inicio";
         private readonly ObservableCollection<Alerta> _alertas = new ObservableCollection<Alerta>();
-        private DateTime _dayOfCalendar;
+        private DateTime _dayOfCalendar = DateTime.Today;
         private List<Aviso> _avisos;
         private readonly HashSet<ModulePage> _modules;
 
@@ -119,18 +120,13 @@ namespace TheXDS.Proteus.ViewModels
             _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)) ?? Array.Empty<ModulePage>());
             Settings.Default.PropertyChanged += Default_PropertyChanged;
             LogoutCommand = new SimpleCommand(OnLogout);
-            PostOpen();
+            BusyOp(RefreshAsync());
         }
 
         private void OnLogout()
         {
             if (!Settings.Default.ConfirmLogout || Dialogs.MessageSplash.Ask("Cerrar sesión", "Está seguro que desea cerrar sesión?"))
                 Proteus.Logout();
-        }
-
-        private async void PostOpen()
-        {
-            _avisos = await UserService.AllAvisos.ToListAsync();
         }
 
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -188,6 +184,12 @@ namespace TheXDS.Proteus.ViewModels
                 base.Close();
                 Proteus.Logout();
             }
+        }
+
+        public async Task RefreshAsync()
+        {
+            _avisos = await UserService.AllAvisos.ToListAsync();
+            Notify(nameof(Avisos));
         }
 
         public double UiModulesHeight => Settings.Default.UiModulesHeight;
