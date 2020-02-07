@@ -57,5 +57,16 @@ namespace TheXDS.Proteus.Pages
             p.ViewModel = new QuickCrudViewModel(p, model, parent, QuickCrudViewModel.CrudMode.Close);
             return p;
         }
+
+        public static QuickCrudPage BulkNew(Type model)
+        {
+            var p = new QuickCrudPage();
+            p.ViewModel = new QuickCrudViewModel(p, model, null, QuickCrudViewModel.CrudMode.New);
+            return p;
+        }
+        public static QuickCrudPage BulkNew<T>()
+        {
+            return BulkNew(typeof(T));
+        }
     }
 }

@@ -18,13 +18,23 @@ namespace TheXDS.Proteus.ViewModels
 {
     public class QuickCrudViewModel : CrudViewModelBasicBase, ICrudEditingViewModel, IReadEntityViewModel<ModelBase>, IPageViewModel
     {
+        /// <summary>
+        /// Enumera los posibles modos de funcionamiento de este
+        /// <see cref="QuickCrudViewModel"/>.
+        /// </summary>
         public enum CrudMode : byte
         {
+            /// <summary>
+            /// Luego de guardar, se cerrará la página.
+            /// </summary>
             Close,
+            /// <summary>
+            /// Luego de guardar, se creará una nueva entidad.
+            /// </summary>
             New
         }
 
-        private readonly ModelBase _parent;
+        private readonly ModelBase? _parent;
         private readonly CrudMode _mode;
 
         public override CrudElement SelectedElement { get; }
