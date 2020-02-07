@@ -3,11 +3,11 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Reporting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Reporting;
 using static TheXDS.MCART.Objects;
 
 namespace TheXDS.Proteus.ViewModels

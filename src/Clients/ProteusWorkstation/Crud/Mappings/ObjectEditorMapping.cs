@@ -10,6 +10,7 @@ using TheXDS.Proteus.Widgets;
 using System;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
@@ -37,7 +38,7 @@ namespace TheXDS.Proteus.Crud.Mappings
 
             set
             {
-                _vm.Selection = value;
+                _vm.Selection = value as ModelBase;
             }
         }
 

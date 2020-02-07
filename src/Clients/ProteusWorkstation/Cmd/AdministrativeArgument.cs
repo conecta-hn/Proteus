@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using TheXDS.MCART.Component;
+using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Misc;
 
 namespace TheXDS.Proteus.Cmd

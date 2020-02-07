@@ -19,7 +19,13 @@ namespace TheXDS.Proteus.Modules
     [Name("Gestión del sistema")]
     public class UserModule : UiModule
     {
-        [InteractionItem, Essential, InteractionType(AdminTool), Name("Avisos")]
+        [InteractionItem, Essential, InteractionType(Operation), Name("Nuevo aviso")]
+        public void NewAviso(object sender, EventArgs e)
+        {
+            Host.OpenPage(QuickCrudPage.New<Aviso>());
+        }
+
+        [InteractionItem, InteractionType(AdminTool), Name("Avisos")]
         public void AdminAvisos(object sender, EventArgs e)
         {
             Host.OpenPage(CrudPage.New<Aviso>());

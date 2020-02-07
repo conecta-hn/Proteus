@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels.Base;
+using TheXDS.Proteus.ViewModels;
 
 namespace TheXDS.Proteus.Crud
 {
@@ -44,6 +47,13 @@ namespace TheXDS.Proteus.Crud
             BeforeSave(SetCreationTime);
 
             CustomAction("Vista previa", o => Proteus.MessageTarget?.Show(o.Header, o.Body));
+
+            AfterSave(NotifyViewModel);
+        }
+
+        private void NotifyViewModel(Aviso arg1, ModelBase arg2)
+        {
+            ProteusViewModel.FullRefreshVmAsync<HomeViewModel>();
         }
 
         private IEnumerable<ValidationError> CheckBody(Aviso m, PropertyInfo p)

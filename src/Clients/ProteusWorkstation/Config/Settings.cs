@@ -96,7 +96,12 @@ namespace TheXDS.Proteus.Config
         public SimpleCommand CancelCommand { get; }
         public SimpleCommand CloseCommand { get; }
         public ICloseable Host { get; internal set; }
-        public string Title => Closeable ? "Configuración" : $"Configuración incial de {App.Info.Name}";
+        public string Title
+        {
+            get => Closeable ? "Configuración" : $"Configuración incial de {App.Info.Name}";
+            set => throw new InvalidOperationException();
+        }
+
         public string Name => App.Info.Name;
         public Version Version => App.Info.Version;
         public string ShortVersion => Version.ToString(2);
@@ -125,6 +130,8 @@ namespace TheXDS.Proteus.Config
         {
             return (T)Default[caller];
         }
+
+        public void Refresh() => Reload();
 
         public IEnumerable<ISettingsRepository> Repos => Proteus.SettingsRepositories;
         public IEnumerable<IKickStarter> KickStarters => Objects.FindAllObjects<IKickStarter>().ToList();
