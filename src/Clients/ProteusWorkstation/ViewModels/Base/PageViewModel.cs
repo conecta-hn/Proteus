@@ -5,6 +5,7 @@ Licenciado para uso interno solamente.
 
 using TheXDS.Proteus.Component;
 using TheXDS.MCART.ViewModel;
+using System.Windows.Input;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {

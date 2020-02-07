@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -101,7 +102,7 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         private void TreeViewSelector_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            Selection = ((TreeView)Selector).SelectedItem;
+            Selection = ((TreeView)Selector).SelectedItem as ModelBase;
         }
 
         /// <summary>
@@ -149,8 +150,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
         /// </summary>
-        protected override void AfterSave()
+        protected override async Task PostSave(ModelBase e)
         {
+            await base.PostSave(e);
             Notify(nameof(Source));
         }
     }

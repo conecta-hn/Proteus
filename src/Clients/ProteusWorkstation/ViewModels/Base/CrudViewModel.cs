@@ -35,7 +35,6 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// </typeparam>
     public class CrudViewModel<TService> : PageViewModel, ICrudCollectionViewModel, ISearchViewModel, IEditingCrudViewModel where TService : Service, new()
     {
-        private static readonly IEnumerable<CrudTool> _allTools = Objects.FindAllObjects<CrudTool>();
         private readonly IEnumerable<CrudTool> _tools;
 
         private readonly Type _model;
@@ -89,7 +88,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Obtiene o establece al elemento seleccionado.
         /// </summary>
-        public object? Selection { get => ((ICrudCollectionViewModel)Implementation).Selection; set => ((ICrudCollectionViewModel)Implementation).Selection = value; }
+        public ModelBase? Selection { get => ((ICrudCollectionViewModel)Implementation).Selection; set => ((ICrudCollectionViewModel)Implementation).Selection = value; }
 
         /// <summary>
         /// Obtiene un <see cref="ViewBase"/> que define la apariencia de
@@ -211,7 +210,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = model;
             Implementation = new DbBoundCrudViewModel(model);
-            _tools = _allTools.Where(p => p.Available(model));
+            _tools = CrudViewModelBase._allTools.Where(p => p.Available(model));
             Init();
         }
 
@@ -226,7 +225,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
-            _tools = _allTools.Where(p => p.Available(models));
+            _tools = CrudViewModelBase._allTools.Where(p => p.Available(models));
             Init();
         }
 
