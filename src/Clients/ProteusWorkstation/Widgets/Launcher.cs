@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using System.Reflection;
 using System.Windows.Input;
 using TheXDS.MCART;
 using TheXDS.MCART.PluginSupport.Legacy;
@@ -56,6 +57,8 @@ namespace TheXDS.Proteus.Widgets
         /// Comando a ejecutar al activar este <see cref="Launcher"/>.
         /// </param>
         public Launcher(string name, string? description, string id, ICommand command) : this(name, description, id, command, null) { }
+
+        public Launcher(string name, string? description, object? instance, MethodInfo id, params object?[]? args) : this(name, description, id.Name, new SimpleCommand(() => id.Invoke(instance, args)), null) { }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase

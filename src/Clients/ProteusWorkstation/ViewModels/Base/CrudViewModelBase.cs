@@ -210,11 +210,14 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             if (Precheck()) return;
             var e = Selection;
-            var r = await PerformSave(Selection);
-            if (SelectedElement is null) Selection = e;
-            await PostSave(e);            
-            NewMode = false;
-            EditMode = false;
+            if ((await PerformSave(Selection!)).Result == Result.Ok)
+            {
+
+                if (SelectedElement is null) Selection = e;
+                await PostSave(e!);
+                NewMode = false;
+                EditMode = false;
+            }
         }
 
         /// <summary>
@@ -339,13 +342,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             EditMode = true;
 
             if (NewMode || ((o as ModelBase)?.IsNew ?? true)) return;
-            foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
-            {
-                if (j.Property.HasAttr<KeyAttribute>())
-                {
-                    j.ContainingControl.IsEnabled = false;
-                }
-            }
+            DisableIdCtrls();
         }
 
         [Sugar] internal void OnCreate(object? o) => OnCreate(o as Type);

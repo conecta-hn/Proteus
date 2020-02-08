@@ -72,7 +72,7 @@ namespace TheXDS.Proteus.Plugins
         /// Una enumeración de <see cref="Launcher"/> a presentar en las
         /// distintas vistas de la ventana de Crud.
         /// </returns>
-        public abstract IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm);
+        public abstract IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm);
 
         /// <summary>
         /// Obtiene la colección de <see cref="Launcher"/> a presentar en la

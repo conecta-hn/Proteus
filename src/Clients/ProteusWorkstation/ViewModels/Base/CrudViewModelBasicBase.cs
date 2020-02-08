@@ -4,9 +4,11 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using TheXDS.MCART;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
@@ -118,7 +120,16 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>()) j.ContainingControl.IsEnabled = true;
         }
-
+        protected void DisableIdCtrls()
+        {
+            foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
+            {
+                if (j.Property.HasAttr<KeyAttribute>())
+                {
+                    j.ContainingControl.IsEnabled = false;
+                }
+            }
+        }
         protected void ClearCtrls(ModelBase entity)
         {
             foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
@@ -132,5 +143,6 @@ namespace TheXDS.Proteus.ViewModels.Base
                 else k.ClearControlValue();
             }
         }
+
     }
 }

@@ -52,6 +52,7 @@ namespace TheXDS.Proteus.Plugins
 		/// </returns>
 		public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
 		{
+			if (vm is null) return Array.Empty<Launcher>(); 
 			return models.Select(j => new Launcher(
 				"Exportar a Excel",
 				"Exporta la lista actual a un archivo de Microsoft Excel.",
