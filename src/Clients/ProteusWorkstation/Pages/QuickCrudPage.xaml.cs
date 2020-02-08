@@ -24,6 +24,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TheXDS.Proteus.ViewModels;
+using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.Pages
 {
@@ -55,6 +56,24 @@ namespace TheXDS.Proteus.Pages
         {
             var p = new QuickCrudPage();
             p.ViewModel = new QuickCrudViewModel(p, model, parent, QuickCrudViewModel.CrudMode.Close);
+            return p;
+        }
+
+        public static QuickCrudPage BulkNew(Type model)
+        {
+            var p = new QuickCrudPage();
+            p.ViewModel = new QuickCrudViewModel(p, model, null, QuickCrudViewModel.CrudMode.New);
+            return p;
+        }
+        public static QuickCrudPage BulkNew<T>()
+        {
+            return BulkNew(typeof(T));
+        }
+
+        public static IPage Edit<T>(T entity) where T : ModelBase
+        {
+            var p = new QuickCrudPage();
+            p.ViewModel = new QuickCrudViewModel(p, entity, null, QuickCrudViewModel.CrudMode.Close);
             return p;
         }
     }

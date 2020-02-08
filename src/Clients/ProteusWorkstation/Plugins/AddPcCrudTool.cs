@@ -25,7 +25,7 @@ namespace TheXDS.Proteus.Plugins
         {
         }
 
-        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
+        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
         {
             foreach(var j in models)
             {
@@ -37,9 +37,9 @@ namespace TheXDS.Proteus.Plugins
             }
         }
 
-        private void AddThisPC(ICrudViewModel vm, Type model)
+        private void AddThisPC(ICrudViewModel? vm, Type model)
         {
-            vm.CreateNew.Execute(model);            
+            vm?.CreateNew.Execute(model);            
         }
     }
 

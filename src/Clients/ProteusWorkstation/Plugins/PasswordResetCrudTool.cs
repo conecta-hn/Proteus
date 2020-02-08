@@ -43,8 +43,9 @@ namespace TheXDS.Proteus.Plugins
         /// Una enumeración de <see cref="Launcher"/> a presentar en las
         /// distintas vistas de la ventana de Crud.
         /// </returns>
-        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
+        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
         {
+            if (vm is null) yield break;
             yield return new Launcher(
                 "Restablecer contraseña",
                 "Restablece la contraseña del usuario en caso de haberla olvidado o perdido.",
@@ -52,7 +53,7 @@ namespace TheXDS.Proteus.Plugins
                 new SimpleCommand(() => ResetPassword(vm)));
         }
 
-        private void ResetPassword(ICrudViewModel vm)
+        private void ResetPassword(ICrudViewModel? vm)
         {
             if (!(vm.Selection is IUser user) || !PasswordDialog.ConfirmPassword(out var p)) return;
             vm.BusyDo(SetPw(user, p));
