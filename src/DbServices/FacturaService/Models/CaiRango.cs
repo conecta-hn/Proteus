@@ -78,7 +78,7 @@ namespace TheXDS.Proteus.Models
         /// <returns>El número completo de factura.</returns>
         public string FactNum(int correl)
         {
-            return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00}-{RangoInicial + correl - 1:00000000}";
+            return $"{NumLocal:000}-{NumCaja:000}-{NumDocumento:00}-{correl:00000000}";
         }
 
         public List<int> GetFreeCorrels()

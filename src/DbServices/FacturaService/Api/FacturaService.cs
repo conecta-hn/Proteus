@@ -99,57 +99,153 @@ namespace TheXDS.Proteus.Api
             {
                 throw new InvalidOperationException("La factura tiene saldo pendiente.");
             }
+            if (f.OtRef != null) f.OtRef.Facturado = true;
             f.CaiRangoParent = CurrentRango;
             f.Correlativo = NextCorrel(f.CaiRangoParent) ?? 1;
             PrintFactura(f, i);
         }
 
-        public static void PrintFactura(Factura f, IFacturaInteractor? i)
+        public static async void PrintOt(OrdenTrabajo ot)
         {
             var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
-            var e = GetEstation.Entidad;
-            var p = new Printer(GetEstation.Printer);
+            var p = PrintHeader("Ticket");
+            p.BoldMode($"Código de orden: {ot.Id:000000}");
+            p.Append($"Fecha de generacion: {ot.Timestamp:dd/MM/yyyy}");
+            p.Append($"Fecha de entrega:    {ot.Entrega:dd/MM/yyyy}");
+            p.Code128(ot.Id.ToString());
+            p.Append($"Cliente: {ot.Cliente?.Name ?? "Consumidor final"}");
+            p.Append($"RTN: {ot.Cliente?.Rtn ?? "9999-9999-999999"}");
+            foreach (var j in ot.Cliente?.Phones.ToArray() ?? Array.Empty<Phone>())
+            {
+                p.Append($"Tel.   {j.Number}");
+            }
+            p.Append(new string('=', 40));
+            p.Append("Cantidad     Precio      Subtotal");
+            p.Append(new string('-', 40));
+            var tot = 0m;
+            foreach (var j in ot.Items)
+            {
+                p.AlignLeft();
+                p.Append(j.Item.Name);
+                var precio = j.Item.Precio + (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
+                p.AlignRight();
+                p.Append($"{j.Qty}        {precio.ToString("C", ci)}        {(j.Qty * precio).ToString("C", ci)}");
+                tot += precio;
+            }
+
+            p.Append(new string('-', 40));
+
             void AddSubt(string label, decimal value)
             {
-                p.Append($"{label}:{value.ToString("C", ci)}");
+                p.Append($"{label:-25}: {value.ToString("C", ci)}");
             }
+            p.AlignLeft();
+            p.Append($"Total de prendas: {ot.Items.Sum(j => j.Qty)}");
+            p.AlignRight();
+            AddSubt($"Total a pagar", tot);
+
+            p.AlignLeft();
+            if (!ot.Notas.IsEmpty())
+            {
+                p.Append(new string('-', 40));
+                p.Append(ot.Notas);
+            }
+            p.AlignCenter();
+            p.Append("Gracias por preferirnos");
+            p.BoldMode("ESTE TICKET NO ES UNA FACTURA");
+            FooterAndPrint(p);
+
+            await Task.Delay(3000);
+
+            p = PrintHeader("Orden de trabajo");
+            p.BoldMode($"Código de orden: {ot.Id:000000}");
+            p.Append($"Fecha de generacion: {ot.Timestamp:dd/MM/yyyy}");
+            p.Append($"Fecha de entrega:    {ot.Entrega:dd/MM/yyyy}");
+            p.Code39(ot.Id.ToString());
+            p.Append($"Cliente: {ot.Cliente?.Name ?? "Consumidor final"}");
+            p.Append($"RTN: {ot.Cliente?.Rtn ?? "9999-9999-999999"}");
+            foreach (var j in ot.Cliente?.Phones.ToArray() ?? Array.Empty<Phone>())
+            {
+                p.Append($"Tel.   {j.Number}");
+            }
+            p.Append(new string('=',40));
+            p.Append("Descripcion              Cantidad");
+            foreach (var j in ot.Items)
+            {
+                p.Append($"{j.Item.Name}: {j.Qty}");
+            }
+            p.Append(new string('-', 40));
+            p.Append($"Total de prendas: {ot.Items.Sum(j => j.Qty)}");
+            if (!ot.Notas.IsEmpty())
+            {
+                p.Append(new string('-', 40));
+                p.Append(ot.Notas);
+            }
+            FooterAndPrint(p);
+        }
+
+        private static Printer GetPrinter()
+        {
+            return new Printer(GetEstation.Printer);
+        }
+
+        private static Printer PrintHeader(string title)
+        {
+            var e = GetEstation.Entidad;
+            var p = GetPrinter();
             p.AlignCenter();
             p.Append(e.Name);
             if (!e.Banner.IsEmpty()) p.Append(e.Banner);
             p.Append(e.Address);
             p.Append($"{e.City}, {e.Country}");
             p.Append($"RTN: {e.Id}");
-            p.Separator();
-            p.Append("F A C T U R A");
-            p.Separator();
+            p.Append(new string('-', 40));
+            p.Append(title.ToUpper().Spell());
+            p.Append(new string('-', 40));
             p.AlignLeft();
+            return p;
+        }
+
+        private static void FooterAndPrint(Printer p)
+        {
+            //var nfo = new AssemblyInfo(typeof(Proteus).Assembly);
+            //p.Append($"{nfo.Name} {nfo.InformationalVersion}");
+            p.FullPaperCut();
+            p.PrintDocument();
+        }
+
+        public static void PrintFactura(Factura f, IFacturaInteractor? i)
+        {
+            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
+            var p = PrintHeader("factura");
+            void AddSubt(string label, decimal value)
+            {
+                p.Append($"{label:-25}: {value.ToString("C", ci)}");
+            }
             p.Append("C.A.I.:");
             p.Append($"{f.CaiRangoParent.Parent.Id}");
             p.Append($"Rango autorizado de facturacion:");
             p.Append($"{f.CaiRangoParent.RangoString()}");
             p.Append($"Fecha lim. de emision: {f.CaiRangoParent.Parent.Void:dd/MM/yyyy}");
+            p.Append(new string('-', 40));
             p.Append($"Factura # {f.FactNum}");
+            p.Append($"Fecha de facturacion: {f.Timestamp:dd/MM/yyyy}");
             p.Append($"Cliente: {f.Cliente.Name ?? "Consumidor final"}");
-            p.Append($"RTN del cliente: {f.Cliente.Rtn}");
+            p.Append($"RTN: {f.Cliente?.Rtn ?? "9999-9999-999999"}");
             p.Append("No. Compra exenta:");
             p.Append("No. constancia registro exonerado:");
             p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))}");
             p.Append("No. Registro SAG:");
-            p.Separator('=');
+            p.Append(new string('=', 40));
             p.Append("Descripcion");
             p.Append("Cantidad     Precio      Subtotal");
-            p.Separator();
+            p.Append(new string('-', 40));
             foreach (var j in f.Items)
             {
                 p.Append(j.Item.Name);
-                p.AlignLeft();
-                p.AppendWithoutLf(j.Qty.ToString());
-                p.AlignCenter();
-                p.AppendWithoutLf(j.StaticPrecio.ToString("C", ci));
-                p.AlignRight();
-                p.Append(j.SubTotal.ToString("C", ci));
+                p.Append($"{j.Qty}    {j.StaticPrecio.ToString("C", ci)}    {j.SubTotal.ToString("C", ci)}");
             }
-            p.Separator();
+            p.Append(new string('-', 40));
             p.AlignRight();
             AddSubt("Subtotal", f.SubTotal);
             AddSubt("15% ISV", f.SubTGravable);
@@ -161,101 +257,19 @@ namespace TheXDS.Proteus.Api
                 AddSubt(j.ResolveSource()?.Name ?? "Pago misc.", j.Amount);
             }
             AddSubt("Cambio", -f.Vuelto);
-            p.Separator('=');
+            if (!f.Notas.IsEmpty())
+            {
+                p.Append(new string('-', 40));
+                p.Append(f.Notas);
+            }
+            p.Append(new string('=', 40));
             p.AlignLeft();
             p.Append("Gracias por su compra.");
             p.Append($"Atendido por: {GetCajero.UserEntity?.Name ?? GetCajero.UserId }");
             p.Append("Original - Cliente");
             p.Append("CC - Comercio");
-            var nfo = new AssemblyInfo(typeof(Proteus).Assembly);
-            p.Append($"{nfo.Name} {nfo.InformationalVersion}");
-            p.FullPaperCut();
-            p.PrintDocument();
-
-            //var doc = DocumentBuilder.CreateDocument();
-            //var section = AddFacturaHeader(doc, f);
-            //AddItemsTable(section, i, f);
-
-            //using var p = new MigraDocPrintDocument(doc)
-            //{
-            //    PrinterSettings = new PrinterSettings()
-            //};
-            //p.Print();
+            FooterAndPrint(p);
             f.Impresa = true;
         }
-        
-        private static Section AddFacturaHeader(Document doc, Factura f)
-        {
-            var retVal = doc.NewSection("FACTURA");            
-            return retVal;
-        }
-
-        private static Table AddItemsTable(Section section, IFacturaInteractor i, Factura f)
-        {
-            var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
-            var ic = 0;
-            var c = 0;
-            var cols = new[]
-            {
-                new FacturaColumn("#", _ => (++ic).ToString()),
-                new FacturaColumn("Item", f => f.Item.Name, 4.0),
-            }.Concat(i?.ExtraColumns ?? Array.Empty<FacturaColumn>()).Concat(new[]
-            {
-                new FacturaColumn("Cant.", f => f.Qty.ToString(), 0.5),
-                new FacturaColumn("Precio", f => f.StaticPrecio.ToString("C", ci), 2.0, true),
-                new FacturaColumn("Descuentos", f => f.StaticDescuento.ToString("C", ci), 2.0, true),
-                new FacturaColumn("Sub Total", f => f.SubTFinal.ToString("C", ci), 2.0, true),
-            }).ToList();
-            var colsTot = cols.Sum(p => p.RelaSize);
-            var tblWidth = 18.5;
-            var tbl = section.AddTable();
-            foreach (var j in cols)
-            {
-                tbl.AddColumn(new Unit(j.RelaSize * tblWidth / colsTot, UnitType.Centimeter))
-                    .Format.Alignment = j.Currency ? ParagraphAlignment.Right : ParagraphAlignment.Left;
-            }
-
-            void AddSubt(string label, decimal value)
-            {
-                var r = tbl.AddRow();
-                r[cols.Count - 2].AddParagraph($"{label}:");
-                r[cols.Count - 1].AddParagraph(value.ToString("C", ci));
-
-            }
-
-            var row = tbl.AddRow();
-            foreach (var j in cols)
-            {
-                row.Cells[c++].AddParagraph(j.Header).Format.Font.Bold = true;
-            };
-            row.Borders = new Borders() { Bottom = new Border() { Color = Colors.Black, Width = 1.0f } };
-
-            foreach (var j in f.Items)
-            {
-                row = tbl.AddRow();
-                c = 0;
-                foreach (var k in cols)
-                {
-                    row[c++].AddParagraph(k.Presenter(j));
-                }
-            }
-            row = tbl.AddRow();
-            row.Borders = new Borders() { Bottom = new Border() { Color = Colors.Black, Width = 1.0f } };
-            row[1].AddParagraph("-- Última línea --").Format.Alignment = ParagraphAlignment.Center;
-            
-            AddSubt("Subtotal", f.SubTotal);
-            AddSubt("15% ISV", f.SubTGravable);
-            AddSubt("Gravado 15%", f.SubTGravado);
-            //AddSubt("Subtotal final", f.SubTFinal);
-            AddSubt("Descuentos", f.Descuentos);
-            AddSubt("TOTAL", f.Total);
-            foreach (var j in f.Payments)
-            {
-                AddSubt(j.ResolveSource().Name, j.Amount);
-            }
-            AddSubt("Cambio", -f.Vuelto);
-
-            return tbl;
-        }        
     }
 }

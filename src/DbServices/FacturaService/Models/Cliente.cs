@@ -49,6 +49,8 @@ namespace TheXDS.Proteus.Models
         /// Colección de créditos del cliente.
         /// </summary>
         public virtual List<FacturaXCobrar> Credits { get; set; } = new List<FacturaXCobrar>();
+
+        public string SagRef { get; set; }
     }
 
     public class IsvExoneracion : TimestampModel<string>

@@ -48,7 +48,7 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Obtiene el montro gravado de este ítem.
         /// </summary>
-        public decimal MontoGravado => SubTotal * (decimal)(StaticIsv / 100f ?? 0f);
+        public decimal MontoGravado => SubTotal * (decimal)((StaticIsv / 100f) ?? 0f);
 
         /// <summary>
         /// Obtiene la suma del subtotal y el monto gravado para este ítem.

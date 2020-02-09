@@ -130,6 +130,12 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             }
         }
 
+        [InteractionItem, Essential, InteractionType(InteractionType.Operation), Name("Nueva O. T.")]
+        public void NewAviso(object sender, EventArgs e)
+        {
+            Host.OpenPage(QuickCrudPage.BulkNew<OrdenTrabajo>());
+        }
+
         /// <summary>
         /// Permite cerrar una sesión de caja abierta.
         /// </summary>

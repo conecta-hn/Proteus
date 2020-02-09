@@ -1,25 +1,56 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types.Base;
-using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
+
+    /// <summary>
+    /// Ítem de una orden de trabajo.
+    /// </summary>
+    public class OrdenTrabajoItem : ModelBase<long>
+    {
+        /// <summary>
+        /// Elemento facturable para el cual se ha creado este ítem.
+        /// </summary>
+        public virtual Facturable Item { get; set; }
+
+        /// <summary>
+        /// Orden de trabajo donde existe este ítem.
+        /// </summary>
+        public virtual OrdenTrabajo Parent { get; set; }
+
+        /// <summary>
+        /// Cantidad de ítems a procesar.
+        /// </summary>
+        public int Qty { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Qty} {Item?.Name}";
+        }
+    }
+
     /// <summary>
     /// Describe una factura en el sistema.
     /// </summary>
     public class Factura : FacturaBase, IDescriptible
     {
         /// <summary>
+        /// Orden de trabajo que ha sido pagada con esta factura.
+        /// </summary>
+        public virtual OrdenTrabajo OtRef { get; set; }
+
+        /// <summary>
+        /// Obtiene un código de compra exenta.
+        /// </summary>
+        public string CompraExentaRef { get; set; }
+        
+        /// <summary>
         /// Correlativo interno dentro del rango de facturación.
         /// </summary>
         public int Correlativo { get; set; }
-
-        /// <summary>
-        /// Número de orden de trabajo relacionada.
-        /// </summary>
-        public int OtNum { get; set; }
 
         /// <summary>
         /// Rango de facturación al cual esta factura pertenece.
@@ -49,7 +80,7 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Obtiene una descripción amigable para la factura.
         /// </summary>
-        public string Description => FactNum ?? "n/a";//$"{Id}{FactNum?.OrNull(" ({0})")}";
+        public string Description => FactNum ?? "n/a";
 
         /// <summary>
         /// Obtiene una cadena que representa el número de facturación.

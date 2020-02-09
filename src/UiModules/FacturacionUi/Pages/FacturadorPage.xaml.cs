@@ -28,13 +28,11 @@ namespace TheXDS.Proteus.Pages
     /// </summary>
     public partial class FacturadorPage : ProteusPage
     {
-        public FacturadorPage() : this(null)
-        {
-        }
+        public FacturadorPage() : this((Factura?)null) { }
 
-        public FacturadorPage(IFacturaUIInteractor? interactor) : this(null, interactor)
-        {
-        }
+        public FacturadorPage(IFacturaUIInteractor? interactor) : this(null, interactor) { }
+
+        public FacturadorPage(Factura? factura) : this(factura, null) { }
 
         public FacturadorPage(Factura? factura, IFacturaUIInteractor? interactor)
         {

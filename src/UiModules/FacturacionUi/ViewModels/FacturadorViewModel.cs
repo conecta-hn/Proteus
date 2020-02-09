@@ -462,7 +462,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
             IsBusy = true;
             CurrentFactura.Cliente = NewCliente;
-            foreach (var j in NewItems) CurrentFactura.Items.Add(j);
+            if (CurrentFactura.Items.Count != NewItems.Count)
+            {
+                CurrentFactura.Items.Clear();
+                foreach (var j in NewItems) CurrentFactura.Items.Add(j);
+            }
             foreach (var j in NewPayments)
             {
                 if (!(await j.Source.TryPayment(CurrentFactura, j.Amount) is { } payment))

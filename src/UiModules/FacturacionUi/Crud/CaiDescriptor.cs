@@ -33,7 +33,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
             Property(p => p.Void)
                 .Label("Fecha de vencimiento")
-                .Nullable();
+                .Default(DateTime.Now + TimeSpan.FromDays(365));
 
             ListProperty(p => p.Rangos).Creatable().Label("Rangos de facturación").ShowInDetails();
 

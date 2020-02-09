@@ -1,13 +1,11 @@
-﻿using TheXDS.Proteus.Annotations;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
-using System.Linq;
-using TheXDS.MCART.Types.Extensions;
-using System.Collections.Generic;
-using TheXDS.MCART.ViewModel;
-using System;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
 {
@@ -79,5 +77,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         }
 
         public string Printer { get; set; }
+
+        public override string ToString() => Printer;
     }
 }

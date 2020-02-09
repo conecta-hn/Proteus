@@ -16,5 +16,4 @@ namespace TheXDS.Proteus.Models.Base
         public decimal SubTFinal => Items.Sum(p => p.SubTFinal);
         public decimal Total => SubTFinal - Descuentos + OtrosCargos;
     }
-
 }

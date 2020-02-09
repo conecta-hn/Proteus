@@ -178,7 +178,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             Qty = item.Qty;
             Gravar = item.StaticIsv.HasValue;
-            Gravado = item.StaticIsv / 100f ?? 0f;
+            Gravado = item.StaticIsv ?? 0f;
             DescuentosOtorgados = item.StaticDescuento;
         }
 
