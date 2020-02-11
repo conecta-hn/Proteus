@@ -5,12 +5,12 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
+using TheXDS.MCART;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
 using static TheXDS.MCART.ReflectionHelpers;
-using TheXDS.MCART;
 
 namespace TheXDS.Proteus.Plugins
 {
@@ -41,10 +41,11 @@ namespace TheXDS.Proteus.Plugins
         /// Una enumeración de <see cref="Launcher"/> a presentar en las
         /// distintas vistas de la ventana de Crud.
         /// </returns>
-        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
+        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
         {
             foreach (var j in models)
             {
+                if (vm is null) yield break;
                 var d = CrudElement.GetDescription(j)?.FriendlyName ?? j.Name;
                 var oc = GetMethod<CrudViewModelBase, Action<object>>(p => p.OnCreate);
                 yield return new Launcher(

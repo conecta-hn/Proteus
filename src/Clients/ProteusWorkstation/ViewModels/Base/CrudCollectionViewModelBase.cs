@@ -6,12 +6,14 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models.Base;
@@ -100,7 +102,7 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         private void TreeViewSelector_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            Selection = ((TreeView)Selector).SelectedItem;
+            Selection = ((TreeView)Selector).SelectedItem as ModelBase;
         }
 
         /// <summary>
@@ -124,14 +126,33 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </returns>
         protected override ModelBase? GetParent()
         {
-            return (Selector as TreeView)?.SelectedItem as ModelBase;
+            return Selector switch
+            {
+                TreeView trv => trv.SelectedItem as ModelBase,
+                Control v => WalkUp(v) switch
+                {
+                    ICrudViewModel vm=> vm.Selection,
+                    IEntityViewModel vm => vm.Entity,
+                    _ => null,
+                } as ModelBase
+            };
+        }
+
+        public object? WalkUp(Control v)
+        {
+            var vm = v.DataContext;
+            if (vm is IEntityViewModel) return vm;
+            FrameworkElement? c = v;
+            while (c?.DataContext == vm) c = c.Parent as FrameworkElement;
+            return c?.DataContext;
         }
 
         /// <summary>
         /// Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
         /// </summary>
-        protected override void AfterSave()
+        protected override async Task PostSave(ModelBase e)
         {
+            await base.PostSave(e);
             Notify(nameof(Source));
         }
     }

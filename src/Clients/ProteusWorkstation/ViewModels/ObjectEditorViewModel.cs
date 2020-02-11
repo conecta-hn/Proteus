@@ -40,7 +40,7 @@ namespace TheXDS.Proteus.ViewModels
         private string _fieldName = null!;
         private bool _canSelect;
         private bool _selectMode;
-        private object? _tempSelection;
+        private ModelBase? _tempSelection;
         private Type? _activeModel;
         private string? _searchQuery;
         private bool _canSearch = true;
@@ -196,10 +196,10 @@ namespace TheXDS.Proteus.ViewModels
         /// Obtiene o establece el valor de selección temporal de la lista
         /// de búsqueda.
         /// </summary>
-        public object? TempSelection
+        public ModelBase? TempSelection
         { 
-            get=> _tempSelection; 
-            set=>Change(ref _tempSelection, value);
+            get=> _tempSelection;
+            set => Change(ref _tempSelection, value);
         }
 
         /// <summary>
@@ -332,8 +332,9 @@ namespace TheXDS.Proteus.ViewModels
         /// Ejecuta operaciones adicionales posteriores al guardado de una
         /// entidad.
         /// </summary>
-        protected override void AfterSave()
+        protected override async Task PostSave(ModelBase e)
         {
+            await base.PostSave(e);
             Notify(nameof(DisplayValue));
         }
 
@@ -367,8 +368,15 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         public async void ClearSearch()
         {
-            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
-            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            if (SelectionSource?.Any() ?? false)
+            {
+                Results = CollectionViewSource.GetDefaultView(SelectionSource);
+            }
+            else if (Proteus.Infer(ActiveModel!) is { } svc)
+            {          
+                var q = svc.All(ActiveModel!);
+                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            }
             EnumerableResults = null;
             SearchQuery = null;
         }
@@ -398,7 +406,16 @@ namespace TheXDS.Proteus.ViewModels
         private async Task PerformSearch()
         {
             IsSearching = true;
-            var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
+            List<ModelBase> l;
+            if (SelectionSource.Any())
+            {
+                l = SelectionSource.ToList();
+            }
+            else if (Proteus.Infer(ActiveModel!) is { })
+            {
+                l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
+            }
+            else { return; }
             foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
             {
                 l = j.Filter(l, SearchQuery!);

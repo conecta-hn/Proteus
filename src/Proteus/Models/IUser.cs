@@ -33,6 +33,6 @@ namespace TheXDS.Proteus.Models.Base
         /// Obtiene un valor que indica si el usuario tiene pendiente una 
         /// solicitud de cambio de contraseña.
         /// </summary>
-        bool ScheduledPasswordChange { get; }
+        bool ScheduledPasswordChange { get; set; }
     }
 }

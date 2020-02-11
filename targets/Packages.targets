@@ -4,12 +4,11 @@
     <PackageReference Include="TheXDS.MCART" Version="$(McartVersion)" />
   </ItemGroup>
   <ItemGroup Condition="'$(UseWPF)'=='true'">
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.7.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.0" />
     <PackageReference Include="FluentWPF" Version="0.8.0" />
     <PackageReference Include="TheXDS.MCART.UI" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.Windows" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.WPF" Version="$(McartVersion)" />
-    <!--<PackageReference Include="TheXDS.MCART.Ext.ViewModelFactory" Version="$(McartVersion)" />-->
     <ProjectReference Include="$(SOlutionDir)Proteus\Proteus.csproj" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="mscorlib" />

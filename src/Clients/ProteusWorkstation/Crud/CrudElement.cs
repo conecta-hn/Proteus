@@ -108,19 +108,19 @@ namespace TheXDS.Proteus.Crud
         /// Modelo para el cual generar las vistas del editor y de
         /// detalles.
         /// </param>
-        public CrudElement(ICrudDescription description, Type model = null)
+        public CrudElement(ICrudDescription description, Type? model = null)
         {
-            Model = model?.ResolveCollectionType().ResolveToDefinedType() ?? description?.DescribedModel;
+            Model = model?.ResolveCollectionType().ResolveToDefinedType() ?? description?.DescribedModel!;
             Description = description;
 
             ViewModel = Description?.BaseViewModelType is null
-                ? typeof(ProteusEntityViewModel<>).MakeGenericType(Model).New<IEntityViewModel>()
+                ? (IEntityViewModel)typeof(ProteusEntityViewModel<>).MakeGenericType(Model!).New()
                 : Description.BaseViewModelType.New<IEntityViewModel>();
 
             if (!(Description is null))
             {
                 Editor = CrudBuilder.BuildEditor(Description, out var editControls);
-                Details = Description.Details ?? CrudBuilder.BuildDetails(Model, Description);
+                Details = Description.Details ?? CrudBuilder.BuildDetails(Model!, Description);
                 EditControls = editControls;
             }
             else
@@ -192,8 +192,8 @@ namespace TheXDS.Proteus.Crud
             Description = GetDescription(model);
 
             ViewModel = Description?.BaseViewModelType is null
-                ? typeof(ProteusEntityViewModel<>).MakeGenericType(model).New<IEntityViewModel>()
-                : Description.BaseViewModelType.New<IEntityViewModel>();
+                ? typeof(ProteusEntityViewModel<>).MakeGenericType(model).New<IEntityViewModel<ModelBase>>()
+                : Description.BaseViewModelType.New<IEntityViewModel<ModelBase>>();
 
             if (!(Description is null))
             {
@@ -219,7 +219,7 @@ namespace TheXDS.Proteus.Crud
         {
             foreach (var j in EditControls)
             {
-                j.SetValue(j.Description.PropertySource == PropertyLocation.Model ? ViewModel.Entity : ViewModel);
+                j.SetValue(j.Description.PropertySource == PropertyLocation.Model ? ViewModel.Entity : (object)ViewModel);
                 (ViewModel as INotifyPropertyChangeBase)?.Notify(j.Property.Name);
             }
         }

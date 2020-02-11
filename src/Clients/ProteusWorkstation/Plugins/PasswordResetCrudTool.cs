@@ -5,15 +5,15 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
-using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.ViewModels.Base;
-using TheXDS.Proteus.Widgets;
-using TheXDS.Proteus.Models.Base;
-using static TheXDS.MCART.ReflectionHelpers;
+using System.Threading.Tasks;
 using TheXDS.MCART;
 using TheXDS.MCART.Dialogs;
 using TheXDS.MCART.Security.Password;
-using System.Threading.Tasks;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels.Base;
+using TheXDS.Proteus.Widgets;
+using static TheXDS.MCART.ReflectionHelpers;
 
 namespace TheXDS.Proteus.Plugins
 {
@@ -43,17 +43,17 @@ namespace TheXDS.Proteus.Plugins
         /// Una enumeración de <see cref="Launcher"/> a presentar en las
         /// distintas vistas de la ventana de Crud.
         /// </returns>
-        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
+        public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
         {
+            if (vm is null) yield break;
             yield return new Launcher(
                 "Restablecer contraseña",
                 "Restablece la contraseña del usuario en caso de haberla olvidado o perdido.",
                 GetMethod<PasswordResetCrudTool, Action<ICrudViewModel>>(p => p.ResetPassword).FullName(),
-                new SimpleCommand(u => ResetPassword(vm)),
-                vm.Selection);
+                new SimpleCommand(() => ResetPassword(vm)));
         }
 
-        private void ResetPassword(ICrudViewModel vm)
+        private void ResetPassword(ICrudViewModel? vm)
         {
             if (!(vm.Selection is IUser user) || !PasswordDialog.ConfirmPassword(out var p)) return;
             vm.BusyDo(SetPw(user, p));

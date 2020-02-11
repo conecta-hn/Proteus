@@ -14,9 +14,9 @@ namespace TheXDS.Proteus.Pages.Base
 {
     public abstract class ProteusPage : TabItem, IPage
     {
-        protected PageViewModel ViewModel
+        protected IPageViewModel ViewModel
         {
-            get => DataContext as PageViewModel;
+            get => DataContext as IPageViewModel;
             set
             {
                 DataContext = value;

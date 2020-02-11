@@ -150,7 +150,7 @@ namespace TheXDS.Proteus.ViewModels
         private void ListViewSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(Selector is ListView lv)) return;
-            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault();
+            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault() as ModelBase;
         }
 
         /// <summary>

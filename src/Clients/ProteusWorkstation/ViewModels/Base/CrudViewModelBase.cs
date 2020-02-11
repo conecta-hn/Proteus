@@ -25,22 +25,19 @@ using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
+using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
     /// <summary>
     /// Clase base para un ViewModel que implemente funcionalidad Crud.
     /// </summary>
-    public abstract class CrudViewModelBase: ProteusViewModel, ICrudViewModel
+    public abstract class CrudViewModelBase: CrudViewModelBasicBase, ICrudViewModel
     {
+        internal static readonly IEnumerable<CrudTool> _allTools = Objects.FindAllObjects<CrudTool>();
         private bool _editMode;
         private Type? _selection;
 
-        /// <summary>
-        /// Obtiene una referencia al servicio a utilizar para las
-        /// operaciones CRUD de este ViewModel.
-        /// </summary>
-        protected Service? Service => Proteus.Infer(SelectedElement?.Model);
 
         /// <summary>
         /// Colección que describe las diferentes presentaciones
@@ -57,9 +54,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Obtiene o establece al elemento seleccionado.
         /// </summary>
-        public object? Selection
+        public ModelBase? Selection
         {
-            get => SelectedElement?.ViewModel?.Entity;
+            get => SelectedElement?.ViewModel?.Entity as ModelBase;
             set
             {
                 _selection = value?.GetType().ResolveToDefinedType();
@@ -86,7 +83,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
         }
 
-        private bool PerformSelection(Func<CrudElement,bool> check, object? value)
+        private bool PerformSelection(Func<CrudElement,bool> check, ModelBase? value)
         {
             var flag = false;
             foreach (var j in Elements.NotNull())
@@ -102,7 +99,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                     }
                     foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
                     {
-                        k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? value! : SelectedElement!.ViewModel);
+                        k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
                     }
                 }
                 else
@@ -189,13 +186,13 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// componentes relacionados al modelo de datos de la entidad
         /// seleccionada.
         /// </summary>
-        public CrudElement SelectedElement => Elements.FirstOrDefault(IsForType) ?? Elements.FirstOrDefault(Implements);
+        public override CrudElement SelectedElement => Elements.FirstOrDefault(IsForType) ?? Elements.FirstOrDefault(Implements);
 
         private protected void OnCancel()
         {
             if (Selection is ModelBase s)
             {
-                if (NewMode)
+                if (NewMode || s.IsNew)
                 {
                     Selection = null;
                 }
@@ -206,103 +203,21 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
             NewMode = false;
             EditMode = false;
-            foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>()) j.ContainingControl.IsEnabled = true;
+            EnableEditCtrls();
         }
-
-        /// <summary>
-        /// Obtiene, de ser posible, a la entidad padre de la que se
-        /// encuentra actualmente seleccionada.
-        /// </summary>
-        /// <returns>
-        /// La entidad padre de la actualmente seleccionasa, o 
-        /// <see langword="null"/> si la entidad seleccionada no puede
-        /// tener información sobre su padre en este contexto.
-        /// </returns>
-        protected abstract ModelBase? GetParent();
-
-        /// <summary>
-        /// Ejecuta una acción a realizar justo después de guardar la
-        /// información en la base de datos.
-        /// </summary>
-        protected abstract void AfterSave();
 
         private protected async Task OnSave()
         {
-            if (!(Selection is ModelBase e)) return;
+            if (Precheck()) return;
+            var e = Selection;
+            if ((await PerformSave(Selection!)).Result == Result.Ok)
+            {
 
-            SelectedElement.Commit();
-            var parent = GetParent();
-            bool fail = false;
-
-            try
-            {
-                foreach (var j in SelectedElement.Description.BeforeSave)
-                {
-                    j.CallSaves(e!, parent);
-                }
-                if (SelectedElement.Description is IVmCrudDescription ivm)
-                {
-                    foreach (var j in ivm.VmBeforeSave)
-                    {
-                        j.CallSaves(SelectedElement.ViewModel, parent);
-                    }
-                }
+                if (SelectedElement is null) Selection = e;
+                await PostSave(e!);
+                NewMode = false;
+                EditMode = false;
             }
-            catch (Exception ex)
-            {
-                Proteus.MessageTarget?.Error(ex.Message);
-                fail = true;
-            }
-
-            foreach (var j in SelectedElement.Description.Descriptions)
-            {
-                var f = j.Validator?.Invoke(e!, j.Property)?.ToList();
-                if (f?.Any() ?? false)
-                {
-                    fail = true;
-                    Proteus.MessageTarget?.Stop(string.Concat(f.Select(p => $"{p.FailedProperty?.NameOf().OrNull("{0}: ")}{p.Message}\n")));
-                }
-            }
-            if (fail) return;
-
-            if (Settings.Default.CheckExists)
-            {
-                if (Service!.Exists(e))
-                {
-                    Proteus.MessageTarget?.Stop($"Ya existe un elemento con el Id '{e.StringId}' en la base de datos.");
-                    return;
-                }
-            }
-
-            var r = await PerformSave(e);
-            if (SelectedElement is null)
-            {
-                Selection = e;
-            }
-            try
-            {
-                foreach (var j in SelectedElement!.Description.AfterSave)
-                {
-                    j.CallSaves(e, null);
-                }
-                if (SelectedElement?.Description is IVmCrudDescription ivm)
-                {
-                    foreach (var j in ivm.VmBeforeSave)
-                    {
-                        j.CallSaves(SelectedElement.ViewModel, null);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Proteus.MessageTarget?.Critical(ex);
-            }
-
-            AfterSave();
-            NewMode = false;
-            EditMode = false;
-            SelectedElement?.ViewModel.Refresh();
-            foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>()) j.ContainingControl.IsEnabled = true;
         }
 
         /// <summary>
@@ -336,19 +251,9 @@ namespace TheXDS.Proteus.ViewModels.Base
             }
 
             NewMode = true;
-            var entity = (t ?? Elements.First().Model).New();
+            var entity = (t ?? Elements.First().Model).New<ModelBase>();
             Selection = entity;
-
-            foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
-            {
-                if (k.Description.UseDefault && k.Property.CanWrite)
-                {
-                    k.Property.SetValue(entity, k.Description.Default);
-                    (SelectedElement!.ViewModel as NotifyPropertyChangeBase)?.Notify(k.Property.Name);
-                    k.GetValue(entity);
-                }
-                else k.ClearControlValue();
-            }
+            ClearCtrls(entity);
             OnEdit(entity);
         }
 
@@ -437,13 +342,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             EditMode = true;
 
             if (NewMode || ((o as ModelBase)?.IsNew ?? true)) return;
-            foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
-            {
-                if (j.Property.HasAttr<KeyAttribute>())
-                {
-                    j.ContainingControl.IsEnabled = false;
-                }
-            }
+            DisableIdCtrls();
         }
 
         [Sugar] internal void OnCreate(object? o) => OnCreate(o as Type);

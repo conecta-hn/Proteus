@@ -94,7 +94,7 @@ namespace TheXDS.Proteus.Crud.Mappings
         private void BtnNew_Click(object sender, RoutedEventArgs e)
         {
             _crud.ClearAll();
-            _crud.ViewModel.Entity = _descr.Model.New();
+            _crud.ViewModel.Entity = _descr.Model.New<ModelBase>();
             _btnNew.IsChecked = true;
         }
 

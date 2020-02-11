@@ -10,7 +10,6 @@ namespace TheXDS.Proteus.Cmd
 {
     public class ChDirArgument : Argument
     {
-        public override string LongName => "ChDir";
         public override ValueKind Kind => ValueKind.ValueRequired;
         public override string Summary => "Cambia de directorio antes de ejecutar la aplicación.";
         public override void Run(CmdLineParser args)

@@ -36,7 +36,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Obtiene una referencia al servicio expuesto por este
         /// <see cref="ViewModel{T}"/>
         /// </summary>
-        protected T Service => Proteus.Service<T>();
+        protected T Service => Proteus.Service<T>()!;
 
         /// <inheritdoc />
         /// <summary>
@@ -103,6 +103,59 @@ namespace TheXDS.Proteus.ViewModels.Base
         public static Task RefreshVmAsync(string typeName)
         {
             return RefreshVmAsync(p => p.GetType().ResolveToDefinedType()!.Name == typeName);
+        }
+
+        /// <summary>
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de ViewModel que debe actualizarse.
+        /// </typeparam>
+        /// <returns>
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
+        /// </returns>
+        public static Task RefreshVmAsync<T>() where T: ProteusViewModel
+        {
+            return RefreshVmAsync(p => p.GetType().ResolveToDefinedType() == typeof(T));
+        }
+
+        /// <summary>
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de ViewModel que debe actualizarse.
+        /// </typeparam>
+        /// <returns>
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
+        /// </returns>
+        public static Task FullRefreshVmAsync<T>() where T : ProteusViewModel
+        {
+            return FullRefreshVmAsync(typeof(T));
+        }
+
+        public static Task FullRefreshVmAsync(IViewModel? instance)
+        {
+            if (instance is null) return Task.CompletedTask;
+            return FullRefreshVmAsync(instance.GetType());
+        }
+
+        /// <summary>
+        /// Obliga a un ViewModel con refresco asíncrono a actualizarse.
+        /// </summary>
+        /// <param name="type">
+        /// Tipo de ViewModel que debe actualizarse.
+        /// </param>
+        /// <returns>
+        /// Una tarea que pude utilizarse para observar la operación
+        /// asíncrona.
+        /// </returns>
+        public static Task FullRefreshVmAsync(Type type)
+        {
+            return Task.WhenAll(
+                RefreshVmAsync(p => p.GetType().ResolveToDefinedType() == type),
+                Task.Run(() => Proteus.NwClient.RefreshViewModel(type)));
         }
 
         /// <summary>

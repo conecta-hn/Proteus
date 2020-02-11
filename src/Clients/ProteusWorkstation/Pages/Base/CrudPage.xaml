@@ -96,7 +96,7 @@
                     </UniformGrid>
                     <ListView
                         DockPanel.Dock="Right"
-                        Style="{StaticResource LauncherGrid}"
+                        Style="{StaticResource LauncherList}"
                         ItemsSource="{Binding EditingLaunchers}"/>
                     <ScrollViewer Content="{Binding SelectedEditor}"/>
                 </DockPanel>

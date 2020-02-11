@@ -15,7 +15,7 @@ namespace TheXDS.Proteus.Crud
 {
     internal struct InputSplashDescription : IPropertyDescription
     {
-        public PropertyLocation PropertySource => PropertyLocation.Model;
+        public PropertyLocation PropertySource => PropertyLocation.ViewModel;
         public bool Hidden => false;
         public bool ReadOnly => false;
         public bool ShowInDetails => false;
