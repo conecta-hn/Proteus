@@ -115,30 +115,37 @@ namespace TheXDS.Proteus.Api
             p.Code128(ot.Id.ToString());
             p.Append($"Cliente: {ot.Cliente?.Name ?? "Consumidor final"}");
             p.Append($"RTN: {ot.Cliente?.Rtn ?? "9999-9999-999999"}");
+            var exonerar = ot.Cliente!.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void));
+            if (exonerar)
+            {
+                p.Append("No. constancia registro exonerado:");
+                p.Append($"{ot.Cliente!.Exoneraciones.FirstOrDefault(p => DateTime.Today.IsBetween(p.Timestamp, p.Void))?.Id}");
+            }
+
             foreach (var j in ot.Cliente?.Phones.ToArray() ?? Array.Empty<Phone>())
             {
                 p.Append($"Tel.   {j.Number}");
             }
             p.Append(new string('=', 40));
-            p.Append("Cantidad       Precio        Subtotal");
+            p.Append($"{"Cant.",-5}{"Precio",15}{"Subtotal",20:C}");
             p.Append(new string('-', 40));
             var tot = 0m;
+
             foreach (var j in ot.Items)
             {
                 p.AlignLeft();
                 p.Append(j.Item.Name);
-                var precio = j.Item.Precio + (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
+                var precio = j.Item.Precio;
+                if (!exonerar)
+                    precio += (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
                 p.AlignRight();
-                p.Append($"{j.Qty}            {precio.ToString("C", ci)}            {(j.Qty * precio).ToString("C", ci)}");
+                p.Append($"{j.Qty,-5}{precio.ToString("C", ci),15}{(j.Qty * precio).ToString("C", ci),20}");
                 tot += precio * j.Qty;
             }
 
             p.Append(new string('-', 40));
 
-            void AddSubt(string label, decimal value)
-            {
-                p.Append($"{label:-25}: {value.ToString("C", ci)}");
-            }
+            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:",25}{value.ToString("C", ci),15}");
             p.AlignLeft();
             p.Append($"Total de prendas: {ot.Items.Sum(j => j.Qty)}");
             p.AlignRight();
@@ -155,7 +162,7 @@ namespace TheXDS.Proteus.Api
             p.BoldMode("ESTE TICKET NO ES UNA FACTURA");
             FooterAndPrint(p);
 
-            await Task.Delay(3000);
+            MessageTarget?.Info("Ticket impreso correctamente. Cierre este mensaje para imprimir orden de trabajo");
 
             p = PrintHeader("Orden de trabajo");
             p.BoldMode($"Código de orden: {ot.Id:000000}");
@@ -169,10 +176,10 @@ namespace TheXDS.Proteus.Api
                 p.Append($"Tel.   {j.Number}");
             }
             p.Append(new string('=',40));
-            p.Append("Descripcion              Cantidad");
+            p.Append($"{"Descripcion",-35}{"Cant.",5}");
             foreach (var j in ot.Items)
             {
-                p.Append($"{j.Item.Name}: {j.Qty}");
+                p.Append($"{$"{j.Item.Name}:",-34} {j.Qty,5}");
             }
             p.Append(new string('-', 40));
             p.Append($"Total de prendas: {ot.Items.Sum(j => j.Qty)}");
@@ -208,8 +215,6 @@ namespace TheXDS.Proteus.Api
 
         private static void FooterAndPrint(Printer p)
         {
-            //var nfo = new AssemblyInfo(typeof(Proteus).Assembly);
-            //p.Append($"{nfo.Name} {nfo.InformationalVersion}");
             p.FullPaperCut();
             p.PrintDocument();
         }
@@ -218,10 +223,7 @@ namespace TheXDS.Proteus.Api
         {
             var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
             var p = PrintHeader("factura");
-            void AddSubt(string label, decimal value)
-            {
-                p.Append($"{label:-25}: {value.ToString("C", ci)}");
-            }
+            void AddSubt(string label, decimal value) => p.Append($"{$"{label}:",25}{value.ToString("C", ci),15}");
             p.Append("C.A.I.:");
             p.Append($"{f.CaiRangoParent.Parent.Id}");
             p.Append($"Rango autorizado de facturacion:");
@@ -234,16 +236,16 @@ namespace TheXDS.Proteus.Api
             p.Append($"RTN: {f.Cliente?.Rtn ?? "9999-9999-999999"}");
             p.Append("No. Compra exenta:");
             p.Append("No. constancia registro exonerado:");
-            p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))}");
+            p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))?.Id}");
             p.Append("No. Registro SAG:");
             p.Append(new string('=', 40));
             p.Append("Descripcion");
-            p.Append("Cantidad     Precio      Subtotal");
+            p.Append($"{"Cant.",-5}{"Precio",15}{"Subtotal",20:C}");
             p.Append(new string('-', 40));
             foreach (var j in f.Items)
             {
                 p.Append(j.Item.Name);
-                p.Append($"{j.Qty}    {j.StaticPrecio.ToString("C", ci)}    {j.SubTotal.ToString("C", ci)}");
+                p.Append($"{j.Qty,5}{j.StaticPrecio.ToString("C", ci),15}{j.SubTotal.ToString("C", ci),20}");
             }
             p.Append(new string('-', 40));
             p.AlignRight();
