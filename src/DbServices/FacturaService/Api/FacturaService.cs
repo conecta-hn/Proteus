@@ -120,7 +120,7 @@ namespace TheXDS.Proteus.Api
                 p.Append($"Tel.   {j.Number}");
             }
             p.Append(new string('=', 40));
-            p.Append("Cantidad     Precio      Subtotal");
+            p.Append("Cantidad       Precio        Subtotal");
             p.Append(new string('-', 40));
             var tot = 0m;
             foreach (var j in ot.Items)
@@ -129,8 +129,8 @@ namespace TheXDS.Proteus.Api
                 p.Append(j.Item.Name);
                 var precio = j.Item.Precio + (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
                 p.AlignRight();
-                p.Append($"{j.Qty}        {precio.ToString("C", ci)}        {(j.Qty * precio).ToString("C", ci)}");
-                tot += precio;
+                p.Append($"{j.Qty}            {precio.ToString("C", ci)}            {(j.Qty * precio).ToString("C", ci)}");
+                tot += precio * j.Qty;
             }
 
             p.Append(new string('-', 40));
