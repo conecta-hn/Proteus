@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TheXDS.Proteus.Models.Base;
 using System.Linq;
 using System.Windows.Data;
+using TheXDS.MCART.Types;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -33,6 +34,8 @@ namespace TheXDS.Proteus.Crud.Base
         /// Obtiene el origen de datos definido para la propiedad.
         /// </summary>
         IQueryable<ModelBase> Source { get; }
+
+        ObservableListWrap<ModelBase>? VmSource(object vm);
 
         /// <summary>
         /// Indica si la propiedad fue marcada para poder crear una nueva

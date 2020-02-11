@@ -35,7 +35,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             if (!(property is ILinkPropertyDescription i)) return;
             _descr = i;
             _svc = Proteus.InferService(i.Model);
-            _source = i.Source;
+            _source = i.Source.AsQueryable();
             _selector.ItemsSource = i.Source.ToList();
             _selector.SelectedValuePath = "Id";
             _selector.DisplayMemberPath = i.DisplayMemberPath;

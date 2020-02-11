@@ -245,7 +245,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         public void OnCreate(Type? t)
         {
             t ??= Models.First();
-            if (!Elements.Any(p=>IsForType(p,t)) || !Elements.Any(p=>Implements(p,t!)))
+            if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
             {
                 Elements.Add(new CrudElement(t));
             }

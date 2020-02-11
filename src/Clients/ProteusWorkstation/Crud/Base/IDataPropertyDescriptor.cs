@@ -8,6 +8,8 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using TheXDS.MCART.Types;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -29,6 +31,8 @@ namespace TheXDS.Proteus.Crud.Base
         /// Fluent.
         /// </returns>
         IDataPropertyDescriptor Source(IQueryable<ModelBase> source);
+
+        IDataPropertyDescriptor VmSource<T>(Func<T, ObservableListWrap<ModelBase>> source) where T : ViewModelBase;
 
         /// <summary>
         /// Indica que el control generado para la propiedad debe permitir
