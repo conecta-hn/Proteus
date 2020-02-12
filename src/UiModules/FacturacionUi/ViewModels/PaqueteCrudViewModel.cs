@@ -1,10 +1,63 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using TheXDS.MCART;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.FacturacionUi.ViewModels
 {
+
+    /// <summary>
+    /// Clase base personalizada para el ViewModel recompilado que se utilizará
+    /// dentro del Crud generado para el modelo
+    /// <see cref="OrdenTrabajo"/>.
+    /// </summary>
+    public class OrdenTrabajoViewModel : ViewModel<OrdenTrabajo>
+    {
+        public float DescuentoPercent
+        {
+            get
+            {
+                var tot = 0m;
+                var exonerar = Entity.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)) ?? false;
+                foreach (var j in Entity.Items)
+                {
+                    var precio = j.Item.Precio;
+                    if (!exonerar)
+                        precio += (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
+                    tot += precio * j.Qty;
+                }
+                return (float)(Entity.Descuentos / tot);
+            }
+
+            set
+            {
+                var tot = 0m;
+                var exonerar = Entity.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)) ?? false;
+                foreach (var j in Entity.Items)
+                {
+                    var precio = j.Item.Precio;
+                    if (!exonerar)
+                        precio += (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
+                    tot += precio * j.Qty;
+                }
+
+                Entity.Descuentos = tot * (decimal)value / 100m;
+            }
+        }
+
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase
+        /// <see cref="OrdenTrabajoViewModel"/>.
+        /// </summary>
+        public OrdenTrabajoViewModel()
+        {
+            // TODO: Registrar propiedades enlazadas con los métodos RegisterPropertyChangeBroadcast() o RegisterPropertyChangeTrigger().
+        }
+    }
+
     /// <summary>
     /// ViewModel de Crud que define propiedades adicionales de edición del
     /// modelo <see cref="Paquete"/>.

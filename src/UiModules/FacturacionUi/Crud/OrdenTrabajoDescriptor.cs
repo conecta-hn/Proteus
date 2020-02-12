@@ -5,6 +5,7 @@ using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.FacturacionUi.ViewModels;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
 
@@ -14,7 +15,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
     /// Describe las propiedades Crud para el modelo
     /// <see cref="OrdenTrabajo"/>.
     /// </summary>
-    public class OrdenTrabajoDescriptor : CrudDescriptor<OrdenTrabajo>
+    public class OrdenTrabajoDescriptor : CrudDescriptor<OrdenTrabajo, OrdenTrabajoViewModel>
     {
         /// <summary>
         /// Describe las propiedades Crud para el modelo
@@ -45,7 +46,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .ShowInDetails()
                 .Required();
             ListProperty(p => p.Items).Creatable().ShowInDetails();
-            NumericProperty(p => p.Descuentos).Important("Descuentos otorgados");
+            VmNumericProperty(p => p.DescuentoPercent).Important("Descuentos otorgados");
             NumericProperty(p => p.OtrosCargos).Important("Otros cargos");
             TextProperty(p => p.Notas).Big().ShowInDetails();
             Property(p => p.Facturado).ShowInDetails().AsListColumn().ReadOnly();
@@ -67,6 +68,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             ot.Descuentos = tot / 1.25m;
             vm.Notify(nameof(ot.Descuentos));
             vm.Notify($"Entity.{nameof(ot.Descuentos)}");
+            
         }
 
         private void PrintOrden(OrdenTrabajo arg1, ModelBase arg2)
