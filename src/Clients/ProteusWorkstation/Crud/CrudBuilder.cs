@@ -51,6 +51,7 @@ namespace TheXDS.Proteus.Crud
             if (addwp) stckpnl.Children.Add(wp);
             return stckpnl;
         }
+
         internal static FrameworkElement BuildDetails(Type model, ICrudDescription d)
         {
             var tb = new TextBlock()
@@ -92,10 +93,12 @@ namespace TheXDS.Proteus.Crud
 
             return stckPnl;
         }
+
         internal static FrameworkElement BuildWarning(Type model)
         {
             return Misc.AppInternal.BuildWarning($"No se encontró ningún descriptor de CRUD para el modelo '{model.Name}'.");
         }
+
         internal static bool DescribesModel(Type t, Type model)
         {
             try { return t.BaseType.GenericTypeArguments.First() == model; }

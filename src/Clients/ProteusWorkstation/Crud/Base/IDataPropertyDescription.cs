@@ -9,6 +9,7 @@ using TheXDS.Proteus.Models.Base;
 using System.Linq;
 using System.Windows.Data;
 using TheXDS.MCART.Types;
+using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -37,7 +38,8 @@ namespace TheXDS.Proteus.Crud.Base
 
         bool UseVmSource { get; }
 
-        ObservableListWrap<ModelBase>? VmSource(object vm);
+        ObservableListWrap<ModelBase>? VmSource(object parentVm) => VmSource(parentVm, null);
+        ObservableListWrap<ModelBase>? VmSource(object parentVm, CrudViewModelBase? elementVm);
 
         /// <summary>
         /// Indica si la propiedad fue marcada para poder crear una nueva

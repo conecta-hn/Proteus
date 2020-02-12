@@ -226,8 +226,17 @@ namespace TheXDS.Proteus.ViewModels
         private void OnOkSelect()
         {
             Selection = TempSelection;
+
+            if (_description.PropertySource == PropertyLocation.ViewModel)
+            {
+                _description.Property.SetValue(_parentVm, TempSelection);
+            }
+
             OnCancelSelect();
         }
+
+        private readonly IObjectPropertyDescription _description;
+        private readonly IEntityViewModel _parentVm;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -244,6 +253,8 @@ namespace TheXDS.Proteus.ViewModels
         /// </param>
         public ObjectEditorViewModel(IEntityViewModel parentVm, ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
         {
+            _description = description;
+            _parentVm = parentVm;
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;
@@ -258,7 +269,7 @@ namespace TheXDS.Proteus.ViewModels
 
             ModelLabel = description.Label;
             ActiveModel = SelectableModels.FirstOrDefault();
-            SelectionSource = description.UseVmSource ? description.VmSource(parentVm) : selectionSource;
+            SelectionSource = description.UseVmSource ? description.VmSource(parentVm, this) : selectionSource;
 
             RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
             RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));

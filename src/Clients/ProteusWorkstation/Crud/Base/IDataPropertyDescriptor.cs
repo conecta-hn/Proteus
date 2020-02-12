@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -33,6 +34,8 @@ namespace TheXDS.Proteus.Crud.Base
         IDataPropertyDescriptor Source(IQueryable<ModelBase> source);
 
         IDataPropertyDescriptor VmSource<T>(Func<T, ObservableListWrap<ModelBase>> source) where T : ViewModelBase;
+
+        IDataPropertyDescriptor VmSource<TParent>(Func<TParent, CrudViewModelBase, ObservableListWrap<ModelBase>> source) where TParent : ViewModelBase;
 
         /// <summary>
         /// Indica que el control generado para la propiedad debe permitir
