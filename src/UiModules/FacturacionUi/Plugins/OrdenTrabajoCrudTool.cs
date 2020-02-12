@@ -44,7 +44,7 @@ namespace TheXDS.Proteus.Plugins
             Factura f;
             if (obj.Facturas.FirstOrDefault() is { } ff)
             {
-                f = ff.PushInto(obj.Facturas);
+                f = ff;
             }
             else
             {

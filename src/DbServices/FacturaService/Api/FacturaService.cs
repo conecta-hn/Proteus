@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.Api
             p.Code128(ot.Id.ToString());
             p.Append($"Cliente: {ot.Cliente?.Name ?? "Consumidor final"}");
             p.Append($"RTN: {ot.Cliente?.Rtn ?? "9999-9999-999999"}");
-            var exonerar = ot.Cliente!.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void));
+            var exonerar = ot.Cliente!.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)));
             if (exonerar)
             {
                 p.Append("No. constancia registro exonerado:");
@@ -238,7 +238,7 @@ namespace TheXDS.Proteus.Api
             p.Append($"RTN: {f.Cliente?.Rtn ?? "9999-9999-999999"}");
             p.Append("No. Compra exenta:");
             p.Append("No. constancia registro exonerado:");
-            p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p=>DateTime.Today.IsBetween(p.Timestamp, p.Void))?.Id}");
+            p.Append($"{f.Cliente!.Exoneraciones.FirstOrDefault(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)))?.Id}");
             p.Append("No. Registro SAG:");
             p.Append(new string('=', 40));
             p.Append("Descripcion");

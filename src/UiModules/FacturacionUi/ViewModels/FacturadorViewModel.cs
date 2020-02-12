@@ -278,7 +278,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                     if (!(value is null))
                     {
                         ClienteEditor.ViewModel.Entity = value;
-                        if (value.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)))
+                        if (value.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1))))
                         {
                             foreach (var j in NewItems)
                             {
