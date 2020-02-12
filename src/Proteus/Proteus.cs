@@ -177,6 +177,8 @@ namespace TheXDS.Proteus
         /// </summary>
         public static IMessageTarget? MessageTarget { get; set; }
 
+        public static IInteractiveMessageTarget? InteractiveMt => MessageTarget as IInteractiveMessageTarget;
+
         /// <summary>
         /// Obtiene el objeto registrado como objetivo de alertas de la
         /// aplicación.
