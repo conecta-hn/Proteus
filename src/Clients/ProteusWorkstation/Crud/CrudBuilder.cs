@@ -24,7 +24,7 @@ namespace TheXDS.Proteus.Crud
 {
     internal static class CrudBuilder
     {
-        internal static FrameworkElement BuildEditor(ICrudDescription d, out ICollection<IPropertyMapping> boxes)
+        internal static FrameworkElement BuildEditor(IEntityViewModel parentVm, ICrudDescription d, out ICollection<IPropertyMapping> boxes)
         {
             boxes = new HashSet<IPropertyMapping>();
             var stckpnl = App.UiInvoke(()=>new StackPanel
@@ -37,7 +37,7 @@ namespace TheXDS.Proteus.Crud
             foreach (var j in d.Descriptions)
             {
                 if (j.Hidden) continue;
-                stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(j)).ContainingControl);
+                stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(parentVm, j)).ContainingControl);
             }
             var wp = new StretchyWrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
             var addwp = false;

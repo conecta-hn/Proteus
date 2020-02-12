@@ -41,6 +41,8 @@ namespace TheXDS.Proteus.Crud.Base
 
         public IEnumerable<Type> ChildModels { get; private set; }
 
+        public bool UseVmSource { get; private set; }
+
         ObservableListWrap<ModelBase>? IDataPropertyDescription.VmSource(object obj) => _vmSource?.Invoke(obj);
 
         private protected virtual IQueryable<ModelBase> GetFromSvc()
@@ -127,6 +129,7 @@ namespace TheXDS.Proteus.Crud.Base
         public IDataPropertyDescriptor VmSource<T>(Func<T, ObservableListWrap<ModelBase>> source) where T : ViewModelBase
         {
             _vmSource = o => source.Invoke((T)o);
+            UseVmSource = true;
             return this;
         }
     }

@@ -182,10 +182,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// componentes relacionados al modelo de datos de la entidad
         /// seleccionada.
         /// </summary>
-        public override CrudElement SelectedElement 
-            => Elements.FirstOrDefault(IsForType) 
-            ?? Elements.FirstOrDefault(Implements) 
-            ?? Elements.Push(new CrudElement(_selection ?? Models.FirstOrDefault() ?? throw new TamperException()));
+        public override CrudElement SelectedElement
+            => Elements.FirstOrDefault(IsForType)
+            ?? Elements.FirstOrDefault(Implements);
 
         private protected void OnCancel()
         {

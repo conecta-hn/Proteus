@@ -1912,8 +1912,8 @@ namespace TheXDS.Proteus.Api
                 if (Context.Database.Exists())
                 {
                     if (Context.Database.CompatibleWithModel(false) 
-                        || (!InteractiveMt?.Ask(St.ReinitDb, St.ReinitDbQuestion) ?? true)) return false;
-                    Reporter?.UpdateStatus($"{St.DamagedDb} {string.Format(St.CreatingDb,FriendlyName.ToLower())}");
+                        || (!InteractiveMt?.Ask(St.ReinitDb, string.Format(St.ReinitDbQuestion, FriendlyName.ToLower())) ?? true)) return false;
+                    Reporter?.UpdateStatus($"{St.DamagedDb} {string.Format(St.CreatingDb, FriendlyName.ToLower())}");
                     Context.Database.Delete();
                 }
                 else

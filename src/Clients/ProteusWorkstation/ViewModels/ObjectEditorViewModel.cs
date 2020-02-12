@@ -213,7 +213,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), description, models) { }
+        public ObjectEditorViewModel(IEntityViewModel parentVm, IObjectPropertyDescription description, params Type[] models) : this(parentVm, AppInternal.GetSource(description.Source), description, models) { }
 
         private void OnCancelSelect()
         {
@@ -242,7 +242,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
+        public ObjectEditorViewModel(IEntityViewModel parentVm, ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
         {
             FieldName = description.Label;
             FieldIcon = description.Icon;
@@ -258,7 +258,7 @@ namespace TheXDS.Proteus.ViewModels
 
             ModelLabel = description.Label;
             ActiveModel = SelectableModels.FirstOrDefault();
-            SelectionSource = description.VmSource(SelectedElement.ViewModel) ?? selectionSource;
+            SelectionSource = description.UseVmSource ? description.VmSource(parentVm) : selectionSource;
 
             RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
             RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
@@ -376,7 +376,8 @@ namespace TheXDS.Proteus.ViewModels
             else if (Proteus.Infer(ActiveModel!) is { } svc)
             {          
                 var q = svc.All(ActiveModel!);
-                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+                //Results = await q.CountAsync() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(q.ToList()) : null;
             }
             EnumerableResults = null;
             SearchQuery = null;

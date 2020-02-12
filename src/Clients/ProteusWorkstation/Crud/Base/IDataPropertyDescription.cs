@@ -35,6 +35,8 @@ namespace TheXDS.Proteus.Crud.Base
         /// </summary>
         IQueryable<ModelBase> Source { get; }
 
+        bool UseVmSource { get; }
+
         ObservableListWrap<ModelBase>? VmSource(object vm);
 
         /// <summary>
