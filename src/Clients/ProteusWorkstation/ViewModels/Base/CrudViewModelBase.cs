@@ -3,19 +3,11 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Config;
-using TheXDS.Proteus.Crud;
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Widgets;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
@@ -23,9 +15,13 @@ using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
-using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
-using static TheXDS.MCART.Types.Extensions.TypeExtensions;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
+using TheXDS.Proteus.Widgets;
+using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -186,7 +182,10 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// componentes relacionados al modelo de datos de la entidad
         /// seleccionada.
         /// </summary>
-        public override CrudElement SelectedElement => Elements.FirstOrDefault(IsForType) ?? Elements.FirstOrDefault(Implements);
+        public override CrudElement SelectedElement 
+            => Elements.FirstOrDefault(IsForType) 
+            ?? Elements.FirstOrDefault(Implements) 
+            ?? Elements.Push(new CrudElement(_selection ?? Models.FirstOrDefault() ?? throw new TamperException()));
 
         private protected void OnCancel()
         {

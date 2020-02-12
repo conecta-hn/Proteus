@@ -248,20 +248,9 @@ namespace TheXDS.Proteus.ViewModels
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;
             ShowEditControls = description.Creatable;
-
-            ======
-
-            SelectionSource = description.VmSource(this) ?? selectionSource;
-
-            ======
-
             SelectCommand = new SimpleCommand(OnSelect);
             OkSelectCommand = new SimpleCommand(OnOkSelect);
             CancelSelectCommand = new SimpleCommand(OnCancelSelect);
-
-            RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
-            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
-            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));            
 
             SelectableModels = description.ChildModels?.ToList()
                 ?? description.PropertyType.Derivates().Select(p => p.ResolveToDefinedType()!).Distinct().Where(TypeExtensions.IsInstantiable).OrNull()?.ToList()
@@ -269,6 +258,12 @@ namespace TheXDS.Proteus.ViewModels
 
             ModelLabel = description.Label;
             ActiveModel = SelectableModels.FirstOrDefault();
+            SelectionSource = description.VmSource(SelectedElement.ViewModel) ?? selectionSource;
+
+            RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
+            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
+            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+
             SearchCommand = new ObservingCommand(this, OnSearch);
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
