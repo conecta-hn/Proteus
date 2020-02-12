@@ -5,21 +5,17 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
+using TheXDS.MCART;
 using TheXDS.MCART.ViewModel;
-using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.FacturacionUi.Modules;
+using TheXDS.Proteus.Models;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
 using static TheXDS.MCART.ReflectionHelpers;
-using TheXDS.MCART;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Models;
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.FacturacionUi.Modules;
-using System.Threading.Tasks;
 
 namespace TheXDS.Proteus.Plugins
 {
-
     public class FacturaCrudTools : CrudTool<Factura>
     {
         public FacturaCrudTools() : base(CrudToolVisibility.EditAndSelected)

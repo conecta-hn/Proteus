@@ -149,7 +149,9 @@ namespace TheXDS.Proteus.Api
             p.AlignLeft();
             p.Append($"Total de prendas: {ot.Items.Sum(j => j.Qty)}");
             p.AlignRight();
-            AddSubt($"Total a pagar", tot);
+            AddSubt("Descuentos", ot.Descuentos);
+            AddSubt("Otros cargos", ot.OtrosCargos);
+            AddSubt($"Total a pagar", tot + ot.OtrosCargos - ot.Descuentos);
 
             p.AlignLeft();
             if (!ot.Notas.IsEmpty())

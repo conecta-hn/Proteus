@@ -23,9 +23,16 @@ namespace TheXDS.Proteus.Models
         /// Notas personalizadas de la orden de trabajo.
         /// </summary>
         public virtual string Notas { get; set; }
+
         public DateTime Entrega { get; set; }
+        
         public virtual List<OrdenTrabajoItem> Items { get; set; } = new List<OrdenTrabajoItem>();
 
         public bool Facturado { get; set; }
+
+        public decimal Descuentos { get; set; }
+
+        public decimal OtrosCargos { get; set; }
+
     }
 }

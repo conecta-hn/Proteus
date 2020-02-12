@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using TheXDS.MCART.Types.Extensions;
+using TheXDS.MCART;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.FacturacionUi.Modules;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Pages;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
 {
@@ -47,9 +45,28 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .ShowInDetails()
                 .Required();
             ListProperty(p => p.Items).Creatable().ShowInDetails();
+            NumericProperty(p => p.Descuentos).Important("Descuentos otorgados");
+            NumericProperty(p => p.OtrosCargos).Important("Otros cargos");
             TextProperty(p => p.Notas).Big().ShowInDetails();
             Property(p => p.Facturado).ShowInDetails().AsListColumn().ReadOnly();
+            CustomAction("Otorgar descuento de 3ra edad", OnDarDescuento);
             AfterSave(PrintOrden);
+        }
+
+        private void OnDarDescuento(OrdenTrabajo ot, NotifyPropertyChangeBase vm)
+        {
+            var tot = 0m;
+            var exonerar = ot.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)) ?? false;
+            foreach (var j in ot.Items)
+            {
+                var precio = j.Item.Precio;
+                if (!exonerar)
+                    precio += (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
+                tot += precio * j.Qty;
+            }
+            ot.Descuentos = tot / 1.25m;
+            vm.Notify(nameof(ot.Descuentos));
+            vm.Notify($"Entity.{nameof(ot.Descuentos)}");
         }
 
         private void PrintOrden(OrdenTrabajo arg1, ModelBase arg2)
