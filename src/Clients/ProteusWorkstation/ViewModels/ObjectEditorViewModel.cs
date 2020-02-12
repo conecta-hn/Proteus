@@ -226,12 +226,7 @@ namespace TheXDS.Proteus.ViewModels
         private void OnOkSelect()
         {
             Selection = TempSelection;
-
-            if (_description.PropertySource == PropertyLocation.ViewModel)
-            {
-                _description.Property.SetValue(_parentVm, TempSelection);
-            }
-
+            _description.Property.SetValue(_description.PropertySource == PropertyLocation.ViewModel ? _parentVm : _parentVm.Entity, TempSelection);
             OnCancelSelect();
         }
 
