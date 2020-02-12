@@ -88,11 +88,65 @@ namespace TheXDS.Proteus.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No se pudo iniciar el escucha de red.
+        /// </summary>
+        internal static string ErrCannotInitListener {
+            get {
+                return ResourceManager.GetString("ErrCannotInitListener", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El servicio de base de datos no está disponible. La aplicación debe ser reconfigurada..
+        /// </summary>
+        internal static string ErrDataSvcNotAvailable {
+            get {
+                return ResourceManager.GetString("ErrDataSvcNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Error inicializando la base de datos de {0}.
         /// </summary>
         internal static string ErrorInitDb {
             get {
                 return ResourceManager.GetString("ErrorInitDb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Proteus ya ha sido inicializado..
+        /// </summary>
+        internal static string ErrProteusInited {
+            get {
+                return ResourceManager.GetString("ErrProteusInited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El puerto UDP {0} ya está en uso por otra aplicación..
+        /// </summary>
+        internal static string ErrUdpInUse {
+            get {
+                return ResourceManager.GetString("ErrUdpInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se ha perdido la conectividad con el servidor de sesión de red. La conexión será restablecida automáticamente cuando el servidor vuelva a estar en línea..
+        /// </summary>
+        internal static string NwClientConnLost {
+            get {
+                return ResourceManager.GetString("NwClientConnLost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sesión de red.
+        /// </summary>
+        internal static string NwSvc {
+            get {
+                return ResourceManager.GetString("NwSvc", resourceCulture);
             }
         }
         

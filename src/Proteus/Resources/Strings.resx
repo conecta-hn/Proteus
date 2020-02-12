@@ -126,8 +126,26 @@
   <data name="DamagedDb" xml:space="preserve">
     <value>Base de datos dañada.</value>
   </data>
+  <data name="ErrCannotInitListener" xml:space="preserve">
+    <value>No se pudo iniciar el escucha de red</value>
+  </data>
+  <data name="ErrDataSvcNotAvailable" xml:space="preserve">
+    <value>El servicio de base de datos no está disponible. La aplicación debe ser reconfigurada.</value>
+  </data>
   <data name="ErrorInitDb" xml:space="preserve">
     <value>Error inicializando la base de datos de {0}</value>
+  </data>
+  <data name="ErrProteusInited" xml:space="preserve">
+    <value>Proteus ya ha sido inicializado.</value>
+  </data>
+  <data name="ErrUdpInUse" xml:space="preserve">
+    <value>El puerto UDP {0} ya está en uso por otra aplicación.</value>
+  </data>
+  <data name="NwClientConnLost" xml:space="preserve">
+    <value>Se ha perdido la conectividad con el servidor de sesión de red. La conexión será restablecida automáticamente cuando el servidor vuelva a estar en línea.</value>
+  </data>
+  <data name="NwSvc" xml:space="preserve">
+    <value>Sesión de red</value>
   </data>
   <data name="ReinitDb" xml:space="preserve">
     <value>Reinicialización de base de datos</value>

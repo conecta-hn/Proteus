@@ -1624,7 +1624,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene un nombre amigable para el servicio.
         /// </summary>
-        public string FriendlyName => GetType().NameOf()?.OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
+        public string FriendlyName => GetType().NameOf()?.Without(GetType().Name).OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
 
         private protected void AfterElevation()
         {

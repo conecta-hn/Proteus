@@ -22,6 +22,7 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Protocols;
 using static TheXDS.MCART.Objects;
+using St = TheXDS.Proteus.Resources.Strings;
 
 [assembly: Name("Proteus Core Library")]
 [assembly: LicenseFile("License.txt")]
@@ -66,14 +67,13 @@ namespace TheXDS.Proteus
 
         private static void NwClient_ConnectionLost(object? sender, EventArgs e)
         {
-            const string msj = "Se ha perdido la conectividad con el servidor de sesión de red. La conexión será restablecida automáticamente cuando el servidor vuelva a estar en línea.";
             if (AlertTarget is null)
             {
-                MessageTarget?.Warning(msj);
+                MessageTarget?.Warning(St.NwClientConnLost);
             }
             else
             {
-                AlertTarget.Alert("Sesión de red", msj);
+                AlertTarget.Alert(St.NwSvc, St.NwClientConnLost);
             }
         }
 
@@ -259,7 +259,7 @@ namespace TheXDS.Proteus
         public static async Task Init(ISettings settings)
         {
             if (settings is null) throw new ArgumentNullException(nameof(settings));
-            if (!(Settings is null)) throw new InvalidOperationException("Proteus ya ha sido inicializado.");
+            if (!(Settings is null)) throw new InvalidOperationException(St.ErrProteusInited);
 
             Settings = settings;
             var pl = new PluginLoader();
@@ -277,11 +277,11 @@ namespace TheXDS.Proteus
             }
             catch (SocketException)
             {
-                AlertTarget?.Alert("No se pudo iniciar el escucha de red", $"El puerto UDP {Settings.NetworkServerPort} ya está en uso por otra aplicación.");
+                AlertTarget?.Alert(St.ErrCannotInitListener, string.Format(St.ErrUdpInUse,Settings.NetworkServerPort));
             }
             catch (Exception ex)
             {
-                AlertTarget?.Alert("No se pudo iniciar el escucha de red", ex.Message);
+                AlertTarget?.Alert(St.ErrCannotInitListener, ex.Message);
             }
         }
 
@@ -353,7 +353,7 @@ namespace TheXDS.Proteus
                 }
                 catch
                 {
-                    MessageTarget?.Critical("El servicio de base de datos no está disponible. La aplicación debe ser reconfigurada.");
+                    MessageTarget?.Critical(St.ErrDataSvcNotAvailable);
                     return false;
                 }
             }

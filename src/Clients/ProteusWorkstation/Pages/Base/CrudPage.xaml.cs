@@ -126,6 +126,17 @@ namespace TheXDS.Proteus.Pages.Base
             return p;
         }
 
+        public static CrudPage New<T, TModel>(string title, Func<IQueryable<TModel>, IQueryable<TModel>> filters) where T : Service, new() where TModel : ModelBase, new()
+        {
+            var q = Proteus.Service<T>()!.All<TModel>();
+            if (filters != null)
+            {
+                q = filters(q);
+            }
+            return New<T>(title, q, new[] { typeof(TModel) });
+        }
+
+
         //public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<CrudElement> cruds) where T : Service, new()
         //{
         //    var p = new CrudPage();
