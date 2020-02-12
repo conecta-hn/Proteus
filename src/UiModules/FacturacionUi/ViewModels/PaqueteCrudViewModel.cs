@@ -29,7 +29,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                         precio += (j.Item.Precio * (decimal)((j.Item.Isv / 100f) ?? 0f));
                     tot += precio * j.Qty;
                 }
-                return (float)(Entity.Descuentos / tot);
+                return tot == 0m ? 0f:(float)(Entity.Descuentos / tot);
             }
 
             set
