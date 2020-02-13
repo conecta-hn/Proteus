@@ -81,7 +81,6 @@ namespace TheXDS.Proteus.Dialogs
         {
             return Ask(title, "¿Está seguro que desea realizar esta operación?");
         }
-
     }
 
     /// <summary>
@@ -222,6 +221,7 @@ namespace TheXDS.Proteus.Dialogs
         {
             _host.Close();
         }
+
         private void OnOk()
         {
             Result = true;
@@ -257,8 +257,29 @@ namespace TheXDS.Proteus.Dialogs
     /// <see cref="IMessageTarget"/> para mostrar mensajes por medio de una
     /// instancia de la clase <see cref="MessageSplash"/>.
     /// </summary>
-    public class MessageSplashTarget : IMessageTarget
+    public class MessageSplashTarget : IInteractiveMessageTarget
     {
+        /// <summary>
+        /// Realiza una pregunta al usuario.
+        /// </summary>
+        /// <param name="title">Título del mensaje.</param>
+        /// <param name="message">Contenido de la pregunta.</param>
+        /// <returns>
+        /// <see langword="true"/> si el usuario ha dicho que sí al cuadro
+        /// de diálogo, <see langword="false"/> en caso contrario.
+        /// </returns>
+        public bool Ask(string title, string message) => MessageSplash.Ask(title, message);
+
+        /// <summary>
+        /// Realiza una pregunta al usuario.
+        /// </summary>
+        /// <param name="title">Título del mensaje.</param>
+        /// <returns>
+        /// <see langword="true"/> si el usuario ha dicho que sí al cuadro
+        /// de diálogo, <see langword="false"/> en caso contrario.
+        /// </returns>
+        public bool Ask(string title) => MessageSplash.Ask(title);
+
         /// <summary>
         /// Notifica de un error crítico.
         /// </summary>

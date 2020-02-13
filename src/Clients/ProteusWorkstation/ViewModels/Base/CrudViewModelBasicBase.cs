@@ -136,9 +136,18 @@ namespace TheXDS.Proteus.ViewModels.Base
             {
                 if (k.Description.UseDefault && k.Property.CanWrite)
                 {
-                    k.Property.SetValue(entity, k.Description.Default);
+                    if (k.Property.DeclaringType == entity?.GetType())
+                    {
+                        k.Property.SetValue(entity, k.Description.Default);
+                        k.GetValue(entity);
+                    }
+                    else if (k.Property.DeclaringType == GetType())
+                    {
+                        k.Property.SetValue(this, k.Description.Default);
+                        k.GetValue(this);
+                    }
+
                     (SelectedElement!.ViewModel as NotifyPropertyChangeBase)?.Notify(k.Property.Name);
-                    k.GetValue(entity);
                 }
                 else k.ClearControlValue();
             }

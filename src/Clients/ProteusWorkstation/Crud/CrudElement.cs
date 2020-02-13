@@ -91,8 +91,7 @@ namespace TheXDS.Proteus.Crud
         /// Modelo para el cual generar las vistas del editor y de
         /// detalles.
         /// </param>
-        public CrudElement(Type model)
-            :this(GetDescription(model.ResolveCollectionType().ResolveToDefinedType()), model)
+        public CrudElement(Type model) : this(GetDescription(model.ResolveCollectionType().ResolveToDefinedType()), model)
         {
         }
 
@@ -119,7 +118,7 @@ namespace TheXDS.Proteus.Crud
 
             if (!(Description is null))
             {
-                Editor = CrudBuilder.BuildEditor(Description, out var editControls);
+                Editor = CrudBuilder.BuildEditor(ViewModel, Description, out var editControls);
                 Details = Description.Details ?? CrudBuilder.BuildDetails(Model!, Description);
                 EditControls = editControls;
             }
@@ -197,7 +196,7 @@ namespace TheXDS.Proteus.Crud
 
             if (!(Description is null))
             {
-                Editor = CrudBuilder.BuildEditor(Description, out var editControls);
+                Editor = CrudBuilder.BuildEditor(ViewModel, Description, out var editControls);
                 EditControls = editControls;
             }
             else

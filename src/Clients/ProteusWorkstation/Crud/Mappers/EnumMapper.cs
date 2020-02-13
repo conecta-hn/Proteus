@@ -7,6 +7,7 @@ using System;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.MCART;
 using TheXDS.Proteus.Crud.Mappings;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud.Mappers
 {
@@ -18,7 +19,7 @@ namespace TheXDS.Proteus.Crud.Mappers
             return p.IsEnum || (Nullable.GetUnderlyingType(p)?.IsEnum ?? false);
         }
 
-        public override IPropertyMapping Map(IPropertyDescription p)
+        public override IPropertyMapping Map(IEntityViewModel parentVm, IPropertyDescription p)
         {
             if (p.Property.PropertyType.HasAttr<FlagsAttribute>()) return new FlagEnumMapping(p);
             return new EnumMapping(p);

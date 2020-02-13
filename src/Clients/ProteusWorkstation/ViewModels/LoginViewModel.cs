@@ -144,17 +144,19 @@ namespace TheXDS.Proteus.ViewModels
 
         private async void OnLogin()
         {
-            //TODO: Fixear un bug feo de login con todo en null
             if (User.IsEmpty())
             {
                 ErrorMessage = "Usuario requerido.";
                 return;
             }
-            if (Password is null || Password.Length == 0)
+            try
             {
-                ErrorMessage = "Contraseña requerida.";
-                return;
-            }
+                if (Password is null || Password.Length == 0)
+                {
+                    ErrorMessage = "Contraseña requerida.";
+                    return;
+                }
+            } catch { }
             await PerformAsync(PerformLogin, LoginCommand, CloseCommand);
             if (CloseAfterLogin && Success) base.Close();
         }

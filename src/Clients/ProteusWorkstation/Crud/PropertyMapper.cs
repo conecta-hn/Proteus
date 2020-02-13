@@ -15,6 +15,7 @@ using System.Windows;
 using TheXDS.MCART.Attributes;
 using static TheXDS.MCART.Objects;
 using static TheXDS.MCART.ReflectionHelpers;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud
 {
@@ -97,7 +98,7 @@ namespace TheXDS.Proteus.Crud
         /// edición configurados para editar la propiedad en una página
         /// auto-generada de CRUD.
         /// </returns>
-        public abstract IPropertyMapping Map(IPropertyDescription p);
+        public abstract IPropertyMapping Map(IEntityViewModel parentVm, IPropertyDescription p);
 
         /// <summary>
         /// Obtiene un <see cref="PropertyMapping"/> que pueda utilizarse
@@ -111,7 +112,7 @@ namespace TheXDS.Proteus.Crud
         /// Un <see cref="PropertyMapping"/> que puede utilizarse para
         /// generar un control de edición para la propiedad especificada.
         /// </returns>
-        public static IPropertyMapping GetMapping(IPropertyDescription property)
+        public static IPropertyMapping GetMapping(IEntityViewModel? parentVm, IPropertyDescription property)
         {
             if (property is null) throw new ArgumentNullException(nameof(property));
             if (property.Hidden) return null;
@@ -121,7 +122,7 @@ namespace TheXDS.Proteus.Crud
             lock (_mappers)
                 m = _mappers.FirstOrDefault(p => p.Maps(property));
 
-            return m?.Map(property) ?? new ReadOnlyMapping(property);
+            return m?.Map(parentVm, property) ?? new ReadOnlyMapping(property);
         }
     }
 }
