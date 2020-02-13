@@ -454,7 +454,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
             if (!CurrentFactura.IsNew) return;
 
-            if ((CurrentFactura.Total >= 10000m || (NewCliente.Category?.RequireRTN ?? false)) && (NewCliente?.Rtn?.IsEmpty() ?? true))
+            if ((CurrentFactura.Total >= 10000m || (NewCliente?.Category?.RequireRTN ?? false)) && (NewCliente?.Rtn?.IsEmpty() ?? true))
             {
                 Proteus.MessageTarget?.Stop("Esta factura requiere RTN del cliente.");
                 return;
@@ -481,11 +481,9 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             CurrentFactura.Descuentos = Descuento;
             CurrentFactura.OtrosCargos = OtrosCargos;
 
-            //TODO: proformas
-            FacturaService.AddFactura(CurrentFactura, PrintFactura, _interactor);
+            if (!FacturaService.AddFactura(CurrentFactura, PrintFactura, _interactor)) return;
 
             await Proteus.Service<FacturaService>()!.SaveAsync();
-            //await (_interactor?.OnFacturate() ?? Task.CompletedTask);
 
             if (_closeAfterFacturate)
             {

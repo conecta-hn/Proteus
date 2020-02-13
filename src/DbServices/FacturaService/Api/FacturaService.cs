@@ -85,24 +85,39 @@ namespace TheXDS.Proteus.Api
             if (r is null || c is null) return null;
             return $"{r.NumLocal:000}-{r.NumCaja:000}-{r.NumDocumento:00}-{c:00000000}";
         }
-        public static void AddFactura(Factura f, bool register, IFacturaInteractor? i)
+        public static bool AddFactura(Factura f, bool register, IFacturaInteractor? i)
         {
+            if (!IsCajaOpOpen)
+            {
+                MessageTarget?.Stop("No se puede registrar esta factura. La caja está cerrada.");
+                return false;
+            }
             if (register)
             {
                 RegisterFactura(f, i);
             }
             GetCajaOp.Facturas.Add(f);
+            return true;
         }
-        public static void RegisterFactura(Factura f, IFacturaInteractor? i)
+        public static bool RegisterFactura(Factura f, IFacturaInteractor? i)
         {
             if (f.Vuelto > 0m)
             {
-                throw new InvalidOperationException("La factura tiene saldo pendiente.");
+                MessageTarget?.Stop("La factura tiene saldo pendiente.");
+                return false;
             }
             if (f.OtRef != null) f.OtRef.Facturado = true;
             f.CaiRangoParent = CurrentRango;
             f.Correlativo = NextCorrel(f.CaiRangoParent) ?? 1;
-            PrintFactura(f, i);
+            try
+            {
+                PrintFactura(f, i);
+            }
+            catch
+            {
+                MessageTarget?.Warning("La factura se guardó, pero hubo un problema al imprimirla.");
+            }
+            return true;
         }
 
         public static async void PrintOt(OrdenTrabajo ot)
@@ -195,19 +210,21 @@ namespace TheXDS.Proteus.Api
 
         private static Printer GetPrinter()
         {
-            return new Printer(GetEstation.Printer);
+            return new Printer(GetEstation?.Printer 
+                ?? PrinterSettings.InstalledPrinters[0] 
+                ?? throw new Exception("No hay ninguna impresora disponible."));
         }
 
         private static Printer PrintHeader(string title)
         {
-            var e = GetEstation.Entidad;
+            var e = GetEstation?.Entidad;
             var p = GetPrinter();
             p.AlignCenter();
-            p.Append(e.Name);
-            if (!e.Banner.IsEmpty()) p.Append(e.Banner);
-            p.Append(e.Address);
-            p.Append($"{e.City}, {e.Country}");
-            p.Append($"RTN: {e.Id}");
+            p.Append(e?.Name);
+            if (!e?.Banner.IsEmpty() ?? false) p.Append(e!.Banner);
+            p.Append(e?.Address);
+            p.Append($"{e?.City}, {e?.Country}");
+            p.Append($"RTN: {e?.Id}");
             p.Append(new string('-', 40));
             p.Append(title.ToUpper().Spell());
             p.Append(new string('-', 40));
@@ -269,7 +286,7 @@ namespace TheXDS.Proteus.Api
             p.Append(new string('=', 40));
             p.AlignLeft();
             p.Append("Gracias por su compra.");
-            p.Append($"Atendido por: {GetCajero.UserEntity?.Name ?? GetCajero.UserId }");
+            p.Append($"Atendido por: {GetCajero?.UserEntity?.Name ?? GetCajero?.UserId ?? Proteus.Session?.Id}");
             p.Append("Original - Cliente");
             p.Append("CC - Comercio");
             FooterAndPrint(p);

@@ -54,7 +54,6 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// </summary>
         public OrdenTrabajoViewModel()
         {
-            // TODO: Registrar propiedades enlazadas con los métodos RegisterPropertyChangeBroadcast() o RegisterPropertyChangeTrigger().
         }
     }
 
