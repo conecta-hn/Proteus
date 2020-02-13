@@ -31,7 +31,7 @@
 /// Describe las propiedades Crud para el modelo
 /// <see cref="$model$"/>.
 /// </summary>
-public class $model$Descriptor : CrudDescriptor<$model$, $model$ViewModel>
+public class $model$CrudDescriptor : CrudDescriptor<$model$, $model$CrudViewModel>
 {
     /// <summary>
     /// Describe las propiedades Crud para el modelo
@@ -48,7 +48,7 @@ public class $model$Descriptor : CrudDescriptor<$model$, $model$ViewModel>
 /// dentro del Crud generado para el modelo
 /// <see cref="$model$"/>.
 /// </summary>
-public class $model$ViewModel : ViewModel<$model$>
+public class $model$CrudViewModel : ViewModel<$model$>
 {
     // TODO: Agregar propiedades del ViewModel.
 
@@ -56,7 +56,7 @@ public class $model$ViewModel : ViewModel<$model$>
     /// Inicializa una nueva instancia de la clase
     /// <see cref="$model$ViewModel"/>.
     /// </summary>
-    protected $model$ViewModel()
+    public $model$CrudViewModel()
     {
         // TODO: Registrar propiedades enlazadas con los métodos RegisterPropertyChangeBroadcast() o RegisterPropertyChangeTrigger().
     }
