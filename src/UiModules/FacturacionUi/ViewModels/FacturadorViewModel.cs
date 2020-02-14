@@ -10,6 +10,7 @@ using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.FacturacionUi.Component;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
@@ -53,6 +54,18 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             set
             {
                 if (Change(ref _descuento, value)) RefreshPayments();
+            }
+        }
+
+        public float DescuentoPercent
+        {
+            get
+            {
+                return (float)(Descuento / SubTFinal) * 100;
+            }
+            set
+            {
+                Descuento = SubTFinal * (decimal)value / 100;
             }
         }
 
@@ -133,6 +146,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         private void OnElevate()
         {
+            var s = Proteus.Service<FacturaService>()!;
+            if (s.CanRunService(SecurityFlags.Admin) ?? s.Elevate())
             CanDescuento = !CanDescuento;
         }
 
@@ -304,6 +319,19 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         private void OnTerceraEdad()
         {
+            if (!InputSplash.GetNew<string>("Introduzca la identidad del cliente", out var i)) return;
+
+            var g = i.Split('-');            
+            if (g.Length != 3 || int.TryParse(g[1],out var y))
+            {
+                Proteus.MessageTarget?.Stop("La identidad no tiene un formato válido.");
+                return;
+            }
+            if (DateTime.Today.Year-y < 60)
+            {
+                Proteus.MessageTarget?.Stop("La identidad no cumple con el requisito de edad.");
+                return;
+            }
             Descuento = Total * 0.25m;
         }
         
@@ -440,6 +468,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             void Cleanup()
             {
                 IsBusy = false;
+                CurrentFactura ??= new Factura();
                 if (CurrentFactura.IsNew)
                 {
                     CurrentFactura.Payments.Clear();
@@ -461,7 +490,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             }
 
             IsBusy = true;
-            CurrentFactura.Cliente = NewCliente;
+            CurrentFactura.Cliente = NewCliente ?? Proteus.Service<FacturaService>()!.All<Cliente>().First();
             if (CurrentFactura.Items.Count != NewItems.Count)
             {
                 CurrentFactura.Items.Clear();

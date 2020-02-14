@@ -33,9 +33,8 @@
                     <ToggleButton 
                         DockPanel.Dock="Right"
                         Command="{Binding ElevateCommand}"
-                        widgets:ProteusProp.Icon="🔑"
-                        Style="{x:Null}">
-                        Elevar
+                        widgets:ProteusProp.Icon="🔑">
+                        Habilitar descuentos
                     </ToggleButton>
                     <TextBlock Style="{StaticResource Title}">
                         Factura
@@ -119,14 +118,17 @@
                         <GridViewColumn Header="Gravable" Width="80">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="models:ItemOrden">
-                                    <CheckBox IsChecked="{Binding Gravar}">
+                                    <TextBlock>
+                                        <Run  Text="{Binding Gravado, Mode=OneWay}"/>%
+                                    </TextBlock>
+                                    <!--<CheckBox IsChecked="{Binding Gravar}">
                                         <xctk:SingleUpDown 
                                         widgets:ProteusProp.Icon="%"
                                         Style="{StaticResource ListedUpDown}"
                                         Minimum="0"
                                         Value="{Binding Gravado, Mode=TwoWay}"
                                         IsEnabled="{Binding Gravar, Mode=OneWay}"/>
-                                    </CheckBox>
+                                    </CheckBox>-->
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -209,7 +211,7 @@
                         <Run Text="{Binding SubTGravado, Mode=OneWay, StringFormat=C}"/>
                     </TextBlock>
                     <TextBlock TextAlignment="Right">
-                        - Descuentos otorgados:
+                        - Descuentos en artículos:
                         <Run Text="{Binding SubTDescuentos, Mode=OneWay, StringFormat=C}"/>
                     </TextBlock>
                     <Separator/>
@@ -218,15 +220,28 @@
                         <Run Text="{Binding SubTFinal, Mode=OneWay, StringFormat=C}"/>
                     </TextBlock>
                     <DockPanel>
-                        <Button Command="{Binding TerceraEdadCommand}" ToolTip="Aplicar descuento de tercera edad">👴</Button>
+                        <xctk:DropDownButton IsEnabled="{Binding CanDescuento, Mode=OneWay}">
+                            <xctk:DropDownButton.DropDownContent>
+                                <StackPanel Width="250">
+                                    <Button Command="{Binding TerceraEdadCommand}" ToolTip="Aplicar descuento de tercera edad">👴</Button>
+                                    <xctk:SingleUpDown
+                                        widgets:ProteusProp.Watermark="Porcentaje de descuento"
+                                        Language="es-HN"
+                                        widgets:ProteusProp.WatermarkAlwaysVisible="True"  
+                                        Minimum="0"
+                                        Maximum="100"
+                                        Value="{Binding DescuentoPercent, StringFormat=P0}"/>
+                                </StackPanel>
+                            </xctk:DropDownButton.DropDownContent>
+                        </xctk:DropDownButton>
                         <xctk:DecimalUpDown
                             Margin="0"
-                            widgets:ProteusProp.Watermark="- Otros decuentos"
+                            widgets:ProteusProp.Watermark="- Descuentos generales"
                             IsEnabled="{Binding CanDescuento, Mode=OneWay}"
                             Language="es-HN"
                             widgets:ProteusProp.WatermarkAlwaysVisible="True"                        
-                            Value="{Binding Descuento,StringFormat=C}"/>
-                        </DockPanel>
+                            Value="{Binding Descuento, StringFormat=C}"/>
+                    </DockPanel>
                     <xctk:DecimalUpDown
                         Margin="0"
                         widgets:ProteusProp.Watermark="+ Cargos adicionales" 

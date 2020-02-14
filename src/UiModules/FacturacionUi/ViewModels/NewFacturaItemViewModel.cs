@@ -113,12 +113,12 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// Obtiene una referencia estática al precio actual del ítem
         /// facturado.
         /// </summary>
-        public decimal Precio => Item.Precio;
+        public decimal Precio => Item?.Precio ?? 0m;
 
         /// <summary>
         /// Calcula el subtotal base de este ítem.
         /// </summary>
-        public decimal SubTotal => Item.Precio * Qty;
+        public decimal SubTotal => (Item?.Precio ?? 0m) * Qty;
 
         /// <summary>
         /// Calcula el monto gravable de este ítem.
@@ -143,8 +143,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         private void OnRemoveThis()
         {
-            Parent.NewItems.Remove(this);
-            Parent.RefreshSubtotals();
+            Parent?.NewItems.Remove(this);
+            Parent?.RefreshSubtotals();
         }
 
         /// <summary>
@@ -176,10 +176,10 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// </param>
         public NewFacturaItemViewModel(FacturadorViewModel parent, ItemFactura item) : this(parent, item.Item)
         {
-            Qty = item.Qty;
-            Gravar = item.StaticIsv.HasValue;
-            Gravado = item.StaticIsv ?? 0f;
-            DescuentosOtorgados = item.StaticDescuento;
+            Qty = item?.Qty ??1;
+            Gravar = item?.StaticIsv.HasValue ?? false;
+            Gravado = item?.StaticIsv ?? 0f;
+            DescuentosOtorgados = item?.StaticDescuento ?? 0m;
         }
 
         /// <summary>
@@ -190,9 +190,9 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <param name="parent">Objeto padre de esta instancia.</param>
         public NewFacturaItemViewModel(FacturadorViewModel parent) : this(parent, parent.NewItem)
         {
-            Qty = parent.NewQty;
-            Gravar = parent.NewGravar;
-            Gravado = parent.NewGravado;
+            Qty = parent?.NewQty ?? 1;
+            Gravar = parent?.NewGravar ?? false;
+            Gravado = parent?.NewGravado ?? 0f;
         }
 
         /// <summary>
