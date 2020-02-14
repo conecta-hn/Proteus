@@ -1662,29 +1662,9 @@ namespace TheXDS.Proteus.Api
         /// <see langword="true"/> si la función tiene permisos para
         /// ejecutarse, <see langword="false"/> en caso contrario.
         /// </returns>
-        protected bool Elevate()
+        public bool Elevate()
         {
-            return !Interactive || (CanRunService() ?? false);
-
-
-            //bool r;
-            //do
-            //{
-            //    r = !Interactive || (CanRunService() ?? false);
-            //    if (!r)
-            //    {
-                    
-            //        if ( CanRunService((MethodBase.GetCurrentMethod() as MethodInfo).FullName(), SecurityFlags.Elevate, credential))
-            //        {
-
-            //        }
-
-
-            //    }
-
-            //    if (!r && (!Elevator?.Elevate(ref _session) ?? true)) break;
-            //} while (!r);
-            //return r;
+            return !Interactive || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
         }
 
 

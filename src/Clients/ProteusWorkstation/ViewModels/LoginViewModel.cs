@@ -167,7 +167,7 @@ namespace TheXDS.Proteus.ViewModels
                 ? Proteus.LogonService!.Login(User, Password) 
                 : Proteus.Login(User, Password);
             Proteus.CommonReporter?.UpdateStatus("Iniciando sesión...");
-            var r = await t;
+            var r = Result = await t;
             Success = r;
             ErrorMessage = r;
             if (r)
@@ -184,6 +184,8 @@ namespace TheXDS.Proteus.ViewModels
             else LoginFailed?.Invoke(this, EventArgs.Empty);
             Proteus.CommonReporter?.Done();
         }
+
+        internal LoginResult Result { get; private set; }
 
         private bool _elevation;
 
