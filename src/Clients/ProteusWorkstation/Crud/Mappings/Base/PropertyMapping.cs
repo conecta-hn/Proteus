@@ -106,7 +106,7 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
                         Content = Control,
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                        VerticalContentAlignment = VerticalAlignment.Top,
+                        VerticalContentAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(10, 0, 0, 0)
                     };
 

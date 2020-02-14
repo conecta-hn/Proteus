@@ -312,6 +312,47 @@ namespace TheXDS.Proteus.Crud.Base
             return p.Range(double.Epsilon, double.MaxValue);
         }
 
+        private static IEnumerable<ValidationError> CheckNotZero(ModelBase m, PropertyInfo prop)
+        {
+            var v = prop.GetValue(m);
+            if (v is null || v.Equals(prop.PropertyType.Default()))
+            {
+                yield return new NullValidationError(prop);
+            }
+        }
+
+        public static IPropertyNumberDescriptor<decimal> NonZero(this IPropertyNumberDescriptor<decimal> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+
+        public static IPropertyNumberDescriptor<short> NonZero(this IPropertyNumberDescriptor<short> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<int> NonZero(this IPropertyNumberDescriptor<int> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<long> NonZero(this IPropertyNumberDescriptor<long> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<float> NonZero(this IPropertyNumberDescriptor<float> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<double> NonZero(this IPropertyNumberDescriptor<double> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+
         public static IPropertyDateDescriptor Timestamp(this IPropertyDateDescriptor p)
         {
             p.Default(DateTime.Now).Label("Fecha de creación");
