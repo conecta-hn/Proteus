@@ -60,6 +60,7 @@ namespace TheXDS.Proteus.Plugins
                     }.PushInto(f.Items);
                 }
             }
+            obj.Facturado = true;
             App.Module<FacturacionModule>()!.Host.OpenPage(new FacturadorPage(f));
         }
 
