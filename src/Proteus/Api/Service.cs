@@ -116,7 +116,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene una referencia a la sesión activa para este servicio.
         /// </summary>  
-        protected IProteusUserCredential? Session => _session ?? Proteus.Session;
+        public IProteusUserCredential? Session => _session ?? Proteus.Session;
 
         /// <summary>
         /// Obtiene un valor que indica si este servicio se encuentra
@@ -1252,7 +1252,7 @@ namespace TheXDS.Proteus.Api
             return CanRunService(id, flags, credential.Parent);
         }
 
-        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Proteus.Session);
+        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Session);
 
         public bool? CanRunService(SecurityFlags flags, IProteusHierachicalCredential? cred)
         {
@@ -1667,6 +1667,10 @@ namespace TheXDS.Proteus.Api
             return !Interactive || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
         }
 
+        public bool Elevate(SecurityFlags flags)
+        {
+            return Elevate() && (CanRunService(flags) ?? false);
+        }
 
         /// <summary>
         /// Enumera los tipos de entidad hospedadas en el contexto
