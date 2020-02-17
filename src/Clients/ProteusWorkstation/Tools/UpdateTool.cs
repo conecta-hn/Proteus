@@ -45,7 +45,7 @@ namespace TheXDS.Proteus.Tools
             // Comprobar la longitud de InformationalVersion ayuda a filtrar ensamblados de .Net Core.
             var v = asm.GetAttr<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             return !(p.Name is null ||  v?.Length > 20)
-                ? new AsmInfo($"{Path.GetFileName(p.CodeBase)}{Path.GetExtension(p.CodeBase)}", v ?? p.Version?.ToString() ?? "1.0.0.0")
+                ? new AsmInfo($"{Path.GetFileName(p.CodeBase)}", v ?? p.Version?.ToString() ?? "1.0.0.0")
                 : (AsmInfo?)null;
         }
 

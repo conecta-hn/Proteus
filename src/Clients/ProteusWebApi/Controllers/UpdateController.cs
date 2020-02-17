@@ -9,6 +9,7 @@ using System.Linq;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Controllers
 {
@@ -38,9 +39,9 @@ namespace TheXDS.Proteus.Controllers
                 var name = sr.ReadString();
                 var version = sr.ReadString();
 
-                if (input.FirstOrDefault(p=>p.name == name) is { } a)
+                if (input.FirstOrDefault(p => p.name == name) is { } a)
                 {
-                    if (version.CompareTo(a.version) == 1)
+                    if (!a.version.IsEmpty() && version.CompareTo(a.version) == 1)
                     {
                         updts.Add(new AsmInfo(name, version));
                     }
