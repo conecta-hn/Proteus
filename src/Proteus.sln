@@ -82,7 +82,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusDevel", "Utils\Prote
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusServerRemote", "Utils\ProteusServerRemote\ProteusServerRemote.csproj", "{8298614D-2934-4484-AC9C-9D4C5732EDFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelExporter", "UiModules\ExcelExporter\ExcelExporter.csproj", "{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelExporter", "UiModules\ExcelExporter\ExcelExporter.csproj", "{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusUpdater", "Utils\ProteusUpdater\ProteusUpdater.csproj", "{491A5983-F82D-47F4-A69F-BCA0D5339ACC}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -169,6 +171,14 @@ Global
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
