@@ -49,6 +49,7 @@ namespace TheXDS.Proteus.Config
             CancelCommand = new SimpleCommand(() => { Reload(); UnsavedChanges = false; }, false);
             CloseCommand = new SimpleCommand(Close, Launched);
             SaveCommand = new SimpleCommand(Save, !Launched);
+            Upgrade();
         }
         private void Settings_SettingsSaving(object sender, CancelEventArgs e)
         {
