@@ -23,7 +23,7 @@ namespace TheXDS.Proteus.ViewModels
         private string _user;
         private SecureString _password;
         private bool _loginSucceeded;
-        private string _errorMessage;
+        private string? _errorMessage;
                
         /// <summary>
         /// Obtiene o establece un valor que indica si se llamará al método
@@ -54,7 +54,11 @@ namespace TheXDS.Proteus.ViewModels
             set
             {
                 Change(ref _password, value);
-                ErrorMessage = null;
+                try
+                {
+                    if (value is { } && value.Length != 0) ErrorMessage = null;
+                }
+                catch { }
             }
         }
 
@@ -77,13 +81,13 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Obtiene un mensaje de error de inicio de sesión.
         /// </summary>
-        public string ErrorMessage
+        public string? ErrorMessage
         {
             get => _errorMessage;
             private set
             {
                 if (Change(ref _errorMessage, value))
-                    OnPropertyChanged(nameof(Failed));
+                    Notify(nameof(Failed));
             }
         }
   
@@ -158,6 +162,7 @@ namespace TheXDS.Proteus.ViewModels
                 }
             } catch { }
             await PerformAsync(PerformLogin, LoginCommand, CloseCommand);
+            Password = null;
             if (CloseAfterLogin && Success) base.Close();
         }
         private async Task PerformLogin()

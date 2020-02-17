@@ -3,6 +3,7 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using TheXDS.MCART.Component;
@@ -156,7 +157,6 @@ namespace TheXDS.Proteus.ViewModels
             }
             else
             {
-                //App.UiInvoke(OpenMainPage);
                 OpenMainPage();
             }
         }
@@ -173,7 +173,7 @@ namespace TheXDS.Proteus.ViewModels
             });
         }
 
-        private void ViewModel_LoginSuccess(object? sender, LoginSuccessEventArgs e)
+        private async void ViewModel_LoginSuccess(object? sender, LoginSuccessEventArgs e)
         {
             if (Settings.Default.RememberLastLogin)
             {
@@ -183,6 +183,7 @@ namespace TheXDS.Proteus.ViewModels
                 Settings.Default.Save();
             }
             OpenMainPage();
+            await Task.WhenAll(App.Tools.Select(p=>p.PostLoginAsync()));
         }
 
         /// <summary>

@@ -59,6 +59,7 @@ namespace TheXDS.Proteus
             _kickStarters.Remove(_fallbackKickStarter);
 
             foreach (var j in _modules) j.AfterInitialization();
+            await Task.WhenAll(_tools.Select(p => p.PostLoadAsync()));
         }
 
         /// <summary>
@@ -184,6 +185,13 @@ namespace TheXDS.Proteus
                 if (!j.Patches(o)) continue;
                 j.Apply(o);
             }
+        }
+
+        public static List<Action> BeforeClose { get; } = new List<Action>();
+        public static void Close()
+        {
+            foreach (var j in BeforeClose) j?.Invoke();
+            Current.Shutdown();
         }
 
         /// <summary>

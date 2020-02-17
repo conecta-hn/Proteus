@@ -430,5 +430,41 @@ namespace TheXDS.Proteus.Config {
                 this["ConfirmLogout"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int UpdateInterval {
+            get {
+                return ((int)(this["UpdateInterval"]));
+            }
+            set {
+                this["UpdateInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost")]
+        public string UpdateServer {
+            get {
+                return ((string)(this["UpdateServer"]));
+            }
+            set {
+                this["UpdateServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpdateCheck {
+            get {
+                return ((bool)(this["UpdateCheck"]));
+            }
+            set {
+                this["UpdateCheck"] = value;
+            }
+        }
     }
 }

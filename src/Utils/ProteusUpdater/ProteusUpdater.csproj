@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <Import Project="$(TargetsDir)Bundle.targets"/>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <NoWpfPacks>true</NoWpfPacks>
+  </PropertyGroup>
+</Project>

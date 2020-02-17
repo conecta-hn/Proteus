@@ -30,6 +30,12 @@ namespace TheXDS.Proteus.Dialogs
                 Elevation = true,
                 CloseAfterLogin = true
             };
+            Vm.LoginFailed += Vm_LoginFailed;
+        }
+
+        private void Vm_LoginFailed(object? sender, System.EventArgs e)
+        {
+            TxtPassword.Clear();
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)

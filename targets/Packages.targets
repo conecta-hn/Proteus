@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
+  <ItemGroup Condition="'$(NoWpfPacks)'==''">
     <PackageReference Include="TheXDS.MCART" Version="$(McartVersion)" />
   </ItemGroup>
-  <ItemGroup Condition="'$(UseWPF)'=='true'">
+  <ItemGroup Condition="'$(UseWPF)'=='true' AND '$(NoWpfPacks)'==''">
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.0" />
     <PackageReference Include="FluentWPF" Version="0.8.0" />
     <PackageReference Include="TheXDS.MCART.UI" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.Windows" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.WPF" Version="$(McartVersion)" />
-    <ProjectReference Include="$(SOlutionDir)Proteus\Proteus.csproj" />
+    <ProjectReference Include="$(SolutionDir)Proteus\Proteus.csproj" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="mscorlib" />
     <Reference Include="PresentationCore" />
