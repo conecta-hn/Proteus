@@ -40,13 +40,12 @@ namespace TheXDS.Proteus.Tools
 
         private AsmInfo? GetInfo(Assembly? asm)
         {
-            if (asm is null) return null;
+            if (asm is null || asm.IsDynamic) return null;
             var p = asm.GetName();
 
-            // Comprobar la longitud de InformationalVersion ayuda a filtrar ensamblados de .Net Core.
-            var v = asm.GetAttr<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            return !(p.Name is null ||  v?.Length > 20)
-                ? new AsmInfo($"{Path.GetFileName(p.CodeBase)}", v ?? p.Version?.ToString() ?? "1.0.0.0")
+            //var v = asm.GetAttr<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            return !(p.Name is null || asm.Location.Contains("C:\\Program Files\\dotnet\\shared"))
+                ? new AsmInfo($"{Path.GetFileName(p.CodeBase)}", p.Version?.ToString() ?? "1.0.0.0")
                 : (AsmInfo?)null;
         }
 
@@ -74,18 +73,6 @@ namespace TheXDS.Proteus.Tools
             if (!Settings.Default.UpdateCheck) return;
             if (_updtTimer is null) await PostLoadAsync();
             var list = AppDomain.CurrentDomain.GetAssemblies().Select(GetInfo).NotNull().ToList();
-            foreach (var j in list.ToArray())
-            {
-                if (File.Exists(j.name.Replace(".dll", ".exe")))
-                {
-                    list.Add(new AsmInfo
-                    {
-                        name = j.name.Replace(".dll", ".exe"),
-                        version = j.version ?? App.Info.Version?.ToString() ?? "1.0.0.0"
-                    });
-                }
-            }
-            
             var request = WebRequest.Create($"{Settings.Default.UpdateServer.TrimEnd('/')}/v1/Update/Check");
             request.Method = "POST";
             request.ContentType = "application/json";

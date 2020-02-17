@@ -24,8 +24,7 @@ using TheXDS.MCART.Dialogs;
 
 namespace TheXDS.Proteus.Config
 {
-
-    internal sealed partial class Settings : IPageViewModel, ISettings, INotifyPropertyChanged
+    public sealed partial class Settings : IPageViewModel, ISettings, INotifyPropertyChanged
     {
         private bool _unsavedChanges;
         private ISettingsRepository _selectedRepo;
