@@ -56,7 +56,7 @@ namespace TheXDS.Proteus.Plugins
                         Item = j.Item,
                         Qty = j.Qty,
                         StaticPrecio = j.Item.Precio,
-                        StaticIsv = j.Item.Isv
+                        StaticIsv = obj.Cliente.AnyExoneraciones() ? j.Item.Isv : null
                     }.PushInto(f.Items);
                 }
             }

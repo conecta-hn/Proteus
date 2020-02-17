@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheXDS.MCART;
 using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
@@ -51,6 +52,11 @@ namespace TheXDS.Proteus.Models
         public virtual List<FacturaXCobrar> Credits { get; set; } = new List<FacturaXCobrar>();
 
         public string SagRef { get; set; }
+
+        public bool AnyExoneraciones()
+        {
+            return Exoneraciones.Any(p => DateTime.Now.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)));
+        }
     }
 
     public class IsvExoneracion : TimestampModel<string>
