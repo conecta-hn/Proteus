@@ -10,6 +10,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using TheXDS.MCART.Types.Extensions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace TheXDS.Proteus.Controllers
 {
