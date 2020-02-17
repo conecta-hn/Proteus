@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
@@ -83,7 +84,14 @@ namespace TheXDS.Proteus.Updater
 
                     PgrProgress.IsIndeterminate = false;
                     _updtTotal = list.Count;
-                    foreach (var j in list)
+                    foreach (var j in list.SelectMany(p => new[]
+                    { 
+                        p,
+                        p.Replace(".dll", ".exe"),
+                        p.Replace(".dll", ".deps"),
+                        p.Replace(".dll", ".runtimeconfig"),
+                        p.Replace(".dll", ".pdb"),
+                        p.Replace(".dll", ".xml") }))
                     {
                         try
                         {
