@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Plugins;
 
@@ -51,18 +52,27 @@ namespace TheXDS.Proteus.Tools
 
         public override Task PostLoadAsync()
         {
-            _updtTimer = new Timer(TimeSpan.FromMinutes(15).TotalMilliseconds);
+            if (!Settings.Default.UpdateCheck) return Task.CompletedTask;
+            _updtTimer = new Timer(TimeSpan.FromMinutes(Settings.Default.UpdateInterval).TotalMilliseconds);
             _updtTimer.Elapsed += UpdtTimer_Elapsed;
             return base.PostLoadAsync();
         }
 
         private async void UpdtTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            if (!Settings.Default.UpdateCheck)
+            {
+                _updtTimer?.Stop();
+                _updtTimer = null;
+                return;
+            }
             await PostLoginAsync();
         }
 
         public override async Task PostLoginAsync()
         {
+            if (!Settings.Default.UpdateCheck) return;
+            if (_updtTimer is null) await PostLoadAsync();
             var list = AppDomain.CurrentDomain.GetAssemblies().Select(GetInfo).NotNull().ToList();
             foreach (var j in list.ToArray())
             {
@@ -75,8 +85,8 @@ namespace TheXDS.Proteus.Tools
                     });
                 }
             }
-
-            var request = WebRequest.Create($"https://localhost:44363/v1/Update/Check");
+            
+            var request = WebRequest.Create($"{Settings.Default.UpdateServer.TrimEnd('/')}/v1/Update/Check");
             request.Method = "POST";
             request.ContentType = "application/json";
 
@@ -96,7 +106,7 @@ namespace TheXDS.Proteus.Tools
                     {
                         bw.Write(j.name);
                         bw.Write(j.version);
-                        sb.AppendLine($"· {j.name,-60} {j.version,30}");
+                        sb.AppendLine($"· {j.name, -30}{j.version, 20}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"Reinicie {App.Info.Name} para aplicar las actualizaciones.");
@@ -123,7 +133,7 @@ namespace TheXDS.Proteus.Tools
             var updater = Path.Combine(Path.GetTempPath(), "ProteusUpdater.exe");
             if (File.Exists(updater))
             {
-                Process.Start(updater, $"\"{loc.Replace(".dll", ".exe")}\"");
+                Process.Start(updater, $"\"{loc.Replace(".dll", ".exe")}\" \"{Settings.Default.UpdateServer.TrimEnd('/')}\"");
             }
         }
     }

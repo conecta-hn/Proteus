@@ -60,9 +60,11 @@ namespace TheXDS.Proteus.Updater
         {
             var a = Environment.GetCommandLineArgs();
             string? pth = null;
-            if (a.Length == 2)
+            string? srv = null;
+            if (a.Length == 3)
             {
-                pth = a[1];                
+                pth = a[1];
+                srv = a[2];
             }
             try
             {
@@ -85,7 +87,7 @@ namespace TheXDS.Proteus.Updater
                     {
                         try
                         {
-                            var wr = WebRequest.Create("https://localhost:44363/v1/Update/DownloadFile");
+                            var wr = WebRequest.Create($"{srv}/v1/Update/DownloadFile");
                             wr.Timeout = 30000;
                             wr.Method = "POST";
                             wr.ContentType = "application/json";
