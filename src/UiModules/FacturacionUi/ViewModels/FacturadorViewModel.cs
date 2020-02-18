@@ -18,7 +18,7 @@ using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.FacturacionUi.ViewModels
 {
-    public class FacturadorViewModel : ServicingPageViewModel<FacturaService>
+    public class FacturadorViewModel : ServicingPageViewModel<FacturaService>, IEntityViewModel<Cliente>
     {
         private bool _closeAfterFacturate = false;
         private readonly IFacturaUIInteractor _interactor;
@@ -61,6 +61,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             get
             {
+                if (SubTFinal == 0m) return 0f;
                 return (float)(Descuento / SubTFinal) * 100;
             }
             set
@@ -536,6 +537,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         }
 
         public string FacturarBtnTitle => PrintFactura ? "Facturar" : "Facturar como proforma";
+
+        Cliente IEntityViewModel<Cliente>.Entity { get => NewCliente; set => NewCliente = value; }
 
         private void OnAddNew()
         {

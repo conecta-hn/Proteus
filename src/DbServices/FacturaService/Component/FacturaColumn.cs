@@ -1,4 +1,5 @@
 ﻿using System;
+using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Component
@@ -6,7 +7,7 @@ namespace TheXDS.Proteus.Component
     /// <summary>
     /// Describe una columna de facturación personalizada.
     /// </summary>
-    public class FacturaColumn
+    public partial class FacturaColumn
     {
         /// <summary>
         /// Encabezado de la factura.

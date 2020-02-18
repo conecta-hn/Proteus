@@ -8,9 +8,14 @@
     xmlns:api="clr-namespace:TheXDS.Proteus.Api;assembly=FacturaService"
     xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    Language="es-HN">
+    Language="es-HN">    
     <controls:BusyContainer IsBusy="{Binding IsBusy, Mode=OneWay}">
-        <Grid>            
+        <Grid>
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="20"/>
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
@@ -29,13 +34,13 @@
                             <Run Text="{Binding CurrentFactura.Cliente, Mode=OneWay}"/>
                         </TextBlock>
                     </StackPanel>
-                        <!--IsChecked="{Binding CanDescuento}"-->
                     <ToggleButton 
-                        DockPanel.Dock="Right"
+                        DockPanel.Dock="Right" Margin="10,0,0,10"
                         Command="{Binding ElevateCommand}"
                         widgets:ProteusProp.Icon="🔑">
                         Habilitar descuentos
                     </ToggleButton>
+                    <widgets:ObjectEditor DockPanel.Dock="Right" Visibility="{Binding NewV, Mode=OneWay}" x:Name="ClienteSelector" widgets:ProteusProp.Watermark="Cliente" widgets:ProteusProp.Icon="🧑"/>
                     <TextBlock Style="{StaticResource Title}">
                         Factura
                         <Run Text="{Binding FacturaNumber, Mode=OneWay}"/>
@@ -45,9 +50,9 @@
                 <!--Botones de adición-->
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="5*"/>
-                        <ColumnDefinition Width="6*"/>
+                        <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox
@@ -73,7 +78,7 @@
                             DefaultValue="1"
                             widgets:ProteusProp.Watermark="Cantidad"                            
                             Minimum="1"/>
-                        <CheckBox
+                        <!--<CheckBox
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             ToolTip="Gravable"
@@ -83,7 +88,7 @@
                                 Value="{Binding NewGravado}"
                                 widgets:ProteusProp.Watermark="Gravable"
                                 IsEnabled="{Binding NewGravar}"/>
-                        </CheckBox>
+                        </CheckBox>-->
                     </UniformGrid>
                     <Button TabIndex="2" Grid.Column="3" Command="{Binding AddNewCommand}" Click="BtnAdd_Click">
                         <Button.ToolTip>
@@ -115,23 +120,21 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Precio" Width="100" DisplayMemberBinding="{Binding Precio, Mode=OneWay, StringFormat=C}"/>
-                        <GridViewColumn Header="Gravable" Width="80">
+                        <!--<GridViewColumn Header="Gravable" Width="80">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="models:ItemOrden">
-                                    <TextBlock>
-                                        <Run  Text="{Binding Gravado, Mode=OneWay}"/>%
-                                    </TextBlock>
-                                    <!--<CheckBox IsChecked="{Binding Gravar}">
+                                    <CheckBox IsChecked="{Binding Gravar}">
                                         <xctk:SingleUpDown 
                                         widgets:ProteusProp.Icon="%"
                                         Style="{StaticResource ListedUpDown}"
                                         Minimum="0"
                                         Value="{Binding Gravado, Mode=TwoWay}"
                                         IsEnabled="{Binding Gravar, Mode=OneWay}"/>
-                                    </CheckBox>-->
+                                    </CheckBox>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                        </GridViewColumn>-->
+                        <GridViewColumn Header="Gravable" Width="100" DisplayMemberBinding="{Binding Gravado, Mode=OneWay, StringFormat={}{0}%}"/>
                         <GridViewColumn Header="Subtotal" Width="100" DisplayMemberBinding="{Binding SubTotal, Mode=OneWay, StringFormat=C}"/>
                         <GridViewColumn Header="Monto gravable" Width="100" DisplayMemberBinding="{Binding MontoGravado, Mode=OneWay, StringFormat=C}"/>
                         <GridViewColumn Header="Subtotal Gravado" Width="100" DisplayMemberBinding="{Binding SubTGrav, Mode=OneWay, StringFormat=C}"/>
@@ -191,7 +194,7 @@
                     Visibility="{Binding HasExtraUi}"/>
 
                 <!--Sumatorias-->
-                <StackPanel VerticalAlignment="Center">
+                <StackPanel VerticalAlignment="Center" Margin="0,5">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="Margin" Value="0,0,20,0"/>
@@ -266,7 +269,8 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox
+                    
+                    <!--<ComboBox
                         widgets:ProteusProp.Watermark="Cliente"
                         widgets:ProteusProp.WatermarkAlwaysVisible="True"
                         TabIndex="5"
@@ -291,7 +295,8 @@
                                 </ScrollViewer>
                             </DockPanel>
                         </fw:AcrylicPopup>
-                    </Grid>                    
+                    </Grid>-->
+                    
                     <ListView
                         Grid.Row="1"
                         SelectedItem="{Binding SelectedPayment}"
@@ -310,7 +315,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Monto">
+                                <GridViewColumn Header="Monto" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid>                                                
@@ -319,7 +324,7 @@
                                                     BorderBrush="{x:Null}"
                                                     BorderThickness="0"
                                                     Background="Transparent"
-                                                    MinWidth="40"
+                                                    MinWidth="50"
                                                     Margin="-5"
                                                     Value="{Binding Amount, StringFormat=C}"/>
                                                 <TextBlock
