@@ -27,4 +27,4 @@ Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\UpdatePusher\Debug\netcor
 Set-Location "$([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1"))"
 Invoke-Expression "$([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1\UpdatePusher.exe"))"
 Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1\*")) $([System.IO.path]::Combine($publishPath,"release")) -Force
-Move-Item $([System.IO.path]::Combine($publishPath,"release\release.manifest")) $publishPath -Force
+Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\release.manifest")) $publishPath -Force
