@@ -23,7 +23,8 @@ if (-not [System.String]::IsNullOrWhiteSpace($project))
 Invoke-Expression "git fetch"
 Invoke-Expression "git pull"
 Invoke-Expression "dotnet build $roth\src\Proteus.sln"
-Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\UpdatePusher\Debug\netcoreapp3.1\*")) $([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1"))
+Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\UpdatePusher\Debug\netcoreapp3.1\*")) $([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1")) -Force
+Set-Location "$([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1"))"
 Invoke-Expression "$([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1\UpdatePusher.exe"))"
-Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1\*")) $([System.IO.path]::Combine($publishPath,"release"))
-Move-Item $([System.IO.path]::Combine($publishPath,"release\release.manifest")) $publishPath
+Copy-Item $([System.IO.path]::Combine($roth,"Build\bin\ProteusWorkstation\Debug\netcoreapp3.1\*")) $([System.IO.path]::Combine($publishPath,"release")) -Force
+Move-Item $([System.IO.path]::Combine($publishPath,"release\release.manifest")) $publishPath -Force
