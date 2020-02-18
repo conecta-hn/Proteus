@@ -9,7 +9,6 @@ using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.Widgets
 {
-
     /// <summary>
     /// Lógica de interacción para ObjectEditor.xaml
     /// </summary>
