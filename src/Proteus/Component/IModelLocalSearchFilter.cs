@@ -5,12 +5,16 @@ Licenciado para uso interno solamente.
 
 using System.Collections.Generic;
 using System;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Types.Extensions;
+using System.Linq;
 
 namespace TheXDS.Proteus.Component
 {
     public interface IModelLocalSearchFilter
     {
-        TCollection Filter<TCollection>(TCollection collection, string query) where TCollection : IList<Models.Base.ModelBase>, new();
+        List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase;
 
         /// <summary>
         /// Comprueba si este <see cref="IModelSearchFilter"/> puede crear
@@ -23,5 +27,31 @@ namespace TheXDS.Proteus.Component
         /// en caso contrario.
         /// </returns>
         bool UsableFor(Type model);
+    }
+
+    public class NameLocalSearchFilter : IModelLocalSearchFilter
+    {
+        public List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase
+        {
+            return collection.Where(p => ((INameable)p).Name.ToLower().Contains(query.ToLower())).ToList();
+        }
+
+        public bool UsableFor(Type model)
+        {
+            return model.Implements<INameable>();
+        }
+    }
+
+    public class IdLocalSearchFilter : IModelLocalSearchFilter
+    {
+        public List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase
+        {
+            return collection.Where(p => p.StringId.Contains(query)).ToList();
+        }
+
+        public bool UsableFor(Type model)
+        {
+            return true;
+        }
     }
 }
