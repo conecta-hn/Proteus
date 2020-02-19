@@ -98,20 +98,22 @@ namespace TheXDS.Proteus.Plugins
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="UiModule"/>.
         /// </summary>
-        protected UiModule()
+        protected UiModule(bool healthy = true)
         {
+            if (!(Healthy = healthy)) return;
             Essentials = new ObservableCollectionWrap<Launcher>(new HashSet<Launcher>(PluginInteractions.Where(p => p.Action.Method.HasAttr<EssentialAttribute>()).Select(p => (Launcher)p)));
-
             FullMenu = new ObservableDictionaryWrap<string, ICollection<Launcher>>(new Dictionary<string, ICollection<Launcher>>());
             LoadMenu();
         }
 
+        public bool Healthy { get; }
+
         private void LoadMenu()
         {
+            if (FullMenu is null) return;
             FullMenu.Clear();
             foreach (var j in PluginInteractions)
             {
-
                 var g =
                     j.Action.Method.GetAttr<InteractionGroupAttribute>()?.Value.OrNull() ??
                     j.Action.Method.GetAttr<InteractionTypeAttribute>()?.Value.NameOf() ??
@@ -129,6 +131,7 @@ namespace TheXDS.Proteus.Plugins
         /// </param>
         public void RegisterLauncher(Launcher launcher, string group)
         {
+            if (FullMenu is null) return;
             if (!FullMenu.ContainsKey(group)) FullMenu.Add(group, new ObservableCollectionWrap<Launcher>(new HashSet<Launcher>()));
             FullMenu[group].Add(launcher);
         }
@@ -157,7 +160,8 @@ namespace TheXDS.Proteus.Plugins
         /// </typeparam>
         public void AutoRegisterMenu<T>() where T : Service, new()
         {
-            foreach (var j in Proteus.Service<T>()!.Models().Where(p=>!p.IsAbstract).Select(p=>p.ResolveToDefinedType()!))
+            if (!(Proteus.Service<T>() is { } svc)) return;
+            foreach (var j in svc.Models().Where(p=>!p.IsAbstract).Select(p=>p.ResolveToDefinedType()!))
             {
                 var descr = Crud.CrudElement.GetDescription(j);
                 var type = descr?.OnModuleMenu;
@@ -184,7 +188,8 @@ namespace TheXDS.Proteus.Plugins
         /// </typeparam>
         public void ForceRegisterMenu<T>() where T : Service, new()
         {
-            foreach (var j in Proteus.Service<T>()!.Models().Where(p => !p.IsAbstract).Select(p => p.ResolveToDefinedType()!))
+            if (!(Proteus.Service<T>() is { } svc)) return;
+            foreach (var j in svc.Models().Where(p => !p.IsAbstract).Select(p => p.ResolveToDefinedType()!))
             {
                 var descr = Crud.CrudElement.GetDescription(j);
                 void method()
@@ -215,13 +220,18 @@ namespace TheXDS.Proteus.Plugins
     /// </typeparam>
     public abstract class UiModule<T> : UiModule where T : Service, new()
     {
+        public UiModule() : base(Proteus.Service<T>() is { })
+        {
+            if (!Healthy) Proteus.AlertTarget?.Alert($"El módulo {this} no pudo ser inicializado. El servicio subyacente no está presente.");
+        }
+
         /// <summary>
         /// Registra de forma automática las ventanas de Crud para los
         /// modelos administrados por el servicio <typeparamref name="T"/>.
         /// </summary>
         protected internal override void AfterInitialization()
         {
-            AutoRegisterMenu<T>();
+            if (Healthy) AutoRegisterMenu<T>();
         }
 
         /// <summary>

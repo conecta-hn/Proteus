@@ -480,7 +480,10 @@ namespace TheXDS.Proteus
                     return Interactive ? LoginResultCode.NotInteractive : LoginResultCode.NotSvcUser;
                 if (!t.Login.Enabled) return LoginResultCode.DisabledUser;
                 var u = t.Login;
+                var intStatus = _interactive;
+                _interactive = false;
                 await LogonService.ConsumeToken(t);
+                _interactive = intStatus;
                 return new LoginResult(u);
             }
             catch (Exception ex)

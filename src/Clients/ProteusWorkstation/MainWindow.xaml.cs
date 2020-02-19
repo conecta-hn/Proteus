@@ -72,6 +72,7 @@ namespace TheXDS.Proteus
 Asegúrese de que:
 
     · La aplicación incluya todos los componentes.
+    · Los componentes estén actualizados.
     · La aplicación haya sido configurada correctamente.
     · Se esté usando un usuario de dominio en el equipo si la conexión es a un servidor de dominio.
     · Esté conectado a la red.
