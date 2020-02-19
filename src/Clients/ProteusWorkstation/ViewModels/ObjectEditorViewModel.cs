@@ -55,7 +55,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <value>El valor de EnumerableResults.</value>
         public IEnumerable<ModelBase>? EnumerableResults
         {
-            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel);
+            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel!);
             private set => Change(ref _enumerableResults, value);
         }
 

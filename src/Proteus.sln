@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{E7EA
 		..\targets\Packages.targets = ..\targets\Packages.targets
 		..\targets\PackageVersion.props = ..\targets\PackageVersion.props
 		..\targets\Shared.targets = ..\targets\Shared.targets
+		..\targets\update-push.ps1 = ..\targets\update-push.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proteus", "Proteus\Proteus.csproj", "{BD6DF2A2-BCCA-4725-B0C9-C458D5E78DDA}"
