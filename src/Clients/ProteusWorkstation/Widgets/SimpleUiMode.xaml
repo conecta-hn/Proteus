@@ -12,7 +12,7 @@
         VerticalAlignment="Center"
         HorizontalAlignment="Center"
         Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <mcart:ProgressRing MaxWidth="150" IsIndeterminate="{Binding IndeterminateProgress, Mode=OneWay}" Value="{Binding Progress}" Loaded="ProgressRing_Loaded"/>
+        <mcart:ProgressRing MaxWidth="150" IsIndeterminate="{Binding IndeterminateProgress, Mode=OneWay}" Value="{Binding Progress}"/>
         <ScrollViewer Margin="20,0,0,0" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
             <TextBlock Style="{StaticResource Title}" Text="{Binding Status}"/>
         </ScrollViewer>
