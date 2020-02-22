@@ -18,7 +18,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         [Sugar]
         public static void DescribeFacturable<T>(this CrudDescriptor<T> descriptor) where T : Facturable, new()
         {
-            descriptor.CanDelete(p => !p.Instances.Any());
+            //descriptor.CanDelete(p => !p.Instances.Any());
             descriptor.Property(p => p.Name).AsName();
             descriptor.ObjectProperty(p => p.Category)
                 .Selectable()

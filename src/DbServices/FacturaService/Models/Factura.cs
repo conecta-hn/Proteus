@@ -8,7 +8,7 @@ namespace TheXDS.Proteus.Models
     /// <summary>
     /// Describe una factura en el sistema.
     /// </summary>
-    public class Factura : FacturaBase, IDescriptible
+    public class Factura : FacturaBase
     {
         /// <summary>
         /// Orden de trabajo que ha sido pagada con esta factura.
@@ -53,7 +53,7 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Obtiene una descripción amigable para la factura.
         /// </summary>
-        public string Description => FactNum ?? "n/a";
+        public override string ToString() => FactNum ?? "n/a";
 
         /// <summary>
         /// Obtiene una cadena que representa el número de facturación.

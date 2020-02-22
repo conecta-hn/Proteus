@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TheXDS.MCART;
 using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.FacturacionUi.ViewModels;
 using TheXDS.Proteus.Models;
@@ -44,7 +47,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Important()
                 .AsListColumn()
                 .ShowInDetails()
-                .Required();
+                .Required().Validator(ChkNotNull);
             ListProperty(p => p.Items).Creatable().ShowInDetails();
             VmNumericProperty(p => p.DescuentoPercent).Important("Descuentos otorgados");
             NumericProperty(p => p.OtrosCargos).Important("Otros cargos");
@@ -52,6 +55,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             Property(p => p.Facturado).ShowInDetails().AsListColumn().ReadOnly();
             CustomAction("Otorgar descuento de 3ra edad", OnDarDescuento);
             AfterSave(PrintOrden);
+        }
+
+        private IEnumerable<ValidationError> ChkNotNull(ModelBase arg1, PropertyInfo arg2)
+        {
+            if (arg1 is null) yield return new NullValidationError(arg2);
         }
 
         private void OnDarDescuento(OrdenTrabajo ot, NotifyPropertyChangeBase vm)

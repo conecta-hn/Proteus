@@ -373,11 +373,10 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             Notify(nameof(NewCliente));
         }
 
-        protected override Task OnStartup()
+        protected override async Task OnStartup()
         {
             Clientes = GetObservable<Cliente>();
             Facturables = GetObservable<Facturable>();
-            return Task.CompletedTask;
         }
 
         public CrudElement ClienteEditor { get; } = CrudElement.ForModel<Cliente>();
@@ -497,15 +496,19 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 CurrentFactura.Items.Clear();
                 foreach (var j in NewItems) CurrentFactura.Items.Add(j);
             }
-            foreach (var j in NewPayments)
+            if (!(NewPayments is null))
             {
-                if (!(await j.Source.TryPayment(CurrentFactura, j.Amount) is { } payment))
+                foreach (var j in NewPayments)
                 {
-                    Proteus.MessageTarget?.Stop($"El método de pago '{j.Source.Name}' por {j.Amount:C} no funcionó.");
-                    Cleanup();
-                    return;
+                    if (j is null) continue;
+                    if (!(await j.Source.TryPayment(CurrentFactura, j.Amount) is { } payment))
+                    {
+                        Proteus.MessageTarget?.Stop($"El método de pago '{j.Source.Name}' por {j.Amount:C} no funcionó.");
+                        Cleanup();
+                        return;
+                    }
+                    CurrentFactura.Payments.Add(payment);
                 }
-                CurrentFactura.Payments.Add(payment);
             }
 
             CurrentFactura.Descuentos = Descuento;
@@ -542,19 +545,22 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         private void OnAddNew()
         {
-            if (NewItems.Any(p => p.Item == NewItem))
+            if (NewItems.FirstOrDefault(p => p.Item == NewItem) is { } i)
             {
-                Proteus.MessageTarget?.Stop($"El ìtem {NewItem.Id} ya ha sido agregado a la factura.");
-                return;
+                Proteus.MessageTarget?.Info($"El ítem {NewItem.Id} ya ha sido agregado a la factura.");
+                i.Qty += NewQty;                
             }
-            NewItems.Add(this);
+            else
+            {
+                NewItems.Add(this);
+            }
             ClearNew();
             RefreshSubtotals();
         }
 
         private void ClearNew()
         {
-            NewItem = null;
+            NewItem = null!;
         }
 
         private void NewFactura()

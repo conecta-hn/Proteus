@@ -130,7 +130,7 @@ namespace TheXDS.Proteus.Api
             p.Code128(ot.Id.ToString());
             p.Append($"Cliente: {ot.Cliente?.Name ?? "Consumidor final"}");
             p.Append($"RTN: {ot.Cliente?.Rtn ?? "9999-9999-999999"}");
-            var exonerar = ot.Cliente!.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)));
+            var exonerar = ot.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1))) ?? false;
             if (exonerar)
             {
                 p.Append("No. constancia registro exonerado:");
