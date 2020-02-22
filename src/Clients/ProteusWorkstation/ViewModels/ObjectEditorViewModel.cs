@@ -382,19 +382,22 @@ namespace TheXDS.Proteus.ViewModels
             else if (Proteus.Infer(ActiveModel!) is { } svc)
             {          
                 var q = svc.All(ActiveModel!);
-                //Results = await q.CountAsync() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
-
                 if (q.Count() <= Settings.Default.RowLimit)
                 {
-                    var re = await q.ToListAsync();
-                    Results = CollectionViewSource.GetDefaultView(re);
+                    try
+                    {
+                        var re = await q.ToListAsync();
+                        Results = CollectionViewSource.GetDefaultView(re);
+                    }
+                    catch 
+                    {
+                        Results = null;
+                    }
                 }
                 else
                 {
                     Results = null;
                 }
-
-                //Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
             }
             EnumerableResults = null;
             SearchQuery = null;
