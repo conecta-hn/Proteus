@@ -2,6 +2,7 @@
 using System.Linq;
 using TheXDS.MCART;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
@@ -34,6 +35,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
             set
             {
+                if (!Proteus.Service<FacturaService>()!.Elevate(SecurityFlags.Admin))
+                {
+                    Proteus.MessageTarget?.Stop("No tiene permisos para otorgar descuentos.");
+                    return;
+                }
                 var tot = 0m;
                 var exonerar = Entity.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)) ?? false;
                 foreach (var j in Entity.Items)

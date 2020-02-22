@@ -39,8 +39,13 @@ namespace TheXDS.Proteus.Plugins
                 new SimpleCommand(() => OnFacturar((OrdenTrabajo)vm!.Selection!, vm)), null);
         }
 
-        private async void OnFacturar(OrdenTrabajo obj, ICrudViewModel? vm)
+        private void OnFacturar(OrdenTrabajo obj, ICrudViewModel? vm)
         {
+            if (obj.Facturado)
+            {
+                Proteus.MessageTarget?.Info("La orden ya ha sido facturada.");
+                return;
+            }
             Factura f;
             if (obj.Facturas.FirstOrDefault() is { } ff)
             {
@@ -66,13 +71,7 @@ namespace TheXDS.Proteus.Plugins
 
         private void OnPrint(OrdenTrabajo obj, ICrudViewModel? vm)
         {
-            //if (obj.IsNew)
-            //{
-            //    Proteus.MessageTarget?.Stop("La orden debe guardarse primero.");
-            //    return;
-            //}
             FacturaService.PrintOt(obj);
-            //vm?.SaveCommand.Execute(obj);
         }
     }
 }
