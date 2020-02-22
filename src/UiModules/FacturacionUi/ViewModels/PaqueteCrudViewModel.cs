@@ -35,7 +35,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
             set
             {
-                if (!Proteus.Service<FacturaService>()!.Elevate(SecurityFlags.Admin))
+                if (value != 0 && !Proteus.Service<FacturaService>()!.Elevate(SecurityFlags.Admin))
                 {
                     Proteus.MessageTarget?.Stop("No tiene permisos para otorgar descuentos.");
                     return;
