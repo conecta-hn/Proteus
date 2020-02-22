@@ -35,11 +35,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
             set
             {
-                if (value != 0 && !Proteus.Service<FacturaService>()!.Elevate(SecurityFlags.Admin))
-                {
-                    Proteus.MessageTarget?.Stop("No tiene permisos para otorgar descuentos.");
-                    return;
-                }
+                //if (value != 0 && !(Proteus.Service<FacturaService>()!.CanRunService(SecurityFlags.Admin) ?? Proteus.Service<FacturaService>()!.Elevate(SecurityFlags.Admin)))
+                //{
+                //    Proteus.MessageTarget?.Stop("No tiene permisos para otorgar descuentos.");
+                //    return;
+                //}
                 var tot = 0m;
                 var exonerar = Entity.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)) ?? false;
                 foreach (var j in Entity.Items)
