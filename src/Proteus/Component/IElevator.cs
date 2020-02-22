@@ -12,6 +12,6 @@ namespace TheXDS.Proteus.Component
     /// </summary>
     public interface IElevator
     {
-        bool Elevate(ref IProteusUserCredential credential);
+        bool Elevate(ref IProteusUserCredential? credential);
     }
 }

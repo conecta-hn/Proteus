@@ -1664,7 +1664,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         public bool Elevate()
         {
-            return !Interactive || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
+            return !Interactive || (Session ?? Proteus.Session)?.Id == "root" || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
         }
 
         public bool Elevate(SecurityFlags flags)
