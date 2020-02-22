@@ -199,7 +199,7 @@ namespace TheXDS.Proteus.ViewModels
 
         public async Task RefreshAsync()
         {
-            _avisos = await UserService.AllAvisos.ToListAsync();
+            _avisos = await System.Data.Entity.QueryableExtensions.ToListAsync(UserService.AllAvisos);
             Notify(nameof(Avisos));
         }
 

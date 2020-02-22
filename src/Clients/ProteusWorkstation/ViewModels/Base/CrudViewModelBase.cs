@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -95,7 +96,21 @@ namespace TheXDS.Proteus.ViewModels.Base
                     }
                     foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
                     {
-                        k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                        try
+                        {
+                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                        }
+                        catch (TargetInvocationException)
+                        {
+                            try
+                            {
+                                k.GetValue(SelectedElement!.ViewModel);
+                            }
+                            catch (TargetInvocationException)
+                            {
+                                k.GetValue(value!);
+                            }
+                        }
                     }
                 }
                 else
