@@ -26,6 +26,7 @@ namespace TheXDS.Proteus.Component
         /// </returns>
         public bool Elevate(ref IProteusUserCredential? credential)
         {
+            if (credential?.Id == "root") return true;
             return UacSplash.Elevate(ref credential);
         }
     }
