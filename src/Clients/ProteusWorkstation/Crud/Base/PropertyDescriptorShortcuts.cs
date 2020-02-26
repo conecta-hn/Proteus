@@ -206,6 +206,19 @@ namespace TheXDS.Proteus.Crud.Base
         {
             return p.Required().Validator(CheckNotEmpty);
         }
+        
+        /// <summary>
+        /// Marca un campo para no ser una cadena nula.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        [Sugar]
+        public static IPropertyDescriptor NotNull(this IPropertyDescriptor p)
+        {
+            return p.Required().Validator(CheckNotNull);
+        }
 
         /// <summary>
         /// Marca una colección para indicar que debe contener al menos un elemento.
@@ -490,6 +503,21 @@ namespace TheXDS.Proteus.Crud.Base
         public static IEnumerable<ValidationError> CheckNotEmpty(ModelBase entity, PropertyInfo prop)
         {
             if (prop.GetValue(entity)?.ToString()?.IsEmpty() ?? true) yield return new ValidationError(prop, "Este campo es requerido.");
+        }
+
+        /// <summary>
+        /// Validación que comprueba que el objeto no sea <see langword="null"/>.
+        /// </summary>
+        /// <param name="entity">Entidad a validar.</param>
+        /// <param name="prop">Referencia a la propiedad a validar.</param>
+        /// <returns>
+        /// Una colección de errores de validación si existen problemas, o
+        /// una colección vacía si la entidad ha superado todas las
+        /// validaciones.
+        /// </returns>
+        public static IEnumerable<ValidationError> CheckNotNull(ModelBase entity, PropertyInfo prop)
+        {
+            if (prop.GetValue(entity) is null) yield return new NullValidationError(prop);
         }
 
         /// <summary>
