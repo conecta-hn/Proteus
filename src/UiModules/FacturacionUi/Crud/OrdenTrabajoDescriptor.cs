@@ -64,11 +64,12 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
         private void OnDarDescuento(OrdenTrabajo ot, NotifyPropertyChangeBase vm)
         {
-            if (!Proteus.Service<FacturaService>()!.Elevate(SecurityFlags.Admin))
-            {
-                Proteus.MessageTarget?.Stop("No tiene permisos para otorgar descuento de tercera edad.");
-                return;
-            }
+            //var svc = Proteus.Service<FacturaService>()!;
+            //if (!(svc.CanRunService(SecurityFlags.Admin) ?? false || svc.Elevate(SecurityFlags.Admin)))
+            //{
+            //    Proteus.MessageTarget?.Stop("No tiene permisos para otorgar descuento de tercera edad.");
+            //    return;
+            //}
             var tot = 0m;
             var exonerar = ot.Cliente?.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp, p.Void)) ?? false;
             foreach (var j in ot.Items)
