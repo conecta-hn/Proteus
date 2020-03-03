@@ -1685,6 +1685,8 @@ namespace TheXDS.Proteus.Api
             }
         }
 
+        public Task<DetailedResult> ForcefullySaveAsync() => InternalSaveAsync(true);
+
         /// <summary>
         /// Ejecuta una operación de guardado directamente, sin realizar
         /// verificaciones de permisos.
@@ -1697,12 +1699,12 @@ namespace TheXDS.Proteus.Api
         /// <see cref="Result.Unreachable"/> si no es posible contactar con
         /// el servidor de dase de datos.
         /// </returns>
-        protected async Task<DetailedResult> InternalSaveAsync()
+        protected async Task<DetailedResult> InternalSaveAsync(bool forcefullySave = false)
         {
             CancellationTokenSource? cs = null;
             try
             {
-                if (!ChangesPending()) return Result.Ok;
+                if (!(ChangesPending() || forcefullySave)) return Result.Ok;
 
                 var affectedEntities = Context.ChangeTracker.Entries()
                     .Where(p => p.State != EntityState.Unchanged).ToList();
