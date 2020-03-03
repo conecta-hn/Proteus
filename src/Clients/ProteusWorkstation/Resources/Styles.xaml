@@ -856,9 +856,6 @@
     <Style TargetType="{x:Type xcwt:DateTimeUpDown}" BasedOn="{StaticResource UpDownBase}">
         <Setter Property="widgets:ProteusProp.Icon" Value="📆" />
     </Style>
-    <Style TargetType="{x:Type ScrollViewer}">
-        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
-    </Style>
 
     <!-- TextBox -->
     <Style BasedOn="{StaticResource EntryBase}" TargetType="{x:Type TextBox}">
