@@ -10,7 +10,7 @@
     <None Include="$(SolutionDir).editorconfig" Link=".editorconfig" />
   </ItemGroup>  
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="PDFsharp-MigraDoc-gdi" Version="1.51.5186-beta" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>  
