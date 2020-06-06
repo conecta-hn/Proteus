@@ -79,7 +79,11 @@ Asegúrese de que:
 
 Información adicional: {ex.Message}
 ");
+#if DEBUG
+                throw;
+#else
                 App.UiInvoke(ForceClose);
+#endif
             }
         }
 
