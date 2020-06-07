@@ -121,8 +121,17 @@ namespace TheXDS.Proteus.Config
             set => MainWindowUiMode = (byte)value;
         }
 
+        public InitErrorActions InitErrorAction
+        {
+            get => (InitErrorActions)InitErrAction;
+            set => InitErrAction = (byte)value;
+        }
+
         public IEnumerable<NamedObject<Proteus.InitMode>> InitModes { get; } = NamedObject<Proteus.InitMode>.FromEnum();
+        
         public IEnumerable<NamedObject<UiMode>> UiModes { get; } = NamedObject<UiMode>.FromEnum();
+
+        public IEnumerable<NamedObject<InitErrorActions>> InitErrActions { get; } = NamedObject<InitErrorActions>.FromEnum();
 
         public IEnumerable<Service> Services => Proteus.Services;
 

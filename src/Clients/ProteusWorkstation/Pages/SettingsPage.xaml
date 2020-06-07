@@ -107,6 +107,15 @@
                         <CheckBox IsChecked="{Binding EarlyLoadMappings}" IsThreeState="False">
                             Habilitar carga prematura de mapeos de modelos (experimental)
                         </CheckBox>
+                        <ComboBox
+                            widgets:ProteusProp.Watermark="Acción en caso de error al inicializar"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                            widgets:ProteusProp.Icon="💣"
+                            ItemsSource="{Binding InitErrActions}"
+                            SelectedValuePath="Value"
+                            DisplayMemberPath="Name"
+                            SelectedValue="{Binding InitErrorAction}"/>
+
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

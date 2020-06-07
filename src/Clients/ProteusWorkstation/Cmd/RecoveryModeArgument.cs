@@ -62,8 +62,7 @@ namespace TheXDS.Proteus.Cmd
             Proteus.CommonReporter?.UpdateStatus("Preparando hooks de aplicación...");
             Proteus.LogoutActions.Add(Vm.Close);
 
-
-            Proteus.CommonReporter?.UpdateStatus("Conectando manejadores de excepciones...");
+            Proteus.CommonReporter?.UpdateStatus("Conectando manejador de excepciones...");
             Hook();
 
             App.UiInvoke(Vm.OpenMainPage);
@@ -80,7 +79,6 @@ namespace TheXDS.Proteus.Cmd
             Application.Current.DispatcherUnhandledException += Dispatcher_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
-
 
         private void Fail(Exception? e)
         {

@@ -87,12 +87,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelExporter", "UiModules\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusUpdater", "Utils\ProteusUpdater\ProteusUpdater.csproj", "{491A5983-F82D-47F4-A69F-BCA0D5339ACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdatePusher", "Utils\UpdatePusher\UpdatePusher.csproj", "{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdatePusher", "Utils\UpdatePusher\UpdatePusher.csproj", "{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{0fe33df1-ccbb-400b-9464-9c2389dfa411}*SharedItemsImports = 5
+		Shared\TerminalApps\TerminalApps.projitems*{0fe33df1-ccbb-400b-9464-9c2389dfa411}*SharedItemsImports = 5
 		Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{2912ed22-9853-41ec-93de-573905bec804}*SharedItemsImports = 5
+		Shared\TerminalApps\TerminalApps.projitems*{2912ed22-9853-41ec-93de-573905bec804}*SharedItemsImports = 5
 		Shared\License\License.projitems*{34ba68cc-9822-4656-84f1-81ed63433ea6}*SharedItemsImports = 13
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{3a1c497e-d0f0-4bd9-8ed8-9e40e5693e82}*SharedItemsImports = 5
 		Shared\CmdLineArgs\CmdLineArgs.projitems*{7df0886c-11cd-4abc-9135-31ef4b7ff44c}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
