@@ -21,7 +21,7 @@ namespace TheXDS.Proteus.ViewModels
     public class LoginViewModel : PageViewModel
     {
         private string _user;
-        private SecureString _password;
+        private SecureString? _password;
         private bool _loginSucceeded;
         private string? _errorMessage;
                
@@ -48,7 +48,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Obtiene o establece la contraseña a utilizar para autenticarse.
         /// </summary>
-        public SecureString Password
+        public SecureString? Password
         {
             get => _password;
             set
@@ -160,14 +160,19 @@ namespace TheXDS.Proteus.ViewModels
                     ErrorMessage = "Contraseña requerida.";
                     return;
                 }
-            } catch { }
-            await PerformAsync(PerformLogin, LoginCommand, CloseCommand);
+                await PerformAsync(PerformLogin, LoginCommand, CloseCommand).Throwable();
+            } catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return;
+            }
+
             Password = null;
             if (CloseAfterLogin && Success) base.Close();
         }
         private async Task PerformLogin()
         {
-            var p = Password.Copy();
+            var p = Password!.Copy();
             var t = Elevation 
                 ? Proteus.LogonService!.Login(User, Password) 
                 : Proteus.Login(User, Password);
