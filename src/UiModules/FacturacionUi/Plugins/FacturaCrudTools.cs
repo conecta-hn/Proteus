@@ -24,16 +24,12 @@ namespace TheXDS.Proteus.Plugins
 
         public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel vm)
         {
-            yield return new Launcher(
+            yield return Launcher.FromMethod(
                 "Imprimir factura",
                 "Permite imprimir una copia de la factura.",
-                GetMethod<FacturaCrudTools, Action<Factura>>(p => p.OnPrint).FullName(),
-                new SimpleCommand(() => OnPrint(vm.Selection as Factura)), null);
-            yield return new Launcher(
-                "Anular factura",
-                "Permite imprimir una copia de la factura.",
-                GetMethod<FacturaCrudTools, Action<ICrudViewModel>>(p => p.OnNullify).FullName(),
-                new SimpleCommand(() => OnNullify(vm)), null);
+                OnPrint, () => vm.Selection as Factura);
+
+            yield return Launcher.FromMethod("Anular factura", "Permite anular una factura.", OnNullify, vm);
         }
 
         private void OnPrint(Factura? obj)
@@ -49,13 +45,12 @@ namespace TheXDS.Proteus.Plugins
             }
         }
 
-        private async void OnNullify(ICrudViewModel? obj)
+        private void OnNullify(ICrudViewModel? obj)
         {
             if (obj is null) return;
             if (!(obj.Selection is Factura f)) return;
             f.Nula = true;
             obj.SaveCommand.Execute(f);
         }
-
     }
 }

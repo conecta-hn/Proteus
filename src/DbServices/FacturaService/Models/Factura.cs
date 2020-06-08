@@ -11,11 +11,6 @@ namespace TheXDS.Proteus.Models
     public class Factura : FacturaBase
     {
         /// <summary>
-        /// Orden de trabajo que ha sido pagada con esta factura.
-        /// </summary>
-        public virtual OrdenTrabajo OtRef { get; set; }
-
-        /// <summary>
         /// Obtiene un código de compra exenta.
         /// </summary>
         public string CompraExentaRef { get; set; }

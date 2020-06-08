@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 using TheXDS.Proteus.Models.Base;
+using System;
+using System.Linq;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.Models
 {
@@ -30,8 +34,26 @@ namespace TheXDS.Proteus.Models
         /// </summary>
         public byte? SecondScreen { get; set; }
 
-        public virtual Entidad Entidad { get; set; }
+        /// <summary>
+        /// Entidad de facturación asociada a esta estación.
+        /// </summary>
+        public virtual Entidad Entidad { get; set; } = null!;
 
-        public string Printer { get; set; }
+        /// <summary>
+        /// Impresora asociada a la estación de facturación.
+        /// </summary>
+        public string? Printer { get; set; }
+
+        /// <summary>
+        /// Referencia al <see cref="Guid"/> del <see cref="PaymentSource"/>
+        /// utilizado para crear este pago.
+        /// </summary>
+        public Guid PrintDriver { get; set; }
+
+        /// <summary>
+        /// Obtiene el <see cref="FacturaPrintDriver"/> asociado a esta estación de facturación.
+        /// </summary>
+        /// <returns></returns>
+        public FacturaPrintDriver? ResolveDriver() => FacturaService.FactPrintDrivers.FirstOrDefault(p => p.Guid == PrintDriver);
     }
 }

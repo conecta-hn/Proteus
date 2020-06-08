@@ -76,5 +76,10 @@ namespace TheXDS.Proteus.Models
                 StaticDescuento = StaticDescuento
             };
         }
+
+        public override string ToString()
+        {
+            return $"{Qty}x {Item?.Name ?? "ítems"}";
+        }
     }
 }

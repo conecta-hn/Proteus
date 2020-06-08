@@ -17,13 +17,14 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         /// </summary>
         protected override void DescribeModel()
         {
-            OnModuleMenu(InteractionType.AdminTool);
+            OnModuleMenu(InteractionType.Settings);
             LinkProperty<User>(p => p.UserId)
                 .Source(UserService.InteractiveUsers)
                 .Important("Usuario")
                 .Required();
             NumericProperty(p => p.OptimBalance)
                 .Range(0m, 1000000000m)
+                //.Format("L. {0}")
                 .Format("C")
                 .ShowInDetails()
                 .AsListColumn("C")

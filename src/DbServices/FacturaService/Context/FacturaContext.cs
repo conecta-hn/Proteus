@@ -20,8 +20,6 @@ namespace TheXDS.Proteus.Context
         public DbSet<FacturaXCobrar> FacturasXCobrar { get; set; }
         public DbSet<IsvExoneracion> IsvExoneraciones { get; set; }
         public DbSet<ItemFactura> ItemFacturas { get; set; }
-        public DbSet<OrdenTrabajo> OrdenesTrabajo { get; set; }
-        public DbSet<OrdenTrabajoItem> OrdenTrabajoItems { get; set; }
         public DbSet<Paquete> Paquetes { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Producto> Productos { get; set; }
