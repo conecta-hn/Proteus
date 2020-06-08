@@ -6,9 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Component.Attributes;
 using TheXDS.Proteus.Models;
-using System.Text;
 
 namespace TheXDS.Proteus.Seeders
 {
@@ -30,6 +28,8 @@ namespace TheXDS.Proteus.Seeders
                 Cotizaciones = { },
                 Prepaid = 0m,
                 Exoneraciones = { },
+                CanPrepay = false,
+                CanCredit = false
             };
         }
     }

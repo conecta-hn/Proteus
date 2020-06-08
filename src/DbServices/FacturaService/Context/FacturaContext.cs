@@ -19,6 +19,7 @@ namespace TheXDS.Proteus.Context
         public DbSet<FacturableCategory> FacturableCategories { get; set; }
         public DbSet<FacturaXCobrar> FacturasXCobrar { get; set; }
         public DbSet<IsvExoneracion> IsvExoneraciones { get; set; }
+        public DbSet<IsvExoneracionType> IsvExoneracionTypes { get; set; }
         public DbSet<ItemFactura> ItemFacturas { get; set; }
         public DbSet<Paquete> Paquetes { get; set; }
         public DbSet<Payment> Payments { get; set; }

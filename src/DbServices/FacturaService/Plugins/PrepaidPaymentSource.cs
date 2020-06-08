@@ -6,6 +6,10 @@ using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Plugins
 {
+    /// <summary>
+    /// Método de pago intergado que permite cancelar el monto de una factura
+    /// con fondos pre-pagados por el cliente.
+    /// </summary>
     [Name("Pre-pagado"), Description("Paga una factura con fondos pre-pagados del cliente.")]
     [Guid("dabcf30e-3c02-44d3-9937-ab339c897b88")]
     public class PrepaidPaymentSource : PaymentSource

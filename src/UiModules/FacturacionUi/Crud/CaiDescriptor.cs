@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
@@ -29,11 +27,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
             Property(p => p.Timestamp)
                 .Important("Fecha de autorización")
-                .Default(DateTime.Now);
+                .Default(DateTime.Today);
 
             Property(p => p.Void)
                 .Label("Fecha de vencimiento")
-                .Default(DateTime.Now + TimeSpan.FromDays(365));
+                .Default(DateTime.Today + TimeSpan.FromDays(365));
 
             ListProperty(p => p.Rangos).Creatable().Label("Rangos de facturación").ShowInDetails();
 

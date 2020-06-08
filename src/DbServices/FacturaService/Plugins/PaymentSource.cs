@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
@@ -9,7 +7,9 @@ using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Plugins
 {
-
+    /// <summary>
+    /// Plugin que define un componente de orígen de pago para una factura.
+    /// </summary>
     public abstract class PaymentSource : Plugin, IExposeGuid
     {
         private readonly IExposeGuid _implementor;
@@ -43,11 +43,5 @@ namespace TheXDS.Proteus.Plugins
                 Timestamp = DateTime.Now
             });
         }
-    }
-
-    [Name("Efectivo"), Description("Permite realizar pagos en efectivo.")]
-    [Guid("419d06c5-7a47-44d5-824b-bc573811084a")]
-    public class EfectivoPaymentSource : PaymentSource
-    {
     }
 }

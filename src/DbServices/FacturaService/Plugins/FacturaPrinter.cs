@@ -7,6 +7,9 @@ using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Plugins
 {
+    /// <summary>
+    /// Define un controlador de impresora de facturas.
+    /// </summary>
     public abstract class FacturaPrintDriver : Plugin, IExposeGuid
     {
         private readonly IExposeGuid _implementor;
@@ -22,7 +25,18 @@ namespace TheXDS.Proteus.Plugins
             _implementor = new ExposeGuidImplementor(this);
         }
 
+        /// <summary>
+        /// Imprime una factura.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="i"></param>
         public abstract void PrintFactura(Factura f, IFacturaInteractor? i);
+
+        /// <summary>
+        /// Imprime una pre-factura.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="i"></param>
         public abstract void PrintProforma(Factura f, IFacturaInteractor? i);
     }
 }

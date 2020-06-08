@@ -51,10 +51,35 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             ListProperty(p => p.Facturas).Creatable().ShowInDetails();
             ListProperty(p => p.Cotizaciones).Creatable().ShowInDetails();
 
-            ListProperty(p => p.Credits)
+            Property(p => p.CanCredit).Label("Permitir venta al crédito");
+            NumericProperty(p => p.CreditLimit)
+                .Range(0, decimal.MaxValue)
+                .Label("Límite de crédito")
+                .Nullable().ShowInDetails();
+
+            Property(p => p.CanPrepay).Label("Permitir prepago");
+
+
+            ListProperty(p => p.Debits)
                 .Creatable()
-                .Label("Créditos otorgados al cliente")
+                .Label("Débitos activos del cliente")
                 .ShowInDetails();
+
+            Property(p => p.Prepaid).Label("Créditos del cliente")
+                .ShowInDetails()
+                .ReadOnly("C");
+
+            Property(p => p.TotalCredits)
+                .Label("Créditos totales otorgados")
+                .ShowInDetails().ReadOnly();
+            Property(p => p.TotalCredits)
+                .Label("Créditos adeudados actualmente")
+                .ShowInDetails()
+                .ReadOnly();
+            Property(p => p.TotalCredits)
+                .Label("Crédito disponible")
+                .ShowInDetails()
+                .ReadOnly();
 
             CustomAction("Generar Carnet de cliente", OnGenerateCard);
         }

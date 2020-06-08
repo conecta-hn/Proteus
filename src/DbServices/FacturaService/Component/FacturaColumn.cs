@@ -1,5 +1,4 @@
 ﻿using System;
-using TheXDS.MCART.Types.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.Component

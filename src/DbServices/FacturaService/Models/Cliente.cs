@@ -49,44 +49,22 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Colección de créditos del cliente.
         /// </summary>
-        public virtual List<FacturaXCobrar> Credits { get; set; } = new List<FacturaXCobrar>();
-
-        public string SagRef { get; set; }
+        public virtual List<FacturaXCobrar> Debits { get; set; } = new List<FacturaXCobrar>();
 
         public bool AnyExoneraciones()
         {
             return Exoneraciones.Any(p => DateTime.Now.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)));
         }
-    }
 
-    public class IsvExoneracion : TimestampModel<string>
-    {
-        public DateTime Void { get; set; }
-    }
+        public bool CanCredit { get; set; } = false;
 
-    public class FacturaXCobrar : TimestampModel<int>
-    {
-        public virtual Cliente Cliente { get; set; }
-        public virtual Factura Parent { get; set; }
-        public decimal Total { get; set; }
-        public virtual List<Abono> Abonos { get; set; } = new List<Abono>();
-        public decimal Paid => Abonos.Sum(p => p.Amount);
-        public decimal Pending => Total - Paid;
+        public decimal? CreditLimit { get; set; } = null;
 
-        /// <summary>
-        /// Obtiene o establece un valor que indica si esta cuenta ya fue pagada.
-        /// </summary>
-        /// <remarks>
-        /// Se implementa como campo de datos con el propósito de permitir
-        /// realizar queries sin incurrir en la generación de una cadena de
-        /// consulta demasiado compleja, o evitar limitaciones de Linq.
-        /// </remarks>
-        public bool IsPaid { get; set; }
-    }
+        public bool CanPrepay { get; set; } = true;
 
-    public class Abono : TimestampModel<long>
-    {
-        public virtual FacturaXCobrar Parent { get; set; }
-        public decimal Amount { get; set; }
+        public decimal TotalCredits => Debits.Sum(p => p.Total);
+        public decimal TotalDue => TotalCredits - Debits.Sum(p => p.Abonos.Sum(q => q.Amount));
+        public decimal? AvailableCredit => CreditLimit.HasValue ? CreditLimit - TotalDue : null;
+
     }
 }

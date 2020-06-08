@@ -6,6 +6,6 @@ namespace TheXDS.Proteus.Models
     public class FacturableCategory : Nameable<int>
     {
         public virtual List<Facturable> Children { get; set; } = new List<Facturable>();
+        public float? Isv { get; set; }
     }
-
 }

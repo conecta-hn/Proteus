@@ -30,6 +30,8 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Important("Fecha de vencimiento")
                 .ShowInDetails()
                 .AsListColumn();
+
+            ObjectProperty(p => p.Kind).Selectable().Label("Tipo de exoneración").Required();
         }
     }
 }
