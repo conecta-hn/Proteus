@@ -2,8 +2,9 @@
 using System.Linq;
 using TheXDS.Proteus.Models.Base;
 
-namespace TheXDS.Proteus.Conecta.Models
+namespace TheXDS.Proteus.Conecta.Inventario.Models
 {
+    /*
     public interface IPagable : ITimestamp
     {
         List<Pago> Pagos { get; set; }
@@ -12,4 +13,5 @@ namespace TheXDS.Proteus.Conecta.Models
         decimal Debe => Total - Pagado;
 
     }
+    */
 }

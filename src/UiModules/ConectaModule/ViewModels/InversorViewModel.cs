@@ -4,6 +4,7 @@ using TheXDS.Proteus.Crud;
 
 namespace TheXDS.Proteus.Conecta.ViewModels
 {
+    /*
     /// <summary>
     /// Clase base personalizada para el ViewModel recompilado que se utilizará
     /// dentro del Crud generado para el modelo
@@ -20,4 +21,5 @@ namespace TheXDS.Proteus.Conecta.ViewModels
             RegisterPropertyChangeBroadcast(nameof(Entity.Inversion), nameof(Entity.InvTotal));
         }
     }
+    */
 }

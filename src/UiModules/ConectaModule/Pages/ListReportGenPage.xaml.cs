@@ -10,7 +10,7 @@ namespace TheXDS.Proteus.ConectaModule.Pages
         public ListReportGenPage()
         {
             InitializeComponent();
-            ViewModel = new ListReportGenViewModel(this);
+            //ViewModel = new ListReportGenViewModel(this);
         }
     }
 }

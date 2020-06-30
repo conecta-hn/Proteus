@@ -10,6 +10,7 @@ using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Conecta.Api;
+using TheXDS.Proteus.Conecta.Inventario.Api;
 using TheXDS.Proteus.Conecta.Models;
 using TheXDS.Proteus.Conecta.ViewModels;
 using TheXDS.Proteus.ConectaModule.Pages;
@@ -26,6 +27,7 @@ namespace TheXDS.Proteus.Conecta
 {
     namespace Crud
     {
+        /*
         // Inventario
         public class ItemDescriptor : CrudDescriptor<Item>
         {
@@ -186,7 +188,7 @@ namespace TheXDS.Proteus.Conecta
                 ShowAllInDetails();
             }
         }
-
+        */
 
         // Actividades
         /// <summary>
@@ -312,7 +314,7 @@ namespace TheXDS.Proteus.Conecta
         public class ConectaModule : UiModule<ConectaService>
         {
             
-
+            /*
             [InteractionItem, InteractionType(Reports), Essential, Name("Listas de productos")]
             public async void ListProducts(object? sender, EventArgs e)
             {
@@ -325,11 +327,12 @@ namespace TheXDS.Proteus.Conecta
                 if (!InputSplash.GetNew("Ingrese a un deudor", out string query)) return;
                 await ConectaReports.MakeNosDebenReport(query);
             }
-
+            */
         }
 
         public static class ConectaReports
         {
+            /*
             private static readonly ConectaService _service = Proteus.Service<ConectaService>();
 
 
@@ -341,12 +344,6 @@ namespace TheXDS.Proteus.Conecta
                 var fd = Reporting.ReportBuilder.MakeReport($"Utilidades del {fecha.Minimum} al {fecha.Maximum}");
                 
                 var l = await QE.ToListAsync(_service.All<Menudeo>().Where(p=>p.Vendedor != null));
-
-
-
-
-
-
 
                 try
                 {
@@ -449,6 +446,7 @@ namespace TheXDS.Proteus.Conecta
 
                 return row;
             }
+            */
         }
 
         [Name("Actividades")]

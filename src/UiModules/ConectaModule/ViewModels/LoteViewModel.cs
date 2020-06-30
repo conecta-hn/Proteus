@@ -5,6 +5,7 @@ using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
 
 namespace TheXDS.Proteus.Conecta.ViewModels
 {
+    /*
     public class LoteViewModel : ViewModel<Lote>
     {
         public int VendidosCount
@@ -58,4 +59,5 @@ namespace TheXDS.Proteus.Conecta.ViewModels
                 nameof(ExistenciasCount));
         }
     }
+    */
 }

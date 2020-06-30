@@ -26,6 +26,7 @@ using QE = System.Data.Entity.QueryableExtensions;
 
 namespace TheXDS.Proteus.ConectaModule.ViewModels
 {
+    /*
     public enum ReportInto : byte
     {
         [Name("Vista previa")] Preview,
@@ -414,4 +415,5 @@ namespace TheXDS.Proteus.ConectaModule.ViewModels
         }
 
     }
+    */
 }

@@ -6,6 +6,7 @@ using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Conecta.ViewModels
 {
+    /*
     public class PagoViewModel<T> : ViewModel<T> where T: ModelBase, IPagable, new()
     {
         public decimal Pendiente => (Entity?.Total ?? 0m) - Abonado;
@@ -37,5 +38,6 @@ namespace TheXDS.Proteus.Conecta.ViewModels
                 nameof(LastPagoWhen),
                 nameof(LastPagoHowMuch));
         }
-    }
+    }*/
+
 }
