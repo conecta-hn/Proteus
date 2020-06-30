@@ -3,14 +3,25 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Component
 {
     public interface IModelLocalSearchFilter
     {
-        TCollection Filter<TCollection>(TCollection collection, string query) where TCollection : IList<Models.Base.ModelBase>, new();
+        /// <summary>
+        /// Obtiene una lista de entidades filtradas por esta instancia.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo que este filtro acepta.</typeparam>
+        /// <param name="collection">Colección de entidades de entrada.</param>
+        /// <param name="query">Cadena de filtro.</param>
+        /// <returns>
+        /// Un <see cref="List{T}"/> con las entidades que han cumplido con las
+        /// condiciones de este filtro de búsqueda local.
+        /// </returns>
+        List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase;
 
         /// <summary>
         /// Comprueba si este <see cref="IModelSearchFilter"/> puede crear

@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TheXDS.MCART;
+using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -54,7 +55,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <value>El valor de EnumerableResults.</value>
         public IEnumerable<ModelBase>? EnumerableResults
         {
-            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel);
+            get => _enumerableResults ?? Proteus.Infer(ActiveModel)?.All(ActiveModel!);
             private set => Change(ref _enumerableResults, value);
         }
 
@@ -212,7 +213,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(IObjectPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), description, models) { }
+        public ObjectEditorViewModel(IEntityViewModel parentVm, IObjectPropertyDescription description, params Type[] models) : this(parentVm, AppInternal.GetSource(description.Source), description, models) { }
 
         private void OnCancelSelect()
         {
@@ -225,8 +226,12 @@ namespace TheXDS.Proteus.ViewModels
         private void OnOkSelect()
         {
             Selection = TempSelection;
+            _description.Property.SetValue(_description.PropertySource == PropertyLocation.ViewModel ? _parentVm : _parentVm.Entity, TempSelection);
             OnCancelSelect();
         }
+
+        private readonly IObjectPropertyDescription _description;
+        private readonly IEntityViewModel _parentVm;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -241,21 +246,17 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos aceptados por el valor de la propiedad.
         /// </param>
-        public ObjectEditorViewModel(ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
+        public ObjectEditorViewModel(IEntityViewModel parentVm, ICollection<ModelBase>? selectionSource, IObjectPropertyDescription description, params Type[] models) : base(models)
         {
+            _description = description;
+            _parentVm = parentVm;
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;
             ShowEditControls = description.Creatable;
-
-            SelectionSource = selectionSource;
             SelectCommand = new SimpleCommand(OnSelect);
             OkSelectCommand = new SimpleCommand(OnOkSelect);
             CancelSelectCommand = new SimpleCommand(OnCancelSelect);
-
-            RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
-            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
-            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));            
 
             SelectableModels = description.ChildModels?.ToList()
                 ?? description.PropertyType.Derivates().Select(p => p.ResolveToDefinedType()!).Distinct().Where(TypeExtensions.IsInstantiable).OrNull()?.ToList()
@@ -263,6 +264,12 @@ namespace TheXDS.Proteus.ViewModels
 
             ModelLabel = description.Label;
             ActiveModel = SelectableModels.FirstOrDefault();
+            SelectionSource = description.UseVmSource ? description.VmSource(parentVm, this) : selectionSource;
+
+            RegisterPropertyChangeBroadcast(nameof(Selection), nameof(DisplayValue));
+            RegisterPropertyChangeBroadcast(nameof(ActiveModel), nameof(ColumnsView));
+            RegisterPropertyChangeBroadcast(nameof(WillSearch), nameof(SearchLabel));
+
             SearchCommand = new ObservingCommand(this, OnSearch);
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
@@ -375,7 +382,22 @@ namespace TheXDS.Proteus.ViewModels
             else if (Proteus.Infer(ActiveModel!) is { } svc)
             {          
                 var q = svc.All(ActiveModel!);
-                Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+                if (q.Count() <= Settings.Default.RowLimit)
+                {
+                    try
+                    {
+                        var re = await q.ToListAsync();
+                        Results = CollectionViewSource.GetDefaultView(re);
+                    }
+                    catch 
+                    {
+                        Results = null;
+                    }
+                }
+                else
+                {
+                    Results = null;
+                }
             }
             EnumerableResults = null;
             SearchQuery = null;
@@ -416,10 +438,12 @@ namespace TheXDS.Proteus.ViewModels
                 l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
             }
             else { return; }
-            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            var ll = new List<ModelBase>();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>().Where(p=>p.UsableFor(ActiveModel!)))
             {
-                l = j.Filter(l, SearchQuery!);
+                ll = ll.Concat(j.Filter(l, SearchQuery!)).ToList();
             }
+            l = ll.Distinct().ToList();
             EnumerableResults = l;
             Results = CollectionViewSource.GetDefaultView(l);
             Results.Refresh();

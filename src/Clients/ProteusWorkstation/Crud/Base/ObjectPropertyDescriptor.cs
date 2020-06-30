@@ -13,6 +13,9 @@ using System.Windows.Data;
 using TheXDS.MCART.Types.Extensions;
 using System.Linq.Expressions;
 using static TheXDS.MCART.ReflectionHelpers;
+using TheXDS.MCART.Types;
+using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -22,6 +25,9 @@ namespace TheXDS.Proteus.Crud.Base
         private IQueryable<ModelBase> _source;
 
         private bool _selectable;
+
+        private Func<object, CrudViewModelBase?, ObservableListWrap<ModelBase>>? _vmSource;
+
         public BindingBase DisplayMemberBinding { get; protected internal set; }
 
         public string DisplayMemberPath { get; protected internal set; }
@@ -35,6 +41,11 @@ namespace TheXDS.Proteus.Crud.Base
         public bool Selectable => _selectable || !Creatable;
 
         public IEnumerable<Type> ChildModels { get; private set; }
+
+        public bool UseVmSource { get; private set; }
+
+        ObservableListWrap<ModelBase>? IDataPropertyDescription.VmSource(object obj) => _vmSource?.Invoke(obj, null);
+        ObservableListWrap<ModelBase>? IDataPropertyDescription.VmSource(object obj, CrudViewModelBase elementVm) => _vmSource?.Invoke(obj, elementVm);
 
         private protected virtual IQueryable<ModelBase> GetFromSvc()
         {
@@ -115,6 +126,18 @@ namespace TheXDS.Proteus.Crud.Base
             DisplayMemberBinding = new Binding(path);
             DisplayMemberPath = path;
             return this;
+        }
+
+        public IDataPropertyDescriptor VmSource<T>(Func<T, CrudViewModelBase?, ObservableListWrap<ModelBase>> source) where T : ViewModelBase
+        {
+            _vmSource = (o,e) => source.Invoke((T)o, e);
+            UseVmSource = true;
+            return this;
+        }
+
+        public IDataPropertyDescriptor VmSource<T>(Func<T, ObservableListWrap<ModelBase>> source) where T : ViewModelBase
+        {
+            return VmSource<T>((o, _) => source(o));
         }
     }
 }

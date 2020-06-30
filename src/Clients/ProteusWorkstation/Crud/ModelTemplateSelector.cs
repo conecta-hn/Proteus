@@ -21,7 +21,7 @@ namespace TheXDS.Proteus.Crud
         }
         public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
-            var desc = _descriptions.FirstOrDefault(p => p.DescribedModel == item.GetType().ResolveToDefinedType());
+            var desc = _descriptions.FirstOrDefault(p => p.DescribedModel == item?.GetType().ResolveToDefinedType());
             return desc?.TreeViewTemplate;
         }
     }

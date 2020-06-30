@@ -24,10 +24,10 @@ namespace TheXDS.Proteus.Crud
 {
     internal static class CrudBuilder
     {
-        internal static FrameworkElement BuildEditor(ICrudDescription d, out ICollection<IPropertyMapping> boxes)
+        internal static FrameworkElement BuildEditor(IEntityViewModel parentVm, ICrudDescription d, out ICollection<IPropertyMapping> boxes)
         {
             boxes = new HashSet<IPropertyMapping>();
-            var stckpnl = App.UiInvoke(()=>new StackPanel
+            var stckpnl = App.UiInvoke(() => new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Center,
                 MaxWidth = 550,
@@ -37,7 +37,7 @@ namespace TheXDS.Proteus.Crud
             foreach (var j in d.Descriptions)
             {
                 if (j.Hidden) continue;
-                stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(j)).ContainingControl);
+                stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(parentVm, j)).ContainingControl);
             }
             var wp = new StretchyWrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
             var addwp = false;
@@ -51,6 +51,7 @@ namespace TheXDS.Proteus.Crud
             if (addwp) stckpnl.Children.Add(wp);
             return stckpnl;
         }
+
         internal static FrameworkElement BuildDetails(Type model, ICrudDescription d)
         {
             var tb = new TextBlock()
@@ -92,10 +93,12 @@ namespace TheXDS.Proteus.Crud
 
             return stckPnl;
         }
+
         internal static FrameworkElement BuildWarning(Type model)
         {
             return Misc.AppInternal.BuildWarning($"No se encontró ningún descriptor de CRUD para el modelo '{model.Name}'.");
         }
+
         internal static bool DescribesModel(Type t, Type model)
         {
             try { return t.BaseType.GenericTypeArguments.First() == model; }

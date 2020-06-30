@@ -3,6 +3,7 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Crud.Mappings;
 
@@ -16,7 +17,7 @@ namespace TheXDS.Proteus.Crud.Mappers
             return p == typeof(byte[]);
         }
 
-        public override IPropertyMapping Map(IPropertyDescription p)
+        public override IPropertyMapping Map(IEntityViewModel parentVm, IPropertyDescription p)
         {
             return new PasswordMapping(p);
         }

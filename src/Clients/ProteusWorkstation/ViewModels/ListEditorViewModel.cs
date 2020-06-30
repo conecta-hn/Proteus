@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos de datos para los cuales generar el control.
         /// </param>
-        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), new List<ModelBase>(), models)
+        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
             if (CanSelect = description.Selectable) ClearSearch();
@@ -420,8 +420,8 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         public async void ClearSearch()
         {
-            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
-            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);            
+            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;            
             SearchQuery = null;
         }
 
@@ -451,10 +451,12 @@ namespace TheXDS.Proteus.ViewModels
         {
             IsSearching = true;
             var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
-            foreach(var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            var ll = new List<ModelBase>();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>().Where(p => p.UsableFor(ActiveModel!)))
             {
-                l = j.Filter(l, SearchQuery!);
+                ll = ll.Concat(j.Filter(l, SearchQuery!)).ToList();
             }
+            l = ll.Distinct().ToList();
             Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;

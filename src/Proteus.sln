@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{E7EA
 		..\targets\Packages.targets = ..\targets\Packages.targets
 		..\targets\PackageVersion.props = ..\targets\PackageVersion.props
 		..\targets\Shared.targets = ..\targets\Shared.targets
+		..\targets\update-push.ps1 = ..\targets\update-push.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proteus", "Proteus\Proteus.csproj", "{BD6DF2A2-BCCA-4725-B0C9-C458D5E78DDA}"
@@ -87,6 +88,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventarioService", "DbServices\InventarioService\InventarioService.csproj", "{6DE2574C-4EE0-4342-BAC0-616C37D8F876}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConectaModule", "UiModules\ConectaModule\ConectaModule.csproj", "{BFD97BCE-B5E9-4D00-97AF-9205FD94772C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusUpdater", "Utils\ProteusUpdater\ProteusUpdater.csproj", "{491A5983-F82D-47F4-A69F-BCA0D5339ACC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdatePusher", "Utils\UpdatePusher\UpdatePusher.csproj", "{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -178,6 +183,22 @@ Global
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Debug-Publish|Any CPU.Build.0 = Debug|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Debug-PublishLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Debug-PublishLocal|Any CPU.Build.0 = Debug|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6DE2574C-4EE0-4342-BAC0-616C37D8F876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6DE2574C-4EE0-4342-BAC0-616C37D8F876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DE2574C-4EE0-4342-BAC0-616C37D8F876}.Debug-Publish|Any CPU.ActiveCfg = Debug|Any CPU
@@ -213,6 +234,8 @@ Global
 		{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E} = {4241CB00-D102-4F3C-9BF6-3214771DF20D}
 		{6DE2574C-4EE0-4342-BAC0-616C37D8F876} = {EA21D5E1-04B8-4D62-8F72-51C9ACD8CA9B}
 		{BFD97BCE-B5E9-4D00-97AF-9205FD94772C} = {4241CB00-D102-4F3C-9BF6-3214771DF20D}
+		{491A5983-F82D-47F4-A69F-BCA0D5339ACC} = {5809CE07-C0DB-42D6-A880-DD8B55E820AF}
+		{A1EB9000-B8C8-40F2-BA0C-9C381ED84062} = {5809CE07-C0DB-42D6-A880-DD8B55E820AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A790D96A-1B15-4B2C-8213-B331EDE835E1}

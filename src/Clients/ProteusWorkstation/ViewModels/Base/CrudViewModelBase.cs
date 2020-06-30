@@ -3,19 +3,12 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Config;
-using TheXDS.Proteus.Crud;
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.Widgets;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
@@ -23,9 +16,13 @@ using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
-using static TheXDS.MCART.Types.Extensions.MemberInfoExtensions;
-using static TheXDS.MCART.Types.Extensions.TypeExtensions;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
+using TheXDS.Proteus.Widgets;
+using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -99,7 +96,21 @@ namespace TheXDS.Proteus.ViewModels.Base
                     }
                     foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
                     {
-                        k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                        try
+                        {
+                            k.GetValue(k.Description.PropertySource == PropertyLocation.Model ? (object)value! : SelectedElement!.ViewModel);
+                        }
+                        catch (TargetInvocationException)
+                        {
+                            try
+                            {
+                                k.GetValue(SelectedElement!.ViewModel);
+                            }
+                            catch (TargetInvocationException)
+                            {
+                                k.GetValue(value!);
+                            }
+                        }
                     }
                 }
                 else
@@ -186,7 +197,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// componentes relacionados al modelo de datos de la entidad
         /// seleccionada.
         /// </summary>
-        public override CrudElement SelectedElement => Elements.FirstOrDefault(IsForType) ?? Elements.FirstOrDefault(Implements);
+        public override CrudElement SelectedElement
+            => Elements.FirstOrDefault(IsForType)
+            ?? Elements.FirstOrDefault(Implements);
 
         private protected void OnCancel()
         {
@@ -245,7 +258,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         public void OnCreate(Type? t)
         {
             t ??= Models.First();
-            if (!Elements.Any(p=>IsForType(p,t)) || !Elements.Any(p=>Implements(p,t!)))
+            if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
             {
                 Elements.Add(new CrudElement(t));
             }

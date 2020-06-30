@@ -409,10 +409,12 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             IsSearching = true;
             var l = (await Internal.Query(SearchQuery!, _model).ToListAsync()).Cast<ModelBase>().ToList();
-            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            var ll = new List<ModelBase>();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>().Where(p => p.UsableFor(_model)))
             {
-                l = j.Filter(l, SearchQuery!);
+                ll = ll.Concat(j.Filter(l, SearchQuery!)).ToList();
             }
+            l = ll.Distinct().ToList();
             EnumerableResults = l;
             Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;

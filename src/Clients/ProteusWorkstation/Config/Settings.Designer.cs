@@ -12,8 +12,8 @@ namespace TheXDS.Proteus.Config {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -428,6 +428,54 @@ namespace TheXDS.Proteus.Config {
             }
             set {
                 this["ConfirmLogout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int UpdateInterval {
+            get {
+                return ((int)(this["UpdateInterval"]));
+            }
+            set {
+                this["UpdateInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost")]
+        public string UpdateServer {
+            get {
+                return ((string)(this["UpdateServer"]));
+            }
+            set {
+                this["UpdateServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpdateCheck {
+            get {
+                return ((bool)(this["UpdateCheck"]));
+            }
+            set {
+                this["UpdateCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte InitErrAction {
+            get {
+                return ((byte)(this["InitErrAction"]));
+            }
+            set {
+                this["InitErrAction"] = value;
             }
         }
     }

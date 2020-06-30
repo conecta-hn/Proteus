@@ -21,9 +21,9 @@ namespace TheXDS.Proteus.ViewModels
     public class LoginViewModel : PageViewModel
     {
         private string _user;
-        private SecureString _password;
+        private SecureString? _password;
         private bool _loginSucceeded;
-        private string _errorMessage;
+        private string? _errorMessage;
                
         /// <summary>
         /// Obtiene o establece un valor que indica si se llamará al método
@@ -48,13 +48,17 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Obtiene o establece la contraseña a utilizar para autenticarse.
         /// </summary>
-        public SecureString Password
+        public SecureString? Password
         {
             get => _password;
             set
             {
                 Change(ref _password, value);
-                ErrorMessage = null;
+                try
+                {
+                    if (value is { } && value.Length != 0) ErrorMessage = null;
+                }
+                catch { }
             }
         }
 
@@ -77,13 +81,13 @@ namespace TheXDS.Proteus.ViewModels
         /// <summary>
         /// Obtiene un mensaje de error de inicio de sesión.
         /// </summary>
-        public string ErrorMessage
+        public string? ErrorMessage
         {
             get => _errorMessage;
             private set
             {
                 if (Change(ref _errorMessage, value))
-                    OnPropertyChanged(nameof(Failed));
+                    Notify(nameof(Failed));
             }
         }
   
@@ -144,28 +148,36 @@ namespace TheXDS.Proteus.ViewModels
 
         private async void OnLogin()
         {
-            //TODO: Fixear un bug feo de login con todo en null
             if (User.IsEmpty())
             {
                 ErrorMessage = "Usuario requerido.";
                 return;
             }
-            if (Password is null || Password.Length == 0)
+            try
             {
-                ErrorMessage = "Contraseña requerida.";
+                if (Password is null || Password.Length == 0)
+                {
+                    ErrorMessage = "Contraseña requerida.";
+                    return;
+                }
+                await PerformAsync(PerformLogin, LoginCommand, CloseCommand).Throwable();
+            } catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
                 return;
             }
-            await PerformAsync(PerformLogin, LoginCommand, CloseCommand);
+
+            Password = null;
             if (CloseAfterLogin && Success) base.Close();
         }
         private async Task PerformLogin()
         {
-            var p = Password.Copy();
+            var p = Password!.Copy();
             var t = Elevation 
                 ? Proteus.LogonService!.Login(User, Password) 
                 : Proteus.Login(User, Password);
             Proteus.CommonReporter?.UpdateStatus("Iniciando sesión...");
-            var r = await t;
+            var r = Result = await t;
             Success = r;
             ErrorMessage = r;
             if (r)
@@ -182,6 +194,8 @@ namespace TheXDS.Proteus.ViewModels
             else LoginFailed?.Invoke(this, EventArgs.Empty);
             Proteus.CommonReporter?.Done();
         }
+
+        internal LoginResult Result { get; private set; }
 
         private bool _elevation;
 
