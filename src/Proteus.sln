@@ -82,16 +82,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusDevel", "Utils\Prote
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProteusServerRemote", "Utils\ProteusServerRemote\ProteusServerRemote.csproj", "{8298614D-2934-4484-AC9C-9D4C5732EDFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelExporter", "UiModules\ExcelExporter\ExcelExporter.csproj", "{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelExporter", "UiModules\ExcelExporter\ExcelExporter.csproj", "{EA8FAB96-EAB6-4D26-AEFF-4CE2E642FD5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventarioService", "DbServices\InventarioService\InventarioService.csproj", "{6DE2574C-4EE0-4342-BAC0-616C37D8F876}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventarioService", "DbServices\InventarioService\InventarioService.csproj", "{6DE2574C-4EE0-4342-BAC0-616C37D8F876}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConectaModule", "UiModules\ConectaModule\ConectaModule.csproj", "{BFD97BCE-B5E9-4D00-97AF-9205FD94772C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConectaModule", "UiModules\ConectaModule\ConectaModule.csproj", "{BFD97BCE-B5E9-4D00-97AF-9205FD94772C}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{0fe33df1-ccbb-400b-9464-9c2389dfa411}*SharedItemsImports = 5
+		Shared\TerminalApps\TerminalApps.projitems*{0fe33df1-ccbb-400b-9464-9c2389dfa411}*SharedItemsImports = 5
 		Shared\TerminalApps\TerminalApps.projitems*{23237288-77a7-45c0-b479-720769cc2dbd}*SharedItemsImports = 13
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{2912ed22-9853-41ec-93de-573905bec804}*SharedItemsImports = 5
+		Shared\TerminalApps\TerminalApps.projitems*{2912ed22-9853-41ec-93de-573905bec804}*SharedItemsImports = 5
 		Shared\License\License.projitems*{34ba68cc-9822-4656-84f1-81ed63433ea6}*SharedItemsImports = 13
+		Shared\CmdLineArgs\CmdLineArgs.projitems*{3a1c497e-d0f0-4bd9-8ed8-9e40e5693e82}*SharedItemsImports = 5
 		Shared\CmdLineArgs\CmdLineArgs.projitems*{7df0886c-11cd-4abc-9135-31ef4b7ff44c}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
