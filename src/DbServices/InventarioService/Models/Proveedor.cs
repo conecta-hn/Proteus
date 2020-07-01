@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
@@ -36,7 +37,17 @@ namespace TheXDS.Proteus.Conecta
                 public virtual List<SpecDefinition> Specs { get; set; } = new List<SpecDefinition>();
             }
 
-            public class SpecDefinition : Nameable<int> { }
+            public enum SpecValueKind : byte
+            {
+                [Name("Sí/No")] Bool,
+                [Name("Texto")] Text,
+                [Name("Número")] Number
+            }
+
+            public class SpecDefinition : Nameable<int>
+            {
+                public SpecValueKind ValueKind { get; set; }
+            }
 
             public class OrdenCompra : TimestampModel<int>
             {
@@ -73,6 +84,7 @@ namespace TheXDS.Proteus.Conecta
                 public string? Description { get; set; }
 
                 public virtual Bodega? Location { get; set; }
+                public string? Serie { get; set; }
 
             }
 
@@ -94,7 +106,7 @@ namespace TheXDS.Proteus.Conecta
                 public int Qty { get; set; }
                 public decimal VentaUnitaria { get; set; }
                 public float Isv { get; set; }
-                public float Comision { get; set; }
+                public float? Comision { get; set; }
             }
 
             public class Vendedor : Contact<int>
@@ -177,11 +189,16 @@ namespace TheXDS.Proteus.Conecta
                 public DbSet<Proveedor> Proveedors { get; set; }
                 public DbSet<Categoria> Categorias { get; set; }
                 public DbSet<SpecDefinition> SpecDefinitions { get; set; }
-                public DbSet<Proveedor> Proveedores { get; set; }
                 public DbSet<OrdenCompra> OrdenCompras { get; set; }
                 public DbSet<UpKeep> UpKeeps { get; set; }
                 public DbSet<SpecInfo> SpecInfos { get; set; }
                 public DbSet<Item> Items { get; set; }
+                public DbSet<Bodega> Bodegas { get; set; }
+                public DbSet<Venta> Ventas { get; set; }
+                public DbSet<VentaItem> VentaItems { get; set; }
+                public DbSet<Vendedor> Vendedors { get; set; }
+                public DbSet<ComisionPago> ComisionPagos { get; set; }
+                public DbSet<Cliente> Clientes { get; set; }
             }
 
         }

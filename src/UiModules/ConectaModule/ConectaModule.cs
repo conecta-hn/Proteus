@@ -1,16 +1,19 @@
-﻿using System;
+﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Conecta.Api;
 using TheXDS.Proteus.Conecta.Inventario.Api;
+using TheXDS.Proteus.Conecta.Inventario.Models;
 using TheXDS.Proteus.Conecta.Models;
 using TheXDS.Proteus.Conecta.ViewModels;
 using TheXDS.Proteus.ConectaModule.Pages;
@@ -27,6 +30,285 @@ namespace TheXDS.Proteus.Conecta
 {
     namespace Crud
     {
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Picture"/>.
+        /// </summary>
+        public class PictureCrudDescriptor : CrudDescriptor<Picture>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Picture"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Fotografía");
+                TextProperty(p => p.Path).TextKind(TextKind.PicturePath).Required().Label("Ruta de archivo");
+                TextProperty(p => p.Notes).Big().Nullable().Label("Notas");
+            }
+        }
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Proveedor"/>.
+        /// </summary>
+        public class ProveedorCrudDescriptor : CrudDescriptor<Proveedor>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Proveedor"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(AdminTool);
+                Property(p => p.Name).AsName();
+                this.DescribeContact();
+            }
+        }
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Categoria"/>.
+        /// </summary>
+        public class CategoriaCrudDescriptor : CrudDescriptor<Categoria>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Categoria"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Settings);
+                FriendlyName("Categoría de producto");
+                Property(p => p.Name).AsName();
+                ListProperty(p => p.Specs).Creatable().Required().Label("Definición de especificaciones");
+            }
+        }
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="SpecDefinition"/>.
+        /// </summary>
+        public class SpecDefinitionCrudDescriptor : CrudDescriptor<SpecDefinition>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="SpecDefinition"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Definición de especificación");
+                Property(p => p.Name).AsName();
+                Property(p => p.ValueKind).Required().Label("Tipo de valor");
+            }
+        }
+
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="OrdenCompra"/>.
+        /// </summary>
+        public class OrdenCompraCrudDescriptor : CrudDescriptor<OrdenCompra>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="OrdenCompra"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(AdminTool);
+                FriendlyName("Orden de compra");
+                Property(p => p.Timestamp).Default(DateTime.Now).Label("Fecha/hora de requisición");
+                ObjectProperty(p => p.Proveedor).Selectable().Required();
+                ListProperty(p => p.Items).Creatable().Required().Label("Ítems a adquirir");
+                ListProperty(p => p.Pictures).Creatable().Label("Fotografías de referencia");
+                TextProperty(p => p.Notes).Big().Nullable().Label("Notas adicionales");
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="UpKeep"/>.
+        /// </summary>
+        public class UpKeepCrudDescriptor : CrudDescriptor<UpKeep>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="UpKeep"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Mantenimiento de producto");
+                OnModuleMenu(AdminTool);
+                ObjectProperty(p => p.Item).Selectable().Required().Label("Ítem");
+                ObjectProperty(p => p.Spare).Selectable().Required().Label("Repuesto");
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="SpecInfo"/>.
+        /// </summary>
+        public class SpecInfoCrudDescriptor : CrudDescriptor<SpecInfo>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="SpecInfo"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Especificación");
+                ObjectProperty(p => p.Spec).Selectable().Required().Label("Propiedad");
+                Property(p => p.Value).Nullable().Label("Valor");
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Item"/>.
+        /// </summary>
+        public class ItemCrudDescriptor : CrudDescriptor<Item>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Item"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Ítem de inventario");
+                OnModuleMenu(Catalog);
+                Property(p => p.Name).AsName();
+                TextProperty(p => p.Description).Big().Nullable().Label("Descripción");
+                ObjectProperty(p => p.Categoria).Selectable().Required().Label("Categoría");
+                NumericProperty(p => p.Costo).Positive().Required();
+                ListProperty(p => p.Specs).Creatable().Required().Label("Especificaciones");
+                Property(p => p.Serie).Nullable().Label("Número de serie");
+                ObjectProperty(p => p.Location).Selectable().Nullable().Label("Ubicación actual/salida");
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Bodega"/>.
+        /// </summary>
+        public class BodegaCrudDescriptor : CrudDescriptor<Bodega>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Bodega"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Bodega de inventario");
+                OnModuleMenu(Settings);
+                Property(p => p.Name).AsName();
+                Property(p => p.Items).Label("Ítems dentro de la bodega").ReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Venta"/>.
+        /// </summary>
+        public class VentaCrudDescriptor : CrudDescriptor<Venta>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Venta"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Ventas");
+                OnModuleMenu(AdminTool);
+                ListProperty(p => p.Items).Creatable().Required().Label("Ítems vendidos");
+                ObjectProperty(p => p.Vendedor).Selectable().Nullable();
+                ObjectProperty(p => p.Cliente).Selectable().Nullable();
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="VentaItem"/>.
+        /// </summary>
+        public class VentaItemCrudDescriptor : CrudDescriptor<VentaItem>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="VentaItem"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                FriendlyName("Venta de ítem");
+                ObjectProperty(p => p.Item).Selectable().Required().Label("Ítem vendido");
+                NumericProperty(p => p.Qty).Positive().Required().Label("Cantidad");
+                NumericProperty(p => p.VentaUnitaria).Positive().Required().Label("Venta unitaria");
+                NumericProperty(p => p.Isv).Positive().Required().Label("I.S.V.");
+                NumericProperty(p => p.Comision).Positive().Nullable().Label("% Comisión del vendedor");
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Vendedor"/>.
+        /// </summary>
+        public class VendedorCrudDescriptor : CrudDescriptor<Vendedor>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Vendedor"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                OnModuleMenu(Settings);
+                Property(p => p.Name).AsName("Nombre del vendedor");
+                this.DescribeContact();
+                ListProperty(p => p.Comisiones).Creatable().Required().Label("Abonos a comisiones");                
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="ComisionPago"/>.
+        /// </summary>
+        public class ComisionPagoCrudDescriptor : CrudDescriptor<ComisionPago>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="ComisionPago"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                ObjectProperty(p => p.Vendedor).Selectable().Required();
+                NumericProperty(p => p.Abono).Positive().Required();
+
+            }
+        }
+
+        /// <summary>
+        /// Describe las propiedades Crud para el modelo
+        /// <see cref="Cliente"/>.
+        /// </summary>
+        public class ClienteCrudDescriptor : CrudDescriptor<Cliente>
+        {
+            /// <summary>
+            /// Describe las propiedades Crud para el modelo
+            /// <see cref="Cliente"/>.
+            /// </summary>
+            protected override void DescribeModel()
+            {
+                Property(p => p.Name).AsName("Nombre del cliente");
+                this.DescribeAddress();
+                this.DescribeContact();
+                DateProperty(p => p.Timestamp).Default(DateTime.Today).Required().Label("Cliente desde");
+            }
+        }
+
+
         /*
         // Inventario
         public class ItemDescriptor : CrudDescriptor<Item>
