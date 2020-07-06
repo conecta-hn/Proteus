@@ -100,7 +100,7 @@
                         ItemsSource="{Binding EditingLaunchers}"/>
                     <ScrollViewer Content="{Binding SelectedEditor}"/>
                 </DockPanel>
-                <DockPanel Visibility="{Binding NotEditVis}">
+                <DockPanel Visibility="{Binding NotEditVis}">                    
                     <StackPanel
                         VerticalAlignment="Top"
                         DockPanel.Dock="Right">
@@ -108,9 +108,9 @@
                             Más acciones:
                         </TextBlock>
                         <ListView
-                            Style="{StaticResource LauncherGrid}"
+                            Style="{StaticResource LauncherList}"
                             ItemsSource="{Binding SelectedLaunchers}"/>                        
-                    </StackPanel>
+                    </StackPanel>                    
                     <ScrollViewer Content="{Binding SelectedDetails}"/>
                 </DockPanel>
             </Grid>            
