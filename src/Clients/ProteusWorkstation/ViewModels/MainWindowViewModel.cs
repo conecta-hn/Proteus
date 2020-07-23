@@ -99,7 +99,7 @@ namespace TheXDS.Proteus.ViewModels
             if (!(s is null)) s.PropertyChanged += Default_PropertyChanged;
         }
 
-        private void EarlySetup()
+        private void EarlySetup(params Argument[] additional)
         {
             //ViewModelFactory.AttributeExclusionList.Add(typeof(ExcludeFromVmFactoryAttribute));
             Proteus.MessageTarget = new MessageSplashTarget();
@@ -107,7 +107,7 @@ namespace TheXDS.Proteus.ViewModels
             App.RootHost = this;
 
             var args = new CmdLineParser();
-            foreach (var j in args.Present) j.Run(args);
+            foreach (var j in args.Present.Concat(additional)) j.Run(args);
         }
 
         internal static bool _exiting = false;
@@ -118,9 +118,9 @@ namespace TheXDS.Proteus.ViewModels
         /// <returns>
         /// Una tarea que puede utilizarse para monitorear la operación.
         /// </returns>
-        public Task LaunchAsync()
+        public Task LaunchAsync(params Argument[] additional)
         {
-            EarlySetup();
+            EarlySetup(additional);
 
             if (_exiting)
             {

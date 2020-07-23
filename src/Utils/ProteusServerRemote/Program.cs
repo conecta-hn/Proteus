@@ -81,7 +81,7 @@ namespace TheXDS.Proteus.Remote
     static class Program
     {
         public static ConsoleMessageTarget MessageTarget { get; } = new ConsoleMessageTarget();
-        static void Main(string[] args)
+        static void Main()
         {
 
             var a = new CmdLineParser(Environment.GetCommandLineArgs());

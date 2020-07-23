@@ -3,17 +3,24 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using TheXDS.Proteus.Models.Base;
-using TheXDS.MCART.Types.Base;
-using TheXDS.MCART.Types.Extensions;
-using System.Linq;
 
 namespace TheXDS.Proteus.Component
 {
     public interface IModelLocalSearchFilter
     {
+        /// <summary>
+        /// Obtiene una lista de entidades filtradas por esta instancia.
+        /// </summary>
+        /// <typeparam name="TModel">Modelo que este filtro acepta.</typeparam>
+        /// <param name="collection">Colección de entidades de entrada.</param>
+        /// <param name="query">Cadena de filtro.</param>
+        /// <returns>
+        /// Un <see cref="List{T}"/> con las entidades que han cumplido con las
+        /// condiciones de este filtro de búsqueda local.
+        /// </returns>
         List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase;
 
         /// <summary>
@@ -27,31 +34,5 @@ namespace TheXDS.Proteus.Component
         /// en caso contrario.
         /// </returns>
         bool UsableFor(Type model);
-    }
-
-    public class NameLocalSearchFilter : IModelLocalSearchFilter
-    {
-        public List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase
-        {
-            return collection.Where(p => ((INameable)p).Name.ToLower().Contains(query.ToLower())).ToList();
-        }
-
-        public bool UsableFor(Type model)
-        {
-            return model.Implements<INameable>();
-        }
-    }
-
-    public class IdLocalSearchFilter : IModelLocalSearchFilter
-    {
-        public List<TModel> Filter<TModel>(List<TModel> collection, string query) where TModel : ModelBase
-        {
-            return collection.Where(p => p.StringId.Contains(query)).ToList();
-        }
-
-        public bool UsableFor(Type model)
-        {
-            return true;
-        }
     }
 }
