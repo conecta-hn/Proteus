@@ -13,8 +13,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Networking;
-using TheXDS.MCART.Networking.Client;
+using TheXDS.MCART.Networking.Legacy;
+using TheXDS.MCART.Networking.Legacy.Client;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 

@@ -2,13 +2,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Condition="'$(NoWpfPacks)'==''">
     <PackageReference Include="TheXDS.MCART" Version="$(McartVersion)" />
+    <PackageReference Include="TheXDS.MCART.PluginSupport.Legacy" Version="$(McartVersion)" />
+    <PackageReference Include="TheXDS.MCART.Networking.Legacy" Version="$(McartVersion)" />
   </ItemGroup>
   <ItemGroup Condition="'$(UseWPF)'=='true' AND '$(NoWpfPacks)'==''">
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.1" />
     <PackageReference Include="FluentWPF" Version="0.8.0" />
     <PackageReference Include="TheXDS.MCART.UI" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.Windows" Version="$(McartVersion)" />
     <PackageReference Include="TheXDS.MCART.WPF" Version="$(McartVersion)" />
+    <PackageReference Include="TheXDS.MCART.WPF.PluginSupport.Legacy" Version="$(McartVersion)" />
+
     <ProjectReference Include="$(SolutionDir)Proteus\Proteus.csproj" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="mscorlib" />

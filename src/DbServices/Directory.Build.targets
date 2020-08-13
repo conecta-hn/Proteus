@@ -3,7 +3,7 @@
   <Import Project="..\Directory.Build.targets"/>
   <Import Project="$(TargetsDir)Bundle.targets"/>
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <ProjectReference Include="$(SolutionDir)Proteus\Proteus.csproj">
       <Private>false</Private>
     </ProjectReference>

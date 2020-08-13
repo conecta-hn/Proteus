@@ -4,12 +4,12 @@ Licenciado para uso interno solamente.
 */
 
 using System;
-using TheXDS.MCART.Networking.Server;
+using TheXDS.MCART.Networking.Legacy.Server;
 using TheXDS.MCART.PluginSupport.Legacy;
 
 namespace TheXDS.Proteus.Plugins
 {
-    /// <inheritdoc cref="IProteusProtocolPlugin" />
+    /// <inheritdoc cref="IProteusProtocolPlugin{T}" />
     /// <summary>
     /// Clase base para los plugins que ofrezcan protocolos de red para el
     /// servidor de Proteus.
@@ -17,8 +17,8 @@ namespace TheXDS.Proteus.Plugins
     /// <typeparam name="TProtocol">Tipo de protocolo a exponer.</typeparam>
     /// <typeparam name="TClient">Tipo de cliente a atender.</typeparam>
     public abstract class ProteusProtocolPlugin<TProtocol, TClient>
-        : Plugin, IProteusProtocolPlugin
-        where TProtocol : IProtocol, new()
+        : Plugin, IProteusProtocolPlugin<TClient>
+        where TProtocol : IProtocol<TClient>, new()
         where TClient : Client
     {
         /// <inheritdoc />
@@ -30,7 +30,7 @@ namespace TheXDS.Proteus.Plugins
         /// Un nuevo servidor utilizando el protocolo ofrecido por este
         /// plugin.
         /// </returns>
-        public Server BuildServer()
+        public Server<TClient> BuildServer()
         {
             return new Server<TClient>(Protocol);
         }
@@ -47,7 +47,7 @@ namespace TheXDS.Proteus.Plugins
         /// Obtiene la instancia asociada del protocolo ofrecido por este
         /// plugin.
         /// </summary>
-        public IProtocol Protocol { get; } = new TProtocol();
+        public IProtocol<TClient> Protocol { get; } = new TProtocol();
 
         /// <inheritdoc />
         /// <summary>
