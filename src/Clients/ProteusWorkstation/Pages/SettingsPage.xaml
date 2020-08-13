@@ -137,6 +137,7 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>                            
                             <TextBlock VerticalAlignment="Center">Opacidad de la ventana</TextBlock>
                             <Slider
@@ -173,6 +174,32 @@
                                 TickFrequency="50"
                                 TickPlacement="BottomRight"
                                 SmallChange="25" LargeChange="50"/>
+                            <Slider
+                                Grid.Row="2"
+                                Value="{Binding UiModulesWidth}"
+                                Minimum="120"
+                                Maximum="360"
+                                TickFrequency="60"
+                                TickPlacement="BottomRight"
+                                SmallChange="15" LargeChange="60"/>
+                            <TextBlock Grid.Row="3" VerticalAlignment="Center">Alto de módulos</TextBlock>
+                            <Slider
+                                Grid.Row="3"
+                                Value="{Binding UiModulesHeight}"
+                                Minimum="32"
+                                Maximum="320"
+                                TickFrequency="50"
+                                TickPlacement="BottomRight"
+                                SmallChange="25" LargeChange="50"/>
+                            <TextBlock Grid.Row="4" VerticalAlignment="Center">Ancho de páginas de editor</TextBlock>
+                            <Slider
+                                Grid.Row="4"
+                                Value="{Binding EditorWidth}"
+                                Minimum="200"
+                                Maximum="2000"
+                                TickFrequency="50"
+                                TickPlacement="BottomRight"
+                                SmallChange="25" LargeChange="100"/>
                         </Grid>
                         <ComboBox
                             widgets:ProteusProp.Watermark="Presentación de estado ocupado"
