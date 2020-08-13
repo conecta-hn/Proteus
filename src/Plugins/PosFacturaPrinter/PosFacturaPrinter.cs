@@ -47,7 +47,7 @@ namespace PosFacturaPrinter
             p.PrintDocument();
         }
 
-        public override void PrintFactura(Factura f, IFacturaInteractor i)
+        public override void PrintFactura(Factura f, IFacturaInteractor? i)
         {
             var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
             var p = PrintHeader("factura");
@@ -102,10 +102,10 @@ namespace PosFacturaPrinter
             f.Impresa = true;
         }
 
-        public override void PrintProforma(Factura f, IFacturaInteractor i)
+        public override void PrintProforma(Factura f, IFacturaInteractor? i)
         {
             var ci = System.Globalization.CultureInfo.CreateSpecificCulture("es-HN");
-            var p = PrintHeader("Ticket");
+            var p = PrintHeader("PROFORMA");
             p.BoldMode($"Código de orden: {f.Id:000000}");
             p.Append($"Fecha de generacion: {f.Timestamp:dd/MM/yyyy}");
             p.Code128(f.Id.ToString());
@@ -157,9 +157,8 @@ namespace PosFacturaPrinter
             }
             p.AlignCenter();
             p.Append("Gracias por preferirnos");
-            p.BoldMode("ESTE TICKET NO ES UNA FACTURA");
+            p.BoldMode("ESTA PROFORMA NO ES UNA FACTURA");
             FooterAndPrint(p);
-
         }
     }
 }
