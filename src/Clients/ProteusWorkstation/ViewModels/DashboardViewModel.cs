@@ -142,15 +142,7 @@ namespace TheXDS.Proteus.ViewModels
 
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case nameof(Settings.UiModulesHeight):
-                    Notify(nameof(UiModulesHeight));
-                    break;
-                case nameof(Settings.UiModulesWidth):
-                    Notify(nameof(UiModulesWidth));
-                    break;
-            }
+            Notify(e.PropertyName);
         }
 
         public void Alert(string alert)

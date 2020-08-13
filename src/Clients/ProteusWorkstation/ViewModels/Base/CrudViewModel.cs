@@ -43,6 +43,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         private bool _isSearching;
         private ICollectionView? _results;
         private IEnumerable<ModelBase>? _enumerableResults;
+        public double EditorWidth => Settings.Default.EditorWidth;
 
         /// <summary>
         /// Obtiene o establece el valor EnumerableResults.
@@ -65,6 +66,8 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Crud cuando hay una entidad seleccionada.
         /// </summary>
         public IEnumerable<Launcher> SelectedLaunchers => GetLaunchers(CrudToolVisibility.Selected);
+
+        public Visibility SelectedLaunchersVisibility => SelectedLaunchers.Any() ? Visibility.Visible : Visibility.Collapsed;
 
         /// <summary>
         /// Enumera los <see cref="Launcher"/> a presentar para la vista de
@@ -226,6 +229,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             _model = models.First();
             Implementation = new DbBoundCrudViewModel(source, models);
             _tools = CrudViewModelBase._allTools.Where(p => p.Available(models));
+            Settings.Default.PropertyChanged += Default_PropertyChanged;
             Init();
         }
 
@@ -237,6 +241,10 @@ namespace TheXDS.Proteus.ViewModels.Base
             RegisterPropertyChangeTrigger(nameof(ResultsDetails), nameof(Results), nameof(Source));
             SearchCommand = CreateSearchCommand();
             ClearSearch();
+        }
+        private void Default_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Notify(e.PropertyName);
         }
 
         /// <summary>
@@ -424,6 +432,11 @@ namespace TheXDS.Proteus.ViewModels.Base
         private IEnumerable<Launcher> GetLaunchers(CrudToolVisibility flags)
         {
             return _tools.Where(p => p.Visibility.HasFlag(flags)).SelectMany(p => p.GetLaunchers(_model, this));
+        }
+
+        ~CrudViewModel()
+        {
+            Settings.Default.PropertyChanged -= Default_PropertyChanged;
         }
     }
 }

@@ -10,6 +10,7 @@
     xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
     xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:config="clr-namespace:TheXDS.Proteus.Config"
     mc:Ignorable="d">
     <mcart:BusyContainer IsBusy="{Binding IsBusy}">
         <Grid Style="{StaticResource BotoneraBase}">
@@ -86,7 +87,7 @@
             </mcart:BusyContainer>
             <GridSplitter/>
             <Grid Visibility="{Binding Selection, Converter={StaticResource NotNullToVisibilityConverter}}" Grid.Column="2">
-                <DockPanel Visibility="{Binding EditVis}">
+                <DockPanel Visibility="{Binding EditVis}" MaxWidth="{Binding EditorWidth}">
                     <UniformGrid
                         Rows="1"
                         DockPanel.Dock="Bottom"
@@ -98,19 +99,30 @@
                         DockPanel.Dock="Right"
                         Style="{StaticResource LauncherList}"
                         ItemsSource="{Binding EditingLaunchers}"/>
-                    <ScrollViewer Content="{Binding SelectedEditor}"/>
+                    <ScrollViewer Content="{Binding SelectedEditor}" MaxWidth="{Binding EditorWidth}"/>
                 </DockPanel>
                 <DockPanel Visibility="{Binding NotEditVis}">                    
-                    <StackPanel
+                    <Expander
+                        Visibility="{Binding SelectedLaunchersVisibility}"
                         VerticalAlignment="Top"
+                        ExpandDirection="Left"
                         DockPanel.Dock="Right">
-                        <TextBlock Margin="10,43,0,0">
-                            Más acciones:
-                        </TextBlock>
-                        <ListView
-                            Style="{StaticResource LauncherList}"
-                            ItemsSource="{Binding SelectedLaunchers}"/>                        
-                    </StackPanel>                    
+                        <Expander.Header>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    Más acciones:
+                                </TextBlock.Text>
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </TextBlock.LayoutTransform>
+                            </TextBlock>                        
+                        </Expander.Header>
+                        <Expander.Content>                            
+                            <ListView
+                                Style="{StaticResource LauncherList}"
+                                ItemsSource="{Binding SelectedLaunchers}"/>                        
+                        </Expander.Content>
+                    </Expander>                    
                     <ScrollViewer Content="{Binding SelectedDetails}"/>
                 </DockPanel>
             </Grid>            

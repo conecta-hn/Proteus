@@ -30,7 +30,6 @@ namespace TheXDS.Proteus.Crud
             var stckpnl = App.UiInvoke(() => new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Center,
-                MaxWidth = 550,
                 Style = Application.Current.TryFindResource("BotoneraBase") as Style,
                 Language = System.Windows.Markup.XmlLanguage.GetLanguage(System.Globalization.CultureInfo.CurrentCulture.Name)
             });
