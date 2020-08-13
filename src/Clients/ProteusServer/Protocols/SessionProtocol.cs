@@ -16,8 +16,8 @@ using System.Text;
 using TheXDS.MCART;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Events;
-using TheXDS.MCART.Networking;
-using TheXDS.MCART.Networking.Server;
+using TheXDS.MCART.Networking.Legacy;
+using TheXDS.MCART.Networking.Legacy.Server;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.Proteus.Protocols.Command;
 using static TheXDS.Proteus.Protocols.Response;
@@ -30,7 +30,7 @@ namespace TheXDS.Proteus.Protocols
     /// Protocolo de arbitraje de sesión y bloqueo de recursos de Proteus.
     /// </summary>
     [Port(51200), Name("Servicio de control de red")]
-    public class SessionProtocol : ManagedCommandProtocol<Client<HostData>, Command, Response>, IProteusProtocol, IAnnounceAvailability
+    public class SessionProtocol : ManagedCommandProtocol<Client<HostData>, Command, Response>, IProteusProtocol<Client<HostData>>, IAnnounceAvailability
     {
         private readonly IDictionary<short, CommandCallback> _extensions = new Dictionary<short, CommandCallback>();
         private bool _deaf = false;
@@ -39,7 +39,7 @@ namespace TheXDS.Proteus.Protocols
         /// Construye un nuevo servidor qpara alojar este protocolo.
         /// </summary>
         /// <returns></returns>
-        public Server BuildServer() => new Server<Client<HostData>>(this);
+        public Server<Client<HostData>> BuildServer() => new Server<Client<HostData>>(this);
 
         static SessionProtocol()
         {

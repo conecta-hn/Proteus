@@ -4,7 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System.IO;
-using TheXDS.MCART.Networking.Client;
+using TheXDS.MCART.Networking.Legacy.Client;
 
 namespace TheXDS.Proteus.Component
 {

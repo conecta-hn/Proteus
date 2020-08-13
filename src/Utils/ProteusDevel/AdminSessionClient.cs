@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Networking;
+using TheXDS.MCART.Networking.Legacy;
 using TheXDS.Proteus.Protocols;
 
 namespace TheXDS.Proteus.Devel
