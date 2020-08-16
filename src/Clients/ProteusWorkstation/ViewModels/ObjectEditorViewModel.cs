@@ -274,6 +274,8 @@ namespace TheXDS.Proteus.ViewModels
             SearchCommand.ListensToProperty(() => SearchQuery!);
             SearchCommand.ListensToProperty(() => ActiveModel);
             SearchCommand.SetCanExecute(() => !SearchQuery.IsEmpty() && ActiveModel != null);
+
+            ClearSearch();
         }
 
         private void OnSelect()
