@@ -374,10 +374,12 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             Notify(nameof(NewCliente));
         }
 
-        protected override async Task OnStartup()
-        {
-            Clientes = await GetObservableAsync<Cliente>();
-            Facturables = await GetObservableAsync<Facturable>();
+        protected override Task OnStartup()
+        {            
+            Clientes = GetObservable<Cliente>();
+            Facturables = GetObservable<Facturable>();
+
+            return Task.CompletedTask;
         }
 
         public CrudElement ClienteEditor { get; } = CrudElement.ForModel<Cliente>();
