@@ -30,10 +30,12 @@
             IsEnabled="{Binding CanSelect, Mode=OneWay}"
             Visibility="{Binding CanSelect, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
             Command="{Binding SelectCommand, Mode=OneWay}">👆</Button>
-        <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" MinWidth="100">
+        <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">
             <Run Foreground="{StaticResource CorpColor}" Text="{Binding FieldIcon, Mode=OneWay}"/>
             <Run FontStyle="Italic" Foreground="Gray" Text="{Binding FieldName, Mode=OneWay}"/>
-            <Run Text="{Binding DisplayValue, Mode=OneWay}"/>
+        </TextBlock>
+        <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">
+            <Run Text="{Binding DisplayValue, Mode=OneWay}"/>            
         </TextBlock>
         <fw:AcrylicPopup
             AllowsTransparency="True"
