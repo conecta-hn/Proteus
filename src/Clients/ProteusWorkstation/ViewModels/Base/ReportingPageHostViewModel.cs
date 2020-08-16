@@ -14,14 +14,15 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         private string? _status;
-        private double _progress = double.NaN;
+        private double _progress = 100;// double.NaN;
         public double Progress
         {
             get => _progress;
             set
             {
-                if (Change(ref _progress, value))
-                    Notify(nameof(IndeterminateProgress));
+                _progress = value;
+                Notify(nameof(Progress));                
+                Notify(nameof(IndeterminateProgress));
             }
         }
         public string? Status 
