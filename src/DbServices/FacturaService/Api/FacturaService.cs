@@ -16,6 +16,10 @@ namespace TheXDS.Proteus.Api
         public static List<PaymentSource> PaymentSources { get; } = Objects.FindAllObjects<PaymentSource>().ToList();
         public static List<FacturaPrintDriver> FactPrintDrivers { get; } = Objects.FindAllObjects<FacturaPrintDriver>().ToList();
 
+        /// <summary>
+        /// Obtiene una referencia al cliente genérico.
+        /// </summary>
+        public static Cliente GenericCliente => Service<FacturaService>()!.All<Cliente>().First();
         public static Estacion? GetEstation => GetStation<Estacion>();
         public static Cajero? GetCajero => GetUser<Cajero>();
         public static CajaOp? GetCajaOp
@@ -56,7 +60,7 @@ namespace TheXDS.Proteus.Api
         public static int? NextCorrel() => NextCorrel(CurrentRango);
         public static int FreeCorrelCount(CaiRango rango) => rango.GetFreeCorrels().Count;
         public static int FreeCorrelCount() => CurrentRango.GetFreeCorrels().Count;
-        public static string? GetFactNum(Factura f)
+        public static string? GetFactNum(Factura? f)
         {
             if (f is null) return null;
             CaiRango? r;

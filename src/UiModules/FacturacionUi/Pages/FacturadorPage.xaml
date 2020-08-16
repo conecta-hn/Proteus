@@ -78,17 +78,6 @@
                             DefaultValue="1"
                             widgets:ProteusProp.Watermark="Cantidad"                            
                             Minimum="1"/>
-                        <!--<CheckBox
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            ToolTip="Gravable"
-                            IsChecked="{Binding NewGravar}"
-                            IsEnabled="{Binding NewGravable, Mode=OneWay}">
-                            <xctk:SingleUpDown
-                                Value="{Binding NewGravado}"
-                                widgets:ProteusProp.Watermark="Gravable"
-                                IsEnabled="{Binding NewGravar}"/>
-                        </CheckBox>-->
                     </UniformGrid>
                     <Button TabIndex="2" Grid.Column="3" Command="{Binding AddNewCommand}" Click="BtnAdd_Click">
                         <Button.ToolTip>
@@ -120,20 +109,6 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Precio" Width="100" DisplayMemberBinding="{Binding Precio, Mode=OneWay, StringFormat=C}"/>
-                        <!--<GridViewColumn Header="Gravable" Width="80">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="models:ItemOrden">
-                                    <CheckBox IsChecked="{Binding Gravar}">
-                                        <xctk:SingleUpDown 
-                                        widgets:ProteusProp.Icon="%"
-                                        Style="{StaticResource ListedUpDown}"
-                                        Minimum="0"
-                                        Value="{Binding Gravado, Mode=TwoWay}"
-                                        IsEnabled="{Binding Gravar, Mode=OneWay}"/>
-                                    </CheckBox>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>-->
                         <GridViewColumn Header="Gravable" Width="100" DisplayMemberBinding="{Binding Gravado, Mode=OneWay, StringFormat={}{0}%}"/>
                         <GridViewColumn Header="Subtotal" Width="100" DisplayMemberBinding="{Binding SubTotal, Mode=OneWay, StringFormat=C}"/>
                         <GridViewColumn Header="Monto gravable" Width="100" DisplayMemberBinding="{Binding MontoGravado, Mode=OneWay, StringFormat=C}"/>
@@ -160,7 +135,6 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-
                         <GridViewColumn Header="Subtotal final" Width="100" DisplayMemberBinding="{Binding FinalSubT, Mode=OneWay, StringFormat=C}"/>
                         <GridViewColumn Width="30">
                             <GridViewColumn.CellTemplate>
@@ -184,6 +158,7 @@
                     IsReadOnly="{Binding IsNew, Converter={StaticResource BooleanInverter}, Mode=OneWay}"
                     VerticalContentAlignment="Top"
                     TabIndex="4" Text="{Binding CurrentFactura.Notas}"
+                    TextWrapping="WrapWithOverflow"
                     widgets:ProteusProp.Watermark="Detalles adicionales"/>
 
                 <!--Contenedor de UI extra-->
@@ -269,34 +244,6 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <!--<ComboBox
-                        widgets:ProteusProp.Watermark="Cliente"
-                        widgets:ProteusProp.WatermarkAlwaysVisible="True"
-                        TabIndex="5"
-                        DisplayMemberPath="Name"
-                        ItemsSource="{Binding Clientes, Mode=OneWay}"
-                        SelectedItem="{Binding NewCliente}"/>
-                    <Grid Grid.Column="1">
-                        <Button 
-                            Command="{Binding NewClienteCommand, Mode=OneWay}"
-                            Content="{Binding NewClienteBtnLabel, Mode=OneWay}"/>
-                        <fw:AcrylicPopup 
-                            IsOpen="{Binding IsEditingCliente}" 
-                            AllowsTransparency="True"                            
-                            MinWidth="300">
-                            <DockPanel Background="{DynamicResource SystemAltMediumHighColorBrush}">
-                                <UniformGrid Rows="1" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
-                                    <Button Command="{Binding OkClienteCommand, Mode=OneWay}">Aceptar</Button>
-                                    <Button Command="{Binding CancelClienteCommand, Mode=OneWay}">Cancelar</Button>
-                                </UniformGrid>
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <ContentControl Content="{Binding ClienteEditor.Editor, Mode=OneWay}"/>
-                                </ScrollViewer>
-                            </DockPanel>
-                        </fw:AcrylicPopup>
-                    </Grid>-->
-                    
                     <ListView
                         Grid.Row="1"
                         SelectedItem="{Binding SelectedPayment}"

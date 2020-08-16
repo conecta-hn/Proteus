@@ -66,7 +66,7 @@ namespace TheXDS.Proteus.FacturacionUi.Component
         ///     <see langword="true"/> si es posible seleccionar al cliente,
         ///     <see langword="false"/> en caso contrario.
         /// </returns>
-        bool CanSelectCliente(Cliente cliente);
+        bool CanSelectCliente(Cliente? cliente);
 
         /// <summary>
         /// Permite definir acciones especiales a ejecutar luego de seleccionar

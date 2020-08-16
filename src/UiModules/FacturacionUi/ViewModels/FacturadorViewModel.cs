@@ -18,23 +18,23 @@ using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.FacturacionUi.ViewModels
 {
-    public class FacturadorViewModel : ServicingPageViewModel<FacturaService>, IEntityViewModel<Cliente>
+    public class FacturadorViewModel : ServicingPageViewModel<FacturaService>, IEntityViewModel<Cliente?>
     {
         private bool _closeAfterFacturate = false;
-        private readonly IFacturaUIInteractor _interactor;
-        private string _newItemCode;
-        private Facturable _newItem;
+        private readonly IFacturaUIInteractor? _interactor;
+        private string? _newItemCode;
+        private Facturable? _newItem;
         private int _newQty;
         private float _newGravado;
         private bool _gravar;
-        private Factura _currentFactura;
+        private Factura? _currentFactura;
         private decimal _descuento;
         private decimal _otrosCargos;
         private NewPaymentViewModel? _selectedPayment;
         private bool _printFactura = true;
 
-        public ObservableListWrap<Facturable> Facturables { get; private set; }
-        public ObservableListWrap<Cliente> Clientes { get; private set; }
+        public ObservableListWrap<Facturable> Facturables { get; private set; } = null!;
+        public ObservableListWrap<Cliente> Clientes { get; private set; } = null!;
         public ObservableCollection<NewFacturaItemViewModel> NewItems { get; } = new ObservableCollection<NewFacturaItemViewModel>();
         public ObservableCollection<NewPaymentViewModel> NewPayments { get; } = new ObservableCollection<NewPaymentViewModel>();
 
@@ -86,6 +86,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         public decimal Total => SubTFinal - Descuento + OtrosCargos;
 
         public decimal Paid => NewPayments.Any() ? NewPayments.Sum(p => p.Amount) : 0m;
+
         public decimal Vuelto => Total - Paid;
 
         public string VueltoLabel => Vuelto > 0 ? "Restante" : "Cambio";
@@ -94,7 +95,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         ///     Obtiene o establece el valor NewItemCode.
         /// </summary>
         /// <returns>El valor de NewItemCode.</returns>
-        public string NewItemCode
+        public string? NewItemCode
         {
             get => _newItemCode;
             set
@@ -111,7 +112,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         ///     Obtiene o establece el valor NewItem.
         /// </summary>
         /// <returns>El valor de NewItem.</returns>
-        public Facturable NewItem
+        public Facturable? NewItem
         {
             get => _newItem;
             set
@@ -152,7 +153,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             CanDescuento = !CanDescuento;
         }
 
-        private void NewItemChanged(Facturable value)
+        private void NewItemChanged(Facturable? value)
         {
             NewQty = value is null ? 0 : 1;
             NewGravado = value?.Isv ?? 0f;
@@ -204,7 +205,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         ///     Obtiene o establece el valor CurrentFactura.
         /// </summary>
         /// <value>El valor de CurrentFactura.</value>
-        public Factura CurrentFactura
+        public Factura? CurrentFactura
         {
             get => _currentFactura;
             set => Change(ref _currentFactura, value);
@@ -212,13 +213,13 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         public Visibility IsNewV => (CurrentFactura?.IsNew ?? false) ? Visibility.Visible : Visibility.Collapsed;
         public Visibility NotNewV => (CurrentFactura?.IsNew ?? true) ? Visibility.Collapsed : Visibility.Visible;
-        public string FacturaNumber => FacturaService.GetFactNum(CurrentFactura);
+        public string? FacturaNumber => FacturaService.GetFactNum(CurrentFactura);
 
-        public FacturadorViewModel(ICloseable host) : this(host, (IFacturaUIInteractor)null)
+        public FacturadorViewModel(ICloseable host) : this(host, (IFacturaUIInteractor?)null)
         {
         }
 
-        public FacturadorViewModel(ICloseable host, IFacturaUIInteractor interactor) : this(host, interactor, null)
+        public FacturadorViewModel(ICloseable host, IFacturaUIInteractor? interactor) : this(host, interactor, null)
         {
         }
 
@@ -275,14 +276,14 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             }
         }
 
-        private Cliente _newCliente;
+        private Cliente? _newCliente;
         private bool _isEditingCliente;
 
         /// <summary>
         ///     Obtiene o establece el valor NewCliente.
         /// </summary>
         /// <value>El valor de NewCliente.</value>
-        public Cliente NewCliente
+        public Cliente? NewCliente
         {
             get => _newCliente;
             set
@@ -351,9 +352,9 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         private void OnOkCliente()
         {
             IsEditingCliente = false;
-            if (!Clientes.Contains(NewCliente))
+            if (!Clientes.Contains(NewCliente!))
             {
-                var c = NewCliente;
+                var c = NewCliente!;
                 Clientes.Add(c);
                 NewCliente = c;
             }
@@ -375,8 +376,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         protected override async Task OnStartup()
         {
-            Clientes = GetObservable<Cliente>();
-            Facturables = GetObservable<Facturable>();
+            Clientes = await GetObservableAsync<Cliente>();
+            Facturables = await GetObservableAsync<Facturable>();
         }
 
         public CrudElement ClienteEditor { get; } = CrudElement.ForModel<Cliente>();
@@ -411,8 +412,19 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// <returns>El comando RemovePatment.</returns>
         public SimpleCommand RemovePaymentCommand { get; }
 
+        /// <summary>
+        /// Obtiene el comando que permite crear a un nuevo cliente.
+        /// </summary>
         public SimpleCommand NewClienteCommand { get; }
+
+        /// <summary>
+        /// Obtiene el comando que permite guardar a un cliente que está siendo creado o aceptar la selección.
+        /// </summary>
         public SimpleCommand OkClienteCommand { get; }
+
+        /// <summary>
+        /// Obtiene un comando que permite cancelar la operación de selección o la creación de un nuevo cliente.
+        /// </summary>
         public SimpleCommand CancelClienteCommand { get; }
 
 
@@ -425,8 +437,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         private async void OnSaveAsCotiz()
         {
             foreach (var j in NewItems)
-                CurrentFactura.Items.Add(j);
-            CurrentFactura.Cliente = NewCliente;
+                CurrentFactura!.Items.Add(j);
+            CurrentFactura!.Cliente = NewCliente ?? FacturaService.GenericCliente;
 
             await BusyOp(() => Service.AddAsync((Cotizacion)CurrentFactura));
             NewFactura();
@@ -449,12 +461,12 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         public Visibility IsClienteSelected => NewCliente is null ? Visibility.Collapsed : Visibility.Visible;
         public Visibility IsClienteNotSelected => NewCliente is null ? Visibility.Visible : Visibility.Collapsed;
 
-        public FrameworkElement ExtraUi => _interactor?.ExtraUi;
-        public FrameworkElement ExtraDetails => _interactor?.ExtraDetails;
+        public FrameworkElement? ExtraUi => _interactor?.ExtraUi;
+        public FrameworkElement? ExtraDetails => _interactor?.ExtraDetails;
 
         private void OnRemovePayment()
         {
-            NewPayments.Remove(SelectedPayment);
+            NewPayments.Remove(SelectedPayment!);
             SelectedPayment = null;
         }
 
@@ -481,7 +493,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 }
             }
 
-            if (!CurrentFactura.IsNew) return;
+            if (!CurrentFactura!.IsNew) return;
 
             if ((CurrentFactura.Total >= 10000m || (NewCliente?.Category?.RequireRTN ?? false)) && (NewCliente?.Rtn?.IsEmpty() ?? true))
             {
@@ -490,7 +502,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             }
 
             IsBusy = true;
-            CurrentFactura.Cliente = NewCliente ?? Proteus.Service<FacturaService>()!.All<Cliente>().First();
+            CurrentFactura.Cliente = NewCliente ?? FacturaService.GenericCliente;
             if (CurrentFactura.Items.Count != NewItems.Count)
             {
                 CurrentFactura.Items.Clear();
@@ -541,13 +553,13 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         public string FacturarBtnTitle => PrintFactura ? "Facturar" : "Facturar como proforma";
 
-        Cliente IEntityViewModel<Cliente>.Entity { get => NewCliente; set => NewCliente = value; }
+        Cliente? IEntityViewModel<Cliente?>.Entity { get => NewCliente; set => NewCliente = value; }
 
         private void OnAddNew()
         {
             if (NewItems.FirstOrDefault(p => p.Item == NewItem) is { } i)
             {
-                Proteus.MessageTarget?.Info($"El ítem {NewItem.Id} ya ha sido agregado a la factura.");
+                Proteus.MessageTarget?.Info($"El ítem {NewItem!.Id} ya ha sido agregado a la factura.");
                 i.Qty += NewQty;                
             }
             else
@@ -602,7 +614,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             FacturarCommand.SetCanExecute(
                 !(CurrentFactura is null)
-                && !(NewCliente is null)
+                //&& !(NewCliente is null)
                 && NewItems.Any()
                 && Paid >= Total
                 && (_interactor?.CanFacturate() ?? true));
