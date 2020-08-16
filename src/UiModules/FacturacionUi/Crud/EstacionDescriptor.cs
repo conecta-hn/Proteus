@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
@@ -35,8 +36,8 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             NumericProperty(p => p.MinFacturasAlert).Range(0, 99999999).Nullable().Label("Nivel de alerta de mínimo de facturas");
             Property(p => p.Printer).Label("Nombre de impresora").OnlyInDetails();
 
-            VmObjectProperty(p => p.SelectedPrinter).Selectable().Source(PrinterSource.GetPrinters()).Required().Label("Impresora");
-            VmObjectProperty(p => p.SelectedPrintDriver).Selectable().Source(PrintDriverSource.GetPrinters()).Required().Label("Controlador de impresora");
+            VmObjectProperty(p => p.SelectedPrinter).Selectable().Source(PrinterSource.Printers).Required().Label("Impresora");
+            VmObjectProperty(p => p.SelectedPrintDriver).Selectable().Source(PrintDriverSource.Drivers).Required().Label("Controlador de impresora");
 
             VmBeforeSave(SetPrinter).Then(SetDriver);
         }
@@ -61,8 +62,8 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
     /// </summary>
     public class EstacionViewModel : ViewModel<Estacion>
     {
-        private PrinterSource _selectedPrinter = null!;
-        private PrintDriverSource _selectedPrintDriver = null!;
+        private PrinterSource? _selectedPrinter = null!;
+        private PrintDriverSource? _selectedPrintDriver = null!;
 
         /// <summary>
         ///     Obtiene o establece el valor SelectedPrinter.
@@ -70,7 +71,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         /// <value>El valor de SelectedPrinter.</value>
         public PrinterSource SelectedPrinter
         {
-            get => _selectedPrinter;
+            get => _selectedPrinter ?? PrinterSource.Printers.FirstOrDefault(p=>p.Printer == Entity.Printer);
             set => Change(ref _selectedPrinter, value);
         }
 
@@ -80,7 +81,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         /// <value>El valor de SelectedPrintDriver.</value>
         public PrintDriverSource SelectedPrintDriver
         {
-            get => _selectedPrintDriver;
+            get => _selectedPrintDriver ?? PrintDriverSource.Drivers.FirstOrDefault(p => p.DriverGuid == Entity.PrintDriver);
             set => Change(ref _selectedPrintDriver, value);
         }
     }
@@ -89,22 +90,25 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
     {
         public static IQueryable<PrinterSource> GetPrinters()
         {
-            var l =new List<PrinterSource>();
-            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
+            var l = new List<PrinterSource>();
+            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters.Cast<string?>().NotNull())
             {
                 l.Add(new PrinterSource() { Printer = printer });
             }
             return l.AsQueryable();
         }
 
-        public string Printer { get; set; }
+        public static IQueryable<PrinterSource> Printers { get; } = GetPrinters();
 
-        public override string ToString() => Printer;
+
+        public string? Printer { get; set; }
+
+        public override string ToString() => Printer ?? string.Empty;
     }
 
     public class PrintDriverSource : ModelBase<int>
     {
-        public static IQueryable<PrintDriverSource> GetPrinters()
+        public static IQueryable<PrintDriverSource> GetDrivers()
         {
             var l = new List<PrintDriverSource>();
             foreach (var j in FacturaService.FactPrintDrivers)
@@ -113,6 +117,9 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             }
             return l.AsQueryable();
         }
+
+        public static IQueryable<PrintDriverSource> Drivers { get; } = GetDrivers();
+
         public Guid DriverGuid { get; set; }
         public override string ToString()
         {
