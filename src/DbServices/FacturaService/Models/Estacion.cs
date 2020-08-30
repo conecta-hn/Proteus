@@ -48,7 +48,7 @@ namespace TheXDS.Proteus.Models
         /// Referencia al <see cref="Guid"/> del <see cref="PaymentSource"/>
         /// utilizado para crear este pago.
         /// </summary>
-        public Guid PrintDriver { get; set; }
+        public Guid? PrintDriver { get; set; }
 
         /// <summary>
         /// Obtiene el <see cref="FacturaPrintDriver"/> asociado a esta estación de facturación.

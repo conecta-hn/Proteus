@@ -19,9 +19,10 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
         public static void DescribeFacturable<T>(this CrudDescriptor<T> descriptor) where T : Facturable, new()
         {
             //descriptor.CanDelete(p => !p.Instances.Any());
+            descriptor.Property(p => p.Id).Id("Código");
             descriptor.Property(p => p.Name).AsName();
             descriptor.ObjectProperty(p => p.Category)
-                .Selectable()
+                .Selectable().Creatable()
                 .Required()
                 .Important("Categoría de ítem");
 

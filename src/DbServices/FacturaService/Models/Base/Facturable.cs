@@ -2,7 +2,7 @@
 
 namespace TheXDS.Proteus.Models.Base
 {
-    public abstract class Facturable : Nameable<int>
+    public abstract class Facturable : Nameable<string>
     {
         public float? Isv { get; set; }
         public decimal Precio { get; set; }
