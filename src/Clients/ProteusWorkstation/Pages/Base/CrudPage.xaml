@@ -15,9 +15,9 @@
     <mcart:BusyContainer IsBusy="{Binding IsBusy}">
         <Grid Style="{StaticResource BotoneraBase}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="{Binding LeftPanelSize}"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="{Binding RightPanelSize}"/>
             </Grid.ColumnDefinitions>
             <mcart:BusyContainer IsBusy="{Binding IsSearching}">
                 <DockPanel IsEnabled="{Binding NotEditMode}">
@@ -137,7 +137,7 @@
                 </TextBlock>
                 <ListView
                     HorizontalAlignment="Center"
-                    Style="{StaticResource LauncherGrid}"
+                    Style="{StaticResource LauncherList}"
                     ItemsSource="{Binding UnselectedLaunchers}"/>
             </StackPanel>
         </Grid>

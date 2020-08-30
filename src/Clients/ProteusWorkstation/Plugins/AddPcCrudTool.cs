@@ -39,7 +39,10 @@ namespace TheXDS.Proteus.Plugins
 
         private void AddThisPC(ICrudViewModel? vm, Type model)
         {
-            vm?.CreateNew.Execute(model);            
+            if (vm is null) return;
+            vm.CreateNew.Execute(model);
+            if (vm.Selection is EstacionBase e) e.Id = Environment.MachineName;
+            
         }
     }
 

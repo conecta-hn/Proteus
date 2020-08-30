@@ -17,6 +17,8 @@ namespace TheXDS.Proteus.Protocols
     [Port(51201), Name("Servicio de terminal de salida remota")]
     public class RemoteDumpProtocol : ManagedCommandProtocol<Client<bool>, DumpCommand, DumpResponse>, IProteusProtocol<Client<bool>>, IMessageTarget, IStatusReporter
     {
+        public bool IsBusy { get; private set; }
+
         static RemoteDumpProtocol()
         {
             ScanTypeOnCtor = false;
@@ -126,11 +128,13 @@ namespace TheXDS.Proteus.Protocols
 
         public void Done()
         {
+            IsBusy = false;
             Done("Operación finalizada correctamente.");
         }
 
         public void Done(string text)
         {
+            IsBusy = false;
             Send(DumpResponse.Done, text);
         }
 
@@ -161,16 +165,19 @@ namespace TheXDS.Proteus.Protocols
 
         public void UpdateStatus(double progress)
         {
+            IsBusy = true;
             Rprt(progress, "Realizando operación secundaria");
         }
 
         public void UpdateStatus(double progress, string text)
         {
+            IsBusy = true;
             Rprt(progress, text);
         }
 
         public void UpdateStatus(string text)
         {
+            IsBusy = true;
             Rprt(double.NaN, text);
         }
 

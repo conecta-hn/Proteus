@@ -384,20 +384,24 @@ namespace TheXDS.Proteus.ViewModels
             else if (Proteus.Infer(ActiveModel!) is { } svc)
             {          
                 var q = svc.All(ActiveModel!);
-                if (q.Count() <= Settings.Default.RowLimit)
-                {
-                    try
+                try {
+                    if (q.Count() <= Settings.Default.RowLimit)
                     {
-                        var re = await q.ToListAsync();
-                        Results = CollectionViewSource.GetDefaultView(re);
+                        try
+                        {
+                            var re = await q.ToListAsync();
+                            Results = CollectionViewSource.GetDefaultView(re);
+                        }
+                        catch 
+                        {
+                            Results = null;
+                        }
                     }
-                    catch 
+                    else
                     {
                         Results = null;
                     }
-                }
-                else
-                {
+                } catch {
                     Results = null;
                 }
             }
