@@ -32,8 +32,15 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Selectable()
                 .Source(FacturaService.UnassignedRangos)
                 .Label("Rangos de facturación asignados");
-            NumericProperty(p => p.SecondScreen).Range(2, 255).Nullable().Label("Pantalla secundaria");
+            NumericProperty(p => p.SecondScreen).Range(2, 255).Nullable().Label("Pantalla secundaria")
+                .Tooltip("Permite habilitar el uso de una pantalla secundaria visibie al cliente.");
             NumericProperty(p => p.MinFacturasAlert).Range(0, 99999999).Nullable().Label("Nivel de alerta de mínimo de facturas");
+            ObjectProperty(p => p.Bodega)
+                .Selectable()
+                .Creatable()
+                .Nullable()
+                .Label("Bodega de salida de inventario").ShowInDetails()
+                .Tooltip("Permite establecer la bodega de salida de los productos facturados en esta estación. Si no se establece una bodega de salida, únicamente se podrán facturar servicios en esta estación.");
             Property(p => p.Printer).Label("Nombre de impresora").OnlyInDetails();
 
             VmObjectProperty(p => p.SelectedPrinter).Selectable().Source(PrinterSource.Printers).Required().Label("Impresora");
@@ -90,12 +97,31 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
     {
         public static IQueryable<PrinterSource> GetPrinters()
         {
-            var l = new List<PrinterSource>();
-            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters.Cast<string?>().NotNull())
+            try
             {
-                l.Add(new PrinterSource() { Printer = printer });
+                var l = new List<PrinterSource>();
+                foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters.Cast<string?>().NotNull())
+                {
+                    l.Add(new PrinterSource() { Printer = printer });
+                }
+                return l.AsQueryable();
             }
-            return l.AsQueryable();
+            catch (Exception ex)
+            {
+                if (Proteus.CommonReporter?.IsBusy ?? false)
+                {
+                    Proteus.CommonReporter.UpdateStatus(ex.Message);
+                }
+                else if (Proteus.AlertTarget is { } a)
+                {
+                    a.Alert("Error al obtener las impresoras del sistema", ex.Message);
+                }
+                else
+                {
+                    Proteus.MessageTarget?.Error(ex.Message);
+                }
+                return Array.Empty<PrinterSource>().AsQueryable();
+            }
         }
 
         public static IQueryable<PrinterSource> Printers { get; } = GetPrinters();

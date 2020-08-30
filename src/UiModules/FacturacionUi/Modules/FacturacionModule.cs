@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
@@ -9,6 +10,7 @@ using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.FacturacionUi.Component;
+using TheXDS.Proteus.FacturacionUi.Pages;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.Plugins;
@@ -70,7 +72,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         /// </typeparam>
         public static void RegisterInteractor<T>() where T : IFacturaUIInteractor, new()
         {
-            App.Modules.FirstOf<FacturacionModule>().RegisterInteractor(typeof(T));
+            App.Modules.FirstOf<FacturacionModule>()!.RegisterInteractor(typeof(T));
         }
 
         /// <summary>
@@ -117,8 +119,17 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
                     OpenBalance = balance,
                     Timestamp = DateTime.Now
                 });
-                Proteus.AlertTarget?.Alert("Caja abierta correctamente.", $"{cajero} ha abierto una sesión de caja en la estación {estacion} con un fondo de {balance:C}. No olvide cerrar la caja al terminar.");
-                DefaultFacturaLauncher?.Command.Execute(null!);
+
+                var msj = $"{cajero} ha abierto una sesión de caja en la estación {estacion} con un fondo de {balance:C}. No olvide cerrar la caja al terminar.";
+                Proteus.AlertTarget?.Alert("Caja abierta correctamente.", msj);
+                if (DefaultFacturaLauncher is { Command: ICommand c })
+                {
+                    c.Execute(null!);
+                }
+                else
+                {
+                    Proteus.MessageTarget?.Info(msj);
+                }                
             }
             catch (Exception ex)
             {
@@ -144,7 +155,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
                 return;
             }
             if (!InputSplash.GetNew<decimal>("Cuente el dinero de la caja, e introduzca el total en efectivo.", out var cierre)) return;
-            var cajaOp = FacturaService.GetCajaOp;
+            var cajaOp = FacturaService.GetCajaOp!;
             var totalEfectivo = cajaOp.Facturas.Sum(p => p.TotalPagadoEfectivo);
             var cuadre = cajaOp.OpenBalance + totalEfectivo - cierre;
             if (cuadre != 0)
@@ -168,6 +179,12 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         {
             base.AfterInitialization();
             RegisterInteractor(null);
+        }
+
+        [InteractionItem, Name("Movimiento de inventario"), InteractionType(InteractionType.Operation)]
+        public void ShowInventarioMovePage(object sender, EventArgs e)
+        {
+            Host.OpenPage(new InventarioMovePage());
         }
     }
 }

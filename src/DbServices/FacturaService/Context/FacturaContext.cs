@@ -27,5 +27,11 @@ namespace TheXDS.Proteus.Context
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<TablaPrecio> TablaPrecios { get; set; }
         public DbSet<TablaPrecioItem> TablaPrecioItems { get; set; }
+        public DbSet<Proveedor> Proveedores { get; set; }
+        public DbSet<ProveedorContacto> ProveedorContactos { get; set; }
+        public DbSet<Bodega> Bodegas { get; set; }
+        public DbSet<Batch> Batches { get; set; }
+        public DbSet<Lote> Lotes { get; set; }
+        public DbSet<InventarioKind> InventarioKinds { get; set; }
     }
 }

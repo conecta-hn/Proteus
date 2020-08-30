@@ -12,7 +12,6 @@ using TheXDS.Proteus.FacturacionUi.Modules;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
-using static TheXDS.MCART.ReflectionHelpers;
 
 namespace TheXDS.Proteus.Plugins
 {

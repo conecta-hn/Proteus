@@ -40,6 +40,11 @@ namespace TheXDS.Proteus.Models
         public virtual Entidad Entidad { get; set; } = null!;
 
         /// <summary>
+        /// Bodega desde la cual reducir inventario.
+        /// </summary>
+        public virtual Bodega? Bodega { get; set; }
+
+        /// <summary>
         /// Impresora asociada a la estación de facturación.
         /// </summary>
         public string? Printer { get; set; }

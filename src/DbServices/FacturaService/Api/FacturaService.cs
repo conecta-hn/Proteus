@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using TheXDS.MCART;
 using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.Types;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Context;
 using TheXDS.Proteus.Models;
@@ -86,11 +88,62 @@ namespace TheXDS.Proteus.Api
                 MessageTarget?.Stop("No se puede registrar esta factura. La caja está cerrada.");
                 return false;
             }
+            if (!RebajarInventario(f)) return false;
             if (register)
             {
                 RegisterFactura(f, i);
             }
             GetCajaOp.Facturas.Add(f);
+            return true;
+        }
+
+        private static bool RebajarInventario(Factura f)
+        {
+            var bodega = GetEstation!.Bodega;
+            if (bodega is null)
+            {
+                MessageTarget?.Stop("Esta estación no tiene permiso para facturar productos: No hay establecida una bodega de salida.");
+                return false;
+            }
+
+            var op = new AutoDictionary<Batch, int>();
+
+            foreach (var j in f.Items)
+            {
+                if (j.Item is Producto p)
+                {
+                    var qty = j.Qty;
+                    while (qty > 0)
+                    {
+                        var b = bodega.Batches.Where(q => q.Item == p && q.Qty > 0 && !op.ContainsKey(q)).OrderBy(q => q.Lote.Manufactured).FirstOrDefault();
+                        if (b is null)
+                        {
+                            MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
+                            return false;
+                        }
+                        if (b.Qty > qty)
+                        {                            
+                            op[b] = qty;
+                            qty = 0;
+                        }
+                        else
+                        {
+                            qty -= b.Qty;
+                            op[b] = b.Qty;                            
+                        }
+                    }
+                }
+            }
+
+            var sb = new StringBuilder();
+            foreach (var j in op)
+            {
+                sb.AppendLine($"Salida de Batch {j.Key.Id}: {j.Value} unidades de {j.Key.Item.Name}");
+                j.Key.Qty -= j.Value;
+            }
+
+            MessageTarget?.Info(sb.ToString());
+
             return true;
         }
 
