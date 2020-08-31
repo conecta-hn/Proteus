@@ -34,6 +34,7 @@ namespace TheXDS.Proteus.Cmd
                 }
                 App.UiInvoke(() => MessageSplash.Show("Ayuda de la línea de comandos", sb.ToString(), MessageType.Info));
             }
+            MainWindowViewModel._exiting = true;
             App.UiInvoke(App.RootHost.ForceClose);
         }
         private static string DescribeArg(Argument arg)

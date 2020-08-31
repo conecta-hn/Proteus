@@ -11,10 +11,13 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ChDirArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FullCheckArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighPriorityArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InitArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalDbArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogFileArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LowPriorityArgument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PriorityArgumentBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProteusArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UniThreadArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UseCustomArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UseDomainArgument.cs" />

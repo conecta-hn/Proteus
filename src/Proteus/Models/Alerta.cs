@@ -9,6 +9,9 @@ using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
+    /// <summary>
+    /// Representa una alerta opcionalmente interactiva en el sistema.
+    /// </summary>
     public partial class Alerta : ITitledText
     {
         public Alerta() : this("Alerta", null, null, null, null) { }
@@ -51,10 +54,16 @@ namespace TheXDS.Proteus.Models
         /// </summary>
         public Action<Alerta>? Action { get; }
 
+        /// <summary>
+        /// Obtiene un valor que indica si esta alerta contiene una interacción.
+        /// </summary>
         public bool HasInteraction => !(Action is null);
 
         internal ICollection<Alerta>? Parent { get; }
 
+        /// <summary>
+        /// Quita la alerta del listado de alertas desplegadas.
+        /// </summary>
         public void Dismiss() => Parent?.Remove(this);
     }
 }

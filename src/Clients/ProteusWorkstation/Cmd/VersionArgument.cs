@@ -18,7 +18,6 @@ namespace TheXDS.Proteus.Cmd
         public override void Run(CmdLineParser args)
         {
             MainWindowViewModel._exiting = true;
-
             if (WinUi.HasConsole)
             {
                 Helpers.About();
