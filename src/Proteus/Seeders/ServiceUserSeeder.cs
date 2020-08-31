@@ -4,6 +4,8 @@ Licenciado para uso interno solamente.
 */
 
 using System.Threading.Tasks;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
