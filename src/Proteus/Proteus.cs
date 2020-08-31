@@ -294,7 +294,7 @@ namespace TheXDS.Proteus
                 var l = new List<Task<Result>>();
                 foreach (var (svc, seed) in Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Zip(seedRequired))
                 {
-                    l.Add(svc.RunSeeders(seed));
+                    l.Add(svc.RunSeedersAsync(seed));
                 }
                 if ((await Task.WhenAll(l)).Where(p => p != Result.Ok).Any())
                 {

@@ -50,6 +50,7 @@ namespace TheXDS.Proteus.Api
                 return Type == ModelBase.ResolveModelType(t);
             }
         }
+
         private static readonly IEnumerable<IModelPreprocessor> _preprocessors = Objects.FindAllObjects<IModelPreprocessor>().OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).ToList();
 
         private readonly HashSet<CallbackRegistryEntry> _saveCallbacks = new HashSet<CallbackRegistryEntry>();
@@ -1235,7 +1236,6 @@ namespace TheXDS.Proteus.Api
             return check(method,flags, credential.Parent);
         }
 
-
         public static bool? CanRunService(string id, SecurityFlags flags) => CanRunService(id, flags, LogonService?.Session);
 
         public static bool? CanRunService(string id, SecurityFlags flags, IProteusHierachicalCredential? credential)
@@ -1414,7 +1414,6 @@ namespace TheXDS.Proteus.Api
             if (callback == null) throw new ArgumentNullException(nameof(callback));
             _saveCallbacks.Add(new CallbackRegistryEntry(model, callback));
         }
-
 
         /// <summary>
         /// Comprueba si el contexto de datos asociado a este <see cref="T:TheXDS.Proteus.API.Service" />
@@ -1775,7 +1774,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         protected T PerformElevated<T>(Func<T> action)
         {
-            return PerformElevated(action, out var result) ? result : default;
+            return PerformElevated(action, out var result) ? result : default!;
         }
 
         /// <summary>
@@ -1824,7 +1823,7 @@ namespace TheXDS.Proteus.Api
         {
             return Op(() =>
             {
-                CommonReporter?.UpdateStatus(String.Format(St.SanitizingDb,FriendlyName.ToLower()));
+                CommonReporter?.UpdateStatus(string.Format(St.SanitizingDb,FriendlyName.ToLower()));
                 foreach (var j in Context.GetType().GetProperties()
                     .Where(p => typeof(DbSet<ISoftDeletable>).IsAssignableFrom(p.PropertyType))
                     .Select(q => q.GetMethod!.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
@@ -1890,11 +1889,23 @@ namespace TheXDS.Proteus.Api
             return Task.Run(InitializeDatabase);
         }
 
+#if DEBUG
         internal bool InitializeDatabase()
+        {
+            return InitializeDatabase(false);
+        }
+
+        internal bool InitializeDatabase(bool forcefully)
+#else
+        internal bool InitializeDatabase()
+#endif
         {
             Reporter?.UpdateStatus(string.Format(St.CheckingDb, FriendlyName.ToLower()));
             try
             {
+#if DEBUG
+                if (forcefully) Context.Database.Delete();
+#endif
                 if (Context.Database.Exists())
                 {
                     if (Context.Database.CompatibleWithModel(false) 
@@ -1915,7 +1926,13 @@ namespace TheXDS.Proteus.Api
                 return false;
             }
         }
-        internal Task<Result> RunSeeders(bool runRegardless)
+
+        internal Result RunSeeders(bool runRegardless)
+        {
+            return RunSeedersAsync(runRegardless).GetAwaiter().GetResult();
+        }
+
+        internal Task<Result> RunSeedersAsync(bool runRegardless)
         {
             return RunSeedersAsync(Task.FromResult(runRegardless));
         }
