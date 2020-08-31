@@ -11,6 +11,7 @@ namespace TheXDS.Proteus.Component
     public class TextFileLogger : IMessageTarget, ILogTarget, IStatusReporter
     {
         private static readonly object _lockObj = new object();
+
         public TextFileLogger() : this(null)
         {
         }
@@ -19,6 +20,9 @@ namespace TheXDS.Proteus.Component
             LogFile = logFile ?? $@"{Proteus.Settings?.PluginsDir ?? "."}\{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.log";
         } 
         public string LogFile { get; }
+
+        public bool IsBusy { get; private set; }
+
         public void Log(string text)
         {
             lock (_lockObj)
@@ -63,25 +67,30 @@ namespace TheXDS.Proteus.Component
         public void Done()
         {
             Log("Operación completada exitosamente.");
+            IsBusy = false;
         }
 
         public void Done(string text)
         {
             Log($"Operación finalizada: {text}");
+            IsBusy = false;
         }
 
         public void UpdateStatus(double progress)
         {
+            IsBusy = true;
             Log($"Se está realizando una operación interna ({progress:0.0}%)");
         }
 
         public void UpdateStatus(double progress, string text)
         {
+            IsBusy = true;
             Log($"{text} ({progress:0.0}%)");
         }
 
         public void UpdateStatus(string text)
         {
+            IsBusy = true;
             Log($"{text}");
         }
     }

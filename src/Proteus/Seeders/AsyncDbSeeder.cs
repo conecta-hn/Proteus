@@ -9,6 +9,8 @@ using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART.Types.Extensions;
+using System.Reflection;
+using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Seeders
 {
@@ -17,8 +19,26 @@ namespace TheXDS.Proteus.Seeders
     /// semillar bases de datos basados en un modelo concreto.
     /// </summary>
     /// <typeparam name="T">Modelo de datos a semillar.</typeparam>
-    public abstract class AsyncDbSeeder<T> : IAsyncDbSeeder where T: ModelBase, new()
+    public abstract class AsyncDbSeeder<T> : IAsyncDbSeeder where T : ModelBase, new()
     {
+        public string InformationalVersion
+        {
+            get
+            {
+                Assembly src;
+                if (this is IExposeAssembly e)
+                {
+                    src = e.Assembly;
+                }
+                else
+                {
+                    src = GetType().Assembly;
+                }
+                return new AssemblyInfo(src).InformationalVersion.OrNull() ?? src.GetName().Version?.ToString().OrNull() ?? "1.0.0.0";
+
+            }
+        }
+
         /// <summary>
         /// Nombre de este semillador de datos.
         /// </summary>
@@ -36,7 +56,7 @@ namespace TheXDS.Proteus.Seeders
         /// <summary>
         /// Obtiene el nombre a mostrar de este semillador.
         /// </summary>
-        private string GetName => Name.OrNull() ?? typeof(T).NameOf() ?? GetType().NameOf() ?? GetType().Name;
+        public string GetName => Name.OrNull() ?? typeof(T).NameOf() ?? GetType().NameOf() ?? GetType().Name;
 
         /// <summary>
         /// Ejecuta la acción de semillado de la base de datos de forma

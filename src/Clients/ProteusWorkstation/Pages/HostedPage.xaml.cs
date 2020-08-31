@@ -33,8 +33,17 @@ namespace TheXDS.Proteus.Pages
         {
             return new HostedPage().Setup<T>(title);
         }
+        public static HostedPage From(Page pg)
+        {
+            return From(FromPage(pg));
+        }
+        public static HostedPage From(UIElement fe)
+        {
+            return new HostedPage() { Content = fe };
+        }
 
-        private protected HostedPage Setup<T>(string title) where T:FrameworkElement, new()
+
+        private protected HostedPage Setup<T>(string title) where T : FrameworkElement, new()
         {
             Vm.Title = title;
             Content = typeof(T).New() switch
@@ -55,6 +64,7 @@ namespace TheXDS.Proteus.Pages
             f.Navigate(pg);
             return f;
         }
+
     }
 
     public class HostedPage<T> : HostedPage where T: FrameworkElement, new()
