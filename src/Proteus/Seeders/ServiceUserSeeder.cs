@@ -15,6 +15,16 @@ namespace TheXDS.Proteus.Seeders
     /// </summary>
     public class ServiceUserSeeder : IAsyncDbSeeder
     {
+        public string GetName => GetType().NameOf();
+
+        public string InformationalVersion
+        {
+            get
+            {
+                return new AssemblyInfo(GetType().Assembly).InformationalVersion.OrNull() ?? GetType().Assembly.GetName().Version?.ToString().OrNull() ?? "1.0.0.0";
+            }
+        }
+
         /// <summary>
         /// Ejecuta la acción de semillado de la base de datos de forma
         /// asíncrona.

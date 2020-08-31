@@ -31,29 +31,32 @@ using St = TheXDS.Proteus.Resources.Strings;
 
 namespace TheXDS.Proteus.Api
 {
+    public class CallbackRegistryEntry
+    {
+        public Type Type { get; }
+        public Action<ModelBase> Action { get; }
+        public CallbackRegistryEntry(Type type, Action<ModelBase> action)
+        {
+            Type = ModelBase.ResolveModelType(type);
+            Action = action;
+        }
+        public bool IsFor(Type t)
+        {
+            return Type == ModelBase.ResolveModelType(t);
+        }
+    }
+
     /// <summary>
     /// Clase base para todos los servicios de Proteus.
     /// </summary>
     public abstract class Service : Plugin, IDisposable, IFullService
     {
-        private class CallbackRegistryEntry
-        {
-            internal Type Type { get; }
-            internal Action<ModelBase> Action { get; }
-            internal CallbackRegistryEntry(Type type, Action<ModelBase> action)
-            {
-                Type = ModelBase.ResolveModelType(type);
-                Action = action;
-            }
-            internal bool IsFor(Type t)
-            {
-                return Type == ModelBase.ResolveModelType(t);
-            }
-        }
 
         private static readonly IEnumerable<IModelPreprocessor> _preprocessors = Objects.FindAllObjects<IModelPreprocessor>().OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).ToList();
 
         private readonly HashSet<CallbackRegistryEntry> _saveCallbacks = new HashSet<CallbackRegistryEntry>();
+
+        public IEnumerable<CallbackRegistryEntry> SaveCallbacks => _saveCallbacks;
 
         /// <summary>
         /// Enumera los nombres de las funciones expuestas por este
@@ -61,7 +64,7 @@ namespace TheXDS.Proteus.Api
         /// establecidas para los mismas.
         /// </summary>
         public IEnumerable<NamedObject<SecurityFlags>> FunctionNames
-            => Functions.Select(p => new NamedObject<SecurityFlags>(p.Value,p.Key.FullName()));
+            => Functions.Select(p => new NamedObject<SecurityFlags>(p.Value, p.Key.FullName()));
 
         /// <summary>
         /// Enumera las referencias a los métodos expuestas por este

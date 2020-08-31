@@ -88,31 +88,5 @@ namespace TheXDS.Proteus.Pages
 
         public void Activate() => PageHost?.SwitchTo(this);
         public void Close() => PageHost?.ClosePage(this);
-
-        private void LstPlugins_DblClick(object sender, MouseButtonEventArgs e)
-        {
-            var t = ((sender as FrameworkElement)?.DataContext as IExposeAssembly)?.Assembly;
-            if (t is null) return;
-            var i = new ApplicationInfo(t, InferImage(t));
-            AboutBox.ShowDialog(i);
-        }
-
-        private static UIElement InferImage(Assembly t)
-        {
-            if (t == typeof(Proteus).Assembly) return Images.Proteus;
-            if (t == typeof(App).Assembly) return Images.Logo;
-            return Images.Plugin;
-        }
-
-        private void BtnTypeInfo_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement fe)
-            {
-                new Window
-                {
-                    Content = new TypeDetails(fe.DataContext?.GetType())
-                }.ShowDialog();
-            }
-        }
     }
 }

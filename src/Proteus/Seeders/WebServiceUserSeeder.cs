@@ -4,6 +4,8 @@ Licenciado para uso interno solamente.
 */
 
 using System.Threading.Tasks;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
@@ -38,6 +40,16 @@ namespace TheXDS.Proteus.Seeders
             var r = await us.GenerateToken("apiwebservice", null, null, out var token);
             reporter?.UpdateStatus(100,$"Token para 'apiwebservice':\n{token}");
             return r;
+        }
+
+        public string GetName => GetType().NameOf();
+
+        public string InformationalVersion
+        {
+            get
+            {
+                return new AssemblyInfo(GetType().Assembly).InformationalVersion.OrNull() ?? GetType().Assembly.GetName().Version?.ToString().OrNull() ?? "1.0.0.0";
+            }
         }
 
         /// <summary>
