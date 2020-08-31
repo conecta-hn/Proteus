@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Models;
+using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.Seeders
 {
