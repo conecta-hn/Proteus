@@ -13,7 +13,7 @@ namespace TheXDS.Proteus.Component
     /// indiscriminada. Esta clase no debe utilizarse, y solo existe para
     /// propósitos de prueba y desarrollo.
     /// </summary>
-    public class RootElevator : IElevator
+    public class UacElevator : IElevator
     {
         /// <summary>
         /// Eleva los permisos de un objeto credencial que lo solicite.

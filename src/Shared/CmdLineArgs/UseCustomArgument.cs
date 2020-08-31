@@ -8,7 +8,7 @@ using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Cmd
 {
-    public class UseCustomArgument : Argument
+    public class UseCustomArgument : ProteusArgument
     {
         public override ValueKind Kind => ValueKind.Optional;
 
@@ -16,12 +16,16 @@ namespace TheXDS.Proteus.Cmd
 
         public override void Run(CmdLineParser args)
         {
-            Settings.Default.UseLocalDbProvider = false;
-            Settings.Default.UseDomainProvider = false;
-            Settings.Default.UseCustomProvider = true;
             if (!(Value is null) || string.IsNullOrWhiteSpace(Value))
             {
+                Settings.Default.UseLocalDbProvider = false;
+                Settings.Default.UseDomainProvider = false;
+                Settings.Default.UseCustomProvider = true;
                 Settings.Default.CustomProvider = Value;
+            }
+            else
+            {
+                InvalidArg();
             }
         }
     }

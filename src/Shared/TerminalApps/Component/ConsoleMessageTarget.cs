@@ -5,6 +5,7 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Reflection;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Component
 {
@@ -47,7 +48,7 @@ namespace TheXDS.Proteus.Component
                     foreach (var j in aex.InnerExceptions) Critical(j);
                     break;
                 case ReflectionTypeLoadException rex:
-                    foreach (var j in rex.LoaderExceptions) Critical(j);
+                    foreach (var j in rex.LoaderExceptions.NotNull()) Critical(j);
                     break;
             }
         }

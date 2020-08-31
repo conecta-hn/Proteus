@@ -131,7 +131,9 @@ namespace TheXDS.Proteus.Dialogs
                     MessageType.Critical => SystemTheme.AppTheme == ApplicationTheme.Light
                             ? Colors.IndianRed
                             : Colors.DarkRed,
-                    _ => (Application.Current.TryFindResource("SystemBaseLowColor") as Color?) ?? default,
+                    _ => SystemTheme.AppTheme == ApplicationTheme.Light
+                            ? Colors.LightGray
+                            : Colors.DarkGray,
                 };
             }
         }

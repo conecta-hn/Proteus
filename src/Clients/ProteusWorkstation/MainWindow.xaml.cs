@@ -5,6 +5,7 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using TheXDS.MCART.Component;
 using TheXDS.Proteus.Config;
@@ -54,7 +55,10 @@ namespace TheXDS.Proteus
             Proteus.Logout(false);
         }
 
-        private void MainWindow_Closed(object? sender, EventArgs e) => Application.Current.Shutdown();
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
 
         private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
@@ -122,7 +126,7 @@ Información adicional: {ex.Message}
         public void ForceClose()
         {
             _forced = true;
-            Close();
+            Application.Current.Shutdown();
         }
     }
 }

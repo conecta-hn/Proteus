@@ -3,7 +3,9 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System;
 using System.IO;
+using System.Text;
 using TheXDS.MCART.Networking.Legacy.Client;
 
 namespace TheXDS.Proteus.Component
@@ -50,9 +52,24 @@ namespace TheXDS.Proteus.Component
                 case DumpResponse.Stop:
                     _target.Stop(br.ReadString()); break;
                 case DumpResponse.Report:
-                    _reporter.UpdateStatus(br.ReadDouble(),br.ReadString()); break;
+                    _reporter.UpdateStatus(br.ReadDouble(), br.ReadString()); break;
                 case DumpResponse.Warning:
                     _target.Warning(br.ReadString()); break;
+                default:
+                    if (br.BaseStream.CanSeek)
+                    {
+                        var sb = new StringBuilder();
+                        while (br.BaseStream.Position < br.BaseStream.Length)
+                        {
+                            sb.Append($"{br.ReadByte():X2} ");
+                        }
+                        _target.Show($"#{response}", $"{br.BaseStream.Length} bytes{Environment.NewLine}{sb}");
+                    }
+                    else
+                    {
+                        _target.Show($"#{response}");
+                    }
+                    break;
             }
         }
     }

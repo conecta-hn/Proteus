@@ -14,6 +14,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
 using TheXDS.MCART;
+using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Models;
@@ -21,7 +22,7 @@ using TheXDS.Proteus.Plugins;
 
 namespace TheXDS.Proteus.Tools
 {
-
+    [Name("Herramienta de actualización")]
     public class UpdateCheckTool : Tool
     {
         private struct AsmInfo
@@ -43,7 +44,6 @@ namespace TheXDS.Proteus.Tools
             if (asm is null || asm.IsDynamic) return null;
             var p = asm.GetName();
 
-            //var v = asm.GetAttr<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             return !(p.Name is null || asm.Location.Contains("C:\\Program Files\\dotnet\\shared"))
                 ? new AsmInfo($"{Path.GetFileName(p.CodeBase)}", p.Version?.ToString() ?? "1.0.0.0")
                 : (AsmInfo?)null;

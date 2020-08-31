@@ -3,13 +3,13 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Config;
 using System;
 using TheXDS.MCART.Component;
+using TheXDS.Proteus.Config;
 
 namespace TheXDS.Proteus.Cmd
 {
-    public class InitArgument : Argument
+    public class InitArgument : ProteusArgument
     {
         public override ValueKind Kind => ValueKind.ValueRequired;
 
@@ -23,7 +23,10 @@ namespace TheXDS.Proteus.Cmd
             {
                 Settings.Default.InitMode = mode;
             }
+            else
+            {
+                InvalidArg();
+            }
         }
     }
-
 }
