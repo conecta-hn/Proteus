@@ -30,9 +30,7 @@ namespace TheXDS.Proteus.Component
         }
 
         internal static bool _forceLocalDb;
-
         private static readonly List<FactoryRegistryEntry> _factories = new List<FactoryRegistryEntry>();
-
 
         /// <summary>
         /// Inicializa la clase <see cref="DbConfig"/>
@@ -61,7 +59,7 @@ namespace TheXDS.Proteus.Component
         {
             SetExecutionStrategy("System.Data.SqlClient", () => new SqlAzureExecutionStrategy());
 
-            if (_factories.FirstOrDefault(p=>p.Predicate()) is { } f)
+            if (_factories.FirstOrDefault(p => p.Predicate()) is { } f)
             {
                 SetDefaultConnectionFactory(f.Factory());
             }
