@@ -24,6 +24,11 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
     [Name("Módulo de facturación")]
     public class FacturacionModule : UiModule<FacturaService>
     {
+        public FacturacionModule()
+        {
+            ModuleDashboard = new FacturacionDashboardPage();
+        }
+
         /// <summary>
         /// Obtiene el <see cref="Launcher"/> predeterminado para abrir la
         /// página de facturación.

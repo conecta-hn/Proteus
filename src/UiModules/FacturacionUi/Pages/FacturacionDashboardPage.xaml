@@ -1,0 +1,43 @@
+﻿<Page
+    x:Class="TheXDS.Proteus.FacturacionUi.Pages.FacturacionDashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:TheXDS.Proteus.FacturacionUi.Pages"
+    xmlns:vm="clr-namespace:TheXDS.Proteus.FacturacionUi.ViewModels"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800"
+    Title="FacturacionDashboardPage">
+    <Page.DataContext>
+        <vm:FacturacionDashboardViewModel/>
+    </Page.DataContext>
+    <Grid>
+        <StackPanel Visibility="{Binding ThisCajaOp, Converter={StaticResource NotNullToVisibilityConverter}}">
+            <TextBlock>Caja abierta</TextBlock>
+            <Separator/>
+            <TextBlock>
+                Caja abierta el: <Run Text="{Binding ThisCajaOp.Timestamp}"/>
+            </TextBlock>
+            <TextBlock>
+                Cajero: <Run Text="{Binding ThisCajaOp.Cajero.UserEntity.Name}"/>
+            </TextBlock>
+            <TextBlock>
+                Balance de apertura: <Run Text="{Binding ThisCajaOp.OpenBalance}"/>
+            </TextBlock>
+            <TextBlock>
+                Facturas realizadas hasta ahora: <Run Text="{Binding ThisCajaOp.Facturas.Count}"/>
+            </TextBlock>
+
+            <TextBlock>
+                Total facturado hasta ahora: <Run Text="{Binding ThisCajaOp.TotalFacturas}"/>
+            </TextBlock>
+        </StackPanel>
+        <Viewbox Margin="100" Visibility="{Binding ThisCajaOp, Converter={StaticResource NullToVisibilityConverter}}">
+            <StackPanel>                    
+                <TextBlock HorizontalAlignment="Center" FontSize="36" Foreground="DeepSkyBlue">ℹ</TextBlock>
+                <TextBlock>La caja está cerrada.</TextBlock>
+            </StackPanel>
+        </Viewbox>
+    </Grid>
+</Page>

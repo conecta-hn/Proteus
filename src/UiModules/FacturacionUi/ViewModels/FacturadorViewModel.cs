@@ -623,4 +623,25 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         }
     }
 
+    public class FacturacionDashboardViewModel : ProteusViewModel
+    {
+        /// <summary>
+        ///     Inicializa la clase <see cref="FacturacionDashboardViewModel"/>
+        /// </summary>
+        public FacturacionDashboardViewModel()
+        {
+            Proteus.Service<FacturaService>()!.RegisterSaveCallback<Factura>(NotifyDashboard);
+        }
+
+        private void NotifyDashboard(Factura f)
+        {
+            if (f.IsNew)
+            {
+                BusyOp(RefreshVmAsync<FacturacionDashboardViewModel>);
+                Proteus.NwClient?.RefreshViewModel<FacturacionDashboardViewModel>();
+            }
+        }
+
+        public CajaOp? ThisCajaOp => FacturaService.GetCajaOp;
+    }
 }
