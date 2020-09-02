@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
@@ -11,9 +12,11 @@ using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.FacturacionUi.Component;
 using TheXDS.Proteus.FacturacionUi.Pages;
+using TheXDS.Proteus.FacturacionUi.ViewModels;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages;
 using TheXDS.Proteus.Plugins;
+using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.FacturacionUi.Modules
@@ -26,7 +29,14 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
     {
         public FacturacionModule()
         {
-            ModuleDashboard = new FacturacionDashboardPage();
+            App.UiInvoke(SetupDashboard);
+        }
+
+        private void SetupDashboard()
+        {
+            var f = new Frame { NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden };
+            f.Navigate(new FacturacionDashboardPage());
+            ModuleDashboard = f;
         }
 
         /// <summary>
@@ -184,6 +194,9 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         {
             base.AfterInitialization();
             RegisterInteractor(null);
+            Proteus.Service<FacturaService>()?.RegisterSaveCallback<Factura>(NotifyDashboard);
+            Proteus.Service<FacturaService>()?.RegisterSaveCallback<CajaOp>(NotifyDashboard);
+
         }
 
         [InteractionItem, Name("Movimiento de inventario"), InteractionType(InteractionType.Operation)]
@@ -191,5 +204,19 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         {
             Host.OpenPage(new InventarioMovePage());
         }
+
+        private void NotifyDashboard(Factura f)
+        {
+            if (f.IsNew)
+            {   
+                ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
+            }
+
+        }
+        private void NotifyDashboard(CajaOp f)
+        {
+            ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
+        }
+        
     }
 }

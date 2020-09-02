@@ -630,18 +630,16 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// </summary>
         public FacturacionDashboardViewModel()
         {
-            Proteus.Service<FacturaService>()!.RegisterSaveCallback<Factura>(NotifyDashboard);
         }
+        
 
-        private void NotifyDashboard(Factura f)
+
+        internal void RefreshDashboard()
         {
-            if (f.IsNew)
-            {
-                BusyOp(RefreshVmAsync<FacturacionDashboardViewModel>);
-                Proteus.NwClient?.RefreshViewModel<FacturacionDashboardViewModel>();
-            }
+            BusyOp(RefreshVmAsync<FacturacionDashboardViewModel>);
+            Proteus.NwClient?.RefreshViewModel<FacturacionDashboardViewModel>();
         }
 
-        public CajaOp? ThisCajaOp => FacturaService.GetCajaOp;
+        public CajaOp? ThisCajaOp => Proteus.Services is { } ? FacturaService.GetCajaOp : null;
     }
 }
