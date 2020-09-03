@@ -13,27 +13,27 @@
         <vm:FacturacionDashboardViewModel/>
     </Page.DataContext>
     <Grid>
-        <StackPanel Visibility="{Binding ThisCajaOp, Converter={StaticResource NotNullToVisibilityConverter}}">
+        <StackPanel Visibility="{Binding ThisCajaOp, Mode=OneWay, Converter={StaticResource NotNullToVisibilityConverter}}">
             <TextBlock>Caja abierta</TextBlock>
             <Separator/>
             <TextBlock>
-                Caja abierta el: <Run Text="{Binding ThisCajaOp.Timestamp}"/>
+                Caja abierta el: <Run Text="{Binding ThisCajaOp.Timestamp, Mode=OneWay}"/>
             </TextBlock>
             <TextBlock>
-                Cajero: <Run Text="{Binding ThisCajaOp.Cajero.UserEntity.Name}"/>
+                Cajero: <Run Text="{Binding ThisCajaOp.Cajero.UserEntity.Name, Mode=OneWay}"/>
             </TextBlock>
             <TextBlock>
-                Balance de apertura: <Run Text="{Binding ThisCajaOp.OpenBalance}"/>
+                Balance de apertura: <Run Text="{Binding ThisCajaOp.OpenBalance, Mode=OneWay, StringFormat=C}"/>
             </TextBlock>
             <TextBlock>
-                Facturas realizadas hasta ahora: <Run Text="{Binding ThisCajaOp.Facturas.Count}"/>
+                Facturas realizadas hasta ahora: <Run Text="{Binding ThisCajaOp.Facturas.Count, Mode=OneWay}"/>
             </TextBlock>
 
             <TextBlock>
-                Total facturado hasta ahora: <Run Text="{Binding ThisCajaOp.TotalFacturas}"/>
+                Total facturado hasta ahora: <Run Text="{Binding ThisCajaOp.TotalFacturas, Mode=OneWay, StringFormat=C}"/>
             </TextBlock>
         </StackPanel>
-        <Viewbox Margin="100" Visibility="{Binding ThisCajaOp, Converter={StaticResource NullToVisibilityConverter}}">
+        <Viewbox Margin="100" Visibility="{Binding ThisCajaOp, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
             <StackPanel>                    
                 <TextBlock HorizontalAlignment="Center" FontSize="36" Foreground="DeepSkyBlue">ℹ</TextBlock>
                 <TextBlock>La caja está cerrada.</TextBlock>

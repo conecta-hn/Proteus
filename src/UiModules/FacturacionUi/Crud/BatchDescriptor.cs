@@ -19,6 +19,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             ObjectProperty(p => p.Item)
                 .Selectable()
                 .Label("Elemento de inventario")
+                .AsListColumn()
                 .Required();
 
             ObjectProperty(p => p.Lote)
@@ -27,8 +28,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Required();
 
             NumericProperty(p => p.Qty)
-                 .Label("Cantidad")
+                .Label("Cantidad")
+                .AsListColumn()
                 .Required();
+
+            ShowAllInDetails();
         }
     }
 }

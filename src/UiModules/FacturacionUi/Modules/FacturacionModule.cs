@@ -173,7 +173,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             var cajaOp = FacturaService.GetCajaOp!;
             var totalEfectivo = cajaOp.Facturas.Sum(p => p.TotalPagadoEfectivo);
             var cuadre = cajaOp.OpenBalance + totalEfectivo - cierre;
-            if (cuadre != 0)
+            if (cuadre > 0.00m) // Epsilon de monedas. Únicamente afecta a la condición de cierre de caja, no al balance general.
             {
                 Proteus.MessageTarget?.Warning($"El cierre de caja no cuadra por {cuadre:C}.");
                 return;
@@ -183,7 +183,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             cajaOp.CloseTimestamp = DateTime.Now;
             await Service!.SaveAsync();
             Reporter?.Done();
-            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance}");
+            Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance:C}");
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             RegisterInteractor(null);
             Proteus.Service<FacturaService>()?.RegisterSaveCallback<Factura>(NotifyDashboard);
             Proteus.Service<FacturaService>()?.RegisterSaveCallback<CajaOp>(NotifyDashboard);
-
+            ProteusViewModel.Get<FacturacionDashboardViewModel>().Refresh();
         }
 
         [InteractionItem, Name("Movimiento de inventario"), InteractionType(InteractionType.Operation)]

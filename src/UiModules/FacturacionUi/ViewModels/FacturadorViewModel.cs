@@ -631,13 +631,19 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         public FacturacionDashboardViewModel()
         {
         }
-        
-
 
         internal void RefreshDashboard()
         {
+            Refresh();
             BusyOp(RefreshVmAsync<FacturacionDashboardViewModel>);
             Proteus.NwClient?.RefreshViewModel<FacturacionDashboardViewModel>();
+            Notify(
+                nameof(ThisCajaOp),
+                "ThisCajaOp.Timestamp",
+                "ThisCajaOp.Cajero.UserEntity.Name",
+                "ThisCajaOp.OpenBalance",
+                "ThisCajaOp.Facturas.Count",
+                "ThisCajaOp.TotalFacturas");
         }
 
         public CajaOp? ThisCajaOp => Proteus.Services is { } ? FacturaService.GetCajaOp : null;

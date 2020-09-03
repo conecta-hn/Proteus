@@ -11,15 +11,19 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             OnModuleMenu(InteractionType.AdminTool); 
             FriendlyName("Lote");
 
-            Property(p => p.Id).Id("Código de lote");
+            Property(p => p.Id).Id("Código de lote")
+                .ShowInDetails()
+                .AsListColumn();
 
             DateProperty(p => p.Manufactured)
                 .Label("Fecha de manufactura")
-                .Required();
+                .Required()
+                .ShowInDetails()
+                .AsListColumn();
 
             ListProperty(p => p.OnBatches)
                 .Label("Bloques relacionados")
-                .Required();
+                .Required().ShowInDetails();
         }
     }
 }

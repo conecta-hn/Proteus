@@ -110,28 +110,17 @@ namespace TheXDS.Proteus.Api
 
             foreach (var j in f.Items)
             {
-                if (j.Item is Producto p)
+                switch (j.Item)
                 {
-                    var qty = j.Qty;
-                    while (qty > 0)
-                    {
-                        var b = bodega.Batches.Where(q => q.Item == p && q.Qty > 0 && !op.ContainsKey(q)).OrderBy(q => q.Lote.Manufactured).FirstOrDefault();
-                        if (b is null)
+                    case Producto p:
+                        if (!ProcessInvBajaItem(p, j.Qty, op)) return false;
+                        break;
+                    case Paquete paquete:
+                        foreach (var k in paquete.Children.OfType<Producto>())
                         {
-                            MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
-                            return false;
+                            if (!ProcessInvBajaItem(k, j.Qty, op)) return false;
                         }
-                        if (b.Qty > qty)
-                        {                            
-                            op[b] = qty;
-                            qty = 0;
-                        }
-                        else
-                        {
-                            qty -= b.Qty;
-                            op[b] = b.Qty;                            
-                        }
-                    }
+                        break;
                 }
             }
 
@@ -142,8 +131,33 @@ namespace TheXDS.Proteus.Api
                 j.Key.Qty -= j.Value;
             }
 
-            MessageTarget?.Info(sb.ToString());
+            if (op.Any()) MessageTarget?.Info(sb.ToString());
 
+            return true;
+        }
+
+        private static bool ProcessInvBajaItem(Producto p, int qty, AutoDictionary<Batch, int> op)
+        {
+            var bodega = GetEstation!.Bodega!;
+            while (qty > 0)
+            {
+                var b = bodega.Batches.Where(q => q.Item == p && q.Qty > 0 && !op.ContainsKey(q)).OrderBy(q => q.Lote.Manufactured).FirstOrDefault();
+                if (b is null)
+                {
+                    MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
+                    return false;
+                }
+                if (b.Qty > qty)
+                {
+                    op[b] += qty;
+                    qty = 0;
+                }
+                else
+                {
+                    qty -= b.Qty;
+                    op[b] += b.Qty;
+                }
+            }
             return true;
         }
 
