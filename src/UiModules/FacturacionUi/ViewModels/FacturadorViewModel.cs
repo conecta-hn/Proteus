@@ -155,9 +155,18 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         private void NewItemChanged(Facturable? value)
         {
+            var isv = CheckIsvTree(value);
+
             NewQty = value is null ? 0 : 1;
-            NewGravado = value?.Isv ?? 0f;
-            NewGravar = value?.Isv.HasValue ?? false;
+            NewGravar = isv.HasValue;
+            NewGravado = isv ?? 0f;
+        }
+
+        private float? CheckIsvTree(Facturable? item)
+        {
+            if (item is null) return null;
+            return item.Isv
+                ?? item?.Category?.Isv;
         }
 
         /// <summary>
@@ -324,12 +333,12 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             if (!InputSplash.GetNew<string>("Introduzca la identidad del cliente", out var i)) return;
 
             var g = i.Split('-');            
-            if (g.Length != 3 || int.TryParse(g[1],out var y))
+            if (g.Length != 3 || int.TryParse(g[1], out var y))
             {
                 Proteus.MessageTarget?.Stop("La identidad no tiene un formato válido.");
                 return;
             }
-            if (DateTime.Today.Year-y < 60)
+            if ((DateTime.Today.Year - 60) > y)
             {
                 Proteus.MessageTarget?.Stop("La identidad no cumple con el requisito de edad.");
                 return;
@@ -561,7 +570,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             if (NewItems.FirstOrDefault(p => p.Item == NewItem) is { } i)
             {
-                Proteus.MessageTarget?.Info($"El ítem {NewItem!.Id} ya ha sido agregado a la factura.");
+                //Proteus.MessageTarget?.Info($"El ítem {NewItem!.Id} ya ha sido agregado anteriormente a la factura.");
                 i.Qty += NewQty;                
             }
             else
@@ -621,31 +630,5 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 && Paid >= Total
                 && (_interactor?.CanFacturate() ?? true));
         }
-    }
-
-    public class FacturacionDashboardViewModel : ProteusViewModel
-    {
-        /// <summary>
-        ///     Inicializa la clase <see cref="FacturacionDashboardViewModel"/>
-        /// </summary>
-        public FacturacionDashboardViewModel()
-        {
-        }
-
-        internal void RefreshDashboard()
-        {
-            Refresh();
-            BusyOp(RefreshVmAsync<FacturacionDashboardViewModel>);
-            Proteus.NwClient?.RefreshViewModel<FacturacionDashboardViewModel>();
-            Notify(
-                nameof(ThisCajaOp),
-                "ThisCajaOp.Timestamp",
-                "ThisCajaOp.Cajero.UserEntity.Name",
-                "ThisCajaOp.OpenBalance",
-                "ThisCajaOp.Facturas.Count",
-                "ThisCajaOp.TotalFacturas");
-        }
-
-        public CajaOp? ThisCajaOp => Proteus.Services is { } ? FacturaService.GetCajaOp : null;
     }
 }

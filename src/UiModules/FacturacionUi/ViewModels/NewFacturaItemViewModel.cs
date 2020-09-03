@@ -176,7 +176,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// </param>
         public NewFacturaItemViewModel(FacturadorViewModel parent, ItemFactura item) : this(parent, item.Item)
         {
-            Qty = item?.Qty ??1;
+            Qty = item?.Qty ?? 1;
             Gravar = item?.StaticIsv.HasValue ?? false;
             Gravado = item?.StaticIsv ?? 0f;
             DescuentosOtorgados = item?.StaticDescuento ?? 0m;
@@ -188,11 +188,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         /// facturación en la selección actual del ViewModel de facturación.
         /// </summary>
         /// <param name="parent">Objeto padre de esta instancia.</param>
-        public NewFacturaItemViewModel(FacturadorViewModel parent) : this(parent, parent.NewItem)
+        public NewFacturaItemViewModel(FacturadorViewModel parent) : this(parent, parent.NewItem!)
         {
-            Qty = parent?.NewQty ?? 1;
-            Gravar = parent?.NewGravar ?? false;
-            Gravado = parent?.NewGravado ?? 0f;
+            Qty = parent.NewQty;
+            Gravar = parent.NewGravar;
+            Gravado = parent.NewGravado;
         }
 
         /// <summary>
