@@ -152,6 +152,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             }
             finally
             {
+                ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
                 Proteus.CommonReporter?.Done();
             }
         }
@@ -183,6 +184,7 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
             cajaOp.CloseTimestamp = DateTime.Now;
             await Service!.SaveAsync();
             Reporter?.Done();
+            ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
             Proteus.MessageTarget?.Info($"Caja cerrada correctamente. Debe depositar {cierre - cajaOp.Cajero.OptimBalance:C} para mantener su fondo de caja de {cajaOp.Cajero.OptimBalance:C}");
         }
 
@@ -194,9 +196,6 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         {
             base.AfterInitialization();
             RegisterInteractor(null);
-            Proteus.Service<FacturaService>()?.RegisterSaveCallback<Factura>(NotifyDashboard);
-            Proteus.Service<FacturaService>()?.RegisterSaveCallback<CajaOp>(NotifyDashboard);
-            ProteusViewModel.Get<FacturacionDashboardViewModel>().Refresh();
         }
 
         [InteractionItem, Name("Movimiento de inventario"), InteractionType(InteractionType.Operation)]
@@ -204,19 +203,5 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         {
             Host.OpenPage(new InventarioMovePage());
         }
-
-        private void NotifyDashboard(Factura f)
-        {
-            if (f.IsNew)
-            {   
-                ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
-            }
-
-        }
-        private void NotifyDashboard(CajaOp f)
-        {
-            ProteusViewModel.Get<FacturacionDashboardViewModel>().RefreshDashboard();
-        }
-        
     }
 }

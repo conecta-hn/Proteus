@@ -33,6 +33,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Required();
 
             ShowAllInDetails();
+            AllListColumn();
         }
     }
 }

@@ -12,24 +12,25 @@ responsabilidad y daños causados por el uso indebido de este archivo o de
 cualquier parte de su contenido.
 */
 
-using TheXDS.Proteus.Component;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
+using TheXDS.MCART.Types;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Dialogs;
-using TheXDS.Proteus.Models;
-using TheXDS.Proteus.ViewModels;
 using TheXDS.Proteus.FacturacionUi.Component;
 using TheXDS.Proteus.FacturacionUi.ViewModels;
-using TheXDS.Proteus.Pages.Base;
-using TheXDS.Proteus.Crud.Base;
-using System.Windows.Data;
-using System.Linq;
+using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
-using System.Collections.Generic;
-using System;
-using System.Reflection;
-using TheXDS.Proteus.Crud;
-using System.Windows;
-using TheXDS.MCART.Types;
+using TheXDS.Proteus.Pages.Base;
+using TheXDS.Proteus.ViewModels;
 using TheXDS.Proteus.ViewModels.Base;
 
 namespace TheXDS.Proteus.Pages
@@ -69,7 +70,7 @@ namespace TheXDS.Proteus.Pages
 
             public Type PropertyType => typeof(Cliente);
 
-            public object Default => null;
+            public object? Default => null;
 
             public bool Hidden => false;
 
@@ -79,7 +80,7 @@ namespace TheXDS.Proteus.Pages
 
             public bool ShowWatermark => true;
 
-            public string ReadOnlyFormat => null;
+            public string? ReadOnlyFormat => null;
 
             public string Icon => "🧑";
 
@@ -112,7 +113,7 @@ namespace TheXDS.Proteus.Pages
             }
         }
 
-        public FacturadorPage() : this((Factura?)null) { }
+        public FacturadorPage() : this(null, null) { }
 
         public FacturadorPage(IFacturaUIInteractor? interactor) : this(null, interactor) { }
 
@@ -143,6 +144,29 @@ namespace TheXDS.Proteus.Pages
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
+            TxtNewItemCode.Focus();
+        }
+
+        private void TxtNewItemCode_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter: SetNewProd(); break;
+            }
+        }
+
+        private void SetNewProd()
+        {
+            var vm = (FacturadorViewModel)ViewModel;
+            vm.NewItemCode = TxtNewItemCode.Text;
+            if (vm.NewItem is { } && vm.AddNewCommand.CanExecute(null))
+            { 
+                vm.AddNewCommand.Execute(null);
+            }
+            else
+            {
+                TxtNewItemCode.SelectAll();
+            }
             TxtNewItemCode.Focus();
         }
     }

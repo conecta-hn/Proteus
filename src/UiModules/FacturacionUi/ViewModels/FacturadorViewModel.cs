@@ -236,7 +236,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             RegisterPropertyChangeBroadcast(nameof(CurrentFactura), nameof(IsNewV), nameof(NotNewV), nameof(FacturaNumber));
             RegisterPropertyChangeBroadcast(nameof(NewItem), nameof(NewPrecio), nameof(NewGravable));
-            RegisterPropertyChangeBroadcast(nameof(NewCliente), nameof(IsClienteSelected), nameof(IsClienteNotSelected));
+            RegisterPropertyChangeBroadcast(nameof(NewCliente), nameof(IsClienteSelected), nameof(IsClienteNotSelected), nameof(ShouldShowDetails), nameof(ShouldNotShowDetails));
             RegisterPropertyChangeTrigger(nameof(SubTFinal), nameof(SubTotal), nameof(SubTGravado), nameof(SubTDescuentos));
             RegisterPropertyChangeTrigger(nameof(Total), nameof(SubTFinal), nameof(Descuento), nameof(OtrosCargos));
             RegisterPropertyChangeBroadcast(nameof(PrintFactura), nameof(FacturarBtnTitle));
@@ -304,7 +304,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                     if (!(value is null))
                     {
                         ClienteEditor.ViewModel.Entity = value;
-                        if (value.Exoneraciones.Any(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1))))
+                        if (ValidExoneracion is { })
                         {
                             foreach (var j in NewItems)
                             {
@@ -315,7 +315,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                         {
                             foreach (var j in NewItems)
                             {
-                                j.Gravar = j.Item.Isv.HasValue;
+                                j.Gravar = j.Item.Isv.HasValue || (j.Item.Category?.Isv.HasValue ?? false);
                             }
                         }
                         RefreshSubtotals();
@@ -323,6 +323,14 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
                     _interactor?.OnClienteSelected();                    
                 }
+            }
+        }
+
+        public IsvExoneracion? ValidExoneracion
+        {
+            get
+            {
+                return NewCliente?.Exoneraciones.FirstOrDefault(p => DateTime.Today.IsBetween(p.Timestamp.Date, p.Void.Date + TimeSpan.FromDays(1)));
             }
         }
 
@@ -471,6 +479,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
         public Visibility IsClienteSelected => NewCliente is null ? Visibility.Collapsed : Visibility.Visible;
         public Visibility IsClienteNotSelected => NewCliente is null ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ShouldShowDetails => (NewCliente is { }) || NewItems.Any() ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ShouldNotShowDetails => (NewCliente is { }) || NewItems.Any() ? Visibility.Collapsed : Visibility.Visible;
 
         public FrameworkElement? ExtraUi => _interactor?.ExtraUi;
         public FrameworkElement? ExtraDetails => _interactor?.ExtraDetails;
@@ -537,7 +547,11 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             CurrentFactura.Descuentos = Descuento;
             CurrentFactura.OtrosCargos = OtrosCargos;
 
-            if (!FacturaService.AddFactura(CurrentFactura, PrintFactura, _interactor)) return;
+            if (!FacturaService.AddFactura(CurrentFactura, PrintFactura, _interactor))
+            {
+                IsBusy = false;
+                return;
+            }
 
             await Proteus.Service<FacturaService>()!.SaveAsync();
 
@@ -549,6 +563,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             {
                 NewFactura();
             }
+            Get<FacturacionDashboardViewModel>().RefreshDashboard();
             IsBusy = false;
         }
 
@@ -577,6 +592,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             {
                 NewItems.Add(this);
             }
+            Notify(nameof(ShouldShowDetails), nameof(ShouldNotShowDetails));
+
             ClearNew();
             RefreshSubtotals();
         }
@@ -597,6 +614,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
             OtrosCargos = 0m;
             PrintFactura = true;
             CheckCanFacturate();
+            Notify(nameof(ShouldShowDetails), nameof(ShouldNotShowDetails));
+
         }
 
         public void RefreshSubtotals()
@@ -609,6 +628,7 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 nameof(SubTFinal)
                 );
             CheckCanFacturate();
+            RefreshPayments();
         }
 
         public void RefreshPayments()
@@ -625,7 +645,6 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
         {
             FacturarCommand.SetCanExecute(
                 !(CurrentFactura is null)
-                //&& !(NewCliente is null)
                 && NewItems.Any()
                 && Paid >= Total
                 && (_interactor?.CanFacturate() ?? true));

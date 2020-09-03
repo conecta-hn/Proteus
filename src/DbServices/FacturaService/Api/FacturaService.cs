@@ -91,7 +91,7 @@ namespace TheXDS.Proteus.Api
             if (!RebajarInventario(f)) return false;
             if (register)
             {
-                RegisterFactura(f, i);
+                if (!RegisterFactura(f, i)) return false;
             }
             GetCajaOp.Facturas.Add(f);
             return true;
@@ -99,13 +99,11 @@ namespace TheXDS.Proteus.Api
 
         private static bool RebajarInventario(Factura f)
         {
-            var bodega = GetEstation!.Bodega;
-            if (bodega is null)
+            if (!GetEstation!.Bodegas.Any())
             {
                 MessageTarget?.Stop("Esta estación no tiene permiso para facturar productos: No hay establecida una bodega de salida.");
                 return false;
             }
-
             var op = new AutoDictionary<Batch, int>();
 
             foreach (var j in f.Items)
@@ -138,27 +136,29 @@ namespace TheXDS.Proteus.Api
 
         private static bool ProcessInvBajaItem(Producto p, int qty, AutoDictionary<Batch, int> op)
         {
-            var bodega = GetEstation!.Bodega!;
-            while (qty > 0)
+            foreach (var bodega in GetEstation!.Bodegas)
             {
-                var b = bodega.Batches.Where(q => q.Item == p && q.Qty > 0 && !op.ContainsKey(q)).OrderBy(q => q.Lote.Manufactured).FirstOrDefault();
-                if (b is null)
+                do
                 {
-                    MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
-                    return false;
-                }
-                if (b.Qty > qty)
-                {
-                    op[b] += qty;
-                    qty = 0;
-                }
-                else
-                {
-                    qty -= b.Qty;
-                    op[b] += b.Qty;
-                }
+                    var b = bodega.Batches.Where(q => q.Item == p && q.Qty > 0).OrderBy(q => q.Lote.Manufactured).FirstOrDefault();
+                    if (b is null)
+                    {
+                        MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
+                        return false;
+                    }
+                    if (b.Qty > qty)
+                    {
+                        op[b] += qty;
+                        qty = 0;
+                    }
+                    else
+                    {
+                        qty -= b.Qty;
+                        op[b] += b.Qty;
+                    }
+                } while (qty > 0);
             }
-            return true;
+            return qty == 0;
         }
 
         public static bool RegisterFactura(Factura f, IFacturaInteractor? i)

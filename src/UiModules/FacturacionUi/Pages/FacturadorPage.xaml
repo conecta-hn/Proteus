@@ -61,6 +61,7 @@
                         widgets:ProteusProp.Icon="🔎"
                         ToolTip="Código de ítem"
                         widgets:ProteusProp.Watermark="Cód. Item"
+                        KeyUp="TxtNewItemCode_KeyUp"
                         Text="{Binding NewItemCode}"/>
                     <ComboBox
                         Grid.Column="1"

@@ -10,33 +10,23 @@
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ComboBox
             ItemsSource="{Binding Bodegas, Mode=OneWay}"
             SelectedValue="{Binding Origen}"
             widgets:ProteusProp.Watermark="Bodega de origen"
             widgets:ProteusProp.WatermarkAlwaysVisible="True"/>
-        <Button Grid.Column="1" Command="{Binding SwitchCommand}">↔</Button>
-        <GridSplitter Grid.Row="2"/>
-        <ComboBox
-            Grid.Column="2"
-            ItemsSource="{Binding Bodegas, Mode=OneWay}"
-            SelectedValue="{Binding Destino}"
-            widgets:ProteusProp.Watermark="Bodega de destino"            
-            widgets:ProteusProp.WatermarkAlwaysVisible="True"/>
         <ListView ItemsSource="{Binding OrigenItems}" Grid.Row="1">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="Código" DisplayMemberBinding="{Binding Entity.Item.Id}"/>
                     <GridViewColumn Header="Item" DisplayMemberBinding="{Binding DisplayName}"/>
                     <GridViewColumn Header="Lote" DisplayMemberBinding="{Binding Lote}"/>
+                    <GridViewColumn Header="Existencia" DisplayMemberBinding="{Binding MaxQty}"/>
                     <GridViewColumn Header="Cantidad">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="viewmodels:BatchMoveViewModel">
@@ -47,5 +37,19 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <DockPanel Grid.Row="2">            
+            <Button
+                Command="{Binding SwitchCommand}"
+                ToolTip="Intercambiar bodega orígen/destino">↕</Button>
+            <Button
+                DockPanel.Dock="Right"
+                Command="{Binding MoveInventarioCommand}"
+                ToolTip="Efectuar movimiento de inventario">⤵</Button>
+            <ComboBox
+                ItemsSource="{Binding Bodegas, Mode=OneWay}"
+                SelectedValue="{Binding Destino}"
+                widgets:ProteusProp.Watermark="Bodega de destino"            
+                widgets:ProteusProp.WatermarkAlwaysVisible="True"/>
+        </DockPanel>
     </Grid>
 </page:ProteusPage>

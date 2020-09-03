@@ -86,16 +86,20 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
 
             VirtualMove();
             await Service.SaveAsync();
+            Proteus.MessageTarget?.Info("Movimiento de inventario realizado correctamente.");
         }
 
         private void VirtualMove()
         {
+            var rem = new ListEx<BatchMoveViewModel>();
+
             foreach (var j in OrigenItems)
             {
                 if (j.Qty == 0) continue;
                 if (j.Qty == j.MaxQty)
                 {
                     j.Entity.Bodega = Destino!;
+                    rem.Add(j);
                 }
                 else
                 {
@@ -107,7 +111,13 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                     };
                     Destino!.Batches.Add(newBatch);
                     j.Entity.Qty -= j.Qty;
+                    j.Notify(nameof(j.MaxQty));
+                    j.Qty = 0;
                 }
+            }
+            foreach(var j in rem)
+            {
+                OrigenItems.Remove(j);
             }
         }
     }

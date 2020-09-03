@@ -42,7 +42,7 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Bodega desde la cual reducir inventario.
         /// </summary>
-        public virtual Bodega? Bodega { get; set; }
+        public virtual List<Bodega> Bodegas { get; set; } = new List<Bodega>();
 
         /// <summary>
         /// Impresora asociada a la estación de facturación.

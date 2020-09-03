@@ -32,11 +32,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             NumericProperty(p => p.SecondScreen).Range(2, 255).Nullable().Label("Pantalla secundaria")
                 .Tooltip("Permite habilitar el uso de una pantalla secundaria visibie al cliente.");
             NumericProperty(p => p.MinFacturasAlert).Range(0, 99999999).Nullable().Label("Nivel de alerta de mínimo de facturas");
-            ObjectProperty(p => p.Bodega)
+            ListProperty(p => p.Bodegas)
                 .Selectable()
                 .Creatable()
                 .Nullable()
-                .Label("Bodega de salida de inventario").ShowInDetails()
+                .Label("Bodegas de salida de inventario").ShowInDetails()
                 .Tooltip("Permite establecer la bodega de salida de los productos facturados en esta estación. Si no se establece una bodega de salida, únicamente se podrán facturar servicios en esta estación.");
             Property(p => p.Printer).Label("Nombre de impresora").OnlyInDetails();
 

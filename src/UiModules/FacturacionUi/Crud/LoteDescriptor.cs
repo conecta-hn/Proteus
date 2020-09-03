@@ -22,7 +22,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .AsListColumn();
 
             ListProperty(p => p.OnBatches)
-                .Label("Bloques relacionados")
+                .Label("Bloques de inventario")
                 .Required().ShowInDetails();
         }
     }
