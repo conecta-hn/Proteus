@@ -10,10 +10,12 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             OnModuleMenu(InteractionType.AdminTool);
             FriendlyName("Bloque de inventario generico");
 
-            NumericProperty(p => p.Qty)
+            NumericProperty(p => p.InitialQty)
                 .Label("Cantidad")
                 .AsListColumn()
                 .Required();
+
+            CanEdit(p => p.CurrentQty == 0);
         }
     }
 }

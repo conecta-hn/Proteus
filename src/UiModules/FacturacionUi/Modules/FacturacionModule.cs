@@ -208,7 +208,11 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         [InteractionItem, Name("Bloque de inventario"), InteractionType(InteractionType.AdminTool)]
         public void OpenBatchCrudPage(object sender, EventArgs e)
         {
-            Host.OpenPage(CrudPage.New<FacturaService>("Administrador de bloques de inventario", Proteus.Service<FacturaService>()!.AllBase<Batch>().AsQueryable(), new[] { typeof(GenericBatch), typeof(SerialBatch) }.AsEnumerable()));
+            //Host.OpenPage(CrudPage.New<FacturaService>("Administrador de bloques de inventario", Proteus.Service<FacturaService>()!.AllBase<Batch>().AsQueryable(), new[] { typeof(GenericBatch), typeof(SerialBatch) }.AsEnumerable()));
+            Host.OpenPage(CrudPage.New(
+                "Administrador de bloques de inventario",
+                typeof(GenericBatch),
+                typeof(SerialBatch)));
         }
     }
 }
