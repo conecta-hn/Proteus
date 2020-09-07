@@ -23,39 +23,38 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             TextProperty(p => p.Description)
                 .Big()
                 .Nullable()
-                .Label("Descripción")
-                .ShowInDetails();
+                .Label("Descripción");
             
             TextProperty(p => p.Picture)
                 .TextKind(TextKind.PicturePath)
                 .Nullable()
-                .Label("Imagen del producto")
-                .ShowInDetails();
+                .Label("Imagen del producto");
             
             NumericProperty(p => p.StockMin)
                 .Positive()
                 .Nullable()
-                .ShowInDetails()
                 .Label("Stock mínimo");
             
             NumericProperty(p => p.StockMax)
                 .Positive()
                 .Nullable()
-                .ShowInDetails()
                 .Label("Stock máximo");
             
             NumericProperty(p => p.ExpiryDays)
                 .Positive()
                 .Nullable()
-                .ShowInDetails()
                 .Label("Producto expirable (días de duración)");
 
             ListProperty(p => p.Labels)
                 .Selectable()
                 .Creatable()
-                .ShowInDetails()
                 .Label("Etiquetas de tipo de inventario");
 
+            ListProperty(p => p.Batches)
+                .Creatable()
+                .Label("Bloques de inventario");
+
+            ShowAllInDetails();
             BeforeSave(ChkStocks);
         }
 

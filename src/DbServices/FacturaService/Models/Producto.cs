@@ -14,5 +14,6 @@ namespace TheXDS.Proteus.Models
         public int? StockMax { get; set; }
         public int? ExpiryDays { get; set; }
         public virtual List<InventarioKind> Labels { get; set; } = new List<InventarioKind>();
+        public virtual List<Batch> Batches { get; set; } = new List<Batch>();
     }
 }

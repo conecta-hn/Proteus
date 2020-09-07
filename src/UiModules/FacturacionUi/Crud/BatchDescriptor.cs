@@ -26,6 +26,12 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
             DescribeBatch();
 
+            Property(p => p.Qty)
+                .ShowInDetails()
+                .AsListColumn()
+                .Label("Cantidad en existencia")
+                .Hidden();
+
             ShowAllInDetails();
             AllListColumn();
         }

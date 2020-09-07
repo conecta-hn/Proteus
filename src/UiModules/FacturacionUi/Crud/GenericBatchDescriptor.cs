@@ -1,4 +1,5 @@
 ﻿using TheXDS.Proteus.Annotations;
+using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
@@ -11,8 +12,14 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             FriendlyName("Bloque de inventario generico");
 
             NumericProperty(p => p.InitialQty)
-                .Label("Cantidad")
+                .Range(0, int.MaxValue)
+                .Label("Cantidad inicial")
                 .AsListColumn()
+                .Required();
+
+            NumericProperty(p => p.CurrentQty)
+                .Range(int.MinValue, 0)
+                .Label("Cantidad rebajados")
                 .Required();
 
             CanEdit(p => p.CurrentQty == 0);
