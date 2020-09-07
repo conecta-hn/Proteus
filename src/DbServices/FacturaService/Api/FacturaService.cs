@@ -126,25 +126,7 @@ namespace TheXDS.Proteus.Api
             var sb = new StringBuilder();
             foreach (var j in op)
             {
-                sb.AppendLine(j.Key.RebajarVenta(j.Value, f));
-
-                switch (j.Key)
-                {
-                    case GenericBatch g:
-                        sb.AppendLine($"Salida de Batch {g.Id}: {j.Value} unidades de {g.Item.Name}");
-                        g.CurrentQty -= j.Value;
-                        break;
-                    case SerialBatch s:
-                        var q = j.Value;
-                        while (q > 0)
-                        {
-                            var i = s.Serials.First();
-                            i.Owner = f.Cliente;
-                            i.Sold = DateTime.Now;
-                            sb.AppendLine($"Salida de batch {s.Id}: {s.Item.Name} con número de serie {i.Id}");
-                        }
-                        break;
-                }
+                sb.AppendLine($"Salida de Batch {g.Id}: {j.Key.RebajarVenta(j.Value, f)}");
             }
 
             if (op.Any()) MessageTarget?.Info(sb.ToString());
@@ -157,10 +139,12 @@ namespace TheXDS.Proteus.Api
             var e = GetEstation!.Id;
             return Proteus.Service<FacturaService>()!
                 .All<EstacionBodega>()
-                .Where(p=>p.Estacion.Id == e)
-                .Select(p=>p.Bodega)
+                .Where(p => p.Estacion.Id == e)
+                .Select(p => p.Bodega)
                 .SelectMany(p => p.Batches)
-                .Where(q => q.Item.Id == prod.Id && q.Qty > 0)
+                .Where(q => q.Item.Id == prod.Id)
+                .ToList()
+                .Where(q => q.Qty > 0)
                 .OrderBy(q => q.Lote.Manufactured)
                 .FirstOrDefault();
         }
