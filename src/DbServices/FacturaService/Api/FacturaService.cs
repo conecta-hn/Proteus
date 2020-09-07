@@ -126,7 +126,7 @@ namespace TheXDS.Proteus.Api
             var sb = new StringBuilder();
             foreach (var j in op)
             {
-                sb.AppendLine($"Salida de Batch {g.Id}: {j.Key.RebajarVenta(j.Value, f)}");
+                sb.AppendLine($"Salida de Batch {j.Key.Id}: {j.Key.RebajarVenta(j.Value, f)}");
             }
 
             if (op.Any()) MessageTarget?.Info(sb.ToString());
