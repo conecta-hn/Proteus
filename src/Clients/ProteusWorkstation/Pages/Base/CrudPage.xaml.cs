@@ -15,6 +15,7 @@ using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 using System.Windows.Input;
 using System.Windows.Controls;
+using TheXDS.MCART.Exceptions;
 
 namespace TheXDS.Proteus.Pages.Base
 {
@@ -123,6 +124,27 @@ namespace TheXDS.Proteus.Pages.Base
             {
                 Title = title
             };
+            return p;
+        }
+        public static CrudPage New(string title, params Type[] models)
+        {
+            if (!models.Any()) throw new EmptyCollectionException(models);
+            var s = Proteus.InferBaseService(models.First());
+            if (!models.All(p => s.Hosts(p)))
+                throw new Exception("Modelo inválido para el servicio solicitado.");
+
+            var baseModel = models.First().BaseType!;
+            if (!baseModel.Implements<ModelBase>())
+                throw new Exception($"El tipo base {baseModel} no es un modelo.");
+
+            if (!models.All(p => p.Implements(baseModel)))
+                throw new Exception($"Modelo inválido para el tipo base {baseModel}");
+
+            var source = s.AllBase(baseModel);
+            var p = new CrudPage();
+            var vm = typeof(CrudViewModel<>).MakeGenericType(s.GetType()).New<IPageViewModel>(p, source, models.ToArray());
+            vm.Title = title;
+            p.ViewModel = vm;
             return p;
         }
 
