@@ -1,16 +1,13 @@
-﻿using TheXDS.Proteus.Annotations;
+﻿using System.Buffers;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
 {
-    public class BatchDescriptor : CrudDescriptor<Batch>
+    public abstract class BatchDescriptor<T> : CrudDescriptor<T> where T : Batch, new()
     {
         protected override void DescribeModel()
         {
-            OnModuleMenu(InteractionType.AdminTool);
-            FriendlyName("Bloque de inventario");
-
             ObjectProperty(p => p.Bodega)
                 .Selectable()
                 .Label("Ubicación")
@@ -27,13 +24,12 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Label("Lote")
                 .Required();
 
-            NumericProperty(p => p.Qty)
-                .Label("Cantidad")
-                .AsListColumn()
-                .Required();
+            DescribeBatch();
 
             ShowAllInDetails();
             AllListColumn();
         }
+
+        protected abstract void DescribeBatch();
     }
 }

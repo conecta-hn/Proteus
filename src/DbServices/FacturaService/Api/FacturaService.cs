@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -125,8 +126,25 @@ namespace TheXDS.Proteus.Api
             var sb = new StringBuilder();
             foreach (var j in op)
             {
-                sb.AppendLine($"Salida de Batch {j.Key.Id}: {j.Value} unidades de {j.Key.Item.Name}");
-                j.Key.Qty -= j.Value;
+                sb.AppendLine(j.Key.RebajarVenta(j.Value, f));
+
+                switch (j.Key)
+                {
+                    case GenericBatch g:
+                        sb.AppendLine($"Salida de Batch {g.Id}: {j.Value} unidades de {g.Item.Name}");
+                        g.CurrentQty -= j.Value;
+                        break;
+                    case SerialBatch s:
+                        var q = j.Value;
+                        while (q > 0)
+                        {
+                            var i = s.Serials.First();
+                            i.Owner = f.Cliente;
+                            i.Sold = DateTime.Now;
+                            sb.AppendLine($"Salida de batch {s.Id}: {s.Item.Name} con número de serie {i.Id}");
+                        }
+                        break;
+                }
             }
 
             if (op.Any()) MessageTarget?.Info(sb.ToString());

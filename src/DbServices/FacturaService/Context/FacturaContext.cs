@@ -30,7 +30,10 @@ namespace TheXDS.Proteus.Context
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<ProveedorContacto> ProveedorContactos { get; set; }
         public DbSet<Bodega> Bodegas { get; set; }
-        public DbSet<Batch> Batches { get; set; }
+        //public DbSet<Batch> Batches { get; set; }
+        public DbSet<GenericBatch> GenericBatches { get; set; }
+        public DbSet<SerialBatch> SerialBatches { get; set; }
+        public DbSet<SerialNum> SerialNums { get; set; }
         public DbSet<Lote> Lotes { get; set; }
         public DbSet<InventarioKind> InventarioKinds { get; set; }
     }

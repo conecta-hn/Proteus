@@ -103,14 +103,8 @@ namespace TheXDS.Proteus.FacturacionUi.ViewModels
                 }
                 else
                 {
-                    var newBatch = new Batch
-                    {
-                        Item = j.Entity.Item,
-                        Lote = j.Entity.Lote,
-                        Qty = j.Qty
-                    };
+                    var newBatch = j.Entity.Split(j.Qty);
                     Destino!.Batches.Add(newBatch);
-                    j.Entity.Qty -= j.Qty;
                     j.Notify(nameof(j.MaxQty));
                     j.Qty = 0;
                 }

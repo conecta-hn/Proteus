@@ -15,6 +15,7 @@ using TheXDS.Proteus.FacturacionUi.Pages;
 using TheXDS.Proteus.FacturacionUi.ViewModels;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Pages;
+using TheXDS.Proteus.Pages.Base;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.ViewModels.Base;
 using TheXDS.Proteus.Widgets;
@@ -202,6 +203,12 @@ namespace TheXDS.Proteus.FacturacionUi.Modules
         public void ShowInventarioMovePage(object sender, EventArgs e)
         {
             Host.OpenPage(new InventarioMovePage());
+        }
+
+        [InteractionItem, Name("Bloque de inventario"), InteractionType(InteractionType.AdminTool)]
+        public void OpenBatchCrudPage(object sender, EventArgs e)
+        {
+            Host.OpenPage(CrudPage.New<FacturaService>("Administrador de bloques de inventario", Proteus.Service<FacturaService>()!.AllBase<Batch>().AsQueryable(), new[] { typeof(GenericBatch), typeof(SerialBatch) }.AsEnumerable()));
         }
     }
 }
