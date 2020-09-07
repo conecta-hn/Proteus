@@ -15,6 +15,7 @@ namespace TheXDS.Proteus.Context
         public DbSet<Cotizacion> Cotizaciones { get; set; }
         public DbSet<Entidad> Entidades { get; set; }
         public DbSet<Estacion> Estaciones { get; set; }
+        public DbSet<EstacionBodega> EstacionBodegas { get; set; }
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<FacturableCategory> FacturableCategories { get; set; }
         public DbSet<FacturaXCobrar> FacturasXCobrar { get; set; }

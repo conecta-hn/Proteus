@@ -152,29 +152,39 @@ namespace TheXDS.Proteus.Api
             return true;
         }
 
+        private static Batch? GetBatchFor(Producto prod)
+        {
+            var e = GetEstation!.Id;
+            return Proteus.Service<FacturaService>()!
+                .All<EstacionBodega>()
+                .Where(p=>p.Estacion.Id == e)
+                .Select(p=>p.Bodega)
+                .SelectMany(p => p.Batches)
+                .Where(q => q.Item.Id == prod.Id && q.Qty > 0)
+                .OrderBy(q => q.Lote.Manufactured)
+                .FirstOrDefault();
+        }
+
         private static bool ProcessInvBajaItem(Producto p, int qty, AutoDictionary<Batch, int> op)
         {
-            foreach (var bodega in GetEstation!.Bodegas)
+            while(qty > 0)
             {
-                do
+                var b = GetBatchFor(p);
+                if (b is null)
                 {
-                    var b = bodega.Batches.Where(q => q.Item == p && q.Qty > 0).OrderBy(q => q.Lote.Manufactured).FirstOrDefault();
-                    if (b is null)
-                    {
-                        MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
-                        return false;
-                    }
-                    if (b.Qty > qty)
-                    {
-                        op[b] += qty;
-                        qty = 0;
-                    }
-                    else
-                    {
-                        qty -= b.Qty;
-                        op[b] += b.Qty;
-                    }
-                } while (qty > 0);
+                    MessageTarget?.Stop($"No hay suficientes existencias para completar la venta. Faltan {qty} unidades de {p.Name}");
+                    break;
+                }
+                if (b.Qty > qty)
+                {
+                    op[b] += qty;
+                    qty = 0;
+                }
+                else
+                {
+                    qty -= b.Qty;
+                    op[b] += b.Qty;
+                }
             }
             return qty == 0;
         }
