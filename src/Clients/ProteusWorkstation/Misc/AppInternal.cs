@@ -3,21 +3,32 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using BarcodeLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
 using TheXDS.MCART.Types;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Resources;
 using WpfScreenHelper;
-using BarcodeLib;
 
 namespace TheXDS.Proteus.Misc
 {
     public static class AppInternal
     {
+        public static Type[] GetModels(Type baseModel)
+        {
+            return baseModel.Derivates()
+                .Select(p => p.ResolveToDefinedType()!)
+                .Where(p => p.IsInstantiable())
+                .Distinct()
+                .ToArray();
+        }
+
         public static ICollection<ModelBase>? GetSource(IEnumerable<ModelBase>? source)
         {
             return source switch

@@ -19,12 +19,13 @@ using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.ViewModel;
 using static TheXDS.MCART.Types.Extensions.CollectionExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
+using System.Collections;
 
 namespace TheXDS.Proteus.Crud
 {
     internal static class CrudBuilder
     {
-        internal static FrameworkElement BuildEditor(IEntityViewModel parentVm, ICrudDescription d, out ICollection<IPropertyMapping> boxes)
+        internal static FrameworkElement BuildEditor(IEntityViewModel parentVm, ICrudDescription d, out ICollection<IPropertyMapping> boxes, Type? parentEntityType = null)
         {
             boxes = new HashSet<IPropertyMapping>();
             var stckpnl = App.UiInvoke(() => new StackPanel
@@ -36,6 +37,8 @@ namespace TheXDS.Proteus.Crud
             foreach (var j in d.Descriptions)
             {
                 if (j.Hidden) continue;
+                if (j.PropertyType.ResolveCollectionType() == parentEntityType) continue;
+
                 stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(parentVm, j)).ContainingControl);
             }
             var wp = new StretchyWrapPanel { HorizontalAlignment = HorizontalAlignment.Center };

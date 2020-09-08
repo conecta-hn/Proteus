@@ -118,6 +118,7 @@ namespace TheXDS.Proteus.ViewModels
         public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
+            ParentEntityType = description.Property.DeclaringType;
             if (CanSelect = description.Selectable) ClearSearch();
             FieldName = description.Label;
             FieldIcon = description.Icon;
