@@ -3,19 +3,19 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using System.Windows;
-using TheXDS.Proteus.Crud.Base;
-using static TheXDS.MCART.Types.Extensions.StringExtensions;
-using System.Reflection;
-using System.Windows.Controls.Primitives;
-using TheXDS.Proteus.Widgets;
-using System.Windows.Controls;
-using System.ComponentModel.DataAnnotations;
-using TheXDS.MCART;
-using System.Windows.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using TheXDS.MCART;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Widgets;
+using static TheXDS.MCART.Types.Extensions.StringExtensions;
 
 namespace TheXDS.Proteus.Crud.Mappings.Base
 {
@@ -67,76 +67,70 @@ namespace TheXDS.Proteus.Crud.Mappings.Base
                     _containingControl = null;
                     break;
                 case NullMode.Nullable:
-                    var chk = new CheckBox()
-                    {
-                        Content = Control,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                        VerticalContentAlignment = VerticalAlignment.Top,
-                        Margin = new Thickness(10, 0, 0, 0)
-                    };
-
-                    // HACK: Fix de ThreeState del CheckBox ********************
-                    // Debido a Quirks de WPF, es necesario implementar este   
-                    // hack, para evitar que el CheckBox observe la pulsación de
-                    // las teclas + y -                                     
-                    chk.IsThreeState = true;
-                    chk.Click += (sender, e) =>
-                    {
-                        if (chk.IsChecked is null) chk.IsChecked = false;
-                    };
-                    // *********************************************************
-
-                    Control.SetBinding(UIElement.IsEnabledProperty, 
-                        new Binding()
-                        {
-                            Source = chk,
-                            Path = new PropertyPath(ToggleButton.IsCheckedProperty)
-                        });
-
-                    chk.Unchecked += (sender, e) =>
-                    {
-                        if (sender == e.OriginalSource) ClearControlValue();
-                    };
-                    _containingControl = chk;
+                    _containingControl = NewToggleButton<CheckBox>();
                     break;
                 case NullMode.Radio:
-                    var rbt = new RadioButton()
-                    {
-                        Content = Control,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                        VerticalContentAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(10, 0, 0, 0)
-                    };
-
-                    // HACK: Fix de ThreeState del RadioButton *****************
-                    rbt.IsThreeState = true;
-                    rbt.Click += (sender, e) =>
-                    {
-                        if (rbt.IsChecked is null) rbt.IsChecked = false;
-                    };
-                    // *********************************************************
-
-                    Control.SetBinding(UIElement.IsEnabledProperty,
-                        new Binding()
-                        {
-                            Source = rbt,
-                            Path = new PropertyPath(ToggleButton.IsCheckedProperty)
-                        });
-
-                    rbt.Unchecked += (sender, e) => ClearControlValue();
-                    _containingControl = rbt;
+                    _containingControl = NewToggleButton<RadioButton>();
                     break;
             }
             Control.ToolTip = property.Tooltip;
             ProteusProp.SetWatermark(control, property.Label.OrNull() ?? property.Property.Name);
-            //if (property.ShowWatermark)
             ProteusProp.SetWatermarkAlwaysVisible(control, true);
             if (!property.Icon.IsEmpty()) ProteusProp.SetIcon(control, property.Icon);
 
             if (!(property.CustomBindings is null))
-                foreach (var j in property.CustomBindings) control.SetBinding(j.Key, j.Value);
+            {
+                foreach (var j in property.CustomBindings)
+                { 
+                    control.SetBinding(j.Key, j.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Aplica un workaround para el comportamiento errático de los botones
+        /// de tipo <see cref="ToggleButton"/> de WPF, en el cual
+        /// indeseablemente observan las pulsaciones de las teclas '+' y '-'.
+        /// </summary>
+        /// <param name="btn">Botón al cual aplicar el parche.</param>
+        /// <remarks>
+        /// Este método no se implementa como un <see cref="Plugins.Patch"/>
+        /// porque los botones a parchar son controles de nulabilidad, los
+        /// cuales por la naturaleza del generador no participan en el
+        /// mecanismo de parcheo.
+        /// </remarks>
+        private void PatchToggleButton(ToggleButton btn)
+        {
+            btn.IsThreeState = true;
+            btn.Click += (_, e) =>
+            {
+                if (btn.IsChecked is null) btn.IsChecked = false;
+            };
+        }
+
+        private T NewToggleButton<T>() where T : ToggleButton, new()
+        {
+            var btn = new T()
+            {
+                Content = Control,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                VerticalContentAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(10, 0, 0, 0)
+            };
+            PatchToggleButton(btn);
+            Control.SetBinding(UIElement.IsEnabledProperty,
+                new Binding()
+                {
+                    Source = btn,
+                    Path = new PropertyPath(ToggleButton.IsCheckedProperty)
+                });
+
+            btn.Unchecked += (sender, e) =>
+            {
+                if (sender == e.OriginalSource) ClearControlValue();
+            };
+            return btn;
         }
 
         /// <summary>
