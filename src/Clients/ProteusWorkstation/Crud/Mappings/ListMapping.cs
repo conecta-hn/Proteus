@@ -26,7 +26,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             if (property is IListPropertyDescription i)
             {
                 var t = i.Property.PropertyType.ResolveCollectionType().ResolveToDefinedType();
-                _vm = t.IsAbstract && i.Creatable
+                _vm = t.IsAbstract
                     ? new ListEditorViewModel(i, AppInternal.GetModels(t))
                     : new ListEditorViewModel(i);
                 _vm.Unselected += ((ListEditor)Control).ClearSelection;

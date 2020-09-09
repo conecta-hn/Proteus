@@ -3,8 +3,6 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +11,8 @@ using System.Windows.Controls.Primitives;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models.Base;
 using static TheXDS.MCART.Objects;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
@@ -118,7 +118,7 @@ namespace TheXDS.Proteus.Crud
 
             if (!(Description is null))
             {
-                Editor = CrudBuilder.BuildEditor(ViewModel, Description, out var editControls);
+                Editor = CrudBuilder.BuildEditor(ViewModel, Description, out var editControls, parentEntityType);
                 Details = Description.Details ?? CrudBuilder.BuildDetails(Model!, Description);
                 EditControls = editControls;
             }

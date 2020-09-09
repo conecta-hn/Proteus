@@ -66,8 +66,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="csource">
         /// Propiedad de origen a utilizar para el selector de entidades.
         /// </param>
-        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
+        protected CrudCollectionViewModelBase(Type parentModelType, ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
         {
+            ParentEntityType = parentModelType;
             if (elements.Count() == 1)
             {
                 Selector = new ListView();
@@ -79,11 +80,6 @@ namespace TheXDS.Proteus.ViewModels.Base
                 // HACK: TreeView es una perra
                 var bg = ((Brush)Application.Current.TryFindResource("SystemAltHighColorBrush")).Clone();
                 bg.Opacity = 0.5;
-
-                foreach (var j in elements)
-                {
-                    Elements.Add(new CrudElement(j));
-                }
 
                 Selector = new TreeView()
                 {

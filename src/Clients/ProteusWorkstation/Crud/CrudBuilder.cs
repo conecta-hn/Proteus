@@ -3,23 +3,22 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Crud.Mappings;
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using TheXDS.MCART.Controls;
-using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Crud.Mappings;
+using TheXDS.Proteus.Models.Base;
 using static TheXDS.MCART.Types.Extensions.CollectionExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
-using System.Collections;
 
 namespace TheXDS.Proteus.Crud
 {
