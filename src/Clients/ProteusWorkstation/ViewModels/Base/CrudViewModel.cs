@@ -20,6 +20,7 @@ using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
@@ -259,16 +260,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        /// Obtiene o establece un valor que indica si esta ventana puede
-        /// cerrarse.
-        /// </summary>
-        public override bool Closeable
-        {
-            get => base.Closeable && !EditMode;
-            protected set => base.Closeable = value;
-        }
-
-        /// <summary>
         /// Obtiene o establece el valor SearchQuery.
         /// </summary>
         /// <value>El valor de SearchQuery.</value>
@@ -422,6 +413,14 @@ namespace TheXDS.Proteus.ViewModels.Base
             EnumerableResults = null;
             Results = Source.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(Source) : null;
             SearchQuery = null;
+        }
+
+        public override void Close()
+        {
+            if (!EditMode || MessageSplash.Ask(Title, "Tiene cambios sin guardar en el editor. ¿Desea salir?"))
+            {
+                base.Close();
+            }
         }
 
         private async void OnSearch()
