@@ -3,18 +3,18 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Crud.Mappings.Base;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.ViewModels;
-using TheXDS.Proteus.Widgets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
-using System.Windows;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Crud.Mappings.Base;
+using TheXDS.Proteus.Misc;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels;
+using TheXDS.Proteus.Widgets;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
@@ -26,21 +26,12 @@ namespace TheXDS.Proteus.Crud.Mappings
             if (property is IListPropertyDescription i)
             {
                 var t = i.Property.PropertyType.ResolveCollectionType().ResolveToDefinedType();
-                _vm = t.IsAbstract && i.Creatable
-                    ? new ListEditorViewModel(i, GetModels(t))
+                _vm = t.IsAbstract
+                    ? new ListEditorViewModel(i, AppInternal.GetModels(t))
                     : new ListEditorViewModel(i);
                 _vm.Unselected += ((ListEditor)Control).ClearSelection;
                 Control.DataContext = _vm;
             }
-        }
-
-        private Type[] GetModels(Type baseModel)
-        {
-            return baseModel.Derivates()
-                .Select(p => p.ResolveToDefinedType()!)
-                .Where(p=> p.IsInstantiable())
-                .Distinct()
-                .ToArray();
         }
 
         public override object ControlValue

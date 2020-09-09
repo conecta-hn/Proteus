@@ -250,6 +250,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             _description = description;
             _parentVm = parentVm;
+            ParentEntityType = description.Property.DeclaringType;
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;

@@ -1477,7 +1477,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         public bool HostsBase(Type tEntity)
         {
-            return Context.GetType().GetProperties().Any(p => IsTable(p,tEntity));
+            return Context.GetType().GetProperties().Any(p => IsTable(p, tEntity));
         }
 
         private bool IsTable(PropertyInfo p, Type model)

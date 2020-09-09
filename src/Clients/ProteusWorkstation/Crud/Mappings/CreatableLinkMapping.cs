@@ -41,7 +41,7 @@ namespace TheXDS.Proteus.Crud.Mappings
             _selector.DisplayMemberPath = i.DisplayMemberPath;
             _btnNew.Click += BtnNew_Click;
 
-            _crud = new CrudElement(i.Model, null);
+            _crud = new CrudElement(i.Model, (FrameworkElement?)null);
 
 
             var btnOk = new Button { Content="Aceptar" };

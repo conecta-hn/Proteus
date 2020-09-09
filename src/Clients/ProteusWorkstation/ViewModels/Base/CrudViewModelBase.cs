@@ -186,6 +186,8 @@ namespace TheXDS.Proteus.ViewModels.Base
             Settings.Default.PropertyChanged += Default_PropertyChanged;
         }
 
+        private protected Type? ParentEntityType { get; set; }
+
         private void Default_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Notify(e.PropertyName);
@@ -269,7 +271,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             t ??= Models.First();
             if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
             {
-                Elements.Add(new CrudElement(t));
+                Elements.Add(new CrudElement(t, ParentEntityType));
             }
 
             NewMode = true;
