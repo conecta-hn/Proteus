@@ -5,7 +5,6 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using TheXDS.MCART;
@@ -19,6 +18,9 @@ using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
+    /// <summary>
+    /// Clase base mínima para implementar una página de Crud en Proteus.
+    /// </summary>
     public abstract class CrudViewModelBasicBase : ProteusViewModel
     {
         /// <summary>
@@ -37,8 +39,21 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// tener información sobre su padre en este contexto.
         /// </returns>
         protected abstract ModelBase? GetParent();
+
+        /// <summary>
+        /// Obtiene una referencia al <see cref="CrudElement"/> para la entidad
+        /// actualmente seleccionada.
+        /// </summary>
         public abstract CrudElement SelectedElement { get; }
 
+        /// <summary>
+        /// Ejecuta todas las comprobaciones previas al guardado de entidades
+        /// desde este <see cref="CrudViewModelBasicBase"/>.
+        /// </summary>
+        /// <returns>
+        /// <see langword="false"/> si la operación debe continuar normalmente,
+        /// <see langword="true"/> si las comprobaciones han fallado.
+        /// </returns>
         protected bool Precheck()
         {
             var parent = GetParent();
@@ -116,10 +131,18 @@ namespace TheXDS.Proteus.ViewModels.Base
             EnableEditCtrls();
         }
 
+        /// <summary>
+        /// Habilita todos los controles de edición generados.
+        /// </summary>
         protected void EnableEditCtrls()
         {
             foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>()) j.ContainingControl.IsEnabled = true;
         }
+
+        /// <summary>
+        /// Deshabilita los controles de propiedades que estén marcadas con el
+        /// atributo de campo llave.
+        /// </summary>
         protected void DisableIdCtrls()
         {
             foreach (var j in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
@@ -130,6 +153,11 @@ namespace TheXDS.Proteus.ViewModels.Base
                 }
             }
         }
+
+        /// <summary>
+        /// Limpia todos los controles generados.
+        /// </summary>
+        /// <param name="entity"></param>
         protected void ClearCtrls(ModelBase entity)
         {
             foreach (var k in SelectedElement?.EditControls ?? Array.Empty<IPropertyMapping>())
@@ -139,7 +167,7 @@ namespace TheXDS.Proteus.ViewModels.Base
                     if (k.Property.DeclaringType == entity?.GetType())
                     {
                         k.Property.SetValue(entity, k.Description.Default);
-                        k.GetValue(entity);
+                        k.GetValue(entity!);
                     }
                     else if (k.Property.DeclaringType == GetType())
                     {
@@ -152,6 +180,5 @@ namespace TheXDS.Proteus.ViewModels.Base
                 else k.ClearControlValue();
             }
         }
-
     }
 }

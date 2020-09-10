@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Misc;
 
 namespace TheXDS.Proteus.Component
@@ -11,23 +12,39 @@ namespace TheXDS.Proteus.Component
     public class TextFileLogger : IMessageTarget, ILogTarget, IStatusReporter
     {
         private static readonly object _lockObj = new object();
+        private bool _broken = false;
 
         public TextFileLogger() : this(null)
         {
         }
+
         public TextFileLogger(string? logFile)
         {
-            LogFile = logFile ?? $@"{Proteus.Settings?.PluginsDir ?? "."}\{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.log";
-        } 
+            LogFile = logFile ?? $@"{Proteus.Settings?.PluginsDir ?? "."}\{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
+        }
+
         public string LogFile { get; }
 
         public bool IsBusy { get; private set; }
 
         public void Log(string text)
         {
+            if (_broken) return;
             lock (_lockObj)
             {
-                System.IO.File.AppendAllText(LogFile, $"{DateTime.Now}: {text}\n");
+                try
+                {
+                    System.IO.File.AppendAllText(LogFile, $"{DateTime.Now}: {text}\n");
+                }
+                catch (Exception ex)
+                {
+                    Proteus.AlertTarget?.Alert($"{GetType().NameOf()}: La ruta '{LogFile}' no se pudo escribir: {ex.Message}", a =>
+                    {
+                        _broken = false;
+                        a.Dismiss();
+                    });
+                    _broken = true;
+                }
             }
         }
 
@@ -63,7 +80,6 @@ namespace TheXDS.Proteus.Component
         {
             Log($"/!\\ {message}");
         }
-
         public void Done()
         {
             Log("Operación completada exitosamente.");

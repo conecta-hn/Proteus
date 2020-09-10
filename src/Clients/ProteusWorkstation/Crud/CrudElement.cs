@@ -74,7 +74,7 @@ namespace TheXDS.Proteus.Crud
         /// Descripción bajo la cual se han generado el editor y la vista
         /// de detalles de este <see cref="CrudElement"/>.
         /// </summary>
-        internal ICrudDescription Description { get; }
+        public ICrudDescription Description { get; }
 
         /// <summary>
         /// Enumera los controles de edición asociados a este
