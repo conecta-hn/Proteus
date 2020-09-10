@@ -44,21 +44,30 @@ namespace TheXDS.Proteus.Dialogs
         }
         public static bool Elevate()
         {
-            var uac = new UacSplash();
-            uac.ShowDialog();
-            return uac.Vm.Success;
+            return App.UiInvoke(() => { 
+                var uac = new UacSplash();
+                uac.ShowDialog();
+                return uac.Vm.Success;
+            });
         }
 
         public static bool Elevate(ref IProteusUserCredential? credential)
         {
-            var uac = new UacSplash(credential);
-            uac.ShowDialog();
-            if (uac.Vm.Success)
+            var c = credential;
+            
+            var r = App.UiInvoke(() =>
             {
-                credential = uac.Vm.Result.Logon as IProteusUserCredential;
-                return true;
-            }
-            return false;
+                var uac = new UacSplash(c);
+                uac.ShowDialog();
+                if (uac.Vm.Success)
+                {
+                    c = uac.Vm.Result.Logon as IProteusUserCredential;
+                    return true;
+                }
+                return false;
+            });
+            if (r) credential = c;
+            return r;
         }
     }
 }
