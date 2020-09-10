@@ -335,10 +335,7 @@ namespace TheXDS.Proteus
             Services = new HashSet<Service>(new[] { LogonService });
             try
             {
-                await LogonService.RunSeedersAsync(LogonService.InitializeDatabaseAsync()).Throwable();
-                await LogonService.SanitizeAsync().Throwable();
-                await LogonService.VerifyAsync().Throwable();
-                await LogonService.AfterInitAsync();
+                await SafeInitService(LogonService);
             }
             catch
             {
@@ -346,10 +343,7 @@ namespace TheXDS.Proteus
                 {
                     if (DbConfig._forceLocalDb) throw;
                     DbConfig._forceLocalDb = true;
-                    await LogonService.RunSeedersAsync(LogonService.InitializeDatabaseAsync()).Throwable();
-                    await LogonService.SanitizeAsync().Throwable();
-                    await LogonService.VerifyAsync().Throwable();
-                    await LogonService.AfterInitAsync();
+                    await SafeInitService(LogonService);
                 }
                 catch
                 {
@@ -358,6 +352,14 @@ namespace TheXDS.Proteus
                 }
             }
             return true;
+        }
+
+        private static async Task SafeInitService(Service svc)
+        {
+            await svc.RunSeedersAsync(svc.InitializeDatabaseAsync()).Throwable();
+            await svc.SanitizeAsync().Throwable();
+            await svc.VerifyAsync().Throwable();
+            await svc.AfterInitAsync().Throwable();
         }
 
         /// <summary>

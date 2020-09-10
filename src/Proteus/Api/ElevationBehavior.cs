@@ -3,6 +3,8 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using TheXDS.MCART.Attributes;
+
 namespace TheXDS.Proteus.Api
 {
     /// <summary>
@@ -14,14 +16,14 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Elevación única.
         /// </summary>
-        Once,
+        [Name("Elevación única")] Once,
         /// <summary>
         /// Mantener elevación.
         /// </summary>
-        Keep,
+        [Name("Elevación persistente")] Keep,
         /// <summary>
         /// mantener elevación por un periodo de tiempo.
         /// </summary>
-        Timeout
+        [Name("Elevación con TTL")] Timeout
     }
 }

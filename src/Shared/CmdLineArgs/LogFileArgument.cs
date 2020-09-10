@@ -4,6 +4,7 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using System.IO;
 using System.Linq;
 using TheXDS.MCART.Component;
 using TheXDS.Proteus.Component;
@@ -21,11 +22,10 @@ namespace TheXDS.Proteus.Cmd
         {
             try
             {
-                if ((Proteus.MessageTarget as CompoundTarget)?.Targets.OfType<TextFileLogger>().Any() ?? false) return;
+                if ((Proteus.MessageTarget as CompoundTarget)?.Targets.OfType<TextFileLogger>().Any() ?? (Proteus.MessageTarget is TextFileLogger)) return;
                 Logger = Value is { } ? new TextFileLogger(Value) : new TextFileLogger();
                 CompoundTarget.Register(Logger);
                 CompoundReporter.Register(Logger);
-
             }
             catch (Exception ex)
             {
