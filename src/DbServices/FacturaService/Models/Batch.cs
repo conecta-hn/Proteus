@@ -1,4 +1,5 @@
-﻿using TheXDS.Proteus.Models.Base;
+﻿using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
@@ -15,7 +16,7 @@ namespace TheXDS.Proteus.Models
         public abstract Batch Split(int newQty);
         public override string ToString()
         {
-            return $"{Qty} unidades de {Item.Name}";
+            return $"{Qty} unidades de {Item?.Name ?? "Ítem"}{Bodega?.ToString().OrNull(" en {0}")}";
         }
     }
 }

@@ -24,16 +24,16 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             FriendlyName("Estación de facturación");
 
             this.DescribeEstacion();
-            ObjectProperty(p => p.Entidad).Selectable().Required().Important("Entidad de facturación");
+            ObjectProperty(p => p.Entidad).Selectable().Required().Important("Entidad de facturación").ShowInDetails();
             ListProperty(p => p.RangosAsignados)
                 .Selectable()
                 .Source(FacturaService.UnassignedRangos)
-                .Label("Rangos de facturación asignados");
+                .Label("Rangos de facturación asignados")
+                .ShowInDetails();
             NumericProperty(p => p.SecondScreen).Range(2, 255).Nullable().Label("Pantalla secundaria")
                 .Tooltip("Permite habilitar el uso de una pantalla secundaria visibie al cliente.");
             NumericProperty(p => p.MinFacturasAlert).Range(0, 99999999).Nullable().Label("Nivel de alerta de mínimo de facturas");
             ListProperty(p => p.Bodegas)
-                .Selectable()
                 .Creatable()
                 .Nullable()
                 .Label("Bodegas de salida de inventario").ShowInDetails()

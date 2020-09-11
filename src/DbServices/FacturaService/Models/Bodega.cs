@@ -9,10 +9,4 @@ namespace TheXDS.Proteus.Models
         public virtual List<EstacionBodega> Estaciones { get; set; } = new List<EstacionBodega>();
 
     }
-
-    public class EstacionBodega : ModelBase<int>
-    {
-        public virtual Estacion Estacion { get; set; }
-        public virtual Bodega Bodega { get; set; }
-    }
 }

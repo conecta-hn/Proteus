@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using TheXDS.Proteus.Crud.Base;
+﻿using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
@@ -14,7 +13,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Required();
 
             ObjectProperty(p => p.Item)
-                .Selectable()
+                .Selectable().Creatable()
                 .Label("Elemento de inventario")
                 .AsListColumn()
                 .Required();
@@ -22,7 +21,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             ObjectProperty(p => p.Lote)
                 .Creatable()
                 .Label("Lote")
-                .Required();
+                .Nullable();
+
+            NumericProperty(p => p.Costo)
+                .Range(decimal.Zero,decimal.MaxValue)
+                .Label("Costo del ítem");
 
             DescribeBatch();
 
