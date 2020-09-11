@@ -57,7 +57,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos creables desde este <see cref="ListEditorViewModel"/>.
         /// </param>
-        public ListEditorViewModel(ICollection<ModelBase>? selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models, nameof(Source))
+        public ListEditorViewModel(Type parentModelType, ICollection<ModelBase>? selectionSource, ICollection<ModelBase> collection, Type[] models) : base(parentModelType, collection, models, nameof(Source))
         {
             SelectionSource = selectionSource;
             AddCommand = new SimpleCommand(OnSelect);
@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos de datos para los cuales generar el control.
         /// </param>
-        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
+        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Property.DeclaringType, AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
             if (CanSelect = description.Selectable) ClearSearch();

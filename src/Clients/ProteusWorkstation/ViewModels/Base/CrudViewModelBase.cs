@@ -30,7 +30,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// <summary>
     /// Clase base para un ViewModel que implemente funcionalidad Crud.
     /// </summary>
-    public abstract class CrudViewModelBase: CrudViewModelBasicBase, ICrudViewModel
+    public abstract class CrudViewModelBase : CrudViewModelBasicBase, ICrudViewModel
     {
         internal static readonly IEnumerable<CrudTool> _allTools = Objects.FindAllObjects<CrudTool>();
         private bool _editMode;
@@ -62,10 +62,7 @@ namespace TheXDS.Proteus.ViewModels.Base
 
                 if (_selection is { } t)
                 {
-                    if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
-                    {
-                        Elements.Add(new CrudElement(t));
-                    }
+                    CheckElements(t ??= Models.First());
                 }
 
                 if (!PerformSelection(IsForType, value))
@@ -186,6 +183,8 @@ namespace TheXDS.Proteus.ViewModels.Base
             Settings.Default.PropertyChanged += Default_PropertyChanged;
         }
 
+        private protected Type? ParentEntityType { get; set; }
+
         private void Default_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Notify(e.PropertyName);
@@ -232,13 +231,17 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             if (Precheck()) return;
             var e = Selection;
-            if ((await PerformSave(Selection!)).Result == Result.Ok)
+            var r = await PerformSave(Selection!);
+            if (r.Result == Result.Ok)
             {
-
                 if (SelectedElement is null) Selection = e;
                 await PostSave(e!);
                 NewMode = false;
                 EditMode = false;
+            }
+            else
+            {
+                Proteus.MessageTarget?.Error(r.Message);
             }
         }
 
@@ -266,14 +269,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="t">Modelo de datos a crear.</param>
         public void OnCreate(Type? t)
         {
-            t ??= Models.First();
-            if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
-            {
-                Elements.Add(new CrudElement(t));
-            }
-
+            CheckElements(t ??= Models.First());
             NewMode = true;
-            var entity = (t ?? Elements.First().Model).New<ModelBase>();
+            var entity = t.New<ModelBase>();
             Selection = entity;
             ClearCtrls(entity);
             OnEdit(entity);
@@ -377,8 +375,8 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         [Sugar] internal void OnCreate(object? o) => OnCreate(o as Type);
         [Sugar] internal bool CanCreate(object? o) => CanCreate(o as Type);
-        [Sugar] internal bool CanEdit(object? o) => CanEdit(Selection as ModelBase);
-        [Sugar] internal bool CanDelete(object? o) => CanDelete(Selection as ModelBase);
+        [Sugar] internal bool CanEdit(object? o) => CanEdit(Selection);
+        [Sugar] internal bool CanDelete(object? o) => CanDelete(Selection);
 
         /// <summary>
         /// Ejecuta una operación colocando a este 
@@ -439,6 +437,14 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Obtiene un valor de visibilidad aplicable cuando el ViewModel no se encuentre en modo de edición.
         /// </summary>
         public Visibility NotEditVis => NotEditMode ? Visibility.Visible : Visibility.Collapsed;
+
+        private void CheckElements(Type t)
+        {
+            if (!Elements.Any(p => IsForType(p, t)) || !Elements.Any(p => Implements(p, t!)))
+            {
+                Elements.Add(new CrudElement(t, ParentEntityType));
+            }
+        }
 
         ~CrudViewModelBase()
         {

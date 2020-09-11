@@ -53,7 +53,7 @@ namespace TheXDS.Proteus.Crud
             {
                 INameable n => n.Name,
                 IDescriptible d => d.Description,
-                MethodInfo m => $"{m.Name} ({m.DeclaringType!.Name})",
+                MethodInfo m => $"{m.Name} ({m.ReflectedType!.Name})",
                 _ => SecurityObject?.ToString()
             } ?? "N/A";
 

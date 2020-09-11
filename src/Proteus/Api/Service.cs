@@ -1273,6 +1273,118 @@ namespace TheXDS.Proteus.Api
             return CanRunService(flags, cred.Parent);
         }
 
+        /// <summary>
+        /// Revoca la elevación activa.
+        /// </summary>
+        public void Revoke()
+        {
+            _session = null;
+        }
+
+        private protected void AfterElevation()
+        {
+            switch (ElevationBehavior)
+            {
+                case ElevationBehavior.Once:
+                    Revoke();
+                    break;
+                case ElevationBehavior.Keep:
+                    break;
+                case ElevationBehavior.Timeout:
+                    ConfigureTimeout();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void ConfigureTimeout()
+        {
+            var t = new Timer(TimeSpan.FromMinutes(10).TotalMilliseconds)
+            {
+                AutoReset = false,
+                Enabled = true
+            };
+            t.Elapsed += ElevationTimer_Elapsed;
+            _revokeTimers.Add(t);
+        }
+
+        /// <summary>
+        /// Ejecuta una operación bajo un contexto elevado de permisos.
+        /// </summary>
+        /// <param name="action">Acción a ajecutar.</param>
+        /// <returns>
+        /// <see langword="true"/> si la acción tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        protected bool PerformElevated(Action? action)
+        {
+            if (!Elevate()) return false;
+            action?.Invoke();
+            AfterElevation();
+            return true;
+        }
+
+        /// <summary>
+        /// Ejecuta una operación bajo un contexto elevado de permisos.
+        /// </summary>
+        /// <param name="action">Acción a ajecutar.</param>
+        /// <returns>
+        /// <see langword="true"/> si la acción tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        protected T PerformElevated<T>(Func<T> action)
+        {
+            return PerformElevated(action, out var result) ? result : default!;
+        }
+
+        /// <summary>
+        /// Ejecuta una operación bajo un contexto elevado de permisos.
+        /// </summary>
+        /// <param name="action">Acción a ajecutar.</param>
+        /// <param name="result">
+        /// Parámetro de salida. Contiene el resultado de la acción.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si la acción tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        protected bool PerformElevated<T>(Func<T> action, out T result)
+        {
+            if (!Elevate())
+            {
+                result = default!;
+                return false;
+            }
+            try
+            {
+                result = action.Invoke();
+                return true;
+            }
+            finally
+            {
+                AfterElevation();
+            }
+        }
+
+        /// <summary>
+        /// Comprueba los permisos de ejecución de una función del
+        /// servicio.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> si la función tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        public bool Elevate()
+        {
+            return !Interactive || (Session ?? Proteus.Session)?.Id == "root" || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
+        }
+
+        public bool Elevate(SecurityFlags flags)
+        {
+            return Elevate() && (CanRunService(flags) ?? false);
+        }
+
         #endregion
 
         /// <summary>
@@ -1477,7 +1589,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         public bool HostsBase(Type tEntity)
         {
-            return Context.GetType().GetProperties().Any(p => IsTable(p,tEntity));
+            return Context.GetType().GetProperties().Any(p => IsTable(p, tEntity));
         }
 
         private bool IsTable(PropertyInfo p, Type model)
@@ -1545,13 +1657,6 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        /// Revoca la elevación activa.
-        /// </summary>
-        public void Revoke()
-        {
-            _session = null;
-        }
-        /// <summary>
         /// Revierte todas las operaciones pendientes de guardado.
         /// </summary>
         public void Rollback()
@@ -1562,6 +1667,7 @@ namespace TheXDS.Proteus.Api
             foreach (var entry in changedEntries)
                 Rollback(entry);
         }
+
         /// <summary>
         /// Revierte los cambios sin guardar realizados en la entidad especificada.
         /// </summary>
@@ -1627,52 +1733,6 @@ namespace TheXDS.Proteus.Api
         /// Obtiene un nombre amigable para el servicio.
         /// </summary>
         public string FriendlyName => GetType().NameOf()?.Without(GetType().Name).OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
-
-        private protected void AfterElevation()
-        {
-            switch (ElevationBehavior)
-            {
-                case ElevationBehavior.Once:
-                    Revoke();
-                    break;
-                case ElevationBehavior.Keep:
-                    break;
-                case ElevationBehavior.Timeout:
-                    ConfigureTimeout();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void ConfigureTimeout()
-        {
-            var t = new Timer(TimeSpan.FromMinutes(10).TotalMilliseconds)
-            {
-                AutoReset = false,
-                Enabled = true
-            };
-            t.Elapsed += ElevationTimer_Elapsed;
-            _revokeTimers.Add(t);
-        }
-
-        /// <summary>
-        /// Comprueba los permisos de ejecución de una función del
-        /// servicio.
-        /// </summary>
-        /// <returns>
-        /// <see langword="true"/> si la función tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        public bool Elevate()
-        {
-            return !Interactive || (Session ?? Proteus.Session)?.Id == "root" || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
-        }
-
-        public bool Elevate(SecurityFlags flags)
-        {
-            return Elevate() && (CanRunService(flags) ?? false);
-        }
 
         /// <summary>
         /// Enumera los tipos de entidad hospedadas en el contexto
@@ -1748,64 +1808,6 @@ namespace TheXDS.Proteus.Api
 #endif
                 cs?.Cancel(false);
                 return ex.Message;                
-            }
-        }
-
-        /// <summary>
-        /// Ejecuta una operación bajo un contexto elevado de permisos.
-        /// </summary>
-        /// <param name="action">Acción a ajecutar.</param>
-        /// <returns>
-        /// <see langword="true"/> si la acción tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected bool PerformElevated(Action? action)
-        {
-            if (!Elevate()) return false;
-            action?.Invoke();
-            AfterElevation();
-            return true;
-        }
-
-        /// <summary>
-        /// Ejecuta una operación bajo un contexto elevado de permisos.
-        /// </summary>
-        /// <param name="action">Acción a ajecutar.</param>
-        /// <returns>
-        /// <see langword="true"/> si la acción tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected T PerformElevated<T>(Func<T> action)
-        {
-            return PerformElevated(action, out var result) ? result : default!;
-        }
-
-        /// <summary>
-        /// Ejecuta una operación bajo un contexto elevado de permisos.
-        /// </summary>
-        /// <param name="action">Acción a ajecutar.</param>
-        /// <param name="result">
-        /// Parámetro de salida. Contiene el resultado de la acción.
-        /// </param>
-        /// <returns>
-        /// <see langword="true"/> si la acción tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected bool PerformElevated<T>(Func<T> action, out T result)
-        {
-            if (!Elevate())
-            {
-                result = default!;
-                return false;
-            }
-            try
-            {
-                result = action.Invoke();
-                return true;
-            }
-            finally
-            {
-                AfterElevation();
             }
         }
 

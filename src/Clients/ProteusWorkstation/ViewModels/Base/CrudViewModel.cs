@@ -20,6 +20,7 @@ using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Dialogs;
 using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
@@ -259,16 +260,6 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
 
         /// <summary>
-        /// Obtiene o establece un valor que indica si esta ventana puede
-        /// cerrarse.
-        /// </summary>
-        public override bool Closeable
-        {
-            get => base.Closeable && !EditMode;
-            protected set => base.Closeable = value;
-        }
-
-        /// <summary>
         /// Obtiene o establece el valor SearchQuery.
         /// </summary>
         /// <value>El valor de SearchQuery.</value>
@@ -359,7 +350,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <param name="models">Modelos asociados de datos.</param>
         public CrudViewModel(ICloseable host, IQueryable<ModelBase> source, params Type[] models) : base(host, true)
         {
-            _model = models.First();
+            _model = models.First(); //TODO: cambiar a modelo seleccionable para Cruds multimodelo
             _implementation = new DbBoundCrudViewModel(source, models);
             _tools = CrudViewModelBase._allTools.Where(p => p.Available(models));
             Init();
@@ -424,6 +415,14 @@ namespace TheXDS.Proteus.ViewModels.Base
             SearchQuery = null;
         }
 
+        public override void Close()
+        {
+            if (!EditMode || MessageSplash.Ask(Title, "Tiene cambios sin guardar en el editor. ¿Desea salir?"))
+            {
+                base.Close();
+            }
+        }
+
         private async void OnSearch()
         {
             if (WillSearch && !SearchQuery.IsEmpty()) await PerformSearch();
@@ -434,6 +433,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
             IsSearching = true;
             var l = (await Internal.Query(SearchQuery!, _model).ToListAsync()).Cast<ModelBase>().ToList();
+
             var ll = new List<ModelBase>();
             foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>().Where(p => p.UsableFor(_model)))
             {
@@ -447,7 +447,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         }
         private IEnumerable<Launcher> GetLaunchers(CrudToolVisibility flags)
         {
-            return _tools.Where(p => p.Visibility.HasFlag(flags)).SelectMany(p => p.GetLaunchers(_model, this));
+            return _tools.Where(p => p.Visibility.HasFlag(flags)).SelectMany(p => p.GetLaunchers(_implementation.Models, this));
         }
         private void Init()
         {

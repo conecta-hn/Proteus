@@ -3,9 +3,6 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Crud.Mappings;
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +11,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using TheXDS.MCART.Controls;
-using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Crud.Mappings;
+using TheXDS.Proteus.Models.Base;
 using static TheXDS.MCART.Types.Extensions.CollectionExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
@@ -24,7 +23,7 @@ namespace TheXDS.Proteus.Crud
 {
     internal static class CrudBuilder
     {
-        internal static FrameworkElement BuildEditor(IEntityViewModel parentVm, ICrudDescription d, out ICollection<IPropertyMapping> boxes)
+        internal static FrameworkElement BuildEditor(IEntityViewModel parentVm, ICrudDescription d, out ICollection<IPropertyMapping> boxes, Type? parentEntityType = null)
         {
             boxes = new HashSet<IPropertyMapping>();
             var stckpnl = App.UiInvoke(() => new StackPanel
@@ -36,6 +35,8 @@ namespace TheXDS.Proteus.Crud
             foreach (var j in d.Descriptions)
             {
                 if (j.Hidden) continue;
+                if (j.PropertyType.ResolveCollectionType() == parentEntityType) continue;
+
                 stckpnl.Children.Add(boxes.Push(PropertyMapper.GetMapping(parentVm, j)).ContainingControl);
             }
             var wp = new StretchyWrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
