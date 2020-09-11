@@ -279,6 +279,14 @@ namespace TheXDS.Proteus.ViewModels.Base
             OnEdit(entity);
         }
 
+        public void CreateNewFrom(ModelBase entity)
+        {
+            CheckElements(entity.GetType());
+            Selection = entity;
+            NewMode = true;
+            OnEdit(entity);
+        }
+
         /// <summary>
         /// Determina si es posible ejecutar el comando para la creación de
         /// nuevas entidades.

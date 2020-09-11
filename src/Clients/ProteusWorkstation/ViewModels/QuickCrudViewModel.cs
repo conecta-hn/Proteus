@@ -221,6 +221,12 @@ namespace TheXDS.Proteus.ViewModels
             Entity = (t ?? SelectedElement.Model).New<ModelBase>();
             ClearCtrls(Entity);
         }
+        public void CreateNewFrom(ModelBase entity)
+        {
+            ClearCtrls(entity);
+            Entity = entity;
+        }
+
 
         /// <summary>
         /// Ejecuta una operación de eliminado de información de la

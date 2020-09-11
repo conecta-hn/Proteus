@@ -473,6 +473,11 @@ namespace TheXDS.Proteus.ViewModels.Base
                 .SetCanExecute(() => !SearchQuery.IsEmpty());
         }
 
+        public void CreateNewFrom(ModelBase entity)
+        {
+            ((ICrudViewModel)_implementation).CreateNewFrom(entity);
+        }
+
         ~CrudViewModel()
         {
             Settings.Default.PropertyChanged -= Default_PropertyChanged;
