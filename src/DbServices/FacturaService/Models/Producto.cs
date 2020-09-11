@@ -1,12 +1,13 @@
 ﻿using TheXDS.Proteus.Models.Base;
 using System.Collections.Generic;
+using TheXDS.MCART.Types.Base;
 
 namespace TheXDS.Proteus.Models
 {
     /// <summary>
     /// Describe un ítem facturable que define un consumo de inventario.
     /// </summary>
-    public class Producto : Facturable
+    public class Producto : Facturable, IDescriptible
     {
         public string? Description { get; set; }
         public string? Picture { get; set; }
