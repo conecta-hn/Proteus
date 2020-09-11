@@ -15,7 +15,7 @@ cualquier parte de su contenido.
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Api;
 using System.Windows;
-using static TheXDS.Proteus.Misc.AppInternal;
+using TheXDS.Proteus.FacturacionUi.Lib;
 
 namespace TheXDS.Proteus.Dialogs
 {
