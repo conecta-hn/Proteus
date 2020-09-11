@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Printing;
 using TheXDS.Proteus.Annotations;
 using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Misc;
 using TheXDS.Proteus.Models;
 
 namespace TheXDS.Proteus.FacturacionUi.Crud
@@ -59,7 +56,6 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
             Property(p => p.CanPrepay).Label("Permitir prepago");
 
-
             ListProperty(p => p.Debits)
                 .Creatable()
                 .Label("Débitos activos del cliente")
@@ -80,36 +76,6 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Label("Crédito disponible")
                 .ShowInDetails()
                 .ReadOnly();
-
-            CustomAction("Generar Carnet de cliente", OnGenerateCard);
-        }
-
-        private void OnGenerateCard(Cliente obj)
-        {
-            if (obj.IsNew)
-            {
-                Proteus.MessageTarget?.Show("Guarde al cliente primero.");
-                return;
-            }
-
-            var img = AppInternal.MakeBarcode(obj);
-
-            var pd = new PrintDocument();
-            pd.DefaultPageSettings.PaperSize = new PaperSize("Custom", 100, 77);
-
-            pd.DefaultPageSettings.Landscape = false;
-            pd.PrintPage += (_, g) =>
-            {
-                int printHeight = 450;
-                int printWidth = 400;
-                int leftMargin = 20;
-                int rightMargin = 0;
-
-                img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-
-                g.Graphics.DrawImage(img, new Rectangle(leftMargin, rightMargin, printWidth, printHeight));
-            };
-            pd.Print();
         }
     }
 }
