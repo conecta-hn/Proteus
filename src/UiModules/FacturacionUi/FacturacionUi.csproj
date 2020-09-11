@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BarcodeLib" Version="2.2.6" />
+    <PackageReference Include="WpfScreenHelper" Version="1.0.0" />
     <ProjectReference Include="..\..\DbServices\FacturaService\FacturaService.csproj" />
   </ItemGroup>
 </Project>
