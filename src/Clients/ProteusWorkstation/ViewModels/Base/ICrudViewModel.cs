@@ -160,5 +160,15 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="action">Tarea a ejecutar.</param>
         void BusyDo(Task action);
+        
+        /// <summary>
+        /// Crea una nueva entidad de datos basada en una entidad con
+        /// información previamente establecida.
+        /// </summary>
+        /// <param name="entity">
+        /// Entidad con información prestablecida a utilizar como la nueva
+        /// instancia de entidad creada.
+        /// </param>
+        void CreateNewFrom(ModelBase entity);
     }
 }
