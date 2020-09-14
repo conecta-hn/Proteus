@@ -1,0 +1,323 @@
+﻿<page:ProteusPage
+    x:Class="TheXDS.Proteus.Pages.FacturadorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:page="http://schemas.thexds.com/2019/Proteus/page"    
+    xmlns:widgets="http://schemas.thexds.com/2019/Proteus/widgets"
+    xmlns:controls="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"
+    xmlns:api="clr-namespace:TheXDS.Proteus.Api;assembly=FacturaService"
+    xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    Language="es-HN">    
+    <controls:BusyContainer IsBusy="{Binding IsBusy, Mode=OneWay}">
+        <Grid>
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="20"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <!--Header-->
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Visibility="{Binding NotNewV, Mode=OneWay}">
+                        <TextBlock>
+                            Fecha:
+                            <Run Text="{Binding CurrentFactura.Timestamp, Mode=OneWay}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            Cliente:
+                            <Run Text="{Binding CurrentFactura.Cliente, Mode=OneWay}"/>
+                        </TextBlock>
+                    </StackPanel>
+                    <ToggleButton 
+                        DockPanel.Dock="Right" Margin="10,0,0,10"
+                        Command="{Binding ElevateCommand}"
+                        widgets:ProteusProp.Icon="🔑">
+                        Habilitar descuentos
+                    </ToggleButton>
+                    <widgets:ObjectEditor DockPanel.Dock="Right" Visibility="{Binding NewV, Mode=OneWay}" x:Name="ClienteSelector" widgets:ProteusProp.Watermark="Cliente" widgets:ProteusProp.Icon="🧑"/>
+                    <TextBlock Style="{StaticResource Title}">
+                        Factura
+                        <Run Text="{Binding FacturaNumber, Mode=OneWay}"/>
+                    </TextBlock>
+                </DockPanel>
+
+                <!--Botones de adición-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="TxtNewItemCode"
+                        TabIndex="1"
+                        widgets:ProteusProp.Icon="🔎"
+                        ToolTip="Código de ítem"
+                        widgets:ProteusProp.Watermark="Cód. Item"
+                        KeyUp="TxtNewItemCode_KeyUp"
+                        Text="{Binding NewItemCode}"/>
+                    <ComboBox
+                        Grid.Column="1"
+                        ItemsSource="{Binding Facturables, Mode=OneWay}"
+                        SelectedItem="{Binding NewItem}" />
+                    <UniformGrid
+                        Grid.Column="2" Rows="1">
+                        <TextBlock
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center">
+                            Precio: <Run Text="{Binding NewPrecio, Mode=OneWay, StringFormat=C}"/>
+                        </TextBlock>
+                        <xctk:IntegerUpDown
+                            Value="{Binding NewQty}"
+                            DefaultValue="1"
+                            widgets:ProteusProp.Watermark="Cantidad"                            
+                            Minimum="1"/>
+                    </UniformGrid>
+                    <Button TabIndex="2" Grid.Column="3" Command="{Binding AddNewCommand}" Click="BtnAdd_Click">
+                        <Button.ToolTip>
+                            <TextBlock>
+                                Agregar <Run Text="{Binding NewQty}"/> <Run Text="{Binding NewItem.Name}"/>
+                            </TextBlock>
+                        </Button.ToolTip>
+                        +
+                    </Button>
+                </Grid>
+
+            </StackPanel>
+
+            <!--Lista de ítems-->
+            <ListView IsEnabled="{Binding CanInteract}" Grid.Row="1" ItemsSource="{Binding NewItems}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Cód." Width="50" DisplayMemberBinding="{Binding Item.Id, Mode=OneWay}"/>
+                        <GridViewColumn Header="Producto" Width="180" DisplayMemberBinding="{Binding Item.Name, Mode=OneWay}"/>
+                        <GridViewColumn Header="Cant." Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <xctk:IntegerUpDown
+                                        Style="{StaticResource ListedUpDown}"
+                                        widgets:ProteusProp.Icon="#"
+                                        Minimum="1"
+                                        Value="{Binding Qty, Mode=TwoWay}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Precio" Width="100" DisplayMemberBinding="{Binding Precio, Mode=OneWay, StringFormat=C}"/>
+                        <GridViewColumn Header="Gravable" Width="100" DisplayMemberBinding="{Binding Gravado, Mode=OneWay, StringFormat={}{0}%}"/>
+                        <GridViewColumn Header="Subtotal" Width="100" DisplayMemberBinding="{Binding SubTotal, Mode=OneWay, StringFormat=C}"/>
+                        <GridViewColumn Header="Monto gravable" Width="100" DisplayMemberBinding="{Binding MontoGravado, Mode=OneWay, StringFormat=C}"/>
+                        <GridViewColumn Header="Subtotal Gravado" Width="100" DisplayMemberBinding="{Binding SubTGrav, Mode=OneWay, StringFormat=C}"/>
+                        <GridViewColumn Header="Descuento L." Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="models:ItemOrden">
+                                    <xctk:DecimalUpDown 
+                                        Style="{StaticResource ListedUpDown}"
+                                        Minimum="0"
+                                        Value="{Binding DescuentosOtorgados, Mode=TwoWay, StringFormat=C}"
+                                        IsEnabled="{Binding CanDescuento, Mode=OneWay}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Descuento %" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="models:ItemOrden">
+                                    <xctk:SingleUpDown 
+                                        Style="{StaticResource ListedUpDown}"
+                                        Minimum="0" Maximum="100"
+                                        Value="{Binding DescuentosPercent, Mode=TwoWay}"
+                                        IsEnabled="{Binding CanDescuento, Mode=OneWay}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Subtotal final" Width="100" DisplayMemberBinding="{Binding FinalSubT, Mode=OneWay, StringFormat=C}"/>
+                        <GridViewColumn Width="30">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="models:ItemOrden">
+                                    <Button
+                                        IsEnabled="{Binding Parent.IsNew, Mode=OneWay}"
+                                        Command="{Binding RemoveThisCommand, Mode=OneWay}"
+                                        Style="{StaticResource SmallBtn}"
+                                        ToolTip="Quitar">-</Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!--Controles-->
+            <UniformGrid Margin="-5,5,-5,-5" Grid.Row="2" Rows="1" Style="{StaticResource BotoneraBase}">
+                <!--Notas-->
+                <TextBox
+                    IsReadOnly="{Binding IsNew, Converter={StaticResource BooleanInverter}, Mode=OneWay}"
+                    VerticalContentAlignment="Top"
+                    TabIndex="4" Text="{Binding CurrentFactura.Notas}"
+                    TextWrapping="WrapWithOverflow"
+                    widgets:ProteusProp.Watermark="Detalles adicionales"/>
+
+                <!--Contenedor de UI extra-->
+                <ContentControl 
+                    TabIndex="3"
+                    Content="{Binding ExtraUi}" 
+                    IsEnabled="{Binding CanExtraUiInteract}"
+                    Visibility="{Binding HasExtraUi}"/>
+
+                <!--Sumatorias-->
+                <StackPanel VerticalAlignment="Center" Margin="0,5">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Margin" Value="0,0,20,0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock TextAlignment="Right">
+                        Subtotal:
+                        <Run Text="{Binding SubTotal, Mode=OneWay, StringFormat=C}"/>
+                    </TextBlock>
+                    <TextBlock TextAlignment="Right">
+                        + Subtotal gravable:
+                        <Run Text="{Binding SubTGravable, Mode=OneWay, StringFormat=C}"/>
+                    </TextBlock>
+                    <Separator/>
+                    <TextBlock TextAlignment="Right">
+                        Subtotal gravado:
+                        <Run Text="{Binding SubTGravado, Mode=OneWay, StringFormat=C}"/>
+                    </TextBlock>
+                    <TextBlock TextAlignment="Right">
+                        - Descuentos en artículos:
+                        <Run Text="{Binding SubTDescuentos, Mode=OneWay, StringFormat=C}"/>
+                    </TextBlock>
+                    <Separator/>
+                    <TextBlock TextAlignment="Right">
+                        Subtotal final:
+                        <Run Text="{Binding SubTFinal, Mode=OneWay, StringFormat=C}"/>
+                    </TextBlock>
+                    <DockPanel>
+                        <xctk:DropDownButton IsEnabled="{Binding CanDescuento, Mode=OneWay}">
+                            <xctk:DropDownButton.DropDownContent>
+                                <StackPanel Width="250">
+                                    <Button Command="{Binding TerceraEdadCommand}" ToolTip="Aplicar descuento de tercera edad">👴</Button>
+                                    <xctk:SingleUpDown
+                                        widgets:ProteusProp.Watermark="Porcentaje de descuento"
+                                        Language="es-HN"
+                                        widgets:ProteusProp.WatermarkAlwaysVisible="True"  
+                                        Minimum="0"
+                                        Maximum="100"
+                                        Value="{Binding DescuentoPercent, StringFormat=P0}"/>
+                                </StackPanel>
+                            </xctk:DropDownButton.DropDownContent>
+                        </xctk:DropDownButton>
+                        <xctk:DecimalUpDown
+                            Margin="0"
+                            widgets:ProteusProp.Watermark="- Descuentos generales"
+                            IsEnabled="{Binding CanDescuento, Mode=OneWay}"
+                            Language="es-HN"
+                            widgets:ProteusProp.WatermarkAlwaysVisible="True"                        
+                            Value="{Binding Descuento, StringFormat=C}"/>
+                    </DockPanel>
+                    <xctk:DecimalUpDown
+                        Margin="0"
+                        widgets:ProteusProp.Watermark="+ Cargos adicionales" 
+                        widgets:ProteusProp.WatermarkAlwaysVisible="True"
+                        Language="es-HN"
+                        Value="{Binding OtrosCargos,StringFormat=C}"/>
+                    <Separator/>
+                    <TextBlock TextAlignment="Right" FontWeight="Bold">
+                        Total a pagar:
+                        <Run Text="{Binding Total, Mode=OneWay, StringFormat=C}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <!--Pago y facturar-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView
+                        Grid.Row="1"
+                        SelectedItem="{Binding SelectedPayment}"
+                        ItemsSource="{Binding NewPayments}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Forma de pago">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox
+                                                Margin="0"
+                                                MinWidth="80"
+                                                DisplayMemberPath="Name" 
+                                                SelectedItem="{Binding Source}"
+                                                ItemsSource="{x:Static api:FacturaService.PaymentSources}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Monto" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>                                                
+                                                <xctk:DecimalUpDown
+                                                    Visibility="{Binding EditableV}"
+                                                    BorderBrush="{x:Null}"
+                                                    BorderThickness="0"
+                                                    Background="Transparent"
+                                                    MinWidth="50"
+                                                    Margin="-5"
+                                                    Value="{Binding Amount, StringFormat=C}"/>
+                                                <TextBlock
+                                                    Visibility="{Binding NotEditableV}"
+                                                    Text="{Binding Amount, Mode=OneWay, StringFormat=C}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <Button  TabIndex="6" Command="{Binding AddPaymentCommand, Mode=OneWay}">+</Button>
+                        <Button Command="{Binding RemovePaymentCommand, Mode=OneWay}">-</Button>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2">
+                        <UniformGrid Rows="1">
+                            <TextBlock>
+                                Recibido: <Run Text="{Binding Paid, Mode=OneWay, StringFormat=C}"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="{Binding VueltoLabel, Mode=OneWay}"/>: <Run Text="{Binding Vuelto, Mode=OneWay, StringFormat=C}"/>
+                            </TextBlock>                        
+                        </UniformGrid>
+                        <DockPanel>
+                            <ToggleButton x:Name="BtnFacturarMoreOptions" widgets:ProteusProp.Icon="▼" DockPanel.Dock="Right"/>
+                            <fw:AcrylicPopup IsOpen="{Binding IsChecked, ElementName=BtnFacturarMoreOptions}">
+                                <StackPanel Background="{DynamicResource SystemAltMediumHighColorBrush}">
+                                    <Button Command="{Binding SaveAsCotizCommand, Mode=OneWay}">Guardar como cotización</Button>
+                                    <Separator/>
+                                    <CheckBox IsChecked="{Binding PrintFactura}">Imprimir</CheckBox>
+                                </StackPanel>                                
+                            </fw:AcrylicPopup>                                                        
+                            <Button
+                                TabIndex="7" 
+                                Content="{Binding FacturarBtnTitle, Mode=OneWay}"
+                                Command="{Binding FacturarCommand, Mode=OneWay}"
+                                Background="PaleGreen"/>                        
+                        </DockPanel>
+                    </StackPanel>
+                </Grid>
+            </UniformGrid>
+        </Grid>
+    </controls:BusyContainer>
+</page:ProteusPage>

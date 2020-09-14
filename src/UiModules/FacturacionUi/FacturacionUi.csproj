@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWpf>true</UseWpf>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="5.3.1" />
+    <PackageReference Include="BarcodeLib" Version="2.2.6" />
+    <PackageReference Include="WpfScreenHelper" Version="1.0.0" />
+    <ProjectReference Include="..\..\DbServices\FacturaService\FacturaService.csproj" />
+  </ItemGroup>
+</Project>

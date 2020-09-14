@@ -31,7 +31,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         public bool CanProcess(DbEntityEntry entry)
         {
-            var entity = entry.Entity as ModelBase;
+            var entity = (ModelBase)entry.Entity;
             return entity.IdType == typeof(T) && !entity.HasId;
         }
 
@@ -41,8 +41,8 @@ namespace TheXDS.Proteus.Api
         /// <param name="entry">Entidad a procesar.</param>
         public void Process(DbEntityEntry entry)
         {
-            var entity = entry.Entity as ModelBase;
-            entity.GetType().GetProperty("Id",typeof(T)).SetValue(entity,GetNewValue());
+            var entity = (ModelBase)entry.Entity;
+            entity!.GetType().GetProperty("Id", typeof(T))!.SetValue(entity,GetNewValue());
         }
 
         /// <summary>
