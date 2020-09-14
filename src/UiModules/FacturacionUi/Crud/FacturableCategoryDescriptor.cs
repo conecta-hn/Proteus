@@ -19,6 +19,11 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             OnModuleMenu(InteractionType.Settings);
             FriendlyName("Categoría de producto");
             Property(p => p.Name).AsName();
+            ListProperty(p => p.Children)
+                .Selectable()
+                .Creatable()
+                .Required()
+                .Label("Ítems");
         }
     }
 }
