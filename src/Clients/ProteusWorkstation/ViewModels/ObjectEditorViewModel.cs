@@ -9,12 +9,10 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TheXDS.MCART;
-using TheXDS.MCART.Types;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -112,7 +110,7 @@ namespace TheXDS.Proteus.ViewModels
             get
             {
                 if (ActiveModel is null) return null;
-                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns is { } c)) return null;
+                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns.OfType<Column>() is { } c)) return null;
                 var v = new GridView();
                 foreach (var j in c)
                 {
@@ -250,7 +248,7 @@ namespace TheXDS.Proteus.ViewModels
         {
             _description = description;
             _parentVm = parentVm;
-            ParentEntityType = description.Property.DeclaringType;
+            ParentModel = description.Property.DeclaringType;
             FieldName = description.Label;
             FieldIcon = description.Icon;
             CanSelect = description.Selectable;

@@ -67,7 +67,7 @@ namespace TheXDS.Proteus.Crud.Base
         ///  Enumera las columnas a mostrar cuando el modelo sea presentado en 
         ///  un control <see cref="ListView"/>.
         /// </summary>
-        IEnumerable<Column> ListColumns { get; }
+        IEnumerable<IColumn> ListColumns { get; }
 
         /// <summary>
         /// Obtiene un nombre amigable a utilizar para nomrbar al modelo.
