@@ -11,7 +11,7 @@ using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Plugins;
 
-namespace PosFacturaPrinter
+namespace TheXDS.Proteus.PosFacturaPrinter
 {
     [Name("Impresora de POS"), Description("Utiliza un sistema de impresión compatible con POS para imprimir la factura.")]
     [Guid("8e4ebc2e-da07-4ecb-abcd-fd0ecc7d7ea1")]
