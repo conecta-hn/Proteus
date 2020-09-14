@@ -33,6 +33,7 @@ namespace TheXDS.Proteus.Plugins
 		/// </summary>
 		public Export2ExcelCrudTool() : base(CrudToolVisibility.Unselected)
 		{
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 		}
 
 		/// <summary>
