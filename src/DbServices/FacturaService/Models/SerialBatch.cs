@@ -7,7 +7,7 @@ namespace TheXDS.Proteus.Models
 {
     public class SerialBatch : Batch
     {
-        public IEnumerable<SerialNum> Available => Serials.Where(p => p.Owner == null && p.Sold == null);
+        public IEnumerable<SerialNum> Available => Serials.Where(p => p.Sold == null);
 
         public override int Qty => Available.Count();
 
@@ -15,16 +15,35 @@ namespace TheXDS.Proteus.Models
 
         public override string RebajarVenta(int qty, Factura f)
         {
+            var w = Item.Warranty is null ? null : new Warranty
+            {
+                Cliente = f.Cliente,
+                Timestamp = f.Timestamp,
+                Void = CalcFrom()
+            };
             var sb = new StringBuilder();
             while (qty > 0)
             {
                 var i = Available.First();
-                i.Owner = f.Cliente;
-                i.Sold = DateTime.Now;
+                i.Warranty = w;
+                i.Sold = f.Timestamp;
                 sb.AppendLine($"{Item.Name} con número de serie {i.Id}");
                 qty--;
             }
             return $"\n{sb}";
+        }
+
+        private DateTime? CalcFrom()
+        {
+            if (!(Item.Warranty is { WarrantyLength: { } i, Unit: { } u })) return null;
+            return u switch
+            {
+                WarrantyLengthUnit.Days => DateTime.Today.AddDays(i),
+                WarrantyLengthUnit.Weeks => DateTime.Today.AddDays(i * 7),
+                WarrantyLengthUnit.Months => DateTime.Today.AddMonths(i),
+                WarrantyLengthUnit.Years => DateTime.Today.AddYears(i),
+                _ => null
+            };
         }
 
         public override Batch Split(int newQty)

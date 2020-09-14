@@ -7,6 +7,6 @@ namespace TheXDS.Proteus.Models
     {
         public string? WebPage { get; set; }
         public virtual List<ProveedorContacto> Contactos { get; set; } = new List<ProveedorContacto>();
-        public virtual List<Producto> Productos { get; set; } = new List<Producto>();
+        public virtual List<ProductoProveedor> Productos { get; set; } = new List<ProductoProveedor>();
     }
 }
