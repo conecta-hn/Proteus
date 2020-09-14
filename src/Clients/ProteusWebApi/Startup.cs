@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Config;
 using TheXDS.Proteus.Plugins;
-using System.Collections.Generic;
-using TheXDS.MCART.PluginSupport.Legacy;
 
 namespace TheXDS.Proteus
 {
@@ -27,15 +27,17 @@ namespace TheXDS.Proteus
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {            
-            services.AddCors(options=> {
-                options.AddPolicy("corsPolicy",b=> {
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("corsPolicy", b =>
+                {
                     b.SetIsOriginAllowedToAllowWildcardSubdomains();
-                    b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();//.AllowCredentials();
+                    b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 });
             });
             var mvc = services.AddMvc(p => p.EnableEndpointRouting = false);
-            mvc.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);            
+            mvc.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             Settings = Configuration.GetSection("ProteusSettings").Get<ProteusSettings>();
             Proteus.MessageTarget = new LogcatMessageTarget();

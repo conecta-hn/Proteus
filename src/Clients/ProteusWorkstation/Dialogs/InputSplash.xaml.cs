@@ -92,7 +92,7 @@ namespace TheXDS.Proteus.Dialogs
             _host = host;
             CloseCommand = new SimpleCommand(OnClose);
             GoCommand = new SimpleCommand(OnGo);
-            InputControl = PropertyMapper.GetMapping(description)?.Control;
+            InputControl = PropertyMapper.GetMapping(null, description)?.Control;
             Prompt = description.Label;
         }
 

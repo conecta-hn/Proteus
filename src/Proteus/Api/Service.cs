@@ -27,31 +27,36 @@ using TheXDS.Proteus.Models;
 using TheXDS.Proteus.Models.Base;
 using static TheXDS.Proteus.Proteus;
 using Timer = System.Timers.Timer;
+using St = TheXDS.Proteus.Resources.Strings;
 
 namespace TheXDS.Proteus.Api
 {
+    public class CallbackRegistryEntry
+    {
+        public Type Type { get; }
+        public Action<ModelBase> Action { get; }
+        public CallbackRegistryEntry(Type type, Action<ModelBase> action)
+        {
+            Type = ModelBase.ResolveModelType(type);
+            Action = action;
+        }
+        public bool IsFor(Type t)
+        {
+            return Type == ModelBase.ResolveModelType(t);
+        }
+    }
+
     /// <summary>
     /// Clase base para todos los servicios de Proteus.
     /// </summary>
     public abstract class Service : Plugin, IDisposable, IFullService
     {
-        private class CallbackRegistryEntry
-        {
-            internal Type Type { get; }
-            internal Action<ModelBase> Action { get; }
-            internal CallbackRegistryEntry(Type type, Action<ModelBase> action)
-            {
-                Type = ModelBase.ResolveModelType(type);
-                Action = action;
-            }
-            internal bool IsFor(Type t)
-            {
-                return Type == ModelBase.ResolveModelType(t);
-            }
-        }
+
         private static readonly IEnumerable<IModelPreprocessor> _preprocessors = Objects.FindAllObjects<IModelPreprocessor>().OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).ToList();
 
         private readonly HashSet<CallbackRegistryEntry> _saveCallbacks = new HashSet<CallbackRegistryEntry>();
+
+        public IEnumerable<CallbackRegistryEntry> SaveCallbacks => _saveCallbacks;
 
         /// <summary>
         /// Enumera los nombres de las funciones expuestas por este
@@ -59,7 +64,7 @@ namespace TheXDS.Proteus.Api
         /// establecidas para los mismas.
         /// </summary>
         public IEnumerable<NamedObject<SecurityFlags>> FunctionNames
-            => Functions.Select(p => new NamedObject<SecurityFlags>(p.Value,p.Key.FullName()));
+            => Functions.Select(p => new NamedObject<SecurityFlags>(p.Value, p.Key.FullName()));
 
         /// <summary>
         /// Enumera las referencias a los métodos expuestas por este
@@ -115,7 +120,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene una referencia a la sesión activa para este servicio.
         /// </summary>  
-        protected IProteusUserCredential? Session => _session ?? Proteus.Session;
+        public IProteusUserCredential? Session => _session ?? Proteus.Session;
 
         /// <summary>
         /// Obtiene un valor que indica si este servicio se encuentra
@@ -1234,7 +1239,6 @@ namespace TheXDS.Proteus.Api
             return check(method,flags, credential.Parent);
         }
 
-
         public static bool? CanRunService(string id, SecurityFlags flags) => CanRunService(id, flags, LogonService?.Session);
 
         public static bool? CanRunService(string id, SecurityFlags flags, IProteusHierachicalCredential? credential)
@@ -1251,7 +1255,7 @@ namespace TheXDS.Proteus.Api
             return CanRunService(id, flags, credential.Parent);
         }
 
-        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Proteus.Session);
+        public bool? CanRunService(SecurityFlags flags) => CanRunService(flags, Session);
 
         public bool? CanRunService(SecurityFlags flags, IProteusHierachicalCredential? cred)
         {
@@ -1267,6 +1271,118 @@ namespace TheXDS.Proteus.Api
             if ((cred.DefaultRevoked & flags) != SecurityFlags.None) return false;
             if (cred.DefaultGranted.HasFlag(flags)) return true;
             return CanRunService(flags, cred.Parent);
+        }
+
+        /// <summary>
+        /// Revoca la elevación activa.
+        /// </summary>
+        public void Revoke()
+        {
+            _session = null;
+        }
+
+        private protected void AfterElevation()
+        {
+            switch (ElevationBehavior)
+            {
+                case ElevationBehavior.Once:
+                    Revoke();
+                    break;
+                case ElevationBehavior.Keep:
+                    break;
+                case ElevationBehavior.Timeout:
+                    ConfigureTimeout();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void ConfigureTimeout()
+        {
+            var t = new Timer(TimeSpan.FromMinutes(10).TotalMilliseconds)
+            {
+                AutoReset = false,
+                Enabled = true
+            };
+            t.Elapsed += ElevationTimer_Elapsed;
+            _revokeTimers.Add(t);
+        }
+
+        /// <summary>
+        /// Ejecuta una operación bajo un contexto elevado de permisos.
+        /// </summary>
+        /// <param name="action">Acción a ajecutar.</param>
+        /// <returns>
+        /// <see langword="true"/> si la acción tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        protected bool PerformElevated(Action? action)
+        {
+            if (!Elevate()) return false;
+            action?.Invoke();
+            AfterElevation();
+            return true;
+        }
+
+        /// <summary>
+        /// Ejecuta una operación bajo un contexto elevado de permisos.
+        /// </summary>
+        /// <param name="action">Acción a ajecutar.</param>
+        /// <returns>
+        /// <see langword="true"/> si la acción tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        protected T PerformElevated<T>(Func<T> action)
+        {
+            return PerformElevated(action, out var result) ? result : default!;
+        }
+
+        /// <summary>
+        /// Ejecuta una operación bajo un contexto elevado de permisos.
+        /// </summary>
+        /// <param name="action">Acción a ajecutar.</param>
+        /// <param name="result">
+        /// Parámetro de salida. Contiene el resultado de la acción.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> si la acción tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        protected bool PerformElevated<T>(Func<T> action, out T result)
+        {
+            if (!Elevate())
+            {
+                result = default!;
+                return false;
+            }
+            try
+            {
+                result = action.Invoke();
+                return true;
+            }
+            finally
+            {
+                AfterElevation();
+            }
+        }
+
+        /// <summary>
+        /// Comprueba los permisos de ejecución de una función del
+        /// servicio.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> si la función tiene permisos para
+        /// ejecutarse, <see langword="false"/> en caso contrario.
+        /// </returns>
+        public bool Elevate()
+        {
+            return !Interactive || (Session ?? Proteus.Session)?.Id == "root" || (CanRunService() ?? Elevator?.Elevate(ref _session) ?? false);
+        }
+
+        public bool Elevate(SecurityFlags flags)
+        {
+            return Elevate() && (CanRunService(flags) ?? false);
         }
 
         #endregion
@@ -1414,7 +1530,6 @@ namespace TheXDS.Proteus.Api
             _saveCallbacks.Add(new CallbackRegistryEntry(model, callback));
         }
 
-
         /// <summary>
         /// Comprueba si el contexto de datos asociado a este <see cref="T:TheXDS.Proteus.API.Service" />
         /// permite alojar entidades del tipo especificado.
@@ -1474,7 +1589,7 @@ namespace TheXDS.Proteus.Api
         /// </returns>
         public bool HostsBase(Type tEntity)
         {
-            return Context.GetType().GetProperties().Any(p => IsTable(p,tEntity));
+            return Context.GetType().GetProperties().Any(p => IsTable(p, tEntity));
         }
 
         private bool IsTable(PropertyInfo p, Type model)
@@ -1542,13 +1657,6 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        /// Revoca la elevación activa.
-        /// </summary>
-        public void Revoke()
-        {
-            _session = null;
-        }
-        /// <summary>
         /// Revierte todas las operaciones pendientes de guardado.
         /// </summary>
         public void Rollback()
@@ -1559,6 +1667,7 @@ namespace TheXDS.Proteus.Api
             foreach (var entry in changedEntries)
                 Rollback(entry);
         }
+
         /// <summary>
         /// Revierte los cambios sin guardar realizados en la entidad especificada.
         /// </summary>
@@ -1623,69 +1732,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Obtiene un nombre amigable para el servicio.
         /// </summary>
-        public string FriendlyName => GetType().NameOf()?.OrNull() ?? GetType().Name.Replace("Service", string.Empty);
-
-        private protected void AfterElevation()
-        {
-            switch (ElevationBehavior)
-            {
-                case ElevationBehavior.Once:
-                    Revoke();
-                    break;
-                case ElevationBehavior.Keep:
-                    break;
-                case ElevationBehavior.Timeout:
-                    ConfigureTimeout();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void ConfigureTimeout()
-        {
-            var t = new Timer(TimeSpan.FromMinutes(10).TotalMilliseconds)
-            {
-                AutoReset = false,
-                Enabled = true
-            };
-            t.Elapsed += ElevationTimer_Elapsed;
-            _revokeTimers.Add(t);
-        }
-
-        /// <summary>
-        /// Comprueba los permisos de ejecución de una función del
-        /// servicio.
-        /// </summary>
-        /// <returns>
-        /// <see langword="true"/> si la función tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected bool Elevate()
-        {
-            return !Interactive || (CanRunService() ?? false);
-
-
-            //bool r;
-            //do
-            //{
-            //    r = !Interactive || (CanRunService() ?? false);
-            //    if (!r)
-            //    {
-                    
-            //        if ( CanRunService((MethodBase.GetCurrentMethod() as MethodInfo).FullName(), SecurityFlags.Elevate, credential))
-            //        {
-
-            //        }
-
-
-            //    }
-
-            //    if (!r && (!Elevator?.Elevate(ref _session) ?? true)) break;
-            //} while (!r);
-            //return r;
-        }
-
+        public string FriendlyName => GetType().NameOf()?.Without(GetType().Name).OrNull() ?? GetType().Name.ChopEnd(nameof(Service));
 
         /// <summary>
         /// Enumera los tipos de entidad hospedadas en el contexto
@@ -1700,6 +1747,8 @@ namespace TheXDS.Proteus.Api
             }
         }
 
+        public Task<DetailedResult> ForcefullySaveAsync() => InternalSaveAsync(true);
+
         /// <summary>
         /// Ejecuta una operación de guardado directamente, sin realizar
         /// verificaciones de permisos.
@@ -1712,12 +1761,12 @@ namespace TheXDS.Proteus.Api
         /// <see cref="Result.Unreachable"/> si no es posible contactar con
         /// el servidor de dase de datos.
         /// </returns>
-        protected async Task<DetailedResult> InternalSaveAsync()
+        protected async Task<DetailedResult> InternalSaveAsync(bool forcefullySave = false)
         {
             CancellationTokenSource? cs = null;
             try
             {
-                if (!ChangesPending()) return Result.Ok;
+                if (!(ChangesPending() || forcefullySave)) return Result.Ok;
 
                 var affectedEntities = Context.ChangeTracker.Entries()
                     .Where(p => p.State != EntityState.Unchanged).ToList();
@@ -1763,64 +1812,6 @@ namespace TheXDS.Proteus.Api
         }
 
         /// <summary>
-        /// Ejecuta una operación bajo un contexto elevado de permisos.
-        /// </summary>
-        /// <param name="action">Acción a ajecutar.</param>
-        /// <returns>
-        /// <see langword="true"/> si la acción tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected bool PerformElevated(Action? action)
-        {
-            if (!Elevate()) return false;
-            action?.Invoke();
-            AfterElevation();
-            return true;
-        }
-
-        /// <summary>
-        /// Ejecuta una operación bajo un contexto elevado de permisos.
-        /// </summary>
-        /// <param name="action">Acción a ajecutar.</param>
-        /// <returns>
-        /// <see langword="true"/> si la acción tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected T PerformElevated<T>(Func<T> action)
-        {
-            return PerformElevated(action, out var result) ? result : default;
-        }
-
-        /// <summary>
-        /// Ejecuta una operación bajo un contexto elevado de permisos.
-        /// </summary>
-        /// <param name="action">Acción a ajecutar.</param>
-        /// <param name="result">
-        /// Parámetro de salida. Contiene el resultado de la acción.
-        /// </param>
-        /// <returns>
-        /// <see langword="true"/> si la acción tiene permisos para
-        /// ejecutarse, <see langword="false"/> en caso contrario.
-        /// </returns>
-        protected bool PerformElevated<T>(Func<T> action, out T result)
-        {
-            if (!Elevate())
-            {
-                result = default!;
-                return false;
-            }
-            try
-            {
-                result = action.Invoke();
-                return true;
-            }
-            finally
-            {
-                AfterElevation();
-            }
-        }
-
-        /// <summary>
         /// Realiza una operación de limpieza sobre el contexto de datos,
         /// eliminando todos los elementos marcados como tal.
         /// </summary>
@@ -1837,7 +1828,7 @@ namespace TheXDS.Proteus.Api
         {
             return Op(() =>
             {
-                CommonReporter?.UpdateStatus($"Sanitizando la base de datos de {FriendlyName}...");
+                CommonReporter?.UpdateStatus(string.Format(St.SanitizingDb,FriendlyName.ToLower()));
                 foreach (var j in Context.GetType().GetProperties()
                     .Where(p => typeof(DbSet<ISoftDeletable>).IsAssignableFrom(p.PropertyType))
                     .Select(q => q.GetMethod!.Invoke(Context, Array.Empty<object>()) as DbSet<ISoftDeletable>))
@@ -1903,31 +1894,50 @@ namespace TheXDS.Proteus.Api
             return Task.Run(InitializeDatabase);
         }
 
+#if DEBUG
         internal bool InitializeDatabase()
         {
-            Reporter?.UpdateStatus($"Comprobando base de datos de {FriendlyName.ToLower()}...");
+            return InitializeDatabase(false);
+        }
+
+        internal bool InitializeDatabase(bool forcefully)
+#else
+        internal bool InitializeDatabase()
+#endif
+        {
+            Reporter?.UpdateStatus(string.Format(St.CheckingDb, FriendlyName.ToLower()));
             try
             {
+#if DEBUG
+                if (forcefully) Context.Database.Delete();
+#endif
                 if (Context.Database.Exists())
                 {
-                    if (Context.Database.CompatibleWithModel(false)) return false;
-                    Reporter?.UpdateStatus($"Base de datos dañada. Creando base de datos de {FriendlyName.ToLower()}...");
+                    if (Context.Database.CompatibleWithModel(false) 
+                        || (!InteractiveMt?.Ask(St.ReinitDb, string.Format(St.ReinitDbQuestion, FriendlyName.ToLower())) ?? true)) return false;
+                    Reporter?.UpdateStatus($"{St.DamagedDb} {string.Format(St.CreatingDb, FriendlyName.ToLower())}");
                     Context.Database.Delete();
                 }
                 else
                 {
-                    Reporter?.UpdateStatus($"Creando base de datos de {FriendlyName.ToLower()}...");
+                    Reporter?.UpdateStatus(string.Format(St.CreatingDb, FriendlyName.ToLower()));
                 }
                 Context.Database.Create();
                 return true;
             }
             catch (Exception ex)
             {
-                Reporter?.UpdateStatus($"{ex.Message}");                
+                Reporter?.UpdateStatus(ex.Message);                
                 return false;
             }
         }
-        internal Task<Result> RunSeeders(bool runRegardless)
+
+        internal Result RunSeeders(bool runRegardless)
+        {
+            return RunSeedersAsync(runRegardless).GetAwaiter().GetResult();
+        }
+
+        internal Task<Result> RunSeedersAsync(bool runRegardless)
         {
             return RunSeedersAsync(Task.FromResult(runRegardless));
         }
@@ -1948,7 +1958,7 @@ namespace TheXDS.Proteus.Api
                     var r = await s.SeedAsync(this, Reporter);
                     if (r.Result != Result.Ok)
                     {
-                        AlertTarget?.Alert($"Error al inicializar la base de datos de {FriendlyName}", r.Message);
+                        AlertTarget?.Alert(string.Format(St.ErrorInitDb, FriendlyName.ToLower()), r.Message);
                         return r.Result;
                     }
                 }
@@ -2022,8 +2032,7 @@ namespace TheXDS.Proteus.Api
         protected static TEstacion? GetStation<TEstacion>() where TEstacion : EstacionBase, new()
         {
             return GetStation<TEstacion>(Proteus.Infer(typeof(TEstacion)) 
-                ?? throw new InvalidOperationException(
-                    $"No fue posible encontrar un servicio que administre entidades de tipo {typeof(TEstacion)}."));
+                ?? throw new InvalidOperationException(string.Format(St.Svc4EntNotFound,typeof(TEstacion))));
         }
 
         /// <summary>
@@ -2041,8 +2050,7 @@ namespace TheXDS.Proteus.Api
         protected static TUser? GetUser<TUser>() where TUser : ModelBase, IUserBase, new()
         {
             return GetUser<TUser>(Proteus.Infer(typeof(TUser))
-                ?? throw new InvalidOperationException(
-                    $"No fue posible encontrar un servicio que administre entidades de tipo {typeof(TUser)}."));
+                ?? throw new InvalidOperationException(string.Format(St.Svc4EntNotFound, typeof(TUser))));
         }
 
         /// <summary>

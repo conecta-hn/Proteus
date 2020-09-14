@@ -55,7 +55,7 @@ namespace TheXDS.Proteus.Crud.Base
         /// Obtiene la función que determina si es posible eliminar a la
         /// entidad actualmente seleccionada.
         /// </summary>
-        Func<ModelBase,bool> CanDelete { get; }
+        Func<ModelBase,bool>? CanDelete { get; }
 
         /// <summary>
         /// Enumera una serie de acciones personalizadas definidas para 
@@ -67,7 +67,7 @@ namespace TheXDS.Proteus.Crud.Base
         ///  Enumera las columnas a mostrar cuando el modelo sea presentado en 
         ///  un control <see cref="ListView"/>.
         /// </summary>
-        IEnumerable<Column> ListColumns { get; }
+        IEnumerable<IColumn> ListColumns { get; }
 
         /// <summary>
         /// Obtiene un nombre amigable a utilizar para nomrbar al modelo.
@@ -95,13 +95,13 @@ namespace TheXDS.Proteus.Crud.Base
         /// Obtiene un valor de determina si es posible crear nuevas 
         /// entidades.
         /// </summary>
-        Func<ModelBase, bool> CanCreate { get; }
+        Func<ModelBase, bool>? CanCreate { get; }
 
         /// <summary>
         /// Obtiene un valor que determina si es posible editar una
         /// entidad.
         /// </summary>
-        Func<ModelBase, bool> CanEdit { get; }
+        Func<ModelBase, bool>? CanEdit { get; }
         
         /// <summary>
         /// FUnción a ejecutar que comprueba una condición al abrir un Launcher.

@@ -3,18 +3,20 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Api;
-using TheXDS.Proteus.Crud;
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models.Base;
-using TheXDS.Proteus.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TheXDS.MCART.Types.Extensions;
-using static TheXDS.MCART.Types.Extensions.TypeExtensions;
-using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows.Input;
+using TheXDS.MCART.Exceptions;
+using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Crud;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Misc;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.Proteus.ViewModels.Base;
+using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
 namespace TheXDS.Proteus.Pages.Base
 {
@@ -45,14 +47,6 @@ namespace TheXDS.Proteus.Pages.Base
             p.ViewModel = vm;
             return p;
         }
-
-        //public static CrudPage New<TService>(CrudElement crud) where TService : Service, new()
-        //{
-        //    var p = new CrudPage();
-        //    var vm = new CrudViewModel<TService>(p, crud);
-        //    p.ViewModel = vm;
-        //    return p;
-        //}
 
         /// <summary>
         /// Crea una nueva página de CRUD para el modelo especificado.
@@ -126,15 +120,57 @@ namespace TheXDS.Proteus.Pages.Base
             return p;
         }
 
-        //public static CrudPage New<T>(string title, IQueryable<ModelBase> source, IEnumerable<CrudElement> cruds) where T : Service, new()
-        //{
-        //    var p = new CrudPage();
-        //    p.ViewModel = new CrudViewModel<T>(p, source, cruds.ToArray())
-        //    {
-        //        Title = title
-        //    };
-        //    return p;
-        //}
+        public static CrudPage NewBase<T>(string title) where T : ModelBase
+        {
+            return NewBase(title, typeof(T));
+        }
+
+        public static CrudPage NewBase(string title, Type baseModel, params Type[] models)
+        {
+            if (!(baseModel ?? throw new ArgumentNullException(nameof(baseModel))).Implements<ModelBase>())
+            {
+                throw new Exception($"El tipo base {baseModel} no es un modelo.");
+            }
+            if (!models.Any()) throw new EmptyCollectionException(models);
+            var s = Proteus.InferBaseService(baseModel);
+            if (models.FirstOrDefault(p => !s.Hosts(p)) is { } m1)
+            {
+                throw new Exception($"El modelo {m1} no es válido para el servicio solicitado.");
+            }
+            if (models.FirstOrDefault(p => !p.Implements(baseModel)) is { } m2)
+            { 
+                throw new Exception($"El modelo {m2} no es válido para el tipo base {baseModel}");
+            }
+
+            var source = s.AllBase(baseModel);
+            var p = new CrudPage();
+            var vm = typeof(CrudViewModel<>).MakeGenericType(s.GetType()).New<IPageViewModel>(p, source, models.ToArray());
+            vm.Title = title;
+            p.ViewModel = vm;
+            return p;
+        }
+
+        public static CrudPage NewBase(string title, Type baseModel)
+        {
+            return NewBase(title, baseModel, AppInternal.GetModels(baseModel));
+        }
+
+        public static CrudPage New(string title, params Type[] models)
+        {
+            if (!models.Any()) throw new EmptyCollectionException(models);
+            var baseModel = models.First().BaseType!;
+            return NewBase(title, baseModel, models);
+        }
+
+        public static CrudPage New<T, TModel>(string title, Func<IQueryable<TModel>, IQueryable<TModel>> filters) where T : Service, new() where TModel : ModelBase, new()
+        {
+            var q = Proteus.Service<T>()!.All<TModel>();
+            if (filters != null)
+            {
+                q = filters(q);
+            }
+            return New<T>(title, q, new[] { typeof(TModel) });
+        }
 
         public static CrudPage FromDescription<T>() where T:ICrudDescription, new()
         {

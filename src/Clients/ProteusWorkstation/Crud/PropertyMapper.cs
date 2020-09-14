@@ -15,6 +15,7 @@ using System.Windows;
 using TheXDS.MCART.Attributes;
 using static TheXDS.MCART.Objects;
 using static TheXDS.MCART.ReflectionHelpers;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud
 {
@@ -48,7 +49,7 @@ namespace TheXDS.Proteus.Crud
                 try
                 {
                     _mappers.Clear();
-                    foreach (var j in FindAllObjects<PropertyMapper>().OrderBy(p=>p.GetAttr<PriorityAttribute>()?.Value ?? int.MaxValue))
+                    foreach (var j in FindAllObjects<PropertyMapper>().OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value ?? int.MaxValue))
                     {
                         _mappers.Add(j);
                     }
@@ -76,7 +77,7 @@ namespace TheXDS.Proteus.Crud
         public virtual bool Maps(IPropertyDescription property)
         {
 #if DEBUG
-            if (!MethodBase.GetCurrentMethod().IsOverriden(this) && !MapsTypes.Any())
+            if (!MethodBase.GetCurrentMethod()!.IsOverriden(this) && !MapsTypes.Any())
             {
                 throw new Exception(
                     "Este mapper debe configurarse antes de usarse, invalidando " +
@@ -89,21 +90,27 @@ namespace TheXDS.Proteus.Crud
         /// <summary>
         /// Mapea la propiedad por medio de esta instancia.
         /// </summary>
+        /// <param name="parentVm">
+        /// ViewModel padre de este <see cref="IPropertyMapping"/>.
+        /// </param>
         /// <param name="p">
-        /// Propiedad a mapear.
+        /// Propiedad a partir de la cual generar un control.
         /// </param>
         /// <returns>
         /// Un objeto <see cref="IPropertyMapping"/> con controles de
         /// edición configurados para editar la propiedad en una página
         /// auto-generada de CRUD.
         /// </returns>
-        public abstract IPropertyMapping Map(IPropertyDescription p);
+        public abstract IPropertyMapping Map(IEntityViewModel? parentVm, IPropertyDescription p);
 
         /// <summary>
         /// Obtiene un <see cref="PropertyMapping"/> que pueda utilizarse
         /// para generar un control de edición para la propiedad
         /// especificada.
         /// </summary>
+        /// <param name="parentVm">
+        /// ViewModel padre de este <see cref="IPropertyMapping"/>.
+        /// </param>
         /// <param name="property">
         /// Propiedad a partir de la cual generar un control.
         /// </param>
@@ -111,17 +118,16 @@ namespace TheXDS.Proteus.Crud
         /// Un <see cref="PropertyMapping"/> que puede utilizarse para
         /// generar un control de edición para la propiedad especificada.
         /// </returns>
-        public static IPropertyMapping GetMapping(IPropertyDescription property)
+        public static IPropertyMapping GetMapping(IEntityViewModel? parentVm, IPropertyDescription property)
         {
             if (property is null) throw new ArgumentNullException(nameof(property));
-            if (property.Hidden) return null;
-            if (property.ReadOnly) return new ReadOnlyMapping(property);
 
-            PropertyMapper m = null;
+            if (property.ReadOnly || !property.Property.CanWrite) return new ReadOnlyMapping(property);
+            PropertyMapper? m = null;
             lock (_mappers)
                 m = _mappers.FirstOrDefault(p => p.Maps(property));
 
-            return m?.Map(property) ?? new ReadOnlyMapping(property);
+            return m?.Map(parentVm, property) ?? new ReadOnlyMapping(property);
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Input;
 using TheXDS.MCART;
 using TheXDS.MCART.PluginSupport.Legacy;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 using TheXDS.Proteus.Api;
@@ -33,11 +34,11 @@ namespace TheXDS.Proteus.ViewModels
     /// la aplicación.
     /// </summary>
     [DebuggerStepThrough]
-    public class HomeViewModel : PageViewModel, IAlertTarget
+    public class HomeViewModel : PageViewModel, IAlertTarget, IAsyncRefreshable
     {
         public string UserGreeting => Proteus.Interactive ? $"Hola, {Proteus.Session?.Name.Split()[0] ?? "usuario"}." : "Inicio";
         private readonly ObservableCollection<Alerta> _alertas = new ObservableCollection<Alerta>();
-        private DateTime _dayOfCalendar;
+        private DateTime _dayOfCalendar = DateTime.Today;
         private List<Aviso> _avisos;
         private readonly HashSet<ModulePage> _modules;
 
@@ -91,14 +92,25 @@ namespace TheXDS.Proteus.ViewModels
         {
             if (Proteus.Interactive)
             {
-                if (Proteus.Session.GetDescriptor<ModuleSecurityDescriptor>(module.Module.GetType().FullName!) is { } d)
+                if (Proteus.Session!.GetDescriptor<ModuleSecurityDescriptor>(module.Module.GetType().FullName!) is { } d)
                 {
-                    if (!d.Accesible) return false;
+                    //if (!d.Accesible) return false;
+                    return d.Accesible;
                 }
-                return Proteus.Session.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) ?? false;
+                return ChkModuleFlag(Proteus.Session) ?? false;
             }
 
             return true;
+        }
+        private static bool? ChkModuleFlag(IProteusHierachicalCredential? credential)
+        {
+            if (credential is null) return null;
+            if (credential.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) is { } r) return r;
+            foreach (var j in credential.Roles)
+            {
+                if (j.ModuleBehavior?.HasFlag(SecurityBehavior.Visible) is { } q) return q;
+            }
+            return ChkModuleFlag(credential.Parent);
         }
 
         public DateTime DayOfCalendar
@@ -119,7 +131,7 @@ namespace TheXDS.Proteus.ViewModels
             _modules = new HashSet<ModulePage>(App.Modules?.Select(p =>new ModulePage(p)) ?? Array.Empty<ModulePage>());
             Settings.Default.PropertyChanged += Default_PropertyChanged;
             LogoutCommand = new SimpleCommand(OnLogout);
-            PostOpen();
+            BusyOp(RefreshAsync());
         }
 
         private void OnLogout()
@@ -128,22 +140,9 @@ namespace TheXDS.Proteus.ViewModels
                 Proteus.Logout();
         }
 
-        private async void PostOpen()
-        {
-            _avisos = await UserService.AllAvisos.ToListAsync();
-        }
-
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case nameof(Settings.UiModulesHeight):
-                    Notify(nameof(UiModulesHeight));
-                    break;
-                case nameof(Settings.UiModulesWidth):
-                    Notify(nameof(UiModulesWidth));
-                    break;
-            }
+            Notify(e.PropertyName);
         }
 
         public void Alert(string alert)
@@ -188,6 +187,12 @@ namespace TheXDS.Proteus.ViewModels
                 base.Close();
                 Proteus.Logout();
             }
+        }
+
+        public async Task RefreshAsync()
+        {
+            _avisos = await System.Data.Entity.QueryableExtensions.ToListAsync(UserService.AllAvisos);
+            Notify(nameof(Avisos));
         }
 
         public double UiModulesHeight => Settings.Default.UiModulesHeight;

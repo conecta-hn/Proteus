@@ -8,12 +8,13 @@ using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Crud.Mappers.Base;
 using TheXDS.Proteus.Crud.Mappings;
 using TheXDS.MCART.Types;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud.Mappers
 {
     public sealed class DateMapper : PropertyMapper
     {
-        public override IPropertyMapping Map(IPropertyDescription p)
+        public override IPropertyMapping Map(IEntityViewModel parentVm, IPropertyDescription p)
         {
             return new DateTimeUpDownMapping(p);
             if (p is IPropertyDateDescription i)

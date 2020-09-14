@@ -3,8 +3,6 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Base;
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +11,8 @@ using System.Windows.Controls.Primitives;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Crud.Base;
+using TheXDS.Proteus.Models.Base;
 using static TheXDS.MCART.Objects;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
 
@@ -74,7 +74,7 @@ namespace TheXDS.Proteus.Crud
         /// Descripción bajo la cual se han generado el editor y la vista
         /// de detalles de este <see cref="CrudElement"/>.
         /// </summary>
-        internal ICrudDescription Description { get; }
+        public ICrudDescription Description { get; }
 
         /// <summary>
         /// Enumera los controles de edición asociados a este
@@ -91,8 +91,7 @@ namespace TheXDS.Proteus.Crud
         /// Modelo para el cual generar las vistas del editor y de
         /// detalles.
         /// </param>
-        public CrudElement(Type model)
-            :this(GetDescription(model.ResolveCollectionType().ResolveToDefinedType()), model)
+        public CrudElement(Type model, Type? parentEntityType = null) : this(GetDescription(model.ResolveCollectionType().ResolveToDefinedType()), model, parentEntityType)
         {
         }
 
@@ -108,19 +107,19 @@ namespace TheXDS.Proteus.Crud
         /// Modelo para el cual generar las vistas del editor y de
         /// detalles.
         /// </param>
-        public CrudElement(ICrudDescription description, Type model = null)
+        public CrudElement(ICrudDescription description, Type? model = null, Type? parentEntityType = null)
         {
-            Model = model?.ResolveCollectionType().ResolveToDefinedType() ?? description?.DescribedModel;
+            Model = model?.ResolveCollectionType().ResolveToDefinedType() ?? description?.DescribedModel!;
             Description = description;
 
             ViewModel = Description?.BaseViewModelType is null
-                ? typeof(ProteusEntityViewModel<>).MakeGenericType(Model).New<IEntityViewModel>()
+                ? (IEntityViewModel)typeof(ProteusEntityViewModel<>).MakeGenericType(Model!).New()
                 : Description.BaseViewModelType.New<IEntityViewModel>();
 
             if (!(Description is null))
             {
-                Editor = CrudBuilder.BuildEditor(Description, out var editControls);
-                Details = Description.Details ?? CrudBuilder.BuildDetails(Model, Description);
+                Editor = CrudBuilder.BuildEditor(ViewModel, Description, out var editControls, parentEntityType);
+                Details = Description.Details ?? CrudBuilder.BuildDetails(Model!, Description);
                 EditControls = editControls;
             }
             else
@@ -186,18 +185,18 @@ namespace TheXDS.Proteus.Crud
         /// Vista personalizada de detalles a asociar a este
         /// <see cref="CrudElement"/>.
         /// </param>
-        public CrudElement(Type model, FrameworkElement details)
+        public CrudElement(Type model, FrameworkElement? details)
         {
             Model = model;
             Description = GetDescription(model);
 
             ViewModel = Description?.BaseViewModelType is null
-                ? typeof(ProteusEntityViewModel<>).MakeGenericType(model).New<IEntityViewModel>()
-                : Description.BaseViewModelType.New<IEntityViewModel>();
+                ? typeof(ProteusEntityViewModel<>).MakeGenericType(model).New<IEntityViewModel<ModelBase>>()
+                : Description.BaseViewModelType.New<IEntityViewModel<ModelBase>>();
 
             if (!(Description is null))
             {
-                Editor = CrudBuilder.BuildEditor(Description, out var editControls);
+                Editor = CrudBuilder.BuildEditor(ViewModel, Description, out var editControls);
                 EditControls = editControls;
             }
             else
@@ -219,7 +218,7 @@ namespace TheXDS.Proteus.Crud
         {
             foreach (var j in EditControls)
             {
-                j.SetValue(j.Description.PropertySource == PropertyLocation.Model ? ViewModel.Entity : ViewModel);
+                j.SetValue(j.Description.PropertySource == PropertyLocation.Model ? ViewModel.Entity : (object)ViewModel);
                 (ViewModel as INotifyPropertyChangeBase)?.Notify(j.Property.Name);
             }
         }

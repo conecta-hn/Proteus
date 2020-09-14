@@ -5,10 +5,11 @@ Licenciado para uso interno solamente.
 
 using TheXDS.Proteus.Config;
 using TheXDS.MCART.Component;
+using TheXDS.MCART.Exceptions;
 
 namespace TheXDS.Proteus.Cmd
 {
-    public class UseDomainArgument : Argument
+    public class UseDomainArgument : ProteusArgument
     {
         public override ValueKind Kind => ValueKind.Optional;
 
@@ -16,12 +17,17 @@ namespace TheXDS.Proteus.Cmd
 
         public override void Run(CmdLineParser args)
         {
-            Settings.Default.UseLocalDbProvider = false;
-            Settings.Default.UseDomainProvider = true;
-            Settings.Default.UseCustomProvider = false;
             if (!(Value is null) || string.IsNullOrWhiteSpace(Value))
             {
+            
+                Settings.Default.UseLocalDbProvider = false;
+                Settings.Default.UseDomainProvider = true;
+                Settings.Default.UseCustomProvider = false;
                 Settings.Default.DomainProvider = Value;
+            }
+            else
+            {
+                InvalidArg();
             }
         }
     }

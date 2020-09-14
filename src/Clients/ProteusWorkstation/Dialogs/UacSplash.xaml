@@ -28,6 +28,7 @@
                 widgets:ProteusProp.Icon="👤"
                 widgets:ProteusProp.Watermark="Usuario"/>
             <PasswordBox
+                x:Name="TxtPassword"
                 PasswordChanged="PasswordBox_PasswordChanged"/>
             <mcart:StretchyWrapPanel StretchProportionally="False">
                 <Button

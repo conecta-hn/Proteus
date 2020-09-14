@@ -41,15 +41,36 @@ namespace TheXDS.Proteus.Cmd
             Settings.Default.LastLogin = null;
             Settings.Default.ResartRequired = true;
 
-
-            Proteus.CommonReporter?.UpdateStatus($"Iniciando {App.Info.Name} en modo de recuperación...");
-            if (!await Proteus.SafeInit(Settings.Default))
+            try
             {
-                Proteus.DisposeSettings();
-                Settings.Default.Launched = false;
-                Proteus.CommonReporter?.Done();
-                App.UiInvoke(Vm.OpenPage<SettingsPage>);
-                return;
+                Proteus.CommonReporter?.UpdateStatus($"Iniciando {App.Info.Name} en modo de recuperación...");
+                if (!await Proteus.SafeInit(Settings.Default))
+                {
+                    Proteus.DisposeSettings();
+                    Settings.Default.Launched = false;
+                    Proteus.CommonReporter?.Done();
+                    App.UiInvoke(Vm.OpenPage<SettingsPage>);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = $@"Error al inicializar {App.Info.Name} de manera segura. Probablemente su instalación esté corrupta.
+
+Vuelva a instalar la aplicación desde un orígen confiable para obtener una nueva versión. Contacte al soporte técnico para guiarle en el proceso.
+
+Error {ex.GetType()}:
+{ex.Message}";
+                if (Proteus.MessageTarget is { } mt)
+                {
+                    mt.Critical(ex);
+                    mt.Stop(errMsg);
+                }
+                else
+                {
+                    MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                Environment.FailFast(errMsg, ex);
             }
 
             App._modules = new HashSet<UiModule>();
@@ -62,8 +83,7 @@ namespace TheXDS.Proteus.Cmd
             Proteus.CommonReporter?.UpdateStatus("Preparando hooks de aplicación...");
             Proteus.LogoutActions.Add(Vm.Close);
 
-
-            Proteus.CommonReporter?.UpdateStatus("Conectando manejadores de excepciones...");
+            Proteus.CommonReporter?.UpdateStatus("Conectando manejador de excepciones...");
             Hook();
 
             App.UiInvoke(Vm.OpenMainPage);
@@ -80,7 +100,6 @@ namespace TheXDS.Proteus.Cmd
             Application.Current.DispatcherUnhandledException += Dispatcher_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
-
 
         private void Fail(Exception? e)
         {

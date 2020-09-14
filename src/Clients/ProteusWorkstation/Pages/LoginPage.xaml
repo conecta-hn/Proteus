@@ -36,7 +36,7 @@
                 Content="Iniciar sesión"/>
             <Button
                 Command="{Binding CloseCommand, Mode=OneWay}"
-                Content="Cancelar"/>
+                Content="Salir"/>
         </mcart:StretchyWrapPanel>
     </StackPanel>
 </base:ProteusPage>

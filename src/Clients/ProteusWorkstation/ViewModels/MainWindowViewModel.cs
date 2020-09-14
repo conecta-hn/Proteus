@@ -3,6 +3,7 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using TheXDS.MCART.Component;
@@ -65,14 +66,16 @@ namespace TheXDS.Proteus.ViewModels
         {
             get
             {
-                return Settings.Default.WindowUiMode switch
+                var m = Settings.Default.WindowUiMode switch
                 {
                     UiMode.Simple => new SimpleUiMode(),
                     UiMode.Flat => new FlatUiMode(),
                     UiMode.Minimal => new MinimalUiMode(),
                     UiMode.Logging => new LoggingUiMode(this),
-                    _ => null
+                    _ => (FrameworkElement?)null
                 };
+                if (m is { }) m.DataContext = this;
+                return m;
             }
         }
 
@@ -98,15 +101,14 @@ namespace TheXDS.Proteus.ViewModels
             if (!(s is null)) s.PropertyChanged += Default_PropertyChanged;
         }
 
-        private void EarlySetup()
+        private void EarlySetup(params Argument[] additional)
         {
-            //ViewModelFactory.AttributeExclusionList.Add(typeof(ExcludeFromVmFactoryAttribute));
             Proteus.MessageTarget = new MessageSplashTarget();
             Proteus.CommonReporter = this;
             App.RootHost = this;
 
             var args = new CmdLineParser();
-            foreach (var j in args.Present) j.Run(args);
+            foreach (var j in args.Present.Concat(additional)) j.Run(args);
         }
 
         internal static bool _exiting = false;
@@ -117,9 +119,9 @@ namespace TheXDS.Proteus.ViewModels
         /// <returns>
         /// Una tarea que puede utilizarse para monitorear la operación.
         /// </returns>
-        public Task LaunchAsync()
+        public Task LaunchAsync(params Argument[] additional)
         {
-            EarlySetup();
+            EarlySetup(additional);
 
             if (_exiting)
             {
@@ -137,7 +139,13 @@ namespace TheXDS.Proteus.ViewModels
 
         internal async Task PostSettingsInit()
         {
-            Proteus.CommonReporter?.UpdateStatus("Preparando aplicación...");
+            // HACK: esperar a que la ventana sea visible...
+            while (!(Host as MainWindow)?.IsVisible ?? false)
+            {
+                await Task.Delay(100);
+            }
+
+            Proteus.CommonReporter?.UpdateStatus(0, "Preparando aplicación...");
             await Proteus.Init(Settings.Default);
             Proteus.LogoutActions.Add(Logout);
 
@@ -156,7 +164,6 @@ namespace TheXDS.Proteus.ViewModels
             }
             else
             {
-                //App.UiInvoke(OpenMainPage);
                 OpenMainPage();
             }
         }
@@ -173,7 +180,7 @@ namespace TheXDS.Proteus.ViewModels
             });
         }
 
-        private void ViewModel_LoginSuccess(object? sender, LoginSuccessEventArgs e)
+        private async void ViewModel_LoginSuccess(object? sender, LoginSuccessEventArgs e)
         {
             if (Settings.Default.RememberLastLogin)
             {
@@ -183,6 +190,7 @@ namespace TheXDS.Proteus.ViewModels
                 Settings.Default.Save();
             }
             OpenMainPage();
+            await Task.WhenAll(App.Tools.Select(p=>p.PostLoginAsync()));
         }
 
         /// <summary>

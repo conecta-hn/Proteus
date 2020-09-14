@@ -22,19 +22,52 @@ namespace TheXDS.Proteus.Dialogs
         {            
         }
 
-        private UacSplash(IProteusCredential credential)
+        private UacSplash(IProteusCredential? credential)
         {
             InitializeComponent();
-            DataContext = new LoginViewModel(this, new Credential(credential.Id))
+            DataContext = new LoginViewModel(this, new Credential(credential?.Id))
             {
                 Elevation = true,
                 CloseAfterLogin = true
             };
+            Vm.LoginFailed += Vm_LoginFailed;
+        }
+
+        private void Vm_LoginFailed(object? sender, System.EventArgs e)
+        {
+            TxtPassword.Clear();
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             Vm.Password = (sender as PasswordBox)?.SecurePassword;
+        }
+        public static bool Elevate()
+        {
+            return App.UiInvoke(() => { 
+                var uac = new UacSplash();
+                uac.ShowDialog();
+                return uac.Vm.Success;
+            });
+        }
+
+        public static bool Elevate(ref IProteusUserCredential? credential)
+        {
+            var c = credential;
+            
+            var r = App.UiInvoke(() =>
+            {
+                var uac = new UacSplash(c);
+                uac.ShowDialog();
+                if (uac.Vm.Success)
+                {
+                    c = uac.Vm.Result.Logon as IProteusUserCredential;
+                    return true;
+                }
+                return false;
+            });
+            if (r) credential = c;
+            return r;
         }
     }
 }

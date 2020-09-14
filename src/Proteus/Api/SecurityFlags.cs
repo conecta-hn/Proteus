@@ -31,7 +31,7 @@ namespace TheXDS.Proteus.Api
         /// <summary>
         /// Requiere/otorga el permiso para realizar búsquedas de información.
         /// </summary>
-        Search=4,
+        Search = 4,
 
         /// <summary>
         /// Requiere/otorga los permisos estándar de lectura.

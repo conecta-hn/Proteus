@@ -3,8 +3,9 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Component;
+using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.ViewModel;
+using TheXDS.Proteus.Component;
 
 namespace TheXDS.Proteus.ViewModels.Base
 {
@@ -12,7 +13,7 @@ namespace TheXDS.Proteus.ViewModels.Base
     /// Define una serie d emiembros a implementar por un tipo que defina a
     /// un ViewModel de página de Proteus.
     /// </summary>
-    public interface IPageViewModel
+    public interface IPageViewModel : IRefreshable
     {
         /// <summary>
         /// Obtiene un valor que determina si esta página puede ser cerrada.
@@ -32,7 +33,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Obtiene el título de esta página.
         /// </summary>
-        string Title { get; }
+        string Title { get; set; }
 
         /// <summary>
         /// Solicita el cierre de esta página.

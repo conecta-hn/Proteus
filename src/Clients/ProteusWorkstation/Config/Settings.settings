@@ -104,5 +104,20 @@
     <Setting Name="ConfirmLogout" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="UpdateInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="UpdateServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://localhost</Value>
+    </Setting>
+    <Setting Name="UpdateCheck" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="InitErrAction" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="EditorWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">550</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

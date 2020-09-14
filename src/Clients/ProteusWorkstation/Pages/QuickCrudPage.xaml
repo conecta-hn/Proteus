@@ -1,0 +1,29 @@
+﻿<base:ProteusPage
+    x:Class="TheXDS.Proteus.Pages.QuickCrudPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:TheXDS.Proteus.Pages"
+    xmlns:base="clr-namespace:TheXDS.Proteus.Pages.Base"
+    xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
+    xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d">
+    <mcart:BusyContainer IsBusy="{Binding IsBusy}">
+        <DockPanel Style="{StaticResource BotoneraBase}">
+            <UniformGrid
+                Rows="1"
+                DockPanel.Dock="Bottom"
+                HorizontalAlignment="Center" Margin="5">
+                <Button Command="{Binding SaveCommand}" Content="_Guardar"/>
+                <Button Command="{Binding CancelCommand}" Content="_Cancelar"/>
+            </UniformGrid>
+            <ListView
+                DockPanel.Dock="Right"
+                Style="{StaticResource LauncherList}"
+                ItemsSource="{Binding EditingLaunchers}"/>
+            <ScrollViewer Content="{Binding SelectedElement.Editor}"/>
+        </DockPanel>
+    </mcart:BusyContainer>
+</base:ProteusPage>

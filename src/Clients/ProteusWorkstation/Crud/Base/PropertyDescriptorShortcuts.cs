@@ -206,6 +206,19 @@ namespace TheXDS.Proteus.Crud.Base
         {
             return p.Required().Validator(CheckNotEmpty);
         }
+        
+        /// <summary>
+        /// Marca un campo para no ser una cadena nula.
+        /// </summary>
+        /// <param name="p">Propiedad a configurar.</param>
+        /// <returns>
+        /// La misma instancia que <paramref name="p"/>.
+        /// </returns>
+        [Sugar]
+        public static IPropertyDescriptor NotNull(this IPropertyDescriptor p)
+        {
+            return p.Required().Validator(CheckNotNull);
+        }
 
         /// <summary>
         /// Marca una colección para indicar que debe contener al menos un elemento.
@@ -312,6 +325,47 @@ namespace TheXDS.Proteus.Crud.Base
             return p.Range(double.Epsilon, double.MaxValue);
         }
 
+        private static IEnumerable<ValidationError> CheckNotZero(ModelBase m, PropertyInfo prop)
+        {
+            var v = prop.GetValue(m);
+            if (v is null || v.Equals(prop.PropertyType.Default()))
+            {
+                yield return new NullValidationError(prop);
+            }
+        }
+
+        public static IPropertyNumberDescriptor<decimal> NonZero(this IPropertyNumberDescriptor<decimal> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+
+        public static IPropertyNumberDescriptor<short> NonZero(this IPropertyNumberDescriptor<short> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<int> NonZero(this IPropertyNumberDescriptor<int> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<long> NonZero(this IPropertyNumberDescriptor<long> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<float> NonZero(this IPropertyNumberDescriptor<float> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+        public static IPropertyNumberDescriptor<double> NonZero(this IPropertyNumberDescriptor<double> p)
+        {
+            p.Validations(CheckNotZero);
+            return p;
+        }
+
         public static IPropertyDateDescriptor Timestamp(this IPropertyDateDescriptor p)
         {
             p.Default(DateTime.Now).Label("Fecha de creación");
@@ -335,11 +389,11 @@ namespace TheXDS.Proteus.Crud.Base
         [Sugar]
         public static void DescribeAddress<T>(this CrudDescriptor<T> descriptor) where T : ModelBase, IAddressable, new()
         {
-            descriptor.TextProperty(p => p.Address).TextKind(TextKind.Big).Label("Dirección").Icon("🏢").Required().Validator(CheckAddress);
-            descriptor.Property(p => p.City).Label("Cuidad").Icon("🏙").NotEmpty();
-            descriptor.Property(p => p.Province).Label("Provincia/Departamento").Icon("🚩").NotEmpty();
-            descriptor.Property(p => p.Zip).Label("Código Zip").Icon("📮").Nullable();
-            descriptor.Property(p => p.Country).Label("País").Icon("🏳").NotEmpty();
+            descriptor.TextProperty(p => p.Address).TextKind(TextKind.Big).Label("Dirección").Icon("🏢").Required().Validator(CheckAddress).ShowInDetails();
+            descriptor.Property(p => p.City).Label("Cuidad").Icon("🏙").NotEmpty().ShowInDetails();
+            descriptor.Property(p => p.Province).Label("Provincia/Departamento").Icon("🚩").NotEmpty().ShowInDetails();
+            descriptor.Property(p => p.Zip).Label("Código Zip").Icon("📮").Nullable().ShowInDetails();
+            descriptor.Property(p => p.Country).Label("País").Icon("🏳").NotEmpty().ShowInDetails();
         }
 
         /// <summary>
@@ -360,6 +414,7 @@ namespace TheXDS.Proteus.Crud.Base
                 .Creatable()
                 .Label("Correos de contacto")
                 .Icon("📧")
+                .ShowInDetails()
                 .Required();
 
             descriptor.ListProperty(p => p.Phones)
@@ -367,6 +422,7 @@ namespace TheXDS.Proteus.Crud.Base
                 .Creatable()
                 .Label("Teléfonos")
                 .Icon("📞")
+                .ShowInDetails()
                 .Required();
         }
 
@@ -447,6 +503,21 @@ namespace TheXDS.Proteus.Crud.Base
         public static IEnumerable<ValidationError> CheckNotEmpty(ModelBase entity, PropertyInfo prop)
         {
             if (prop.GetValue(entity)?.ToString()?.IsEmpty() ?? true) yield return new ValidationError(prop, "Este campo es requerido.");
+        }
+
+        /// <summary>
+        /// Validación que comprueba que el objeto no sea <see langword="null"/>.
+        /// </summary>
+        /// <param name="entity">Entidad a validar.</param>
+        /// <param name="prop">Referencia a la propiedad a validar.</param>
+        /// <returns>
+        /// Una colección de errores de validación si existen problemas, o
+        /// una colección vacía si la entidad ha superado todas las
+        /// validaciones.
+        /// </returns>
+        public static IEnumerable<ValidationError> CheckNotNull(ModelBase entity, PropertyInfo prop)
+        {
+            if (prop.GetValue(entity) is null) yield return new NullValidationError(prop);
         }
 
         /// <summary>

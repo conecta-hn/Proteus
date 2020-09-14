@@ -4,6 +4,9 @@ Licenciado para uso interno solamente.
 */
 
 using System.Threading.Tasks;
+using TheXDS.MCART.Component;
+using TheXDS.MCART.Security.Password;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
 using TheXDS.Proteus.Component;
 using TheXDS.Proteus.Models;
@@ -15,6 +18,16 @@ namespace TheXDS.Proteus.Seeders
     /// </summary>
     public class ServiceUserSeeder : IAsyncDbSeeder
     {
+        public string GetName => GetType().NameOf();
+
+        public string InformationalVersion
+        {
+            get
+            {
+                return new AssemblyInfo(GetType().Assembly).InformationalVersion.OrNull() ?? GetType().Assembly.GetName().Version?.ToString().OrNull() ?? "1.0.0.0";
+            }
+        }
+
         /// <summary>
         /// Ejecuta la acción de semillado de la base de datos de forma
         /// asíncrona.
@@ -55,8 +68,10 @@ namespace TheXDS.Proteus.Seeders
                 {
                     Id = "root",
                     AllowMultiLogin = true,
-                    Enabled = false,
+                    Enabled = true,
                     Interactive = true,
+                    ScheduledPasswordChange = true,
+                    PasswordHash = PasswordStorage.CreateHash("root".ToSecureString()),
                     Name = "Superusuario"
                 }),
                 Rootified(new User()

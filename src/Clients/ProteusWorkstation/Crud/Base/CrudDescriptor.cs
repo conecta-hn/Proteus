@@ -23,6 +23,7 @@ using TheXDS.MCART.ViewModel;
 using static TheXDS.MCART.ReflectionHelpers;
 using static TheXDS.MCART.Types.Extensions.StringExtensions;
 using static TheXDS.MCART.Types.Extensions.TypeExtensions;
+using System.Threading.Tasks;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -36,7 +37,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// <typeparam name="TViewModel">
     /// Tipo de ViewModel a describir.
     /// </typeparam>
-    public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : class, IEntityViewModel<TModel>
+    public abstract class CrudDescriptor<TModel, TViewModel> : CrudDescriptor<TModel>, IVmCrudDescription where TModel : ModelBase, new() where TViewModel : class, IEntityViewModel<TModel>, new()
     {
         private class SaveActionChain : IVmSaveActionChain<TModel, TViewModel>
         {
@@ -286,7 +287,7 @@ namespace TheXDS.Proteus.Crud.Base
     {
         private class SaveActionChain : ISaveActionChain<T>
         {
-            private readonly HashSet<Action<T, ModelBase>> _actions = new HashSet<Action<T, ModelBase>>();
+            private readonly HashSet<Action<T, ModelBase?>> _actions = new HashSet<Action<T, ModelBase?>>();
 
             public SaveActionChain(Action<T, ModelBase> action)
             {
@@ -297,7 +298,7 @@ namespace TheXDS.Proteus.Crud.Base
                 Then(action);
             }
 
-            public void CallSaves(object obj, ModelBase parent)
+            public void CallSaves(object obj, ModelBase? parent)
             {
                 foreach (var j in _actions)
                     j?.Invoke(obj as T ?? throw new InvalidCastException(), parent);
@@ -371,9 +372,11 @@ namespace TheXDS.Proteus.Crud.Base
         IEnumerable<ICallSaveAction> ICrudDescription.BeforeSave => _beforeSave;
         IEnumerable<ICallSaveAction> ICrudDescription.AfterSave => _afterSave;
 
-        Func<ModelBase, bool> ICrudDescription.CanCreate => _canCreate;
-        Func<ModelBase, bool> ICrudDescription.CanEdit => _canEdit;
-        Func<ModelBase, bool> ICrudDescription.CanDelete => _canDelete;
+        Func<ModelBase, bool>? ICrudDescription.CanCreate => _canCreate;
+
+        Func<ModelBase, bool>? ICrudDescription.CanEdit => _canEdit;
+
+        Func<ModelBase, bool>? ICrudDescription.CanDelete => _canDelete;
 
         /// <summary>
         /// Enumera una serie de acciones personalizadas definidas para 
@@ -385,7 +388,7 @@ namespace TheXDS.Proteus.Crud.Base
         ///  Enumera las columnas a mostrar cuando el modelo sea presentado en 
         ///  un control <see cref="ListView"/>.
         /// </summary>
-        IEnumerable<Column> ICrudDescription.ListColumns
+        IEnumerable<IColumn> ICrudDescription.ListColumns
         {
             get
             {
@@ -546,11 +549,65 @@ namespace TheXDS.Proteus.Crud.Base
         /// <param name="action">
         /// Acción a ejecutar.
         /// </param>
+        public ISaveActionChain<T> BeforeSave(Action action)
+        {
+            return BeforeSave((_, m) => action?.Invoke());
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar previamente a guardar una entidad.
+        /// </summary>
+        /// <param name="action">
+        /// Acción a ejecutar.
+        /// </param>
         protected ISaveActionChain<T> BeforeSave<TParent>(Action<T, TParent?> action) where TParent : ModelBase
         {
             return BeforeSave((m, p) => action?.Invoke(m, p as TParent));
         }
 
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> BeforeSave(Func<Task> task)
+        {
+            return BeforeSave(async (_, m) => await task.Invoke());
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> BeforeSave(Func<T, Task> task)
+        {
+            return BeforeSave(async (m, _) => await task.Invoke(m));
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> BeforeSave<TParent>(Func<T, TParent?, Task> task) where TParent : ModelBase
+        {
+            return BeforeSave(async (m, p) => await task.Invoke(m, p as TParent));
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> BeforeSave(Func<T, ModelBase?, Task> task)
+        {
+            return BeforeSave(async (m, p) => await task.Invoke(m, p as ModelBase));
+        }
 
         /// <summary>
         /// Define una acción a ejecutar luego de guardar una entidad.
@@ -580,9 +637,53 @@ namespace TheXDS.Proteus.Crud.Base
         /// <param name="action">
         /// Acción a ejecutar.
         /// </param>
-        public ISaveActionChain<T> AfterSave<TParent>(Action<T, TParent> action) where TParent : ModelBase
+        public ISaveActionChain<T> AfterSave(Action action)
         {
-            return AfterSave((m, p) => action?.Invoke(m, (TParent)p));
+            return AfterSave((_, m) => action?.Invoke());
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> AfterSave(Func<Task> task)
+        {
+            return AfterSave(async (_, m) => await task.Invoke());
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> AfterSave(Func<T, Task> task)
+        {
+            return AfterSave(async (m, _) => await task.Invoke(m));
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="task">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> AfterSave<TParent>(Func<T, TParent?, Task> task) where TParent : ModelBase
+        {
+            return AfterSave(async (m, p) => await task.Invoke(m, p as TParent));
+        }
+
+        /// <summary>
+        /// Define una acción a ejecutar luego de a guardar una entidad.
+        /// </summary>
+        /// <param name="action">
+        /// Acción a ejecutar.
+        /// </param>
+        public ISaveActionChain<T> AfterSave<TParent>(Action<T, TParent?> action) where TParent : ModelBase
+        {
+            return AfterSave((m, p) => action?.Invoke(m, p as TParent));
         }
 
         /// <summary>
@@ -625,7 +726,6 @@ namespace TheXDS.Proteus.Crud.Base
             CanCreate(_ => value);
         }
 
-
         /// <summary>
         /// Configura el descriptor para establecer un valor duro que
         /// determina la posibilidad de editar entidades.
@@ -650,9 +750,9 @@ namespace TheXDS.Proteus.Crud.Base
             CanDelete(_ => value);
         }
 
-        private void SetCanAction(ref Func<ModelBase, bool> action, Func<T, bool> check)
+        private void SetCanAction(ref Func<ModelBase, bool>? action, Func<T, bool> check)
         {
-            if (!(action is null)) throw new InvalidOperationException("Ya se ha configurado una comprobación para esta acción.");
+            //if (!(action is null)) throw new InvalidOperationException("Ya se ha configurado una comprobación para esta acción.");
             action = m => check(m as T ?? throw new InvalidCastException());
         }
 
@@ -871,7 +971,6 @@ namespace TheXDS.Proteus.Crud.Base
             if (action is null) throw new ArgumentNullException(nameof(action));
             _customActions.Add(label, (m, n) => action?.Invoke(m as T ?? throw new InvalidCastException(), n));
         }
-
 
         /// <summary>
         /// Define las columnas a mostrar en los controles 

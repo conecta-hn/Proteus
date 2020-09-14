@@ -9,29 +9,28 @@ using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Cmd
 {
-    public class UniThreadArgument : Argument
+
+    public class UniThreadArgument : ProteusArgument
     {
         public override string LongName => "UniThread";
         public override char? ShortName => 'u';
-        public override string Summary => "Establece la afinidad de CPU de esta aplicación para utilizar únicamente el último procesador lógico del sistema.";
+        public override string Summary => "Establece la afinidad de CPU de esta aplicación para utilizar únicamente un procesador lógico del sistema.";
+        public override ValueKind Kind => ValueKind.Optional;
         public override void Run(CmdLineParser args)
         {
             try
             {
-                Process.GetCurrentProcess().ProcessorAffinity = (IntPtr)(1 << (Environment.ProcessorCount - 1));
-                var m = $"Modo de afinidad uni-proceso. Utilizando procesador lógico {Environment.ProcessorCount - 1}";
-                if (Proteus.AlertTarget is null)
+                if (!int.TryParse(Value ?? "0", out var cpu) || cpu >= Environment.ProcessorCount)
                 {
-                    Proteus.MessageTarget?.Info(m);
+                    InvalidArg();
+                    return;
                 }
-                else
-                {
-                    Proteus.AlertTarget.Alert(m);
-                }
+                Process.GetCurrentProcess().ProcessorAffinity = (IntPtr)(1 << cpu);
+                Show(p => p.Info, "Modo de afinidad uni-proceso", $"Se ha iniciado la aplicación en modo de afinidad uni-proceso. Utilizando procesador lógico {cpu}");
             }
             catch (Exception ex)
             {
-                Proteus.MessageTarget?.Warning($"No se pudo establecer la afinidad del proceso: {ex.Message}");
+                ShowWarning(ex);
             }
         }
     }

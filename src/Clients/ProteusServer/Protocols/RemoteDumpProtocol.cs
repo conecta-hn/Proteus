@@ -8,15 +8,17 @@ using System;
 using System.IO;
 using TheXDS.MCART.Attributes;
 using TheXDS.MCART.Events;
-using TheXDS.MCART.Networking;
-using TheXDS.MCART.Networking.Server;
+using TheXDS.MCART.Networking.Legacy;
+using TheXDS.MCART.Networking.Legacy.Server;
 using static TheXDS.MCART.Types.Extensions.EnumExtensions;
 
 namespace TheXDS.Proteus.Protocols
 {
     [Port(51201), Name("Servicio de terminal de salida remota")]
-    public class RemoteDumpProtocol : ManagedCommandProtocol<Client<bool>, DumpCommand, DumpResponse>, IProteusProtocol, IMessageTarget, IStatusReporter
+    public class RemoteDumpProtocol : ManagedCommandProtocol<Client<bool>, DumpCommand, DumpResponse>, IProteusProtocol<Client<bool>>, IMessageTarget, IStatusReporter
     {
+        public bool IsBusy { get; private set; }
+
         static RemoteDumpProtocol()
         {
             ScanTypeOnCtor = false;
@@ -89,21 +91,21 @@ namespace TheXDS.Proteus.Protocols
 
         public override bool ClientWelcome(Client<bool> client)
         {
-            Proteus.MessageTarget?.Info($"Se ha adjuntado una terminal remota desde {client.EndPoint.ToString()}");
+            Proteus.MessageTarget?.Info($"Se ha adjuntado una terminal remota desde {client.EndPoint}");
             return base.ClientWelcome(client);
         }
         public override void ClientBye(Client<bool> client)
         {
-            Proteus.MessageTarget?.Info($"Se ha desconectado una terminal remota desde {client.EndPoint.ToString()}");
+            Proteus.MessageTarget?.Info($"Se ha desconectado una terminal remota desde {client.EndPoint}");
             base.ClientBye(client);
         }
         public override void ClientDisconnect(Client<bool> client)
         {
-            Proteus.MessageTarget?.Info($"Se ha desconectado una terminal remota desde {client.EndPoint.ToString()}");
+            Proteus.MessageTarget?.Info($"Se ha desconectado una terminal remota desde {client.EndPoint}");
             base.ClientDisconnect(client);
         }
 
-        private void OnServerError(object sender, ExceptionEventArgs e)
+        private void OnServerError(object? sender, ExceptionEventArgs e)
         {
             try
             {
@@ -112,7 +114,7 @@ namespace TheXDS.Proteus.Protocols
             catch { }
         }
 
-        public Server BuildServer() => new Server<Client<bool>>(this);
+        public Server<Client<bool>> BuildServer() => new Server<Client<bool>>(this);
 
         public void Critical(string message)
         {
@@ -126,11 +128,13 @@ namespace TheXDS.Proteus.Protocols
 
         public void Done()
         {
+            IsBusy = false;
             Done("Operación finalizada correctamente.");
         }
 
         public void Done(string text)
         {
+            IsBusy = false;
             Send(DumpResponse.Done, text);
         }
 
@@ -161,16 +165,19 @@ namespace TheXDS.Proteus.Protocols
 
         public void UpdateStatus(double progress)
         {
+            IsBusy = true;
             Rprt(progress, "Realizando operación secundaria");
         }
 
         public void UpdateStatus(double progress, string text)
         {
+            IsBusy = true;
             Rprt(progress, text);
         }
 
         public void UpdateStatus(string text)
         {
+            IsBusy = true;
             Rprt(double.NaN, text);
         }
 

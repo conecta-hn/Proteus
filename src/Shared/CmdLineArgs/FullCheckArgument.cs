@@ -19,5 +19,4 @@ namespace TheXDS.Proteus.Cmd
             Settings.Default.InitMode = Proteus.InitMode.Full;
         }
     }
-
 }

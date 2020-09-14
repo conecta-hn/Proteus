@@ -9,14 +9,23 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Controls.Primitives;
+using TheXDS.Proteus.Component;
 
 namespace TheXDS.Proteus.Pages.Base
 {
     public abstract class ProteusPage : TabItem, IPage
     {
-        protected PageViewModel ViewModel
+        private class NullPageViewModel : PageViewModel
         {
-            get => DataContext as PageViewModel;
+            internal NullPageViewModel(ICloseable host) : base(host)
+            {
+                Title = "⚠ Página sin inicializar";
+            }
+        }
+
+        protected IPageViewModel ViewModel
+        {
+            get => DataContext as IPageViewModel;
             set
             {
                 DataContext = value;

@@ -57,7 +57,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos creables desde este <see cref="ListEditorViewModel"/>.
         /// </param>
-        public ListEditorViewModel(ICollection<ModelBase>? selectionSource, ICollection<ModelBase> collection, params Type[] models) : base(collection, models, nameof(Source))
+        public ListEditorViewModel(Type parentModelType, ICollection<ModelBase>? selectionSource, ICollection<ModelBase> collection, Type[] models) : base(parentModelType, collection, models, nameof(Source))
         {
             SelectionSource = selectionSource;
             AddCommand = new SimpleCommand(OnSelect);
@@ -115,7 +115,7 @@ namespace TheXDS.Proteus.ViewModels
         /// <param name="models">
         /// Modelos de datos para los cuales generar el control.
         /// </param>
-        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Source?.ToList(), new List<ModelBase>(), models)
+        public ListEditorViewModel(IListPropertyDescription description, params Type[] models) : this(description.Property.DeclaringType, AppInternal.GetSource(description.Source), new List<ModelBase>(), models)
         {
             CanAdd = description.Creatable;
             if (CanSelect = description.Selectable) ClearSearch();
@@ -136,7 +136,7 @@ namespace TheXDS.Proteus.ViewModels
             get
             {
                 if (ActiveModel is null) return null;
-                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns is { } c)) return null;
+                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns.OfType<Column>() is { } c)) return null;
                 var v = new GridView();
                 foreach (var j in c)
                 {
@@ -150,7 +150,7 @@ namespace TheXDS.Proteus.ViewModels
         private void ListViewSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(Selector is ListView lv)) return;
-            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault();
+            Selection = lv.SelectedItems.ToGeneric().FirstOrDefault() as ModelBase;
         }
 
         /// <summary>
@@ -420,8 +420,8 @@ namespace TheXDS.Proteus.ViewModels
         /// </summary>
         public async void ClearSearch()
         {
-            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);
-            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;
+            var q = Proteus.Infer(ActiveModel!)!.All(ActiveModel!);            
+            Results = q.Count() <= Settings.Default.RowLimit ? CollectionViewSource.GetDefaultView(await q.ToListAsync()) : null;            
             SearchQuery = null;
         }
 
@@ -451,10 +451,12 @@ namespace TheXDS.Proteus.ViewModels
         {
             IsSearching = true;
             var l = (await Internal.Query(SearchQuery!, ActiveModel!).ToListAsync()).Cast<ModelBase>().ToList();
-            foreach(var j in Objects.FindAllObjects<IModelLocalSearchFilter>())
+            var ll = new List<ModelBase>();
+            foreach (var j in Objects.FindAllObjects<IModelLocalSearchFilter>().Where(p => p.UsableFor(ActiveModel!)))
             {
-                l = j.Filter(l, SearchQuery!);
+                ll = ll.Concat(j.Filter(l, SearchQuery!)).ToList();
             }
+            l = ll.Distinct().ToList();
             Results = CollectionViewSource.GetDefaultView(l);
             IsSearching = false;
             WillSearch = false;

@@ -18,12 +18,12 @@ namespace TheXDS.Proteus.Component
         /// <summary>
         /// Nombre del usuario.
         /// </summary>
-        public string Username { get; }
+        public string? Username { get; }
 
         /// <summary>
         /// Contraseña del usuario.
         /// </summary>
-        public SecureString Password { get; }
+        public SecureString? Password { get; }
 
         /// <summary>
         /// Inicializa una nueva instancia de la estructura
@@ -31,7 +31,7 @@ namespace TheXDS.Proteus.Component
         /// </summary>
         /// <param name="user">Nombre de usuario.</param>
         /// <param name="pass">Contraseña.</param>
-        public Credential(string user, SecureString pass)
+        public Credential(string user, SecureString? pass)
         {
             Username = user;
             Password = pass;
@@ -42,7 +42,7 @@ namespace TheXDS.Proteus.Component
         /// <see cref="Credential"/> sin contraseña.
         /// </summary>
         /// <param name="user">Nombre de usuario.</param>
-        public Credential(string user)
+        public Credential(string? user)
         {
             Username = user;
             Password = null;
@@ -55,7 +55,7 @@ namespace TheXDS.Proteus.Component
         public static Credential FromSettings()
         {
             var u = Settings.Default.LastLogin;
-            SecureString p = null;
+            SecureString? p = null;
             if (Settings.Default.RememberPassword)
             {
                 p = Settings.Default.SavedPassword.ToSecureString();
@@ -63,5 +63,4 @@ namespace TheXDS.Proteus.Component
             return new Credential(u, p);
         }
     }
-
 }

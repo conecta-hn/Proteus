@@ -13,8 +13,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using TheXDS.MCART.Attributes;
-using TheXDS.MCART.Networking;
-using TheXDS.MCART.Networking.Client;
+using TheXDS.MCART.Networking.Legacy;
+using TheXDS.MCART.Networking.Legacy.Client;
 using TheXDS.MCART.Types.Base;
 using TheXDS.MCART.Types.Extensions;
 
@@ -259,8 +259,12 @@ namespace TheXDS.Proteus.Protocols
         /// <typeparam name="T">Tipo del ViewModel a actualizar.</typeparam>
         public void RefreshViewModel<T>()
         {
+            RefreshViewModel(typeof(T));
+        }
+        public void RefreshViewModel(Type t)
+        {
             if (!IsAlive) return;
-            Send(Command.ViewModelRefresh, typeof(T).ResolveToDefinedType().Name);
+            Send(Command.ViewModelRefresh, t.ResolveToDefinedType()!.Name);
         }
 
         /// <summary>

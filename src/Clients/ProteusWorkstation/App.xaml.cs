@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.Comparison;
 using TheXDS.MCART.Component;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
@@ -59,6 +60,7 @@ namespace TheXDS.Proteus
             _kickStarters.Remove(_fallbackKickStarter);
 
             foreach (var j in _modules) j.AfterInitialization();
+            await Task.WhenAll(_tools.Select(p => p.PostLoadAsync()));
         }
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace TheXDS.Proteus
         /// <returns>El resultado de la función.</returns>
         public static T UiInvoke<T>(Func<T> action)
         {
-            return !(Current is null) ? Current.Dispatcher.Invoke(action) : (default);
+            return !(Current is null) ? Current.Dispatcher.Invoke(action) : default!;
         }
 
         /// <summary>
@@ -154,19 +156,6 @@ namespace TheXDS.Proteus
             return GetTypes<T>(true).Select(t => TypeExtensions.New<T>(t, false, Array.Empty<object>())).NotNull().Concat(await new PluginLoader().LoadEverythingAsync<T>(Settings.Default.WsPluginsDir)).Distinct(new TypeComparer<T>());
         }
 
-        private class TypeComparer<T> : IEqualityComparer<T>
-        {
-            public bool Equals(T x, T y)
-            {
-                return x!.GetType() == y!.GetType();
-            }
-
-            public int GetHashCode(T obj)
-            {
-                return obj!.GetType().GetHashCode();
-            }
-        }
-
         /// <summary>
         /// Obtiene el objeto registrado como huésped raíz de páginas para
         /// la aplicación.
@@ -184,6 +173,14 @@ namespace TheXDS.Proteus
                 if (!j.Patches(o)) continue;
                 j.Apply(o);
             }
+        }
+
+        public static List<Action> BeforeClose { get; } = new List<Action>();
+
+        public static void Close()
+        {
+            foreach (var j in BeforeClose) j?.Invoke();
+            Current.Shutdown();
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using TheXDS.MCART;
 using TheXDS.MCART.Events;
-using TheXDS.MCART.Networking.Server;
+using TheXDS.MCART.Networking.Legacy.Server;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Extensions;
 using static TheXDS.MCART.Types.Extensions.EnumerableExtensions;
@@ -35,7 +35,7 @@ namespace TheXDS.Proteus.Services
         public void StartService() => OnStart(Array.Empty<string>());
 
         internal readonly HashSet<IProteusProtocolPlugin> _plugins = new HashSet<IProteusProtocolPlugin>();
-        public readonly HashSet<Server> RunningServers = new HashSet<Server>();
+        public readonly HashSet<IServer> RunningServers = new HashSet<IServer>();
         private readonly HashSet<IDaemon> _daemons = new HashSet<IDaemon>();
         private readonly System.Timers.Timer _timer = new System.Timers.Timer() { AutoReset = false };
 
@@ -183,18 +183,15 @@ namespace TheXDS.Proteus.Services
 
         private void Srv_ClientRejected(object? sender, ValueEventArgs<Client?> e)
         {
-            var srv = sender as Server ?? throw new TamperException();
-            Proteus.MessageTarget?.Warning($"El cliente {e.Value?.EndPoint?.ToString() ?? "desconocido"} ha sido rechazado por '{srv.Protocol.GetType().NameOf()}'.");
+            Proteus.MessageTarget?.Warning($"El cliente {e.Value?.EndPoint?.ToString() ?? "desconocido"} ha sido rechazado por '{sender}'.");
         }
         private void Srv_ClientConnected(object? sender, ValueEventArgs<Client> e)
         {
-            var srv = sender as Server ?? throw new TamperException();
-            Proteus.MessageTarget?.Show($"'{srv.Protocol.GetType().NameOf()}': Conexión entrante desde {e.Value.EndPoint}");
+            Proteus.MessageTarget?.Show($"'{sender}': Conexión entrante desde {e.Value.EndPoint}");
         }
         private void Srv_ServerStopped(object? sender, ValueEventArgs<DateTime> e)
         {
-            var srv = sender as Server ?? throw new TamperException();
-            Proteus.MessageTarget?.Warning($"'{srv.Protocol.GetType().NameOf()}' se ha detenido.");
+            Proteus.MessageTarget?.Warning($"'{sender}' se ha detenido.");
         }
         private void Srv_ServerStarted(object? sender, ValueEventArgs<DateTime> e)
         {
@@ -255,7 +252,7 @@ namespace TheXDS.Proteus.Services
         }
 
 
-        private IEnumerable<Server> BuildServers()
+        private IEnumerable<IServer> BuildServers()
         {
             return Objects.FindAllObjects<IProteusProtocol>().Select(p => p.BuildServer())
                 .Concat(_plugins.Select(p => p.BuildServer()));

@@ -17,7 +17,7 @@ namespace TheXDS.Proteus.Resources
     /// </summary>
     public static class Images
     {
-        private static readonly StringUnpacker _unpacker = new StringUnpacker(typeof(Images).Assembly, typeof(Images).FullName);
+        private static readonly StringUnpacker _unpacker = new StringUnpacker(typeof(Images).Assembly, typeof(Images).FullName!);
 
         /// <summary>
         /// Obtiene una nueva instancia del logo de Laboratorios Médicos sin Texto.
@@ -43,9 +43,6 @@ namespace TheXDS.Proteus.Resources
 
         private static UIElement GetXamlIcon([CallerMemberName] string id = null!)
         {
-            //var p = _unpacker.Unpack($"test.xaml", new NullGetter());
-            //using var sr = new StringReader(p);
-
             using var sr = new StringReader(_unpacker.Unpack($"{id}.xaml", new NullGetter()));
             var xx = XmlReader.Create(sr);
             try

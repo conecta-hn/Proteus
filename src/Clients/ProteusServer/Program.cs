@@ -11,7 +11,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
-using TheXDS.MCART.Networking.Server;
+using TheXDS.MCART.Networking.Legacy.Server;
 
 namespace TheXDS.Proteus
 {
@@ -23,7 +23,7 @@ namespace TheXDS.Proteus
         /// <summary>
         /// Enumera a todos los servidores corriendo en el Host.
         /// </summary>
-        public static IEnumerable<Server> Servers => _service.RunningServers;
+        public static IEnumerable<IServer> Servers => _service.RunningServers;
 
         internal static readonly ProteusService _service = new ProteusService();
 
@@ -36,7 +36,7 @@ namespace TheXDS.Proteus
         /// <returns>
         /// Un <see cref="Server"/> que esté ejecutando el protocolo especificado.
         /// </returns>
-        public static T ServerOf<T>() where T : class, IProtocol
+        public static T? ServerOf<T>() where T : class, IProtocol
         {
             return Servers.FirstOrDefault(s => s.Protocol.GetType() == typeof(T))?.Protocol as T;
         }

@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -31,7 +32,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Contiene una lista personalizada de columnas a mostrar.
         /// </summary>
-        protected List<Column> CustomColumns { get; } = new List<Column>();
+        protected List<IColumn> CustomColumns { get; } = new List<IColumn>();
 
         /// <summary>
         /// Obtiene al elemento selector de la ventana.
@@ -48,7 +49,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             get
             {
                 var v = new GridView();
-                foreach (var j in CrudElement.GetDescription(Models.First())?.ListColumns ?? CustomColumns)
+                foreach (var j in (CrudElement.GetDescription(Models.First())?.ListColumns ?? CustomColumns).OfType<Column>())
                 {
                     v.Columns.Add(j);
                 }
@@ -60,13 +61,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Inicializa una nueva instancia de la clase
         /// <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
+        /// <param name="parentModel">
+        /// Modelo padre de la propiedad para la cual se está generando el
+        /// Crud.
+        /// </param>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
         /// <param name="csource">
         /// Propiedad de origen a utilizar para el selector de entidades.
         /// </param>
-        protected CrudCollectionViewModelBase(ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
+        protected CrudCollectionViewModelBase(Type? parentModel, ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
         {
+            ParentModel = parentModel;
             if (elements.Count() == 1)
             {
                 Selector = new ListView();
@@ -78,11 +84,6 @@ namespace TheXDS.Proteus.ViewModels.Base
                 // HACK: TreeView es una perra
                 var bg = ((Brush)Application.Current.TryFindResource("SystemAltHighColorBrush")).Clone();
                 bg.Opacity = 0.5;
-
-                foreach (var j in elements)
-                {
-                    Elements.Add(new CrudElement(j));
-                }
 
                 Selector = new TreeView()
                 {
@@ -101,7 +102,7 @@ namespace TheXDS.Proteus.ViewModels.Base
 
         private void TreeViewSelector_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            Selection = ((TreeView)Selector).SelectedItem;
+            Selection = ((TreeView)Selector).SelectedItem as ModelBase;
         }
 
         /// <summary>
@@ -149,8 +150,9 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Ejecuta acciones posteriores al guardado de una entidad en la base de datos.
         /// </summary>
-        protected override void AfterSave()
+        protected override async Task PostSave(ModelBase e)
         {
+            await base.PostSave(e);
             Notify(nameof(Source));
         }
     }

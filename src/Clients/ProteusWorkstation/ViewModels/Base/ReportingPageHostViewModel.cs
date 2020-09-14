@@ -13,19 +13,24 @@ namespace TheXDS.Proteus.ViewModels.Base
         {
         }
 
-        private string _status;
-        private double _progress = double.NaN;
+        private string? _status;
+        private double _progress = 100;// double.NaN;
         public double Progress
         {
             get => _progress;
-            private set
+            set
             {
-                if (Change(ref _progress, value))
-                    OnPropertyChanged(nameof(IndeterminateProgress));
+                _progress = value;
+                Notify(nameof(Progress));                
+                Notify(nameof(IndeterminateProgress));
             }
         }
-        public string Status { get => _status; private set => Change(ref _status, value); }
-        public bool IndeterminateProgress => double.IsNaN(Progress);
+        public string? Status 
+        { 
+            get => _status;
+            private set => Change(ref _status, value);
+        }
+        public bool IndeterminateProgress => double.IsNaN(_progress);
         public void Done()
         {
             Status = null;

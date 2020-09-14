@@ -32,7 +32,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <see cref="DbBoundCrudViewModel"/>.
         /// </summary>
         /// <param name="model">Modelo único de datos.</param>
-        public DbBoundCrudViewModel(Type model) : base(TryGet(model), new[] { model })
+        public DbBoundCrudViewModel(Type model) : base(null, TryGet(model), new[] { model })
         {
             _source = Infer(model);
         }
@@ -59,7 +59,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="source">Origen de datos a utilizar.</param>
         /// <param name="models">Modelos asociados de datos.</param>
-        public DbBoundCrudViewModel(IQueryable<ModelBase> source, params Type[] models) : base(source.ToList(), models)
+        public DbBoundCrudViewModel(IQueryable<ModelBase> source, params Type[] models) : base(null, source.ToList(), models)
         {
             _source = source;
         }

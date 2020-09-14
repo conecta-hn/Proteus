@@ -3,21 +3,24 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Models.Base;
 using System;
 using System.Collections.Generic;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Models
 {
+    /// <summary>
+    /// Representa una alerta opcionalmente interactiva en el sistema.
+    /// </summary>
     public partial class Alerta : ITitledText
     {
         public Alerta() : this("Alerta", null, null, null, null) { }
         public Alerta(string header) : this(header, null, null, null, null) { }
-        public Alerta(string header, string body) : this(header, body, null, null, null) { }
-        public Alerta(string header, Action<Alerta> interaction) : this(header, interaction, null) { }
-        public Alerta(string header, Action<Alerta> interaction, object morInfo) : this(header, null, interaction, null, morInfo) { }
-        public Alerta(string header,string body, Action<Alerta> interaction, ICollection<Alerta> parent) : this(header, body, interaction, parent, null) { }
-        public Alerta(string header,string body, Action<Alerta> interaction, ICollection<Alerta> parent, object morInfo)
+        public Alerta(string header, string? body) : this(header, body, null, null, null) { }
+        public Alerta(string header, Action<Alerta>? interaction) : this(header, interaction, null) { }
+        public Alerta(string header, Action<Alerta>? interaction, object? morInfo) : this(header, null, interaction, null, morInfo) { }
+        public Alerta(string header, string? body, Action<Alerta>? interaction, ICollection<Alerta>? parent) : this(header, body, interaction, parent, null) { }
+        public Alerta(string header, string? body, Action<Alerta>? interaction, ICollection<Alerta>? parent, object? morInfo)
         {
             Header = header;
             Body = $"Alerta generada el {Timestamp}\n\n{body}";
@@ -44,17 +47,23 @@ namespace TheXDS.Proteus.Models
         /// <summary>
         /// Datos especiales a incluir en la alerta.
         /// </summary>
-        public object MorInfo { get; }
+        public object? MorInfo { get; }
 
         /// <summary>
         /// Acción a ejecutar en la alerta.
         /// </summary>
-        public Action<Alerta> Action { get; }
+        public Action<Alerta>? Action { get; }
 
+        /// <summary>
+        /// Obtiene un valor que indica si esta alerta contiene una interacción.
+        /// </summary>
         public bool HasInteraction => !(Action is null);
 
-        internal ICollection<Alerta> Parent { get; }
+        internal ICollection<Alerta>? Parent { get; }
 
+        /// <summary>
+        /// Quita la alerta del listado de alertas desplegadas.
+        /// </summary>
         public void Dismiss() => Parent?.Remove(this);
     }
 }

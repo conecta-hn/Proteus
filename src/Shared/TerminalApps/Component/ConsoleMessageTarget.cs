@@ -5,14 +5,18 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Reflection;
+using TheXDS.MCART.Types.Extensions;
 
 namespace TheXDS.Proteus.Component
 {
     public class ConsoleMessageTarget : IMessageTarget, IStatusReporter
     {
         private static readonly object _lockObj = new object();
-
+        
         private const ConsoleColor _default = ConsoleColor.Gray;
+
+        public bool IsBusy { get; private set; }
+
         public void Critical(string message)
         {
             lock (_lockObj)
@@ -44,13 +48,14 @@ namespace TheXDS.Proteus.Component
                     foreach (var j in aex.InnerExceptions) Critical(j);
                     break;
                 case ReflectionTypeLoadException rex:
-                    foreach (var j in rex.LoaderExceptions) Critical(j);
+                    foreach (var j in rex.LoaderExceptions.NotNull()) Critical(j);
                     break;
             }
         }
 
         public void Done()
         {
+            IsBusy = false;
             lock (_lockObj)
             {
                 Console.ForegroundColor = _default;
@@ -59,6 +64,7 @@ namespace TheXDS.Proteus.Component
 
         public void Done(string text)
         {
+            IsBusy = false;
             lock (_lockObj)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -130,6 +136,7 @@ namespace TheXDS.Proteus.Component
 
         public void UpdateStatus(double progress, string text)
         {
+            IsBusy = true;
             lock (_lockObj)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -140,6 +147,7 @@ namespace TheXDS.Proteus.Component
 
         public void UpdateStatus(string text)
         {
+            IsBusy = true;
             lock (_lockObj)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -150,6 +158,7 @@ namespace TheXDS.Proteus.Component
 
         public void Warning(string message)
         {
+            IsBusy = true;
             lock (_lockObj)
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow;

@@ -5,8 +5,10 @@ Licenciado para uso interno solamente.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Widgets;
 
@@ -102,6 +104,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         IEnumerable<Launcher>? CreateCommands { get; }
 
         /// <summary>
+        /// Obtiene un <see cref="CrudElement"/> con información sobre los
+        /// componentes relacionados al modelo de datos de la entidad
+        /// seleccionada.
+        /// </summary>
+        CrudElement? SelectedElement { get; }
+
+        /// <summary>
+        /// Obtiene o establece al elemento seleccionado.
+        /// </summary>
+        ModelBase? Selection { get; set; }
+
+        /// <summary>
         /// Determina si es posible ejecutar el comando para la creación de
         /// nuevas entidades.
         /// </summary>
@@ -139,5 +153,22 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// </summary>
         /// <param name="t"></param>
         void OnCreate(Type? t);
+
+        /// <summary>
+        /// Ejecuta una operación colocando a este 
+        /// <see cref="ICrudEditingViewModel"/> en estado de ocupado.
+        /// </summary>
+        /// <param name="action">Tarea a ejecutar.</param>
+        void BusyDo(Task action);
+        
+        /// <summary>
+        /// Crea una nueva entidad de datos basada en una entidad con
+        /// información previamente establecida.
+        /// </summary>
+        /// <param name="entity">
+        /// Entidad con información prestablecida a utilizar como la nueva
+        /// instancia de entidad creada.
+        /// </param>
+        void CreateNewFrom(ModelBase entity);
     }
 }

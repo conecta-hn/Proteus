@@ -3,15 +3,15 @@ Copyright © 2017-2020 César Andrés Morgan
 Licenciado para uso interno solamente.
 */
 
-using TheXDS.Proteus.Crud.Mappings;
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System;
-using System.Reflection;
-using System.Linq;
-using TheXDS.Proteus.Models.Base;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Crud.Mappings;
+using TheXDS.Proteus.Models.Base;
 
 namespace TheXDS.Proteus.Crud.Base
 {
@@ -19,7 +19,7 @@ namespace TheXDS.Proteus.Crud.Base
     /// Representa una columna de tabla que puede ser convertira a diversos
     /// objetos.
     /// </summary>
-    public class Column
+    public class Column : IColumn
     {
         private static GridLength DefaultGrid => new GridLength(1, GridUnitType.Auto);
 
@@ -46,7 +46,7 @@ namespace TheXDS.Proteus.Crud.Base
         public GridLength Width { get; }
 
         public Column(string path) : this(path, path, DefaultGrid) { }
-        public Column(string path, GridLength width):this(path,path,width) { }
+        public Column(string path, GridLength width) : this(path, path, width) { }
         public Column(string header, string path) : this(header, path, DefaultGrid) { }
         public Column(string header, string path, GridLength width)
         {
@@ -84,7 +84,7 @@ namespace TheXDS.Proteus.Crud.Base
         public static implicit operator Column(string path) => new Column(path, path);
         public static implicit operator string(Column column) => column.Header;
         public static implicit operator GridLength(Column column) => column.Width;
-        public static implicit operator double(Column column)=> column.Width.IsAbsolute ? column.Width.Value : double.NaN;
+        public static implicit operator double(Column column) => column.Width.IsAbsolute ? column.Width.Value : double.NaN;
         public static implicit operator GridViewColumn(Column column)
         {
             var b = new Binding(column.Path)

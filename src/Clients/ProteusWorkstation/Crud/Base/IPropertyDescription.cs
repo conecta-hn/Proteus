@@ -17,12 +17,12 @@ namespace TheXDS.Proteus.Crud.Base
         PropertyLocation PropertySource { get; }
         PropertyInfo Property { get; }
         Type PropertyType { get; }
-        object Default { get; }
+        object? Default { get; }
         bool Hidden { get; }
         bool ReadOnly { get; }
         bool ShowInDetails { get; }
         bool ShowWatermark { get; }
-        string ReadOnlyFormat { get; }
+        string? ReadOnlyFormat { get; }
         string Icon { get; }
         string Label { get; }
         NullMode Nullability { get; }

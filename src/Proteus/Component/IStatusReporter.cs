@@ -34,5 +34,11 @@ namespace TheXDS.Proteus.Component
         /// </summary>
         /// <param name="text">Mensaje de estado.</param>
         void UpdateStatus(string text);
+
+        /// <summary>
+        /// Obtiene un valor que indica si la ventana está reportando el estado
+        /// de una operación.
+        /// </summary>
+        bool IsBusy { get; }
     }
 }

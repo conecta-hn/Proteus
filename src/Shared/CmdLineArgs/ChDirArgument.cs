@@ -8,14 +8,20 @@ using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Cmd
 {
-    public class ChDirArgument : Argument
+    public class ChDirArgument : ProteusArgument
     {
-        public override string LongName => "ChDir";
         public override ValueKind Kind => ValueKind.ValueRequired;
         public override string Summary => "Cambia de directorio antes de ejecutar la aplicación.";
         public override void Run(CmdLineParser args)
         {
-            Environment.CurrentDirectory = Value;
+            try
+            {
+                Environment.CurrentDirectory = Value!;
+            }
+            catch (Exception ex)
+            {
+                ShowWarning("No se pudo cambiar el directorio", ex.Message);
+            }
         }
     }
 }

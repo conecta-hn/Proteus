@@ -11,6 +11,18 @@ using TheXDS.MCART.Component;
 
 namespace TheXDS.Proteus.Controllers
 {
+    public struct AsmInfo
+    {
+        public AsmInfo(string name, string version)
+        {
+            this.name = name;
+            this.version = version;
+        }
+
+        public string name { get; set; }
+        public string version { get; set; }
+    }
+
     /// <summary>
     /// Controlador raíz de la aplicación. Provee de datos de telemetría
     /// básicos y estado de salud del servicio Web y diversos componentes de

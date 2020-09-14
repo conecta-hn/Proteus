@@ -24,8 +24,7 @@ using TheXDS.MCART.Dialogs;
 
 namespace TheXDS.Proteus.Config
 {
-
-    internal sealed partial class Settings : IPageViewModel, ISettings, INotifyPropertyChanged
+    public sealed partial class Settings : IPageViewModel, ISettings, INotifyPropertyChanged
     {
         private bool _unsavedChanges;
         private ISettingsRepository _selectedRepo;
@@ -50,6 +49,7 @@ namespace TheXDS.Proteus.Config
             CancelCommand = new SimpleCommand(() => { Reload(); UnsavedChanges = false; }, false);
             CloseCommand = new SimpleCommand(Close, Launched);
             SaveCommand = new SimpleCommand(Save, !Launched);
+            if (!Launched) Upgrade();
         }
         private void Settings_SettingsSaving(object sender, CancelEventArgs e)
         {
@@ -96,7 +96,12 @@ namespace TheXDS.Proteus.Config
         public SimpleCommand CancelCommand { get; }
         public SimpleCommand CloseCommand { get; }
         public ICloseable Host { get; internal set; }
-        public string Title => Closeable ? "Configuración" : $"Configuración incial de {App.Info.Name}";
+        public string Title
+        {
+            get => Closeable ? "Configuración" : $"Configuración incial de {App.Info.Name}";
+            set => throw new InvalidOperationException();
+        }
+
         public string Name => App.Info.Name;
         public Version Version => App.Info.Version;
         public string ShortVersion => Version.ToString(2);
@@ -116,8 +121,17 @@ namespace TheXDS.Proteus.Config
             set => MainWindowUiMode = (byte)value;
         }
 
+        public InitErrorActions InitErrorAction
+        {
+            get => (InitErrorActions)InitErrAction;
+            set => InitErrAction = (byte)value;
+        }
+
         public IEnumerable<NamedObject<Proteus.InitMode>> InitModes { get; } = NamedObject<Proteus.InitMode>.FromEnum();
+        
         public IEnumerable<NamedObject<UiMode>> UiModes { get; } = NamedObject<UiMode>.FromEnum();
+
+        public IEnumerable<NamedObject<InitErrorActions>> InitErrActions { get; } = NamedObject<InitErrorActions>.FromEnum();
 
         public IEnumerable<Service> Services => Proteus.Services;
 
@@ -125,6 +139,8 @@ namespace TheXDS.Proteus.Config
         {
             return (T)Default[caller];
         }
+
+        public void Refresh() => Reload();
 
         public IEnumerable<ISettingsRepository> Repos => Proteus.SettingsRepositories;
         public IEnumerable<IKickStarter> KickStarters => Objects.FindAllObjects<IKickStarter>().ToList();

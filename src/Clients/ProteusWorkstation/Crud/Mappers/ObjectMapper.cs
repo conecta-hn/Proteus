@@ -6,6 +6,7 @@ Licenciado para uso interno solamente.
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Crud.Mappings;
 using TheXDS.MCART.Attributes;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud.Mappers
 {
@@ -18,10 +19,10 @@ namespace TheXDS.Proteus.Crud.Mappers
                 && !(property is IListPropertyDescription);
         }
 
-        public override IPropertyMapping? Map(IPropertyDescription p)
+        public override IPropertyMapping? Map(IEntityViewModel parentVm, IPropertyDescription p)
         {
             if (!(p is IObjectPropertyDescription i)) return null;
-            return new ObjectEditorMapping(i);
+            return new ObjectEditorMapping(parentVm, i);
         }
     }
 }

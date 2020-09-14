@@ -1,4 +1,5 @@
-﻿<base:ProteusPage
+﻿<!--<base:ProteusPage-->
+<base:ProteusPage
     Language="es-HN"
     x:Class="TheXDS.Proteus.Pages.Base.CrudPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,30 +11,51 @@
     xmlns:widgets="clr-namespace:TheXDS.Proteus.Widgets"
     xmlns:mcart="clr-namespace:TheXDS.MCART.Controls;assembly=MCART.WPF"    
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:config="clr-namespace:TheXDS.Proteus.Config"
     mc:Ignorable="d">
     <mcart:BusyContainer IsBusy="{Binding IsBusy}">
         <Grid Style="{StaticResource BotoneraBase}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <mcart:BusyContainer IsBusy="{Binding IsSearching}">
-                <DockPanel IsEnabled="{Binding NotEditMode}">
-                    <DockPanel Margin="-5" DockPanel.Dock="Top">
-                        <TextBlock DockPanel.Dock="Bottom" Text="{Binding ResultsDetails, Mode=OneWay}"/>
-                        <Button
-                            DockPanel.Dock="Right"
-                            Content="{Binding SearchLabel, Mode=OneWay}"
-                            Command="{Binding SearchCommand, Mode=OneWay}"/>
-                        <TextBox
-                            x:Name="TxtSearch"
-                            KeyUp="TextBox_KeyUp"
-                            Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
-                            local:ProteusProp.Watermark="Buscar..."
-                            local:ProteusProp.Icon="🔍" />
+            <DockPanel Visibility="{Binding EditVis}" MaxWidth="{Binding EditorWidth}">
+                <UniformGrid
+                    Rows="1"
+                    DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Center" Margin="5">
+                    <Button Command="{Binding SaveCommand}" Content="_Guardar"/>
+                    <Button Command="{Binding CancelCommand}" Content="_Cancelar"/>
+                </UniformGrid>
+                <ListView
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource LauncherList}"
+                    ItemsSource="{Binding EditingLaunchers}"/>
+                <ScrollViewer Content="{Binding SelectedEditor}" MaxWidth="{Binding EditorWidth}"/>
+            </DockPanel>
+            <Grid Visibility="{Binding NotEditVis}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <mcart:BusyContainer IsBusy="{Binding IsSearching}">
+                    <DockPanel IsEnabled="{Binding NotEditMode}">
+                        <DockPanel Margin="-5" DockPanel.Dock="Top">
+                            <TextBlock DockPanel.Dock="Bottom" Text="{Binding ResultsDetails, Mode=OneWay}"/>
+                            <Button
+                                DockPanel.Dock="Right"
+                                Content="{Binding SearchLabel, Mode=OneWay}"
+                                Command="{Binding SearchCommand, Mode=OneWay}"/>
+                            <TextBox
+                                x:Name="TxtSearch"
+                                KeyUp="TextBox_KeyUp"
+                                Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                local:ProteusProp.Watermark="Buscar..."
+                                local:ProteusProp.Icon="🔍" />
+                        </DockPanel>
+                        <ContentPresenter Content="{Binding Selector}"/>
                     </DockPanel>
-                    <mcart:StretchyWrapPanel Margin="-5,5" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+                </mcart:BusyContainer>
+                <GridSplitter/>
+                <DockPanel Visibility="{Binding Selection, Converter={StaticResource NotNullToVisibilityConverter}}" Grid.Column="2">
+                    <mcart:StretchyWrapPanel Margin="-5,5" HorizontalAlignment="Center" DockPanel.Dock="Top">
                         <xctk:DropDownButton Visibility="{Binding MultiModel}">
                             <xctk:DropDownButton.DropDownContent>
                                 <ListView
@@ -71,63 +93,56 @@
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
-                            </xctk:DropDownButton.DropDownContent>+</xctk:DropDownButton>
-                        <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}" ToolTip="Nuevo">+</Button>
-                        <Button Command="{Binding EditCurrent}" CommandParameter="{Binding Selection}" ToolTip="Editar">✎</Button>
+                            </xctk:DropDownButton.DropDownContent>+ Nuevo</xctk:DropDownButton>
+                        <Button Visibility="{Binding UniModel}" Command="{Binding CreateNew}" ToolTip="Nuevo">+ Nuevo</Button>
+                        <Button
+                            Command="{Binding EditCurrent}"
+                            CommandParameter="{Binding Selection}"
+                            ToolTip="Editar">✎ Editar</Button>
                         <Button 
                             Command="{Binding DeleteCurrent}"
                             CommandParameter="{Binding Selection}"
                             Background="{StaticResource BadColorT}"                            
                             widgets:ProteusProp.Accent="{StaticResource BadColorT2}"
-                            TextElement.Foreground="DarkRed" ToolTip="Eliminar">🗑</Button>
+                            TextElement.Foreground="DarkRed" ToolTip="Eliminar">🗑 Elminar</Button>
                     </mcart:StretchyWrapPanel>
-                    <ContentPresenter Content="{Binding Selector}"/>
-                </DockPanel>
-            </mcart:BusyContainer>
-            <GridSplitter/>
-            <Grid Visibility="{Binding Selection, Converter={StaticResource NotNullToVisibilityConverter}}" Grid.Column="2">
-                <DockPanel Visibility="{Binding EditVis}">
-                    <UniformGrid
-                        Rows="1"
-                        DockPanel.Dock="Bottom"
-                        HorizontalAlignment="Center" Margin="5">
-                        <Button Command="{Binding SaveCommand}" Content="_Guardar"/>
-                        <Button Command="{Binding CancelCommand}" Content="_Cancelar"/>
-                    </UniformGrid>
-                    <ListView
-                        DockPanel.Dock="Right"
-                        Style="{StaticResource LauncherGrid}"
-                        ItemsSource="{Binding EditingLaunchers}"/>
-                    <ScrollViewer Content="{Binding SelectedEditor}"/>
-                </DockPanel>
-                <DockPanel Visibility="{Binding NotEditVis}">
-                    <StackPanel
-                        VerticalAlignment="Top"
-                        DockPanel.Dock="Right">
-                        <TextBlock Margin="10,43,0,0">
-                            Más acciones:
-                        </TextBlock>
-                        <ListView
-                            Style="{StaticResource LauncherGrid}"
-                            ItemsSource="{Binding SelectedLaunchers}"/>                        
-                    </StackPanel>
+                    <Expander
+                        Visibility="{Binding SelectedLaunchersVisibility}"
+                        ExpandDirection="Up"
+                        DockPanel.Dock="Bottom">
+                        <Expander.Header>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    Más acciones:
+                                </TextBlock.Text>
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="0"/>
+                                </TextBlock.LayoutTransform>
+                            </TextBlock>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <ListView
+                                Style="{StaticResource LauncherGrid}"
+                                ItemsSource="{Binding SelectedLaunchers}"/>
+                        </Expander.Content>
+                    </Expander>
                     <ScrollViewer Content="{Binding SelectedDetails}"/>
                 </DockPanel>
-            </Grid>            
-            <StackPanel 
-                Margin="40"
-                Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"
-                Visibility="{Binding Selection, Converter={StaticResource NullToVisibilityConverter}}">
-                <TextBlock Style="{StaticResource Title}" Text="Seleccione un elemento de la lista para más detalles..."/>
-                <Separator Margin="0,10"/>
-                <TextBlock VerticalAlignment="Center">
-                    Más acciones:
-                </TextBlock>
-                <ListView
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource LauncherGrid}"
-                    ItemsSource="{Binding UnselectedLaunchers}"/>
-            </StackPanel>
+                <StackPanel 
+                    Margin="40"
+                    Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Visibility="{Binding Selection, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock Style="{StaticResource Title}" Text="Seleccione un elemento de la lista para más detalles..."/>
+                    <Separator Margin="0,10"/>
+                    <TextBlock VerticalAlignment="Center">
+                        Más acciones:
+                    </TextBlock>
+                    <ListView
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource LauncherList}"
+                        ItemsSource="{Binding UnselectedLaunchers}"/>
+                </StackPanel>
+            </Grid>
         </Grid>
     </mcart:BusyContainer>
 </base:ProteusPage>

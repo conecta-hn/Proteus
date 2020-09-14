@@ -4,10 +4,13 @@ Licenciado para uso interno solamente.
 */
 
 using System;
+using System.Reflection;
 using System.Windows.Input;
 using TheXDS.MCART;
+using TheXDS.MCART.Attributes;
 using TheXDS.MCART.PluginSupport.Legacy;
 using TheXDS.MCART.Types.Base;
+using TheXDS.MCART.Types.Extensions;
 using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Widgets
@@ -56,6 +59,8 @@ namespace TheXDS.Proteus.Widgets
         /// Comando a ejecutar al activar este <see cref="Launcher"/>.
         /// </param>
         public Launcher(string name, string? description, string id, ICommand command) : this(name, description, id, command, null) { }
+
+        public Launcher(string name, string? description, object? instance, MethodInfo id, params object?[]? args) : this(name, description, id.Name, new SimpleCommand(() => id.Invoke(instance, args)), null) { }
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase
@@ -149,7 +154,7 @@ namespace TheXDS.Proteus.Widgets
         /// Identificador del método a ejecutar por este
         /// <see cref="Launcher"/>.
         /// </param>
-        public Launcher(ICommand command, string id) : this("👆", null,id, command) { }
+        public Launcher(ICommand command, string id) : this("👆", null, id, command) { }
    
         /// <summary>
         /// Obtiene el parámetro a utilizar al realizar llamadas a los
@@ -171,5 +176,210 @@ namespace TheXDS.Proteus.Widgets
                 j.Action.Method.FullName(),
                 new SimpleCommand(() => j.Action(j, EventArgs.Empty)));
         }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de argumento recibido por el método.
+        /// </typeparam>
+        /// <param name="name">
+        /// Nombre del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="description">
+        /// Descripción del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <param name="parameter">
+        /// Función que obtiene el parámetro a ser pasado al método invocado
+        /// por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod<T>(string name, string? description, Action<T> method, Func<T> parameter)
+        {
+            return new Launcher(name ?? throw new ArgumentNullException(nameof(name)), description, method.Method.FullName(), new SimpleCommand(() => method(parameter())), null);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de argumento recibido por el método.
+        /// </typeparam>
+        /// <param name="name">
+        /// Nombre del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <param name="parameter">
+        /// Función que obtiene el parámetro a ser pasado al método invocado
+        /// por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod<T>(string name, Action<T> method, Func<T> parameter)
+        {
+            return FromMethod(name, method.GetAttr<DescriptionAttribute>()?.Value, method, parameter);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de argumento recibido por el método.
+        /// </typeparam>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <param name="parameter">
+        /// Función que obtiene el parámetro a ser pasado al método invocado
+        /// por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod<T>(Action<T> method, Func<T> parameter)
+        {
+            return FromMethod(method.NameOf(), method, parameter);
+        }
+        
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de argumento recibido por el método.
+        /// </typeparam>
+        /// <param name="name">
+        /// Nombre del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="description">
+        /// Descripción del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <param name="parameter">
+        /// Función que obtiene el parámetro a ser pasado al método invocado
+        /// por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod<T>(string name, string? description, Action<T> method, T parameter)
+        {
+            return new Launcher(name ?? throw new ArgumentNullException(nameof(name)), description, method.Method.FullName(), new SimpleCommand(() => method(parameter)), null);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de argumento recibido por el método.
+        /// </typeparam>
+        /// <param name="name">
+        /// Nombre del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <param name="parameter">
+        /// Función que obtiene el parámetro a ser pasado al método invocado
+        /// por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod<T>(string name, Action<T> method, T parameter)
+        {
+            return FromMethod(name, method.GetAttr<DescriptionAttribute>()?.Value, method, parameter);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Tipo de argumento recibido por el método.
+        /// </typeparam>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <param name="parameter">
+        /// Función que obtiene el parámetro a ser pasado al método invocado
+        /// por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod<T>(Action<T> method, T parameter)
+        {
+            return FromMethod(method.NameOf(), method, parameter);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <param name="name">
+        /// Nombre del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="description">
+        /// Descripción del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod(string name, string? description, Action method)
+        {
+            return new Launcher(name ?? throw new ArgumentNullException(nameof(name)), description, method.Method.FullName(), new SimpleCommand(method), null);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <param name="name">
+        /// Nombre del <see cref="Launcher"/> a generar.
+        /// </param>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod(string name, Action method)
+        {
+            return FromMethod(name, method.GetAttr<DescriptionAttribute>()?.Value, method);
+        }
+
+        /// <summary>
+        /// Crea un nuevo <see cref="Launcher"/> para el método especificado.
+        /// </summary>
+        /// <param name="method">
+        /// Método a invocar por el <see cref="Launcher"/>.
+        /// </param>
+        /// <returns>
+        /// Un <see cref="Launcher"/> que invocará al método especificado al
+        /// ser activado.
+        /// </returns>
+        public static Launcher FromMethod(Action method)
+        {
+            return FromMethod(method.NameOf(), method);
+        }
+
     }
 }

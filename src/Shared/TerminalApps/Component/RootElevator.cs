@@ -16,7 +16,7 @@ namespace TheXDS.Proteus.Component
             credential = Proteus.ResolveLink<User>("root") ?? new User
             {
                 AllowMultiLogin = true,
-                Interactive=false,
+                Interactive = false,
                 ScheduledPasswordChange = false,
                 DefaultGranted=SecurityFlags.Root,
                 DefaultRevoked=SecurityFlags.None,

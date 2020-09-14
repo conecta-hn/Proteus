@@ -22,6 +22,7 @@ using TheXDS.Proteus.Models.Base;
 using TheXDS.Proteus.Plugins;
 using TheXDS.Proteus.Protocols;
 using static TheXDS.MCART.Objects;
+using St = TheXDS.Proteus.Resources.Strings;
 
 [assembly: Name("Proteus Core Library")]
 [assembly: LicenseFile("License.txt")]
@@ -66,14 +67,13 @@ namespace TheXDS.Proteus
 
         private static void NwClient_ConnectionLost(object? sender, EventArgs e)
         {
-            const string msj = "Se ha perdido la conectividad con el servidor de sesión de red. La conexión será restablecida automáticamente cuando el servidor vuelva a estar en línea.";
             if (AlertTarget is null)
             {
-                MessageTarget?.Warning(msj);
+                MessageTarget?.Warning(St.NwClientConnLost);
             }
             else
             {
-                AlertTarget.Alert("Sesión de red", msj);
+                AlertTarget.Alert(St.NwSvc, St.NwClientConnLost);
             }
         }
 
@@ -177,6 +177,8 @@ namespace TheXDS.Proteus
         /// </summary>
         public static IMessageTarget? MessageTarget { get; set; }
 
+        public static IInteractiveMessageTarget? InteractiveMt => MessageTarget as IInteractiveMessageTarget;
+
         /// <summary>
         /// Obtiene el objeto registrado como objetivo de alertas de la
         /// aplicación.
@@ -257,7 +259,7 @@ namespace TheXDS.Proteus
         public static async Task Init(ISettings settings)
         {
             if (settings is null) throw new ArgumentNullException(nameof(settings));
-            if (!(Settings is null)) throw new InvalidOperationException("Proteus ya ha sido inicializado.");
+            if (!(Settings is null)) throw new InvalidOperationException(St.ErrProteusInited);
 
             Settings = settings;
             var pl = new PluginLoader();
@@ -275,11 +277,11 @@ namespace TheXDS.Proteus
             }
             catch (SocketException)
             {
-                AlertTarget?.Alert("No se pudo iniciar el escucha de red", $"El puerto UDP {Settings.NetworkServerPort} ya está en uso por otra aplicación.");
+                AlertTarget?.Alert(St.ErrCannotInitListener, string.Format(St.ErrUdpInUse,Settings.NetworkServerPort));
             }
             catch (Exception ex)
             {
-                AlertTarget?.Alert("No se pudo iniciar el escucha de red", ex.Message);
+                AlertTarget?.Alert(St.ErrCannotInitListener, ex.Message);
             }
         }
 
@@ -292,7 +294,7 @@ namespace TheXDS.Proteus
                 var l = new List<Task<Result>>();
                 foreach (var (svc, seed) in Services.OrderBy(p => p.GetAttr<PriorityAttribute>()?.Value).Zip(seedRequired))
                 {
-                    l.Add(svc.RunSeeders(seed));
+                    l.Add(svc.RunSeedersAsync(seed));
                 }
                 if ((await Task.WhenAll(l)).Where(p => p != Result.Ok).Any())
                 {
@@ -333,10 +335,7 @@ namespace TheXDS.Proteus
             Services = new HashSet<Service>(new[] { LogonService });
             try
             {
-                await LogonService.RunSeedersAsync(LogonService.InitializeDatabaseAsync()).Throwable();
-                await LogonService.SanitizeAsync().Throwable();
-                await LogonService.VerifyAsync().Throwable();
-                await LogonService.AfterInitAsync();
+                await SafeInitService(LogonService);
             }
             catch
             {
@@ -344,18 +343,23 @@ namespace TheXDS.Proteus
                 {
                     if (DbConfig._forceLocalDb) throw;
                     DbConfig._forceLocalDb = true;
-                    await LogonService.RunSeedersAsync(LogonService.InitializeDatabaseAsync()).Throwable();
-                    await LogonService.SanitizeAsync().Throwable();
-                    await LogonService.VerifyAsync().Throwable();
-                    await LogonService.AfterInitAsync();
+                    await SafeInitService(LogonService);
                 }
                 catch
                 {
-                    MessageTarget?.Critical("El servicio de base de datos no está disponible. La aplicación debe ser reconfigurada.");
+                    MessageTarget?.Critical(St.ErrDataSvcNotAvailable);
                     return false;
                 }
             }
             return true;
+        }
+
+        private static async Task SafeInitService(Service svc)
+        {
+            await svc.RunSeedersAsync(svc.InitializeDatabaseAsync()).Throwable();
+            await svc.SanitizeAsync().Throwable();
+            await svc.VerifyAsync().Throwable();
+            await svc.AfterInitAsync().Throwable();
         }
 
         /// <summary>
@@ -478,7 +482,10 @@ namespace TheXDS.Proteus
                     return Interactive ? LoginResultCode.NotInteractive : LoginResultCode.NotSvcUser;
                 if (!t.Login.Enabled) return LoginResultCode.DisabledUser;
                 var u = t.Login;
+                var intStatus = _interactive;
+                _interactive = false;
                 await LogonService.ConsumeToken(t);
+                _interactive = intStatus;
                 return new LoginResult(u);
             }
             catch (Exception ex)

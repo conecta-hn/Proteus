@@ -10,6 +10,8 @@ using TheXDS.Proteus.Widgets;
 using System;
 using System.Linq;
 using TheXDS.MCART.Types.Extensions;
+using TheXDS.Proteus.Models.Base;
+using TheXDS.MCART.ViewModel;
 
 namespace TheXDS.Proteus.Crud.Mappings
 {
@@ -17,12 +19,12 @@ namespace TheXDS.Proteus.Crud.Mappings
     {
         private readonly ObjectEditorViewModel _vm;
 
-        public ObjectEditorMapping(IPropertyDescription property) : base(property, new ObjectEditor())
+        public ObjectEditorMapping(IEntityViewModel parentVm, IPropertyDescription property) : base(property, new ObjectEditor())
         {
             if (property is IObjectPropertyDescription i)
             {
                 var t = i.Property.PropertyType.ResolveToDefinedType()!;
-                _vm = new ObjectEditorViewModel(i, GetModels(t));
+                _vm = new ObjectEditorViewModel(parentVm, i, GetModels(t));
                 Control.DataContext = _vm;
             }
 
@@ -37,7 +39,7 @@ namespace TheXDS.Proteus.Crud.Mappings
 
             set
             {
-                _vm.Selection = value;
+                _vm.Selection = value as ModelBase;
             }
         }
 
