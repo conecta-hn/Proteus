@@ -136,7 +136,7 @@ namespace TheXDS.Proteus.ViewModels
             get
             {
                 if (ActiveModel is null) return null;
-                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns is { } c)) return null;
+                if (!(CrudElement.GetDescription(ActiveModel)?.ListColumns.OfType<Column>() is { } c)) return null;
                 var v = new GridView();
                 foreach (var j in c)
                 {

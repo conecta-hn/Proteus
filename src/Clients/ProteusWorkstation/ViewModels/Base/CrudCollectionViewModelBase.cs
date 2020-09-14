@@ -32,7 +32,7 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// <summary>
         /// Contiene una lista personalizada de columnas a mostrar.
         /// </summary>
-        protected List<Column> CustomColumns { get; } = new List<Column>();
+        protected List<IColumn> CustomColumns { get; } = new List<IColumn>();
 
         /// <summary>
         /// Obtiene al elemento selector de la ventana.
@@ -49,7 +49,7 @@ namespace TheXDS.Proteus.ViewModels.Base
             get
             {
                 var v = new GridView();
-                foreach (var j in CrudElement.GetDescription(Models.First())?.ListColumns ?? CustomColumns)
+                foreach (var j in (CrudElement.GetDescription(Models.First())?.ListColumns ?? CustomColumns).OfType<Column>())
                 {
                     v.Columns.Add(j);
                 }
@@ -61,14 +61,18 @@ namespace TheXDS.Proteus.ViewModels.Base
         /// Inicializa una nueva instancia de la clase
         /// <see cref="CrudCollectionViewModelBase"/>.
         /// </summary>
+        /// <param name="parentModel">
+        /// Modelo padre de la propiedad para la cual se está generando el
+        /// Crud.
+        /// </param>
         /// <param name="source">Colección de orígen a controlar.</param>
         /// <param name="elements">Elementos de edición a incorporar.</param>
         /// <param name="csource">
         /// Propiedad de origen a utilizar para el selector de entidades.
         /// </param>
-        protected CrudCollectionViewModelBase(Type parentModelType, ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
+        protected CrudCollectionViewModelBase(Type? parentModel, ICollection<ModelBase> source, Type[] elements, string csource = "Results") : base(elements)
         {
-            ParentEntityType = parentModelType;
+            ParentModel = parentModel;
             if (elements.Count() == 1)
             {
                 Selector = new ListView();
