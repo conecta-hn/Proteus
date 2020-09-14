@@ -8,11 +8,14 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using TheXDS.MCART.Exceptions;
 using TheXDS.MCART.Types.Extensions;
 using TheXDS.Proteus.Api;
+using TheXDS.Proteus.Component.Attributes;
 using TheXDS.Proteus.Crud;
 using TheXDS.Proteus.Crud.Base;
 using TheXDS.Proteus.Models;
@@ -25,8 +28,9 @@ namespace TheXDS.Proteus.FacturacionUi.Tools
 {
     public class InvCategoryCrudTool : CrudTool<FacturableCategory>
     {
-        public InvCategoryCrudTool() : base(CrudToolVisibility.Unselected)
+        public InvCategoryCrudTool() : base(CrudToolVisibility.NotEditing)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
         public override IEnumerable<Launcher> GetLaunchers(IEnumerable<Type> models, ICrudViewModel? vm)
@@ -34,41 +38,25 @@ namespace TheXDS.Proteus.FacturacionUi.Tools
             yield return Launcher.FromMethod(
                 "Exportar a Excel",
                 "Exporta la lista de ítems dentro de esta categoría a un archivo de Microsoft Excel.",
-                ExportExcel, () => vm);
+                ExportExcel, () => vm!);
         }
 
-
-        private async void ExportExcel(ICrudViewModel? obj)
+        private void ExportExcel(ICrudViewModel? vm)
+        {
+            if (vm is { } v) v.BusyDo(ExportExcelAsync(vm));
+            else ExportExcelAsync(null).GetAwaiter().GetResult();
+        }
+        private async Task ExportExcelAsync(ICrudViewModel? vm)
         {
             var sfd = new SaveFileDialog()
             {
                 Filter = "Archivo de Excel (*.xlsx)|*.xlsx|Todos los archivos|*.*"
             };
             if (!(sfd.ShowDialog() ?? false)) return;
-
             var e = new ExcelPackage();
-            var c = CrudElement.GetDescription(typeof(Producto))!.ListColumns.ToList();
-            c.Add(new CustomColum("Existencias", "C", GetExistencias));
-
-            foreach (var i in await Proteus.Service<FacturaService>()!.All<FacturableCategory>().ToListAsync())
+            foreach (var i in vm?.Selection is FacturableCategory m ? new[] { m }.AsEnumerable() : await GetCategoriesAsync())
             {
-                var lst = i.Children.OfType<Producto>().ToArray();
-                if (!lst.Any()) continue;
-                var ws = BuildWs(e, i, c, out var row, out var lastCol);
-                foreach (var j in lst)
-                {
-                    int col = 1;
-                    foreach (var l in c)
-                    {
-                        ws.Cells[row, col].Value = l.ToString(i);
-                        col++;
-                    }
-                    row++;
-                }
-                for (int k = 1; k <= lastCol; k++)
-                {
-                    ws.Column(k).AutoFit();
-                }
+                AppendInvCategory(e, i);
             }
 
             if (!e.Workbook.Worksheets.Any())
@@ -81,10 +69,96 @@ namespace TheXDS.Proteus.FacturacionUi.Tools
             }
         }
 
+        protected virtual IEnumerable<FacturableCategory> GetCategories()
+        {
+            return GetCategoriesAsync().GetAwaiter().GetResult();
+        }
+
+        protected Task<List<FacturableCategory>> GetCategoriesAsync()
+        {
+            return Proteus.Service<FacturaService>()!.All<FacturableCategory>().ToListAsync();
+        }
+
+        protected void AppendInvCategory(ExcelPackage e, FacturableCategory i)
+        {
+            var c = CrudElement.GetDescription(typeof(Producto))!.ListColumns
+                .Where(p => (p as Column)?.Path != "Category")
+                .ToList();
+
+            c.Add(new CustomColum("Existencias", "0", GetExistencias));
+            c.Add(new CustomColum("Descripción", GetDescr));
+
+            var lst = i.Children.OfType<Producto>().ToArray();
+            if (!lst.Any()) return;
+            var ws = BuildWs(e, i, c, out var row, out var lastCol);
+            foreach (var j in lst)
+            {
+                int col = 1;
+                foreach (var l in c)
+                {
+                    var v = l.GetValue(j);
+                    switch (v)
+                    {
+                        case decimal currency:
+                            ws.Cells[row, col].Value = currency;
+                            ws.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            ws.Cells[row, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            ws.Cells[row, col].Style.Numberformat.Format = l.Format == "C" ? @"_-L* #,##0.00_-;-L* #,##0.00_-;_-L* "" - ""??_-;_-@_-" : l.Format;
+                            break;
+                        case int integer:
+                            ws.Cells[row, col].Value = integer;
+                            ws.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            ws.Cells[row, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            ws.Cells[row, col].Style.Numberformat.Format = l.Format.IsEmpty() ? "0" : l.Format;
+                            break;
+                        case float single:
+                            ws.Cells[row, col].Value = single;
+                            ws.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            ws.Cells[row, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            ws.Cells[row, col].Style.Numberformat.Format = l.Format.IsEmpty() ? "0.0" : l.Format;
+                            break;
+                        case double dbl:
+                            ws.Cells[row, col].Value = dbl;
+                            ws.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            ws.Cells[row, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            ws.Cells[row, col].Style.Numberformat.Format = l.Format.IsEmpty() ? "0.0" : l.Format;
+                            break;
+                        case string str:
+                            ws.Cells[row, col].Value = str;
+                            ws.Cells[row, col].Style.HorizontalAlignment = str.Contains('\n') ? ExcelHorizontalAlignment.Left : ExcelHorizontalAlignment.Center;
+                            ws.Cells[row, col].Style.VerticalAlignment = str.Contains('\n') ? ExcelVerticalAlignment.Top : ExcelVerticalAlignment.Center;
+                            break;
+                        case null : break;
+                        default:
+                            ws.Cells[row, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            ws.Cells[row, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            ws.Cells[row, col].Value = l.ToString(j);
+                            break;
+                    }
+                    col++;
+                }
+                row++;
+            }
+            
+            ws.Column(lastCol).Width = 45;
+            ws.Column(lastCol).Style.WrapText = true;
+
+            for (int k = 1; k <= lastCol-1; k++)
+            {
+                ws.Column(k).AutoFit();
+            }
+        }
+
         private object? GetExistencias(ModelBase arg2)
         {
             var p = arg2 as Producto ?? throw new InvalidTypeException(arg2.GetType());
             return p.Batches.Sum(p => p.Qty);
+        }
+
+        private object? GetDescr(ModelBase arg2)
+        {
+            var p = arg2 as Producto ?? throw new InvalidTypeException(arg2.GetType());
+            return p.Description;
         }
 
         private ExcelWorksheet BuildWs(ExcelPackage e, FacturableCategory f, IEnumerable<IColumn> c, out int row, out int lastCol)

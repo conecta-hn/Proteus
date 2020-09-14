@@ -23,6 +23,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
                 .Selectable()
                 .Creatable()
                 .Required()
+                .ShowInDetails()
                 .Label("Ítems");
         }
     }

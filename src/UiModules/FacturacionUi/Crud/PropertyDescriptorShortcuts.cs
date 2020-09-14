@@ -30,6 +30,7 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
             descriptor.NumericProperty(p => p.Precio)
                 .Range(decimal.Zero, decimal.MaxValue)
+                .Format("C")
                 .Important("Precio sin ISV");
 
             descriptor.NumericProperty(p => p.Isv)
