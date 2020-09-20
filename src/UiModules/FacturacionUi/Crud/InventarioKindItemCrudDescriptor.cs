@@ -30,5 +30,4 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
 
         }
     }
-
 }
