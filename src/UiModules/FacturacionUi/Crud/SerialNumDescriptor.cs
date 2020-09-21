@@ -10,8 +10,8 @@ namespace TheXDS.Proteus.FacturacionUi.Crud
             FriendlyName("Ítem con número de serie");
             Property(p => p.Id).Id("Número de serie", "|||").AsListColumn();
             TextProperty(p => p.Notes).Big().Nullable().Label("Notas");
-            ObjectProperty(p => p.Owner).Selectable().Nullable().Label("Vendido a");
             Property(p => p.Sold).Nullable().Label("Vendido el");
+            ObjectProperty(p => p.Warranty).Creatable().Nullable().Label("Garantía otorgada");
             ShowAllInDetails();
         }
     }
